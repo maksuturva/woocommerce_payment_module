@@ -1,4 +1,4 @@
-Maksuturva/eMaksut Payment Gateway for WooCommerce
+Maksuturva Payment Gateway for WooCommerce
 ==========================================================
 Copyright (C) 2015 Maksuturva Group Oy
 
