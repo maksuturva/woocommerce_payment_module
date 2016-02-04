@@ -18,9 +18,6 @@ e-mail: info@maksuturva.fi
 Maksuturva Group Oy, hereby disclaims all copyright interest in
 the library 'Maksuturva payment module' written for Maksuturva Group Oy
 
-March 9th 2015, Konsta Karvinen, 
-ICT Development Manager / Maksuturva Group Oy
-
 CHANGELOG
 ---------
 
