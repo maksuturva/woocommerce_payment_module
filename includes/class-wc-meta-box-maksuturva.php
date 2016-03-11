@@ -102,55 +102,61 @@ class WC_Meta_Box_Maksuturva {
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 			case WC_Payment_Maksuturva::STATUS_PENDING:
 			default:
-				try {
-					$response = self::status_request( $order );
-					if ( isset( $response['pmtq_returntext'] ) ) {
-						$comment = ' (' . $response['pmtq_returntext'] . ')';
-					}
-					switch ( $response['pmtq_returncode'] ) {
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID_DELIVERY:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_COMPENSATED:
-							if ( $order->get_status() !== WC_Payment_Maksuturva::STATUS_COMPLETED ) {
-								$order->update_status( WC_Payment_Maksuturva::STATUS_COMPLETED );
-							}
-							$payment->complete();
-							$msg = __( 'The payment confirmation was received - payment accepted', self::$gateway->td );
-							break;
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED_PARTIAL:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED_PARTIAL_RETURN:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_RECLAMATION:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_CANCELLED:
-							if ( $order->get_status() !== WC_Payment_Maksuturva::STATUS_CANCELLED ) {
+				if ($order->get_status() === WC_Payment_Maksuturva::STATUS_CANCELLED) {
+					$payment->cancel();
+					$msg = __('The payment is pending or delayed, but the order is already canceled. Canceling payment.',
+					self::$gateway->td);
+				} else {
+					try {
+						$response = self::status_request( $order );
+						if ( isset( $response['pmtq_returntext'] ) ) {
+							$comment = ' (' . $response['pmtq_returntext'] . ')';
+						}
+						switch ( $response['pmtq_returncode'] ) {
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID_DELIVERY:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_COMPENSATED:
+								if ( $order->get_status() !== WC_Payment_Maksuturva::STATUS_COMPLETED ) {
+									$order->update_status( WC_Payment_Maksuturva::STATUS_COMPLETED );
+								}
+								$payment->complete();
+								$msg = __( 'The payment confirmation was received - payment accepted',
+								self::$gateway->td );
+								break;
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED_PARTIAL:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED_PARTIAL_RETURN:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_RECLAMATION:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_CANCELLED:
 								$order->cancel_order( __( 'The payment was canceled in Maksuturva',
 								self::$gateway->td ) );
-							}
-							$payment->cancel();
-							$msg = __( 'The payment was canceled in Maksuturva', self::$gateway->td );
-							break;
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
-							if ( $order->get_status() !== WC_Payment_Maksuturva::STATUS_PENDING ) {
-								$payment->cancel();
-								$msg = __( 'The payment could not be tracked by Maksuturva, please check manually',
-								self::$gateway->td );
-							} else {
-								$payment->pending();
-								$msg = __( 'Payment is still waiting for confirmation', self::$gateway->td );
-							}
 
-							break;
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID:
-						case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID_DELIVERY:
-						default:
-							$msg = __( 'The payment is still waiting for confirmation', self::$gateway->td );
-							break;
+								$payment->cancel();
+								$msg = __( 'The payment was canceled in Maksuturva', self::$gateway->td );
+								break;
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
+								if ( $order->get_status() !== WC_Payment_Maksuturva::STATUS_PENDING ) {
+									$payment->cancel();
+									$msg = __( 'The payment could not be tracked by Maksuturva, please check manually',
+									self::$gateway->td );
+								} else {
+									$payment->pending();
+									$msg = __( 'Payment is still waiting for confirmation', self::$gateway->td );
+								}
+
+								break;
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID:
+							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID_DELIVERY:
+							default:
+								$msg = __( 'The payment is still waiting for confirmation', self::$gateway->td );
+								break;
+						}
+					} catch ( WC_Gateway_Maksuturva_Exception $e ) {
+						$msg = __( 'Error while communicating with maksuturva: Invalid hash or network error',
+						self::$gateway->td );
 					}
-				} catch ( WC_Gateway_Maksuturva_Exception $e ) {
-					$msg = __( 'Error while communicating with maksuturva: Invalid hash or network error',
-					self::$gateway->td );
 				}
 				break;
 		}
