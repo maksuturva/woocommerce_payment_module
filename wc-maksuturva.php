@@ -80,15 +80,6 @@ class WC_Maksuturva {
 	const VERSION = '2.0.0';
 
 	/**
-	 * The database version.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var string DB_VERSION The DB version.
-	 */
-	const DB_VERSION = '2.0';
-
-	/**
 	 * The working instance of the plugin, singleton.
 	 *
 	 * @since  2.0.0
@@ -178,10 +169,10 @@ class WC_Maksuturva {
 	 * @since  2.0.0
 	 */
 	public function init() {
-		load_plugin_textdomain( 'wc-maksuturva', false, $this->plugin_dir . '/languages' );
+		load_plugin_textdomain( 'wc-maksuturva', false, basename( dirname( __FILE__ ) ) . '/languages');
 
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'add_maksuturva_gateway' ) );
-		add_filter( 'plugin_action_links_' . $this->plugin_name, array( $this, 'maksuturva_action_links' ) );
+		add_filter( 'plugin_action_links_' . $this->plugin_name, array( __CLASS__, 'maksuturva_action_links' ) );
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 	}
@@ -221,18 +212,17 @@ class WC_Maksuturva {
 	 *
 	 * Adds the maksuturva action links.
 	 *
-	 * @param array  $links       The existing links.
-	 * @param string $plugin_name The plugin name.
+	 * @param array $links The existing links.
 	 *
 	 * @return array The links.
 	 */
-	public function maksuturva_action_links( $links, $plugin_name ) {
-		if ( $plugin_name === $this->get_plugin_name() ) {
-			$url     = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-			$links[] = '<a href="' . esc_attr( $url ) . '">' . esc_html__( 'Settings' ) . '</a>';
-		}
+	public static function maksuturva_action_links( $links ) {
+		$url     = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$action_links = array(
+			'settings' => '<a href="' . esc_attr( $url ) . '">' . esc_html__( 'Settings' ) . '</a>',
+		);
 
-		return $links;
+		return array_merge($action_links, $links);
 	}
 
 	/**
@@ -247,7 +237,6 @@ class WC_Maksuturva {
 	public function is_currency_supported() {
 		$currency = get_woocommerce_currency();
 
-		// Todo: Move the currency to a static array to this class.
 		return in_array( $currency, array( 'EUR' ), true );
 	}
 
@@ -326,6 +315,19 @@ class WC_Maksuturva {
 	}
 
 	/**
+	 * Get plugin URL.
+	 *
+	 * Returns the URL to the plugin.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return string
+	 */
+	public function get_plugin_url() {
+		return $this->plugin_url;
+	}
+
+	/**
 	 * Activate plugin.
 	 *
 	 * Creates necessary tables for the plugin.
@@ -349,9 +351,9 @@ class WC_Maksuturva {
 		`date_updated`  DATETIME NULL DEFAULT NULL,
 		PRIMARY KEY (order_id, payment_id)) DEFAULT CHARSET=utf8;';
 
+		// See: https://codex.wordpress.org/Creating_Tables_with_Plugins.
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
-		add_option( 'maksuturva_db_version', self::DB_VERSION );
 	}
 
 	/**
@@ -373,11 +375,7 @@ class WC_Maksuturva {
 	 * @since 2.0.0
 	 */
 	public static function uninstall() {
-		// Clean up i.e. delete the table.
-		delete_option( 'maksuturva_db_version' );
-		global $wpdb;
-		$table_name = $wpdb->prefix . 'maksuturva_queue';
-		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS `%s`', $table_name ) ); // Db call ok; Cache ok.
+		// We don't want to remove the database table, as all the history data will be erased.
 	}
 }
 
