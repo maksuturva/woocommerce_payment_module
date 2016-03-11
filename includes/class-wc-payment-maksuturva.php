@@ -395,7 +395,6 @@ class WC_Payment_Maksuturva {
 
 		$data = array(
 			'status'        => $this->status,
-			'data_sent'     => wp_json_encode( $this->data_sent ),
 			'data_received' => wp_json_encode( $this->data_received ),
 			'date_updated'  => date( 'Y-m-d H:i:s' ),
 		);
