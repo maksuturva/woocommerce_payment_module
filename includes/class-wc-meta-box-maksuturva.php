@@ -58,7 +58,14 @@ class WC_Meta_Box_Maksuturva {
 			self::$gateway = $args['args']['gateway'];
 		}
 		$order   = wc_get_order( $post );
-		$message = self::get_messages( $order );
+		try {
+			$payment = new WC_Payment_Maksuturva( $order->id );
+		} catch (WC_Gateway_Maksuturva_Exception $e) {
+			// If the payment was not found, it probably means that the order was not paid with Maksuturva.
+			return;
+		}
+
+		$message = self::get_messages( $order, $payment );
 		self::$gateway->render( 'meta-box', 'admin', array( 'message' => $message ) );
 	}
 
@@ -67,15 +74,14 @@ class WC_Meta_Box_Maksuturva {
 	 *
 	 * Returns the messages for the given order.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param WC_Order              $order   The order.
+	 * @param WC_Payment_Maksuturva $payment The Maksuturva payment object.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
-	private static function get_messages( $order ) {
-		$payment = new WC_Payment_Maksuturva( $order->id );
-
+	private static function get_messages( $order, $payment ) {
 		$comment = '';
 		switch ( $payment->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_COMPLETED:
