@@ -81,8 +81,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->id = 'WC_Gateway_Maksuturva';
 		$this->td = 'wc-maksuturva';
 
+		$this->title              = __( 'Maksuturva', $this->td );
 		$this->method_title       = __( 'Maksuturva', $this->td );
 		$this->method_description = __( 'Take payments via Maksuturva.', $this->td );
+
 		$this->notify_url         = WC()->api_request_url( $this->id );
 
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'maksuturva_logo.png';
