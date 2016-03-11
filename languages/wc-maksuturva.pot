@@ -15,215 +15,215 @@ msgstr ""
 
 #: includes/class-wc-gateway-implementation-maksuturva.php:243
 msgid "Shipping cost"
-msgstr "Toimituskulut"
+msgstr ""
 
 #: includes/class-wc-gateway-implementation-maksuturva.php:275
 msgid "Discount"
-msgstr "Alennus"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:84
 #: includes/class-wc-gateway-maksuturva.php:85
 #: templates/frontend/maksuturva-form.php:48
 msgid "Maksuturva"
-msgstr "Maksuturva"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:86
 msgid "Take payments via Maksuturva."
-msgstr "Vastaanota maksuja Maksuturvan kautta."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:134
 msgid "Enable/Disable"
-msgstr "Ota käyttöön / poista käytöstä"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:136
 msgid "Enable Maksuturva Payment Gateway"
-msgstr "Käytä Maksuturvan maksunvälitystä"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:141
 msgid "Account settings"
-msgstr "Tiliasetukset"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:148
 msgid "Seller id"
-msgstr "Kauppiastunnus"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:150
 msgid "The seller identification provided by Maksuturva upon your registration."
-msgstr "Kauppiastunnus, jonka saa rekisteröityessä Maksuturvaan kauppiaaksi."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:155
 msgid "Secret Key"
-msgstr "Salainen avain"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:157
 msgid "Your unique secret key provided by Maksuturva."
-msgstr "Maksuturvan toimittama salainen avain"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:161
 msgid "Secret Key Version"
-msgstr "Salaisen avaimen versio"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:163
 msgid "The version of the secret key provided by Maksuturva."
-msgstr "Maksuturvan toimittaman avaimen versio."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:168
 msgid "Advanced settings"
-msgstr "Lisäasetukset"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:176
 msgid "Gateway URL"
-msgstr "Välityspalvelun URL"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:178
 msgid "The URL used to communicate with Maksuturva. Do not change this configuration unless you know what you are doing."
-msgstr "URL, jota käytetään Maksuturvan kanssa. Yleensä tätä ei pidä muuttaa."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:185
 msgid "Payment Prefix"
-msgstr "Maksun etuliite"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:187
 msgid "Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall."
-msgstr "Maksun etuosa, joka lisätään maksutapahtuman numeroon. Voidaan käyttää yksilöimään maksutapahtumat esimerkiksi Woocommercen uudelleenasennuksen jälkeen, mikäli Maksuturva palauttaa virheitä päällekkäisistä tilausnumeroista."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:193
 msgid "Sandbox mode"
-msgstr "Käytä yleistä testitunnusta"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:195
 msgid "Maksuturva sandbox can be used to test payments. None of the payments will be real."
-msgstr "Sandbox-moodia voidaan käyttää testaamiseen. Mitään maksuja ei suoriteta."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:202
 msgid "Maksuturva encoding"
-msgstr "Merkistöenkoodaus"
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:205
 msgid "The encoding used for Maksuturva."
-msgstr "Merkistöenkoodaus jota Maksuturva tukee."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:514
 msgid "Payment gateway not available."
-msgstr "Maksukäytävä ei käytettävissä."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:523
 msgid "Missing reference number in response."
-msgstr "Viite puuttuu vastauksessa."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:531
 msgid "Could not process order."
-msgstr "Tilausta ei voitu käsitellä."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:550
 msgid "Error from Maksuturva received."
-msgstr "Maksuturva palautti virheen."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:561
 msgid "Payment delayed by Maksuturva."
-msgstr "Viivästetty maksu Maksuturvassa."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:572
 msgid "Cancellation from Maksuturva received."
-msgstr "Peruutettu Maksuturvassa."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:590
 msgid "Payment confirmed by Maksuturva."
-msgstr "Maksuturva varmensi maksun."
+msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:618
 msgid "Surcharge from Payment Gateway"
-msgstr "Lisämaksu maksukäytävästä"
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:88
 msgid "The payment was confirmed by Maksuturva"
-msgstr "Maksu varmistettiin Maksuturvassa"
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:92
 #: includes/class-wc-meta-box-maksuturva.php:135
 msgid "The payment could not be tracked by Maksuturva, please check manually"
-msgstr "Tapahtui virhe eikä maksusuoritusta voitu vahvistaa. Varmista maksusuoritus manuaalisesti."
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:95
 msgid "The payment was canceled by the customer"
-msgstr "Asiakas perui tilauksen"
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:99
 msgid "An error occurred and the payment was not confirmed, please check manually"
-msgstr "Tapahtui virhe eikä maksusuoritusta voitu vahvistaa. Varmista maksusuoritus manuaalisesti."
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:118
 msgid "The payment confirmation was received - payment accepted"
-msgstr "Maksun vahvistus vastaanotettu - maksu rekisteröity"
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:126
 #: includes/class-wc-meta-box-maksuturva.php:130
 msgid "The payment was canceled in Maksuturva"
-msgstr "Tilaus peruttiin Maksuturvassa"
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:139
 msgid "Payment is still waiting for confirmation"
-msgstr "Maksusuoritus odottaa vahvistusta"
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:148
 msgid "The payment is still waiting for confirmation"
-msgstr "Maksusuoritus odottaa vahvistusta"
+msgstr ""
 
 #: includes/class-wc-meta-box-maksuturva.php:152
 msgid "Error while communicating with maksuturva: Invalid hash or network error"
-msgstr "Tapahtui virhe muodostettaessa yhteyttä Maksuturvaa. Verkkovirhe tai virheellinen tarkiste."
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:196
 msgid "An error occurred and the payment was not confirmed."
-msgstr "Maksamisessa tapahtui virhe."
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:308
 msgid "Missing payment field(s) in response: \"%s\""
-msgstr "Vastauksesta puuttuvat maksun tiedot: \"%s\""
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:327
 msgid "The payment did not match any order"
-msgstr "Maksusuoritusta vastaavaa tilausta ei löydy"
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:342
 msgid "Payment verification checksum does not match"
-msgstr "Maksun tarkiste ei täsmää"
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:359
 msgid "Payment reference number could not be verified"
-msgstr "Yhtä tai useampaa tarkistetietoa ei voitu varmentaa"
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:381
 msgid "%s (obtained %s, expected %s)"
-msgstr "%s (saatiin %s, odotettiin %s)"
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:390
 msgid "The following field(s) differs from order: %s"
-msgstr "Seuraavat kentät eroavat tilauksesta: %s"
+msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:412
 msgid "Invalid payment amount (obtained %s, expected %s)"
-msgstr "Virheellinen maksun määrä (saatiin %s, odotettiin %s)"
+msgstr ""
 
 #: templates/admin/not-supported-banner.php:39
 msgid "Maksuturva does not support your store currency. Only EUR is supported."
-msgstr "Maksuturva ei tue kaupan valuuttaa. Vain EUR on tuettu."
+msgstr ""
 
 #: templates/frontend/maksuturva-form.php:50
 msgid "Cancel order"
-msgstr "Peru tilaus"
+msgstr ""
 
 #: wc-maksuturva.php:190
 msgid "Maksuturva order details"
-msgstr "Maksuturvan tilauksen tiedot"
+msgstr ""
 
 #: wc-maksuturva.php:223
 msgid "Settings"
-msgstr "Asetukset"
+msgstr ""
 
 #. Plugin Name of the plugin/theme
 msgid "WooCommerce Maksuturva Payment Gateway"
-msgstr "Maksuturvan maksunvälityspalvelu"
+msgstr ""
 
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/maksuturva/woocommerce_payment_module"
@@ -231,7 +231,7 @@ msgstr ""
 
 #. Description of the plugin/theme
 msgid "A plugin for Maksuturva, which provides intelligent online payment services consisting of the most"
-msgstr "Maksuturva on maksupalveluntarjoaja, jonka älykäs palvelukokonaisuus vastaa vaativankin verkkokaupan tarpeisiin."
+msgstr ""
 
 #. Author of the plugin/theme
 msgid "Maksuturva Group Oy"
