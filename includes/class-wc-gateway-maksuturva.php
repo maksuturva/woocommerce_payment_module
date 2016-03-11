@@ -321,7 +321,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_encoding() {
-		return $this->get_option( 'blog_charset' );
+		return $this->get_option('maksuturva_encoding', 'UTF-8');
 	}
 
 	/**
