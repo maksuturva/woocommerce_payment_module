@@ -216,25 +216,9 @@ class WC_Payment_Maksuturva {
 	}
 
 	/**
-	 * Update sent data.
+	 * Set data received.
 	 *
-	 * Updates the sent data property with given data.
-	 *
-	 * @param array $data The data to update.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
-	 */
-	public function update_data_sent( array $data ) {
-		$this->data_sent = $data;
-		$this->update();
-	}
-
-	/**
-	 * Update data received.
-	 *
-	 * Updates the received data property with given data.
+	 * Sets the received data property with given data.
 	 *
 	 * @param array $data The data to update.
 	 *
@@ -242,7 +226,7 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function update_data_received( array $data ) {
+	public function set_data_received( array $data ) {
 		$this->data_received = $data;
 		$this->update();
 	}

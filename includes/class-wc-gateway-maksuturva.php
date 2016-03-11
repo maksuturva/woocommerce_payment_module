@@ -543,14 +543,14 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		if ( ! $this->is_sandbox() ) {
 			$payment = new WC_Payment_Maksuturva( $order->id );
-			$payment->update_data_received( $params );
+			$payment->set_data_received( $params );
 		}
 
 		if ( $validator->get_status() === WC_Payment_Maksuturva::STATUS_ERROR ) {
 			// Error case.
 			$msg  = __( 'Error from Maksuturva received.', $this->td );
 			$type = 'error';
-			$order->update_status( 'failed', $msg );
+			$order->update_status( WC_Payment_Maksuturva::STATUS_FAILED, $msg );
 
 			if ( null !== $payment ) {
 				$payment->error();
