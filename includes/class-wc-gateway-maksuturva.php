@@ -81,7 +81,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->id = 'WC_Gateway_Maksuturva';
 		$this->td = 'wc-maksuturva';
 
-		$this->title              = __( 'Maksuturva', $this->td );
+		$this->title              = $this->get_option( 'title' );
+		$this->description        = $this->get_option( 'description' );
 		$this->method_title       = __( 'Maksuturva', $this->td );
 		$this->method_description = __( 'Take payments via Maksuturva.', $this->td );
 
@@ -135,6 +136,23 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'type'    => 'checkbox',
 			'label'   => __( 'Enable Maksuturva Payment Gateway', $this->td ),
 			'default' => 'yes',
+		);
+
+		$form['title'] = array(
+			'title'       => __( 'Title', $this->td ),
+			'type'        => 'text',
+			'description' => __( 'This controls the title which the user sees during checkout.', $this->td ),
+			'default'     => __( 'Maksuturva', $this->td ),
+			'desc_tip'    => true,
+		);
+
+		$form['description'] = array(
+			'title'       => __( 'Customer Message', $this->td ),
+			'type'        => 'textarea',
+			'description' => __( 'This message is shown below the payment method on the checkout page.', $this->td ),
+			'default'     => __( 'Pay via Maksuturva.', $this->td ),
+			'desc_tip'    => true,
+			'css'         => 'width: 25em;',
 		);
 
 		$form['account_settings'] = array(
