@@ -85,8 +85,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->method_description = __( 'Take payments via Maksuturva.', $this->td );
 		$this->notify_url         = WC()->api_request_url( $this->id );
 
-		// Todo: add the icon to the plugin.
-		$this->icon = 'url_to_ico.jpg';
+		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'maksuturva_logo.png';
 
 		$this->table_name = $wpdb->prefix . 'maksuturva_queue';
 
