@@ -445,16 +445,26 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			$msg = __( 'Payment gateway not available.', $this->td );
 			wc_add_notice( $msg );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
+			return;
 		}
 
 		$params = $_GET;
-		if ( ! isset( $params['pmt_id'] ) ) {
+		// Make sure the payment id is found in the return parameters, and that it actually exists.
+		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
 			$msg = __( 'Missing reference number in response.', $this->td );
 			wc_add_notice( $msg, 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
+			return;
 		}
 
-		$order     = $this->load_order_by_pmt_id( $params['pmt_id'] );
+		// If the order status is anything else than pending, do not process.
+		if (!$order->has_status(WC_Payment_Maksuturva::STATUS_PENDING)) {
+			$msg = __( 'Could not process order.', $this->td );
+			wc_add_notice( $msg, 'error' );
+			wp_redirect( $woocommerce->cart->get_cart_url() );
+			return;
+		}
+
 		$gateway   = new WC_Gateway_Implementation_Maksuturva( $this, $order );
 		$validator = $gateway->validate_payment( $params );
 
