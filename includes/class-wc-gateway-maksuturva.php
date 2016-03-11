@@ -130,41 +130,19 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	public function init_form_fields() {
 		$form = array();
 
-		$form['enabled']               = array(
+		$form['enabled'] = array(
 			'title'   => __( 'Enable/Disable', $this->td ),
 			'type'    => 'checkbox',
 			'label'   => __( 'Enable Maksuturva Payment Gateway', $this->td ),
 			'default' => 'yes',
 		);
-		$form['title']                 = array(
-			'title'       => __( 'Title', $this->td ),
-			'type'        => 'text',
-			'description' => __( 'This controls the title which the user sees during checkout.', $this->td ),
-			'default'     => __( 'Maksuturva', $this->td ),
-			'desc_tip'    => true,
+
+		$form['account_settings'] = array(
+			'title' => __( 'Account settings', $this->td ),
+			'type'  => 'title',
+			'id'    => 'account_settings',
 		);
-		$form['description']           = array(
-			'title'    => __( 'Customer Message', $this->td ),
-			'type'     => 'textarea',
-			'default'  => __( 'Pay via Maksuturva.', $this->td ),
-			'desc_tip' => true,
-		);
-		$form['sandbox']               = array(
-			'type'        => 'checkbox',
-			'title'       => __( 'Sandbox mode', $this->td ),
-			'default'     => 'no',
-			'description' => __( 'Maksuturva sandbox can be used to test payments. None of the payments will be real.',
-			$this->td ),
-			'options'     => array( 'yes' => '1', 'no' => '0' ),
-		);
-		$form['debug']                 = array(
-			'type'        => 'checkbox',
-			'title'       => __( 'Debug Log', $this->td ),
-			'default'     => 'no',
-			'description' => sprintf( __( 'Enable logging to <code>%s</code>', $this->td ),
-			wc_get_log_file_path( $this->id ) ),
-			'options'     => array( 'yes' => '1', 'no' => '0' ),
-		);
+
 		$form['maksuturva_sellerid']   = array(
 			'type'        => 'textfield',
 			'title'       => __( 'Seller id', $this->td ),
@@ -185,6 +163,13 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'description' => __( 'The version of the secret key provided by Maksuturva.', $this->td ),
 			'default'     => get_option( 'maksuturva_keyversion', '001' ),
 		);
+
+		$form['advanced_settings'] = array(
+			'title' => __( 'Advanced settings', $this->td ),
+			'type'  => 'title',
+			'id'    => 'advanced_settings',
+		);
+
 		/* I don't think these are needed at the UI, but enabled it for now / JH */
 		$form['maksuturva_url'] = array(
 			'type'        => 'textfield',
@@ -197,13 +182,98 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		$form['maksuturva_orderid_prefix'] = array(
 			'type'        => 'textfield',
-			'title'       => __( 'Maksuturva Payment Prefix', $this->td ),
+			'title'       => __( 'Payment Prefix', $this->td ),
 			'desc_tip'    => true,
 			'description' => __( 'Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall.',
 			$this->td ),
 		);
 
+		$form['sandbox'] = array(
+			'type'        => 'checkbox',
+			'title'       => __( 'Sandbox mode', $this->td ),
+			'default'     => 'no',
+			'description' => __( 'Maksuturva sandbox can be used to test payments. None of the payments will be real.',
+			$this->td ),
+			'options'     => array( 'yes' => '1', 'no' => '0' ),
+		);
+
+		$form['maksuturva_encoding'] = array(
+			'type'        => 'radio',
+			'title'       => __( 'Maksuturva encoding', $this->td ),
+			'desc_tip'    => true,
+			'default'     => 'UTF-8',
+			'description' => __( 'The encoding used for Maksuturva.', $this->td ),
+			'options'     => array( 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ),
+		);
+
 		$this->form_fields = $form;
+	}
+
+	/**
+	 * Generate radio button HTML.
+	 *
+	 * Returns the HTML for a radio button.
+	 *
+	 * @param  string $key
+	 * @param  array  $data
+	 *
+	 * @since  2.0.0
+	 *
+	 * @return string
+	 */
+	public function generate_radio_html( $key, $data ) {
+
+		$field    = $this->get_field_key( $key );
+		$defaults = array(
+			'title'             => '',
+			'label'             => '',
+			'disabled'          => false,
+			'class'             => '',
+			'css'               => '',
+			'type'              => 'text',
+			'desc_tip'          => false,
+			'description'       => '',
+			'custom_attributes' => array(),
+		);
+
+		$data = wp_parse_args( $data, $defaults );
+
+		if ( ! $data['label'] ) {
+			$data['label'] = $data['title'];
+		}
+
+		ob_start();
+		?>
+		<tr valign="top">
+			<th scope="row" class="titledesc">
+				<label for="<?php echo esc_attr( $field ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
+				<?php echo $this->get_tooltip_html( $data ); ?>
+			</th>
+			<td class="forminp">
+				<fieldset>
+					<legend class="screen-reader-text"><span><?php echo wp_kses_post( $data['title'] ); ?></span>
+					</legend>
+					<?php foreach ( $data['options'] as $value => $label ) : ?>
+						<label for="<?php echo esc_attr( $field . '_' . $value ); ?>">
+						<input <?php disabled( $data['disabled'], true ); ?>
+							class="<?php echo esc_attr( $data['class'] ); ?>"
+							type="radio"
+							name="<?php echo esc_attr( $field ); ?>"
+							id="<?php echo esc_attr( $field . '_' . $value ); ?>"
+							style="<?php echo esc_attr( $data['css'] ); ?>"
+							value="<?php echo esc_attr($value); ?>"
+							<?php checked( $this->get_option( $key, $data['default'] ), $value ); ?>
+							<?php echo $this->get_custom_attribute_html( $data ); ?> />
+							<?php echo wp_kses_post( $label ); ?>
+						</label><br/>
+					<?php endforeach; ?>
+					<?php echo $this->get_description_html( $data ); ?>
+				</fieldset>
+			</td>
+		</tr>
+		<?php
+
+		return ob_get_clean();
 	}
 
 	/**
