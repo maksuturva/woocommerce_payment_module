@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input type="submit" class="button alt" id="submit_maksuturva_payment_form"
 		       value="<?php echo esc_attr( __( 'Maksuturva', $this->td ) ); ?>"/>
 		<a class="button cancel" href="<?php echo esc_url( $order->get_cancel_order_url() ); ?>">
-			<?php echo esc_attr( __( 'Cancel order &amp; restore cart', $this->td ) ); ?></a>
+			<?php echo esc_attr( __( 'Cancel order', $this->td ) ); ?></a>
 	</div>
 
 </form>
