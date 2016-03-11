@@ -55,15 +55,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	const SANDBOX_SECRET_KEY = '11223344556677889900';
 
 	/**
-	 * Order total.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var float $order_total The calculated total amount of the order.
-	 */
-	private $order_total = 0.00;
-
-	/**
 	 * Shipping cost.
 	 *
 	 * @since 2.0.0
@@ -86,17 +77,16 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
 	 * @param WC_Order              $order   The order.
-	 * @param WC_Cart|null          $cart    The shopping cart.
 	 *
 	 * @since 2.0.0
 	 */
-	public function __construct( WC_Gateway_Maksuturva $gateway, WC_Order $order, WC_Cart $cart = null ) {
+	public function __construct( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
 		$this->set_base_url( $gateway->get_gateway_url() );
 		$this->seller_id  = ( $gateway->is_sandbox() ? self::SANDBOX_SELLER_ID : $gateway->get_seller_id() );
 		$this->secret_key = ( $gateway->is_sandbox() ? self::SANDBOX_SECRET_KEY : $gateway->get_secret_key() );
 		$this->set_encoding( $gateway->get_encoding() );
 		$this->set_payment_id_prefix( $gateway->get_payment_id_prefix() );
-		$this->set_payment_data( $this->create_payment_data( $gateway, $order, $cart ) );
+		$this->set_payment_data( $this->create_payment_data( $gateway, $order ) );
 		$this->td = $gateway->td;
 	}
 
@@ -107,14 +97,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
 	 * @param WC_Order              $order   The order.
-	 * @param WC_Cart               $cart    The shopping cart.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	private function create_payment_data( WC_Gateway_Maksuturva $gateway, WC_Order $order, WC_Cart $cart = null ) {
-		$payment_row_data = $this->create_payment_row_data( $order, $cart );
+	private function create_payment_data( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
+		$payment_row_data = $this->create_payment_row_data( $order );
 		$buyer_data       = $this->create_buyer_data( $order );
 		$delivery_data    = $this->create_delivery_data( $order );
 		$payment_id       = $this->get_payment_id( $order );
@@ -157,13 +146,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * Creates the payment row data for each item in the order.
 	 *
 	 * @param WC_Order $order The order.
-	 * @param WC_Cart  $cart  The shopping cart.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	private function create_payment_row_data( WC_Order $order, WC_Cart $cart = null ) {
+	private function create_payment_row_data( WC_Order $order ) {
 
 		$payment_rows = array();
 		foreach ( $order->get_items() as $order_item_id => $item ) {
@@ -171,10 +159,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$product = $order->get_product_from_item( $item );
 
 			$description = $this->get_product_description( $product, $order, $order_item_id );
-			$price_gross = $order->get_item_subtotal( $item, true );
-			$discount    = $this->calculate_discount( $price_gross, $order->get_item_total( $item, true ) );
-
-			$this->order_total += $item['total_wt'];
 
 			$payment_row_product = array();
 
@@ -184,10 +168,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$payment_row_product['pmt_row_articlenr'] = $product->get_sku() ?: '-';
 
+			$price_gross = $order->get_item_subtotal( $item, true );
+
 			$payment_row_product['pmt_row_deliverydate']       = date( 'd.m.Y' );
 			$payment_row_product['pmt_row_price_gross']        = WC_Utils_Maksuturva::filter_price( $price_gross );
 			$payment_row_product['pmt_row_vat']                = WC_Utils_Maksuturva::filter_price( $this->calc_tax_rate( $product ) );
-			$payment_row_product['pmt_row_discountpercentage'] = WC_Utils_Maksuturva::filter_price( $discount );
+			$payment_row_product['pmt_row_discountpercentage'] = '00,00';
 			$payment_row_product['pmt_row_type']               = 1;
 			$payment_rows[]                                    = $payment_row_product;
 		}
@@ -195,28 +181,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		if ( is_array( $payment_row_shipping ) ) {
 			$payment_rows[] = $payment_row_shipping;
 		}
-		$payment_row_discount = $this->create_payment_row_discount_data( $order, $cart );
+		$payment_row_discount = $this->create_payment_row_discount_data( $order );
 		if ( is_array( $payment_row_discount ) ) {
-			$payment_rows = array_merge( $payment_rows, $payment_row_discount );
+			$payment_rows[] = $payment_row_discount;
 		}
 
 		return $payment_rows;
-	}
-
-	/**
-	 * Calculate the discount percentage.
-	 *
-	 * Returns the discount percentage for the product.
-	 *
-	 * @param float $item_price_with_tax       The price with tax.
-	 * @param float $item_total_price_with_tax The total price with tax.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return float
-	 */
-	private function calculate_discount( $item_price_with_tax, $item_total_price_with_tax ) {
-		return ( $item_price_with_tax - $item_total_price_with_tax ) / ( $item_price_with_tax * 100.0 );
 	}
 
 	/**
@@ -247,7 +217,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 				'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $this->shipping_cost ),
 				'pmt_row_vat'                => WC_Utils_Maksuturva::filter_price( $shipping_tax ),
-				'pmt_row_discountpercentage' => '0,00',
+				'pmt_row_discountpercentage' => '00,00',
 				'pmt_row_type'               => 2,
 			);
 		}
@@ -261,48 +231,26 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * If the order has any discounts, or a coupon is used, data is added.
 	 *
 	 * @param WC_Order $order The order.
-	 * @param WC_Cart  $cart  The shopping cart.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array|null
 	 */
-	private function create_payment_row_discount_data( WC_Order $order, WC_Cart $cart = null ) {
-		$data = array(
-			'pmt_row_name'               => __( 'Discount', $this->td ),
-			'pmt_row_quantity'           => 1,
-			'pmt_row_deliverydate'       => date( 'd.m.Y' ),
-			'pmt_row_vat'                => '0,00',
-			'pmt_row_discountpercentage' => '00,00',
-			'pmt_row_type'               => 6,
-		);
-
-		$discount = $description = null;
-
-		if ( null !== $cart ) {
-			// Todo: Figure out if multiple coupons can be used.
-			foreach ( $cart->get_coupons() as $code => $coupon ) {
-				$coupon = new WC_Coupon( $code );
-				if ( $coupon->apply_before_tax() ) {
-					continue;
-				}
-
-				$discount = $cart->get_coupon_discount_amount( $code );
-
-				$coupon_post = get_post( $coupon->id );
-				$description .= trim( $code . $coupon_post->post_excerpt );
-			}
-		} elseif ( $order->get_total_discount() ) {
-			$discount    = $order->get_total_discount();
+	private function create_payment_row_discount_data( WC_Order $order ) {
+		if ( $order->get_total_discount( false ) ) {
+			$amount      = $order->get_total_discount( false );
 			$description = implode( ',', $order->get_used_coupons() );
-		}
 
-		if ( null !== $discount && null !== $description ) {
-			$data['pmt_row_desc'] = WC_Utils_Maksuturva::filter_description( $description );
-			// Negative amount.
-			$data['pmt_row_price_gross'] = '-' . WC_Utils_Maksuturva::filter_price( $discount );
-
-			return $data;
+			return array(
+				'pmt_row_name'               => __( 'Discount', $this->td ),
+				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_description( $description ),
+				'pmt_row_quantity'           => 1,
+				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
+				'pmt_row_price_gross'        => '-' . WC_Utils_Maksuturva::filter_price( $amount ), // Negative amount.
+				'pmt_row_vat'                => '00,00',
+				'pmt_row_discountpercentage' => '00,00',
+				'pmt_row_type'               => 6,
+			);
 		}
 
 		return null;
@@ -501,31 +449,14 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return int
 	 */
 	private function calc_tax_rate( $product ) {
-		static $tax_rates = array();
+		$tax_rates = WC_Tax::get_rates( $product->get_tax_class() );
 
-		$tax_class = $product->get_tax_class();
-		if ( ! isset( $tax_rates[ $tax_class ] ) || empty( $tax_rates[ $tax_class ] ) ) {
-			$tax_rates[ $tax_class ] = WC_Tax::get_rates( $tax_class );
+		$rate = 0;
+		foreach ( $tax_rates as $tax_rate ) {
+			$rate += $tax_rate['rate'];
 		}
 
-		$item_tax_rates    = $tax_rates[ $tax_class ];
-		$regular_tax_rates = $compound_tax_rates = 0;
-
-		foreach ( $item_tax_rates as $key => $rate ) {
-			if ( 'yes' === $rate['compound'] ) {
-				$compound_tax_rates = $compound_tax_rates + $rate['rate'];
-			} else {
-				$regular_tax_rates = $regular_tax_rates + $rate['rate'];
-			}
-		}
-
-		// Todo: I don't understand why this is here.
-		$the_rate = 0;
-		foreach ( $item_tax_rates as $key => $rate ) {
-			$the_rate = $rate['rate'];
-		}
-
-		return $the_rate;
+		return $rate;
 	}
 
 	/**
