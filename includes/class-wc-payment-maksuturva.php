@@ -365,8 +365,10 @@ class WC_Payment_Maksuturva {
 	protected function load( $order_id ) {
 		global $wpdb;
 
-		$data = $wpdb->get_results( $wpdb->prepare( 'SELECT order_id, payment_id, status, data_sent, data_received, date_added, date_updated FROM %s WHERE `order_id` = %d LIMIT 1',
-		array( $wpdb->prefix . self::TABLE_NAME, $order_id ) ) ); // Db call ok; No-cache ok.
+		$query = $wpdb->prepare( 'SELECT order_id, payment_id, status, data_sent, data_received, date_added, date_updated FROM `'
+		. $wpdb->prefix . self::TABLE_NAME . '` WHERE `order_id` = %d LIMIT 1', $order_id );
+
+		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
 
 		if ( ! ( is_array( $data ) && count( $data ) === 1 ) ) {
 			throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Maksuturva payment!' );
