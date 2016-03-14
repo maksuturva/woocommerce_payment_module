@@ -119,15 +119,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	/**
 	 * @inheritdoc
 	 */
-	public function display_errors() {
-		// Todo: make this work. $this->render('errors');.
-		var_dump( $this->errors );
-		die();
-	}
-
-	/**
-	 * @inheritdoc
-	 */
 	public function init_form_fields() {
 		$form = array();
 
