@@ -47,7 +47,7 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @var string ACTION_DELAYED
 	 */
-	const ACTION_DELAYED = 'delayed';
+	const ACTION_DELAYED = 'delay';
 
 	/**
 	 * Return action "cancel".
