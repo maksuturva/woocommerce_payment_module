@@ -341,7 +341,7 @@ class WC_Maksuturva {
 
 		$table_name = $wpdb->prefix . WC_Payment_Maksuturva::TABLE_NAME;
 
-		$sql = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (
+		$sql = 'CREATE TABLE `' . $table_name . '` (
 		`order_id` int(10) unsigned NOT NULL,
 		`payment_id` varchar(36) NOT NULL,
 		`status` varchar(36) NULL DEFAULT NULL,
