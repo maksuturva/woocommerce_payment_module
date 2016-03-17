@@ -23,7 +23,6 @@ msgstr "Alennus"
 
 #: includes/class-wc-gateway-maksuturva.php:86
 #: includes/class-wc-gateway-maksuturva.php:145
-#: templates/frontend/maksuturva-form.php:48
 msgid "Maksuturva"
 msgstr "Maksuturva"
 
@@ -231,9 +230,17 @@ msgstr "Virheellinen maksun määrä (saatiin %s, odotettiin %s)"
 msgid "Maksuturva does not support your store currency. Only EUR is supported."
 msgstr "Maksuturva ei tue kaupan valuuttaa. Vain EUR on tuettu."
 
-#: templates/frontend/maksuturva-form.php:50
+#: templates/frontend/maksuturva-form.php:42
+msgid "Thank you for your order. You will now be redirected to Maksuturva to complete the payment."
+msgstr "Kiitos tilauksestasi. Ohjaamme sinut nyt Maksuturvan sivuille maksamista varten."
+
+#: templates/frontend/maksuturva-form.php:74
 msgid "Cancel order"
 msgstr "Peru tilaus"
+
+#: templates/frontend/maksuturva-form.php:76
+msgid "Pay for order"
+msgstr "Maksa tilaus"
 
 #: wc-maksuturva.php:190
 msgid "Maksuturva order details"
