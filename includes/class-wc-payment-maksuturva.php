@@ -186,13 +186,14 @@ class WC_Payment_Maksuturva {
 	public static function create( array $data ) {
 		global $wpdb;
 
-		$result = $wpdb->insert( $wpdb->prefix . self::TABLE_NAME, array(
+		$result = $wpdb->replace( $wpdb->prefix . self::TABLE_NAME, array(
 			'order_id'      => (int) $data['order_id'],
 			'payment_id'    => $data['payment_id'],
 			'status'        => $data['status'],
 			'data_sent'     => wp_json_encode( $data['data_sent'] ),
 			'data_received' => wp_json_encode( $data['data_received'] ),
 			'date_added'    => date( 'Y-m-d H:i:s' ),
+			'date_updated'  => null,
 		) ); // Db call ok.
 
 		if ( false === $result ) {
