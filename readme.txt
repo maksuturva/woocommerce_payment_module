@@ -3,7 +3,7 @@ Contributors: maksuturva
 Tags: maksuturva, payment gateway
 Requires at least: 4.0
 Tested up to: 4.4.2
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 WC requires at least: 2.2.10
 WC tested up to: 2.5
 License: LGPL v. 2.1 or later
@@ -48,3 +48,8 @@ The plugin now uses classes and the function names have been renamed.
 Maksuturva handles this mode internally, and the setting in the plugin has no effect.
 * The plugin now creates a separate row for additional fees (e.g. invoicing fee) added to orders in Maksuturva service.
 The fee is shown as an extra row in the order both on the receipt and the administration interface.
+
+= 2.0.1 =
+* Fix JavaScript redirect to payment gateway on receipt page
+* Fix payment table update on plugin re-activation
+* Fix issue with paying an already pending order
