@@ -204,6 +204,32 @@ class WC_Payment_Maksuturva {
 	}
 
 	/**
+	 * Get order ID.
+	 *
+	 * Returns the WooCommerce order ID.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return int
+	 */
+	public function get_order_id() {
+		return $this->order_id;
+	}
+
+	/**
+	 * Get payment ID.
+	 *
+	 * Returns the payment ID as registered in Maksuturva.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return string
+	 */
+	public function get_payment_id() {
+		return $this->payment_id;
+	}
+
+	/**
 	 * Get status.
 	 *
 	 * Returns the payment status.
