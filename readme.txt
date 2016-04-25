@@ -53,3 +53,6 @@ The fee is shown as an extra row in the order both on the receipt and the admini
 * Fix JavaScript redirect to payment gateway on receipt page
 * Fix payment table update on plugin re-activation
 * Fix issue with paying an already pending order
+
+= 2.0.2 =
+* Fix order status after successful payment status query to Maksuturva
