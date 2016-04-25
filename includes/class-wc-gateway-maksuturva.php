@@ -522,7 +522,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		if ( ! WC_Maksuturva::get_instance()->is_currency_supported() ) {
 			$msg = __( 'Payment gateway not available.', $this->td );
-			wc_add_notice( $msg );
+			if ( ! wc_has_notice( $msg, 'error' ) ) {
+				wc_add_notice( $msg, 'error' );
+			}
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 			return;
 		}
@@ -531,7 +533,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		// Make sure the payment id is found in the return parameters, and that it actually exists.
 		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
 			$msg = __( 'Missing reference number in response.', $this->td );
-			wc_add_notice( $msg, 'error' );
+			if ( ! wc_has_notice( $msg, 'error' ) ) {
+				wc_add_notice( $msg, 'error' );
+			}
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 			return;
 		}
@@ -539,7 +543,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		// If the order status is anything else than pending, do not process.
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_PENDING ) ) {
 			$msg = __( 'Could not process order.', $this->td );
-			wc_add_notice( $msg, 'error' );
+			if ( ! wc_has_notice( $msg, 'error' ) ) {
+				wc_add_notice( $msg, 'error' );
+			}
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 			return;
 		}
@@ -608,7 +614,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			$this->add_surcharge( $payment->get_surcharge(), $order );
 		}
 
-		wc_add_notice( $msg, $type );
+		if ( ! wc_has_notice( $msg, $type ) ) {
+			wc_add_notice( $msg, $type );
+		}
+
 		wp_redirect( $redirect_url );
 	}
 
