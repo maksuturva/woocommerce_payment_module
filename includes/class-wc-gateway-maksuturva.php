@@ -537,7 +537,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		}
 
 		// If the order status is anything else than pending, do not process.
-		if (!$order->has_status(WC_Payment_Maksuturva::STATUS_PENDING)) {
+		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_PENDING ) ) {
 			$msg = __( 'Could not process order.', $this->td );
 			wc_add_notice( $msg, 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
