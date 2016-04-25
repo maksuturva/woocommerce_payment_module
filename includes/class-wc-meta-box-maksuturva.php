@@ -116,8 +116,8 @@ class WC_Meta_Box_Maksuturva {
 							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
 							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID_DELIVERY:
 							case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_COMPENSATED:
-								if ( $order->get_status() !== WC_Payment_Maksuturva::STATUS_COMPLETED ) {
-									$order->update_status( WC_Payment_Maksuturva::STATUS_COMPLETED );
+								if ( ! self::is_order_paid($order) ) {
+									$order->payment_complete( $payment->get_payment_id() );
 								}
 								$payment->complete();
 								$msg = __( 'The payment confirmation was received - payment accepted',
@@ -162,6 +162,27 @@ class WC_Meta_Box_Maksuturva {
 		}
 
 		return trim( sprintf( '%s %s', $msg, $comment ) );
+	}
+
+	/**
+	 * Check if the order is already paid.
+	 *
+	 * Returns if the order has already been paid.
+	 *
+	 * @param WC_Order $order the order
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	private static function is_order_paid( WC_Order $order ) {
+		if ( method_exists( $order, 'is_paid' ) ) {
+			return $order->is_paid();
+		} else {
+			return $order->has_status(
+				array( WC_Payment_Maksuturva::STATUS_PROCESSING, WC_Payment_Maksuturva::STATUS_COMPLETED )
+			);
+		}
 	}
 
 	/**
