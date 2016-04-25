@@ -570,7 +570,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			// Delayed case.
 			$msg  = __( 'Payment delayed by Maksuturva.', $this->td );
 			$type = 'notice';
-			$order->update_status( WC_Payment_Maksuturva::STATUS_DELAYED, $msg );
 
 			if ( null !== $payment ) {
 				$payment->delayed();
