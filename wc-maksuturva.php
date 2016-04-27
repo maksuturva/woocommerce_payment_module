@@ -51,12 +51,10 @@ if ( ! function_exists( '_log' ) ) {
 	 * @since 1.0.0
 	 */
 	function _log( $message ) {
-		if ( WP_DEBUG === true ) {
-			if ( is_array( $message ) || is_object( $message ) ) {
-				error_log( var_export( $message, true ) );
-			} else {
-				error_log( $message );
-			}
+		if ( is_array( $message ) || is_object( $message ) ) {
+			error_log( var_export( $message, true ) );
+		} else {
+			error_log( $message );
 		}
 	}
 }
@@ -175,6 +173,15 @@ class WC_Maksuturva {
 		add_filter( 'plugin_action_links_' . $this->plugin_name, array( __CLASS__, 'maksuturva_action_links' ) );
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+
+
+		add_filter('cron_schedules',array( $this, 'register_cron_schedules' ));
+
+		if ( ! wp_next_scheduled( 'maksuturva_check_pending_payments' ) ) {
+			wp_schedule_event( time(), 'five_minutes', 'maksuturva_check_pending_payments' );
+		}
+
+		add_action( 'maksuturva_check_pending_payments', array( $this, 'check_pending_payments' ) );
 	}
 
 	/**
@@ -189,6 +196,44 @@ class WC_Maksuturva {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		add_meta_box( 'maksuturva-order-details', __( 'Maksuturva order details', 'wc-maksuturva' ),
 		'WC_Meta_Box_Maksuturva::output', 'shop_order', 'side', 'high', array( 'gateway' => new WC_Gateway_Maksuturva() ) );
+	}
+
+	/**
+	 * Register new cron schedules.
+	 *
+	 * Register new cron schedules used buy this module.
+	 *
+	 * @param array $schedules
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return mixed
+	 */
+	public function register_cron_schedules( $schedules ) {
+		$schedules['five_minutes'] = array(
+			'interval' => 5 * 60,
+			'display'  => __( 'Once every 5 minutes', $this->td )
+		);
+
+		return $schedules;
+	}
+
+	/**
+	 * Checks pending payments in the background.
+	 *
+	 * Cron action for checking the status of pending payments from Maksuturva API.
+	 *
+	 * @since 2.0.2
+	 */
+	public function check_pending_payments() {
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$this->load_class( 'WC_Payment_Checker_Maksuturva' );
+
+		$payments = WC_Payment_Maksuturva::findPending();
+		if ( ! empty( $payments ) ) {
+			$this->load_class( 'WC_Payment_Checker_Maksuturva' );
+			( new WC_Payment_Checker_Maksuturva() )->check_payments( $payments );
+		}
 	}
 
 	/**
@@ -335,25 +380,14 @@ class WC_Maksuturva {
 	 * @since 2.0.0
 	 */
 	public function activate() {
-		global $wpdb;
-
-		$this->load_class( 'WC_Payment_Maksuturva' );
-
-		$table_name = $wpdb->prefix . WC_Payment_Maksuturva::TABLE_NAME;
-
-		$sql = 'CREATE TABLE `' . $table_name . '` (
-		`order_id` int(10) unsigned NOT NULL,
-		`payment_id` varchar(36) NOT NULL,
-		`status` varchar(36) NULL DEFAULT NULL,
-		`data_sent` LONGBLOB NULL DEFAULT NULL,
-		`data_received` LONGBLOB NULL DEFAULT NULL,
-		`date_added` DATETIME NOT NULL,
-		`date_updated`  DATETIME NULL DEFAULT NULL,
-		PRIMARY KEY (order_id, payment_id)) DEFAULT CHARSET=utf8;';
-
 		// See: https://codex.wordpress.org/Creating_Tables_with_Plugins.
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta( $sql );
+
+		$this->load_class( 'WC_Payment_Maksuturva' );
+		$this->load_class( 'WC_Payment_Checker_Maksuturva' );
+
+		WC_Payment_Maksuturva::install_db();
+		WC_Payment_Checker_Maksuturva::install_db();
 	}
 
 	/**

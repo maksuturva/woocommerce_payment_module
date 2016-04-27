@@ -26,8 +26,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-payment-validator-maksuturva.php';
-
 /**
  * Class WC_Payment_Maksuturva.
  *
@@ -172,6 +170,31 @@ class WC_Payment_Maksuturva {
 	}
 
 	/**
+	 * Installs the payment db table.
+	 *
+	 * Installs the DB table for the payment data.
+	 *
+	 * @since 2.0.2
+	 */
+	public static function install_db() {
+		global $wpdb;
+
+		$tbl = $wpdb->prefix . self::TABLE_NAME;
+
+		$sql = 'CREATE TABLE `' . $tbl . '` (
+		`order_id` int(10) unsigned NOT NULL,
+		`payment_id` varchar(36) NOT NULL,
+		`status` varchar(36) NULL DEFAULT NULL,
+		`data_sent` LONGBLOB NULL DEFAULT NULL,
+		`data_received` LONGBLOB NULL DEFAULT NULL,
+		`date_added` DATETIME NOT NULL,
+		`date_updated`  DATETIME NULL DEFAULT NULL,
+		UNIQUE KEY order_id_payment_id (order_id, payment_id)) DEFAULT CHARSET=utf8;';
+
+		dbDelta( $sql );
+	}
+
+	/**
 	 * Create a new payment record.
 	 *
 	 * Creates the payment record in the database based on given data.
@@ -201,6 +224,39 @@ class WC_Payment_Maksuturva {
 		}
 
 		return new self( (int) $data['order_id'] );
+	}
+
+	/**
+	 * Finds pending payments and returns them.
+	 *
+	 * Queries for payments that are `pending` or `delayed` and returns object representations.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return WC_Payment_Maksuturva[]
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 */
+	public static function findPending() {
+		global $wpdb;
+
+		$status_query = '"' . implode( '","', array( self::STATUS_PENDING, self::STATUS_DELAYED ) ) . '"';
+		$tbl          = $wpdb->prefix . self::TABLE_NAME;
+		$query        = $wpdb->prepare( 'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN (%s)', $status_query );
+		$data         = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
+
+		$payments = array();
+
+		if ( is_array( $data ) && count( $data ) > 0 ) {
+			foreach ( $data as $item ) {
+				try {
+					$payments[] = new WC_Payment_Maksuturva( $item->order_id );
+				} catch ( WC_Gateway_Maksuturva_Exception $e ) {
+					_log( $e->__toString() );
+				}
+			}
+		}
+
+		return $payments;
 	}
 
 	/**
@@ -273,6 +329,19 @@ class WC_Payment_Maksuturva {
 	}
 
 	/**
+	 * Get if completed.
+	 *
+	 * Returns true if the payment status is cancel, false otherwise.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	public function is_completed() {
+		return ( $this->status === self::STATUS_COMPLETED );
+	}
+
+	/**
 	 * Cancel payment.
 	 *
 	 * Cancels the payment by setting the status to "cancelled".
@@ -284,6 +353,19 @@ class WC_Payment_Maksuturva {
 	public function cancel() {
 		$this->status = self::STATUS_CANCELLED;
 		$this->update();
+	}
+
+	/**
+	 * Get if cancelled.
+	 *
+	 * Returns true if the payment status is cancel, false otherwise.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	public function is_cancelled() {
+		return ( $this->status === self::STATUS_CANCELLED );
 	}
 
 	/**
@@ -301,6 +383,19 @@ class WC_Payment_Maksuturva {
 	}
 
 	/**
+	 * Get if error.
+	 *
+	 * Returns true if the payment status is error, false otherwise.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	public function is_error() {
+		return ( $this->status === self::STATUS_ERROR );
+	}
+
+	/**
 	 * Payment delayed.
 	 *
 	 * Updates the status of the payment to "delayed".
@@ -315,6 +410,19 @@ class WC_Payment_Maksuturva {
 	}
 
 	/**
+	 * Get if delayed.
+	 *
+	 * Returns true if the payment status is delayed, false otherwise.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	public function is_delayed() {
+		return ( $this->status === self::STATUS_DELAYED );
+	}
+
+	/**
 	 * Payment pending.
 	 *
 	 * Updates the status of the payment to "pending".
@@ -326,6 +434,32 @@ class WC_Payment_Maksuturva {
 	public function pending() {
 		$this->status = self::STATUS_PENDING;
 		$this->update();
+	}
+
+	/**
+	 * Get if pending.
+	 *
+	 * Returns true if the payment status is pending, false otherwise.
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	public function is_pending() {
+		return ( $this->status === self::STATUS_PENDING );
+	}
+
+	/**
+	 * If this payment is already processed.
+	 *
+	 * Returns if this payment is already processed, i.e. if the status of the payment is not "pending";
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	public function is_processed() {
+		return ( ! $this->is_pending() );
 	}
 
 	/**

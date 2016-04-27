@@ -86,7 +86,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->method_title       = __( 'Maksuturva', $this->td );
 		$this->method_description = __( 'Take payments via Maksuturva.', $this->td );
 
-		$this->notify_url         = WC()->api_request_url( $this->id );
+		$this->notify_url = WC()->api_request_url( $this->id );
 
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'maksuturva_logo.png';
 
@@ -402,7 +402,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_encoding() {
-		return $this->get_option('maksuturva_encoding', 'UTF-8');
+		return $this->get_option( 'maksuturva_encoding', 'UTF-8' );
 	}
 
 	/**
@@ -521,32 +521,18 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		global $woocommerce;
 
 		if ( ! WC_Maksuturva::get_instance()->is_currency_supported() ) {
-			$msg = __( 'Payment gateway not available.', $this->td );
-			if ( ! wc_has_notice( $msg, 'error' ) ) {
-				wc_add_notice( $msg, 'error' );
-			}
+			$this->add_notice( __( 'Payment gateway not available.', $this->td ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
+
 			return;
 		}
 
 		$params = $_GET;
 		// Make sure the payment id is found in the return parameters, and that it actually exists.
 		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
-			$msg = __( 'Missing reference number in response.', $this->td );
-			if ( ! wc_has_notice( $msg, 'error' ) ) {
-				wc_add_notice( $msg, 'error' );
-			}
+			$this->add_notice( __( 'Missing reference number in response.', $this->td ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
-			return;
-		}
 
-		// If the order status is anything else than pending, do not process.
-		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_PENDING ) ) {
-			$msg = __( 'Could not process order.', $this->td );
-			if ( ! wc_has_notice( $msg, 'error' ) ) {
-				wc_add_notice( $msg, 'error' );
-			}
-			wp_redirect( $woocommerce->cart->get_cart_url() );
 			return;
 		}
 
@@ -554,71 +540,71 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$validator = $gateway->validate_payment( $params );
 
 		$payment = null;
-		$type    = 'success';
-
 		if ( ! $this->is_sandbox() ) {
 			$payment = new WC_Payment_Maksuturva( $order->id );
+			if ( $payment->is_processed() && $payment->get_status() !== $validator->get_status() ) {
+				// If this payment has already been processed and the payment status is not identical to the validator
+				// status, then abort immediately. Otherwise, allow the process to go through again in order to show
+				// the customer the correct page, as this is probably a double-submission redirect from the gateway.
+				_log( sprintf( 'Maksuturva failed to process order #%d (payment: "%s", request: "%s")', $order->id,
+				$payment->get_status(), $validator->get_status() ) );
+				$this->add_notice( __( 'Could not process order.', $this->td ), 'error' );
+				wp_redirect( $woocommerce->cart->get_cart_url() );
+
+				return;
+			}
+
 			$payment->set_data_received( $params );
 		}
 
-		if ( $validator->get_status() === WC_Payment_Maksuturva::STATUS_ERROR ) {
-			// Error case.
-			$msg  = __( 'Error from Maksuturva received.', $this->td );
-			$type = 'error';
-			$order->update_status( WC_Payment_Maksuturva::STATUS_FAILED, $msg );
+		switch ( $validator->get_status() ) {
+			case WC_Payment_Maksuturva::STATUS_ERROR:
+				$this->order_fail( $order, $payment );
+				$this->add_notice( __( 'Error from Maksuturva received.', $this->td ), 'error' );
+				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				break;
 
-			if ( null !== $payment ) {
-				$payment->error();
-			}
+			case WC_Payment_Maksuturva::STATUS_DELAYED:
+				$this->order_delay( $order, $payment );
+				$this->add_notice( __( 'Payment delayed by Maksuturva.', $this->td ), 'notice' );
+				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				break;
 
-			$redirect_url = add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) );
-		} elseif ( $validator->get_status() === WC_Payment_Maksuturva::STATUS_DELAYED ) {
-			// Delayed case.
-			$msg  = __( 'Payment delayed by Maksuturva.', $this->td );
-			$type = 'notice';
+			case WC_Payment_Maksuturva::STATUS_CANCELLED:
+				$this->order_cancel( $order, $payment );
+				$this->add_notice( __( 'Cancellation from Maksuturva received.', $this->td ), 'notice' );
+				wp_redirect( add_query_arg( 'key', $order->order_key, $order->get_cancel_order_url() ) );
+				break;
 
-			if ( null !== $payment ) {
-				$payment->delayed();
-			}
+			case WC_Payment_Maksuturva::STATUS_COMPLETED:
+			default:
+				$this->order_complete( $order, $payment );
+				$woocommerce->cart->empty_cart();
+				$this->add_notice( __( 'Payment confirmed by Maksuturva.', $this->td ), 'success' );
+				wp_redirect( $this->get_return_url( $order ) );
+				break;
+		}
+	}
 
-			$redirect_url = add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) );
-		} elseif ( $validator->get_status() === WC_Payment_Maksuturva::STATUS_CANCELLED ) {
-			// Cancelled case.
-			$msg  = __( 'Cancellation from Maksuturva received.', $this->td );
-			$type = 'notice';
-			$order->cancel_order( $msg );
-
-			if ( null !== $payment ) {
-				$payment->cancel();
-			}
-
-			$redirect_url = add_query_arg( 'key', $order->order_key, $order->get_cancel_order_url() );
+	/**
+	 * Check if the order is already paid.
+	 *
+	 * Returns if the order has already been paid.
+	 *
+	 * @param WC_Order $order the order
+	 *
+	 * @since 2.0.2
+	 *
+	 * @return bool
+	 */
+	public function is_order_paid( WC_Order $order ) {
+		if ( method_exists( $order, 'is_paid' ) ) {
+			return $order->is_paid();
 		} else {
-			// Order completed.
-			$order->payment_complete( $params['pmt_id'] );
-
-			if ( null !== $payment && ! $this->is_sandbox() ) {
-				$payment->complete();
-			}
-
-			$woocommerce->cart->empty_cart();
-			$msg          = __( 'Payment confirmed by Maksuturva.', $this->td );
-			$redirect_url = $this->get_return_url( $order );
+			return $order->has_status(
+				array( WC_Payment_Maksuturva::STATUS_PROCESSING, WC_Payment_Maksuturva::STATUS_COMPLETED )
+			);
 		}
-
-		// Add surcharge to the order.
-		if ( null !== $payment
-		     && ( $payment->get_status() !== WC_Payment_Maksuturva::STATUS_CANCELLED
-		     && $payment->includes_surcharge() )
-		) {
-			$this->add_surcharge( $payment->get_surcharge(), $order );
-		}
-
-		if ( ! wc_has_notice( $msg, $type ) ) {
-			wc_add_notice( $msg, $type );
-		}
-
-		wp_redirect( $redirect_url );
 	}
 
 	/**
@@ -626,18 +612,117 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Adds a surcharge fee to the order.
 	 *
-	 * @param float    $amount The amount to add.
-	 * @param WC_Order $order  The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 * @param WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 */
-	protected function add_surcharge( $amount, $order ) {
-		$fee          = new stdClass();
-		$fee->name    = __( 'Surcharge from Payment Gateway', $this->td );
-		$fee->amount  = $amount;
-		$fee->taxable = false;
-		$order->add_fee( $fee );
-		$order->calculate_totals();
+	protected function add_surcharge( $payment, $order ) {
+		if ( ! $payment->is_cancelled() && $payment->includes_surcharge() ) {
+			$fee          = new stdClass();
+			$fee->name    = __( 'Surcharge from Payment Gateway', $this->td );
+			$fee->amount  = $payment->get_surcharge();
+			$fee->taxable = false;
+			$order->add_fee( $fee );
+			$order->calculate_totals();
+		}
+	}
+
+	/**
+	 * Adds a WC notice.
+	 *
+	 * Adds the notice, but only of it is not already added.
+	 *
+	 * @param string $msg The notice message.
+	 * @param string $type The notice type.
+	 *
+	 * @since 2.0.2
+	 */
+	protected function add_notice( $msg, $type ) {
+		if ( ! wc_has_notice( $msg, $type ) ) {
+			wc_add_notice( $msg, $type );
+		}
+	}
+
+	/**
+	 * Fails order.
+	 *
+	 * Fails the order and payment if not already failed.
+	 *
+	 * @param WC_Order $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @since 2.0.2
+	 */
+	protected function order_fail( $order, $payment = null ) {
+		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_FAILED ) ) {
+			$order->update_status( WC_Payment_Maksuturva::STATUS_FAILED,
+				__( 'Error from Maksuturva received.', $this->td ) );
+		}
+
+		if ( ! is_null( $payment ) && ! $payment->is_error() ) {
+			$this->add_surcharge( $payment, $order );
+			$payment->error();
+		}
+	}
+
+	/**
+	 * Cancel order.
+	 *
+	 * Cancels the order and payment if not already cancelled.
+	 *
+	 * @param WC_Order $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @since 2.0.2
+	 */
+	protected function order_cancel( $order, $payment = null ) {
+		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_CANCELLED ) ) {
+			$order->cancel_order( __( 'Cancellation from Maksuturva received.', $this->td ) );
+		}
+
+		if ( ! is_null( $payment ) && ! $payment->is_cancelled() ) {
+			$payment->cancel();
+		}
+	}
+
+	/**
+	 * Delay order.
+	 *
+	 * Delay the order and payment if not already delayed.
+	 *
+	 * @param WC_Order $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @since 2.0.2
+	 */
+	protected function order_delay( $order, $payment = null ) {
+		if ( ! is_null( $payment ) && ! $payment->is_delayed() ) {
+			$this->add_surcharge( $payment, $order );
+			$payment->delayed();
+		}
+	}
+
+	/**
+	 * Complete order.
+	 *
+	 * Completes the order and payment if not already completed.
+	 *
+	 * @param WC_Order $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @since 2.0.2
+	 */
+	protected function order_complete( $order, $payment = null ) {
+		if ( ! $this->is_order_paid( $order ) ) {
+			$payment_id = ! is_null( $payment ) ? $payment->get_payment_id() : '';
+			$order->payment_complete( $payment_id );
+		}
+
+		if ( ! is_null( $payment ) && ! $payment->is_completed() ) {
+			$this->add_surcharge( $payment, $order );
+			$payment->complete();
+		}
 	}
 
 	/**
