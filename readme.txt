@@ -3,7 +3,7 @@ Contributors: maksuturva
 Tags: maksuturva, payment gateway
 Requires at least: 4.0
 Tested up to: 4.4.2
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 WC requires at least: 2.2.10
 WC tested up to: 2.5
 License: LGPL v. 2.1 or later
@@ -56,3 +56,5 @@ The fee is shown as an extra row in the order both on the receipt and the admini
 
 = 2.0.2 =
 * Fix order status after successful payment status query to Maksuturva
+* Improve order processing to allow for double-submissions from gateway
+* Add cron script to check for payment status periodically
