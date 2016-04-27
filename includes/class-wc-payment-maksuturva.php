@@ -251,7 +251,7 @@ class WC_Payment_Maksuturva {
 				try {
 					$payments[] = new WC_Payment_Maksuturva( $item->order_id );
 				} catch ( WC_Gateway_Maksuturva_Exception $e ) {
-					_log( $e->__toString() );
+					_log( (string) $e );
 				}
 			}
 		}

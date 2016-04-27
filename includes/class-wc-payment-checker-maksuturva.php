@@ -122,7 +122,7 @@ class WC_Payment_Checker_Maksuturva {
 			}
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			// Error while communicating with maksuturva
-			_log( $e->__toString() );
+			_log( (string) $e );
 		}
 
 		return $response;
