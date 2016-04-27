@@ -60,7 +60,7 @@ class WC_Meta_Box_Maksuturva {
 				throw new WC_Gateway_Maksuturva_Exception( 'No gateway given to meta-box.' );
 			}
 			$gateway  = $args['args']['gateway'];
-			self::$td = $gateway->id;
+			self::$td = $gateway->td;
 			$order    = wc_get_order( $post );
 			$payment  = new WC_Payment_Maksuturva( $order->id );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
