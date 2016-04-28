@@ -22,7 +22,7 @@ msgid "Discount"
 msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:86
-#: includes/class-wc-gateway-maksuturva.php:145
+#: includes/class-wc-gateway-maksuturva.php:136
 msgid "Maksuturva"
 msgstr ""
 
@@ -30,170 +30,146 @@ msgstr ""
 msgid "Take payments via Maksuturva."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:135
+#: includes/class-wc-gateway-maksuturva.php:126
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:137
+#: includes/class-wc-gateway-maksuturva.php:128
 msgid "Enable Maksuturva Payment Gateway"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:142
+#: includes/class-wc-gateway-maksuturva.php:133
 msgid "Title"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:144
+#: includes/class-wc-gateway-maksuturva.php:135
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:150
+#: includes/class-wc-gateway-maksuturva.php:141
 msgid "Customer Message"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:152
+#: includes/class-wc-gateway-maksuturva.php:143
 msgid "This message is shown below the payment method on the checkout page."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:153
+#: includes/class-wc-gateway-maksuturva.php:144
 msgid "Pay via Maksuturva."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:159
+#: includes/class-wc-gateway-maksuturva.php:150
 msgid "Account settings"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:166
+#: includes/class-wc-gateway-maksuturva.php:157
 msgid "Seller id"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:168
+#: includes/class-wc-gateway-maksuturva.php:159
 msgid "The seller identification provided by Maksuturva upon your registration."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:173
+#: includes/class-wc-gateway-maksuturva.php:164
 msgid "Secret Key"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:175
+#: includes/class-wc-gateway-maksuturva.php:166
 msgid "Your unique secret key provided by Maksuturva."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:179
+#: includes/class-wc-gateway-maksuturva.php:170
 msgid "Secret Key Version"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:181
+#: includes/class-wc-gateway-maksuturva.php:172
 msgid "The version of the secret key provided by Maksuturva."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:186
+#: includes/class-wc-gateway-maksuturva.php:177
 msgid "Advanced settings"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:194
+#: includes/class-wc-gateway-maksuturva.php:185
 msgid "Gateway URL"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:196
+#: includes/class-wc-gateway-maksuturva.php:187
 msgid "The URL used to communicate with Maksuturva. Do not change this configuration unless you know what you are doing."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:203
+#: includes/class-wc-gateway-maksuturva.php:194
 msgid "Payment Prefix"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:205
+#: includes/class-wc-gateway-maksuturva.php:196
 msgid "Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:211
+#: includes/class-wc-gateway-maksuturva.php:202
 msgid "Sandbox mode"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:213
+#: includes/class-wc-gateway-maksuturva.php:204
 msgid "Maksuturva sandbox can be used to test payments. None of the payments will be real."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:220
+#: includes/class-wc-gateway-maksuturva.php:211
 msgid "Maksuturva encoding"
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:223
+#: includes/class-wc-gateway-maksuturva.php:214
 msgid "The encoding used for Maksuturva."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:533
+#: includes/class-wc-gateway-maksuturva.php:524
 msgid "Payment gateway not available."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:542
+#: includes/class-wc-gateway-maksuturva.php:533
 msgid "Missing reference number in response."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:550
+#: includes/class-wc-gateway-maksuturva.php:551
 msgid "Could not process order."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:569
+#: includes/class-wc-gateway-maksuturva.php:563
+#: includes/class-wc-gateway-maksuturva.php:660
 msgid "Error from Maksuturva received."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:580
+#: includes/class-wc-gateway-maksuturva.php:569
 msgid "Payment delayed by Maksuturva."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:591
+#: includes/class-wc-gateway-maksuturva.php:575
+#: includes/class-wc-gateway-maksuturva.php:681
 msgid "Cancellation from Maksuturva received."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:609
+#: includes/class-wc-gateway-maksuturva.php:583
 msgid "Payment confirmed by Maksuturva."
 msgstr ""
 
-#: includes/class-wc-gateway-maksuturva.php:637
+#: includes/class-wc-gateway-maksuturva.php:623
 msgid "Surcharge from Payment Gateway"
 msgstr ""
 
-#: includes/class-wc-meta-box-maksuturva.php:88
-msgid "The payment was confirmed by Maksuturva"
+#: includes/class-wc-meta-box-maksuturva.php:94
+msgid "The payment is confirmed by Maksuturva"
 msgstr ""
 
-#: includes/class-wc-meta-box-maksuturva.php:92
-#: includes/class-wc-meta-box-maksuturva.php:140
-msgid "The payment could not be tracked by Maksuturva, please check manually"
+#: includes/class-wc-meta-box-maksuturva.php:98
+msgid "The payment is canceled by Maksuturva"
 msgstr ""
 
-#: includes/class-wc-meta-box-maksuturva.php:95
-msgid "The payment was canceled by the customer"
+#: includes/class-wc-meta-box-maksuturva.php:102
+msgid "The payment could not be confirmed by Maksuturva, please check manually"
 msgstr ""
 
-#: includes/class-wc-meta-box-maksuturva.php:99
-msgid "An error occurred and the payment was not confirmed, please check manually"
-msgstr ""
-
-#: includes/class-wc-meta-box-maksuturva.php:107
-msgid "The payment is pending or delayed, but the order is already canceled. Canceling payment."
-msgstr ""
-
-#: includes/class-wc-meta-box-maksuturva.php:123
-msgid "The payment confirmation was received - payment accepted"
-msgstr ""
-
-#: includes/class-wc-meta-box-maksuturva.php:131
-#: includes/class-wc-meta-box-maksuturva.php:135
-msgid "The payment was canceled in Maksuturva"
-msgstr ""
-
-#: includes/class-wc-meta-box-maksuturva.php:144
-msgid "Payment is still waiting for confirmation"
-msgstr ""
-
-#: includes/class-wc-meta-box-maksuturva.php:153
-msgid "The payment is still waiting for confirmation"
-msgstr ""
-
-#: includes/class-wc-meta-box-maksuturva.php:157
-msgid "Error while communicating with maksuturva: Invalid hash or network error"
+#: includes/class-wc-meta-box-maksuturva.php:108
+msgid "The payment is still waiting for confirmation by Maksuturva"
 msgstr ""
 
 #: includes/class-wc-payment-validator-maksuturva.php:196
@@ -244,11 +220,15 @@ msgstr ""
 msgid "Pay for order"
 msgstr ""
 
-#: wc-maksuturva.php:190
+#: wc-maksuturva.php:197
 msgid "Maksuturva order details"
 msgstr ""
 
-#: wc-maksuturva.php:222
+#: wc-maksuturva.php:215
+msgid "Once every 5 minutes"
+msgstr ""
+
+#: wc-maksuturva.php:267
 msgid "Settings"
 msgstr ""
 
