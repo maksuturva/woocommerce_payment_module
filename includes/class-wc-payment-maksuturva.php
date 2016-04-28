@@ -240,8 +240,9 @@ class WC_Payment_Maksuturva {
 		global $wpdb;
 
 		$tbl   = $wpdb->prefix . self::TABLE_NAME;
-		$query = $wpdb->prepare( 'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN ("pending","delayed")' );
-		$data  = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
+		$query = $wpdb->prepare( 'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN ("%s","%s")',
+		self::STATUS_PENDING, self::STATUS_DELAYED );
+		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
 
 		$payments = array();
 
