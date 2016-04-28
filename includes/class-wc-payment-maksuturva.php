@@ -191,7 +191,7 @@ class WC_Payment_Maksuturva {
 		`data_received` LONGBLOB NULL DEFAULT NULL,
 		`date_added` DATETIME NOT NULL,
 		`date_updated`  DATETIME NULL DEFAULT NULL,
-		UNIQUE KEY order_id_payment_id (order_id, payment_id)) DEFAULT CHARSET=utf8;';
+		UNIQUE KEY order_id_payment_id (order_id,payment_id)) DEFAULT CHARSET=utf8;';
 
 		dbDelta( $sql );
 	}
