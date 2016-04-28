@@ -162,6 +162,8 @@ class WC_Payment_Maksuturva {
 	 * @param int|null $order_id The order id to load.
 	 *
 	 * @since 2.0.0
+	 *
+	 * @throws WC_Gateway_Maksuturva_Exception If load fails.
 	 */
 	public function __construct( $order_id = null ) {
 		if ( (int) $order_id > 0 ) {

@@ -105,13 +105,6 @@ class WC_Payment_Checker_Maksuturva {
 					break;
 
 				case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
-					// The payment is still waiting for confirmation
-					if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_PENDING ) ) {
-						// The payment could not be tracked by Maksuturva
-						$payment->error();
-					}
-					break;
-
 				case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
 				case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
 				case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID:
