@@ -164,18 +164,18 @@ class WC_Maksuturva {
 	 *
 	 * Load the plugin text domain, adds actions and filters to be used.
 	 *
-	 * @since  2.0.0
+	 * @since 2.0.2 Add cron schedules, and action to check pending payments.
+	 * @since 2.0.0
 	 */
 	public function init() {
-		load_plugin_textdomain( 'wc-maksuturva', false, basename( dirname( __FILE__ ) ) . '/languages');
+		load_plugin_textdomain( 'wc-maksuturva', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'add_maksuturva_gateway' ) );
 		add_filter( 'plugin_action_links_' . $this->plugin_name, array( __CLASS__, 'maksuturva_action_links' ) );
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 
-
-		add_filter('cron_schedules',array( $this, 'register_cron_schedules' ));
+		add_filter( 'cron_schedules', array( $this, 'register_cron_schedules' ) );
 
 		if ( ! wp_next_scheduled( 'maksuturva_check_pending_payments' ) ) {
 			wp_schedule_event( time(), 'five_minutes', 'maksuturva_check_pending_payments' );
@@ -203,9 +203,9 @@ class WC_Maksuturva {
 	 *
 	 * Register new cron schedules used buy this module.
 	 *
-	 * @param array $schedules
+	 * @param array $schedules The schedules.
 	 *
-	 * @since 2.0.0
+	 * @since 2.0.2
 	 *
 	 * @return mixed
 	 */
@@ -231,7 +231,6 @@ class WC_Maksuturva {
 
 		$payments = WC_Payment_Maksuturva::findPending();
 		if ( ! empty( $payments ) ) {
-			$this->load_class( 'WC_Payment_Checker_Maksuturva' );
 			( new WC_Payment_Checker_Maksuturva() )->check_payments( $payments );
 		}
 	}

@@ -239,10 +239,9 @@ class WC_Payment_Maksuturva {
 	public static function findPending() {
 		global $wpdb;
 
-		$status_query = '"' . implode( '","', array( self::STATUS_PENDING, self::STATUS_DELAYED ) ) . '"';
-		$tbl          = $wpdb->prefix . self::TABLE_NAME;
-		$query        = $wpdb->prepare( 'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN (%s)', $status_query );
-		$data         = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
+		$tbl   = $wpdb->prefix . self::TABLE_NAME;
+		$query = $wpdb->prepare( 'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN ("pending","delayed")' );
+		$data  = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
 
 		$payments = array();
 
