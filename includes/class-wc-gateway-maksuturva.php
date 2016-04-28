@@ -520,6 +520,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		global $woocommerce;
 
+		// Clear any existing notices in case of "double-submissions".
+		wc_clear_notices();
+
 		if ( ! WC_Maksuturva::get_instance()->is_currency_supported() ) {
 			$this->add_notice( __( 'Payment gateway not available.', $this->td ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
@@ -536,24 +539,25 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			return;
 		}
 
+		$payment   = ( ! $this->is_sandbox() ) ? new WC_Payment_Maksuturva( $order->id ) : null;
 		$gateway   = new WC_Gateway_Implementation_Maksuturva( $this, $order );
 		$validator = $gateway->validate_payment( $params );
 
-		$payment = null;
-		if ( ! $this->is_sandbox() ) {
-			$payment = new WC_Payment_Maksuturva( $order->id );
-			if ( $payment->is_processed() && $payment->get_status() !== $validator->get_status() ) {
-				// If this payment has already been processed and the payment status is not identical to the validator
-				// status, then abort immediately. Otherwise, allow the process to go through again in order to show
-				// the customer the correct page, as this is probably a double-submission redirect from the gateway.
-				_log( sprintf( 'Maksuturva failed to process order #%d (payment: "%s", request: "%s")', $order->id,
-				$payment->get_status(), $validator->get_status() ) );
-				$this->add_notice( __( 'Could not process order.', $this->td ), 'error' );
-				wp_redirect( $woocommerce->cart->get_cart_url() );
-
-				return;
+		// If the order is already completed.
+		if ( $this->is_order_paid( $order ) ) {
+			// Then just make sure the order and payment models are in sync.
+			$this->order_complete( $order, $payment );
+			// If the order was payed, but this is the real OK-request, then store the request details for the payment.
+			if ( $validator->get_status() === WC_Payment_Maksuturva::STATUS_COMPLETED && ! is_null( $payment ) ) {
+				$payment->set_data_received( $params );
 			}
+			// And redirect the user to the order complete page.
+			wp_redirect( $this->get_return_url( $order ) );
 
+			return;
+		}
+
+		if ( ! is_null( $payment ) ) {
 			$payment->set_data_received( $params );
 		}
 

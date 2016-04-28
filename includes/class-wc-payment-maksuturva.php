@@ -450,19 +450,6 @@ class WC_Payment_Maksuturva {
 	}
 
 	/**
-	 * If this payment is already processed.
-	 *
-	 * Returns if this payment is already processed, i.e. if the status of the payment is not "pending";
-	 *
-	 * @since 2.0.2
-	 *
-	 * @return bool
-	 */
-	public function is_processed() {
-		return ( ! $this->is_pending() );
-	}
-
-	/**
 	 * Get surcharge.
 	 *
 	 * Returns the monetary amount for the payments surcharge if it was included, zero otherwise.
