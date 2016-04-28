@@ -545,12 +545,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		// If the order is already completed.
 		if ( $this->is_order_paid( $order ) ) {
-			// Then just make sure the order and payment models are in sync.
-			$this->order_complete( $order, $payment );
-			// If the order was payed, but this is the real OK-request, then store the request details for the payment.
+			// If the order was paid, but this is the real OK-request, then store the request details for the payment.
 			if ( $validator->get_status() === WC_Payment_Maksuturva::STATUS_COMPLETED && ! is_null( $payment ) ) {
 				$payment->set_data_received( $params );
 			}
+			// Then just make sure the order and payment models are in sync.
+			$this->order_complete( $order, $payment );
 			// And redirect the user to the order complete page.
 			wp_redirect( $this->get_return_url( $order ) );
 
