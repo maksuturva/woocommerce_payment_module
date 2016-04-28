@@ -9,7 +9,7 @@
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Maksuturva, which provides intelligent online payment services consisting of the most
  * comprehensive set of high quality service features in the Finnish market
- * Version:     2.0.2
+ * Version:     2.0.3
  * Author:      Maksuturva Group Oy
  * Author URI:  http://www.maksuturva.fi
  * Text Domain: wc-maksuturva
@@ -75,7 +75,25 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.0.2';
+	const VERSION = '2.0.3';
+
+	/**
+	 * Plugin DB version.
+	 *
+	 * @since 2.0.3
+	 *
+	 * @var string DB_VERSION The plugin DB version.
+	 */
+	const DB_VERSION = '2.0.3';
+
+	/**
+	 * Plugin DB version option name.
+	 *
+	 * @since 2.0.3
+	 *
+	 * @var string OPTION_DB_VERSION The plugin DB version option name.
+	 */
+	const OPTION_DB_VERSION = 'wc-maksuturva-db-version';
 
 	/**
 	 * The working instance of the plugin, singleton.
@@ -168,6 +186,8 @@ class WC_Maksuturva {
 	 * @since 2.0.0
 	 */
 	public function init() {
+		$this->update_db_check();
+
 		load_plugin_textdomain( 'wc-maksuturva', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'add_maksuturva_gateway' ) );
@@ -379,14 +399,7 @@ class WC_Maksuturva {
 	 * @since 2.0.0
 	 */
 	public function activate() {
-		// See: https://codex.wordpress.org/Creating_Tables_with_Plugins.
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
-		$this->load_class( 'WC_Payment_Maksuturva' );
-		$this->load_class( 'WC_Payment_Checker_Maksuturva' );
-
-		WC_Payment_Maksuturva::install_db();
-		WC_Payment_Checker_Maksuturva::install_db();
+		$this->install_db();
 	}
 
 	/**
@@ -409,6 +422,53 @@ class WC_Maksuturva {
 	 */
 	public static function uninstall() {
 		// We don't want to remove the database table, as all the history data will be erased.
+	}
+
+	/**
+	 * Sets option.
+	 *
+	 * Adds or updates a new option to the WP options table.
+	 *
+	 * @param string $key   The option key.
+	 * @param mixed  $value The option value.
+	 *
+	 * @since 2.0.3
+	 */
+	public function set_option($key, $value) {
+		( get_option( $key ) === false ) ? add_option( $key, $value ) : update_option( $key, $value );
+	}
+
+	/**
+	 * Checks for DB updates.
+	 *
+	 * Checks if the db needs to be updated.
+	 *
+	 * @since 2.0.3
+	 */
+	private function update_db_check() {
+		if ( get_option( self::OPTION_DB_VERSION ) !== self::DB_VERSION ) {
+			$this->install_db();
+		}
+	}
+
+	/**
+	 * Installs DB updates.
+	 *
+	 * Installs new db updates.
+	 *
+	 * @since 2.0.3
+	 */
+	private function install_db() {
+		// See: https://codex.wordpress.org/Creating_Tables_with_Plugins.
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+		$this->load_class( 'WC_Payment_Maksuturva' );
+		$this->load_class( 'WC_Payment_Checker_Maksuturva' );
+
+		WC_Payment_Maksuturva::install_db();
+		WC_Payment_Checker_Maksuturva::install_db();
+
+		$this->set_option(self::OPTION_DB_VERSION, self::DB_VERSION);
 	}
 }
 
