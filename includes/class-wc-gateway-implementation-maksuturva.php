@@ -237,7 +237,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array|null
 	 */
 	private function create_payment_row_discount_data( WC_Order $order ) {
-		if ( $order->get_total_discount( false ) ) {
+		//force type to be float. Some plugins might change this value as string that won't validate correclty as true or false
+		if ( floatval( $order->get_total_discount( false ) ) ) {
 			$amount      = $order->get_total_discount( false );
 			$description = implode( ',', $order->get_used_coupons() );
 
