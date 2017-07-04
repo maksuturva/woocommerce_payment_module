@@ -62,6 +62,10 @@ The fee is shown as an extra row in the order both on the receipt and the admini
 = 2.0.3 =
 * Fix db update between plugin versions
 
+= 2.0.4 =
+* Fix order total discount issue, by forcing the order total discount value to be float.
+* Fix issue when no fee payment rows are added to the order. Re-calculate totals to match fees.
+
 = 2.0.5 =
 * Fix issue when payment status log table size increases. There will only be one status log per payment.
 * IMPORTANT: The plugin update will truncate the payment status log table, so it's essential that you back
