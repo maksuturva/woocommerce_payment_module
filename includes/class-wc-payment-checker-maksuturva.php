@@ -64,7 +64,8 @@ class WC_Payment_Checker_Maksuturva {
 		`payment_id` varchar(36) NOT NULL,
 		`response` LONGBLOB NOT NULL,
 		`query_count` INT NOT NULL DEFAULT 1,
-		`date_added` DATETIME NOT NULL
+		`date_added` DATETIME NOT NULL,
+		UNIQUE KEY `payment_id` (payment_id)
 		) DEFAULT CHARSET=utf8;';
 
 		dbDelta( $sql );
