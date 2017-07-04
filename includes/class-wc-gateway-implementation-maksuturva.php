@@ -214,11 +214,11 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array|null
 	 */
 	private function create_payment_row_shipping_data( WC_Order $order ) {
-		$this->shipping_cost = $order->get_total_shipping() + $order->get_shipping_tax();
+		$this->shipping_cost = floatval( $order->get_total_shipping() ) + floatval( $order->get_shipping_tax() );
 
 		if ( $this->shipping_cost > 0 ) {
-			if ( $order->get_total_shipping() > 0 ) {
-				$shipping_tax = 100 * $order->get_shipping_tax() / $order->get_total_shipping();
+			if ( floatval( $order->get_total_shipping() ) > 0 ) {
+				$shipping_tax = 100 * ( floatval( $order->get_shipping_tax() ) / floatval( $order->get_total_shipping() ) );
 			} else {
 				$shipping_tax = 0;
 			}
@@ -250,7 +250,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array|null
 	 */
 	private function create_payment_row_discount_data( WC_Order $order ) {
-		//force type to be float. Some plugins might change this value as string that won't validate correclty as true or false
+		// Force type to be float. Some plugins might change this value as string
+		// that won't validate correctly as true or false.
 		if ( floatval( $order->get_total_discount( false ) ) ) {
 			$amount      = $order->get_total_discount( false );
 			$description = implode( ',', $order->get_used_coupons() );
@@ -282,16 +283,16 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array|null
 	 */
 	private function create_payment_row_fee_data( WC_Order $order ) {
-		$fees = $order->get_fees();
+		$fees     = $order->get_fees();
 		$fee_rows = array();
 
 		foreach ( $fees as $fee ) {
 
-			$fee_total = $fee['line_total'] + $fee['line_tax'];
+			$fee_total        = $fee['line_total'] + $fee['line_tax'];
 			$this->total_fees += $fee_total;
 
 			if ( $fee_total > 0 ) {
-				$fee_tax = 100 * $fee['line_tax'] / $fee['line_total'];
+				$fee_tax = 100 * ($fee['line_tax'] / $fee['line_total']);
 			} else {
 				$fee_tax = 0;
 			}
@@ -311,6 +312,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		if ( count( $fee_rows ) ) {
 			return $fee_rows;
 		}
+
 		return null;
 	}
 

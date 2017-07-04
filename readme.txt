@@ -3,7 +3,7 @@ Contributors: maksuturva
 Tags: maksuturva, payment gateway
 Requires at least: 4.0
 Tested up to: 4.4.2
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 WC requires at least: 2.2.10
 WC tested up to: 2.5
 License: LGPL v. 2.1 or later
@@ -61,3 +61,8 @@ The fee is shown as an extra row in the order both on the receipt and the admini
 
 = 2.0.3 =
 * Fix db update between plugin versions
+
+= 2.0.4 =
+* Fix order get total discount issue, if another module changes the value to string, the if-check might not pass.
+Force the order total discount value to be float.
+* Fix issue when no fee payment rows are added to the order. Re-calculate totals to match fees.
