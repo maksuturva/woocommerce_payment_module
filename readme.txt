@@ -63,6 +63,5 @@ The fee is shown as an extra row in the order both on the receipt and the admini
 * Fix db update between plugin versions
 
 = 2.0.4 =
-* Fix order get total discount issue, if another module changes the value to string, the if-check might not pass.
-Force the order total discount value to be float.
+* Fix order total discount issue, by forcing the order total discount value to be float.
 * Fix issue when no fee payment rows are added to the order. Re-calculate totals to match fees.
