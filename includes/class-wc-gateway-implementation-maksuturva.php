@@ -64,6 +64,15 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	private $shipping_cost = 0.00;
 
 	/**
+	 * Fees.
+	 *
+	 * @since 2.0.4
+	 *
+	 * @var float $total_fees Total fees of the order.
+	 */
+	private $total_fees = 0.00;
+
+	/**
 	 * The text domain to use for translations.
 	 *
 	 * @since 2.0.0
@@ -120,7 +129,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_errorreturn'        => $gateway->get_payment_url( $payment_id, 'error' ),
 			'pmt_cancelreturn'       => $gateway->get_payment_url( $payment_id, 'cancel' ),
 			'pmt_delayedpayreturn'   => $gateway->get_payment_url( $payment_id, 'delay' ),
-			'pmt_amount'             => WC_Utils_Maksuturva::filter_price( $order->get_total() - $this->shipping_cost ),
+			'pmt_amount'             => WC_Utils_Maksuturva::filter_price( $order->get_total() - $this->shipping_cost - $this->total_fees ),
 			'pmt_buyername'          => $buyer_data['name'],
 			'pmt_buyeraddress'       => $buyer_data['address'],
 			'pmt_buyerpostalcode'    => $buyer_data['postal_code'],
@@ -134,7 +143,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_deliverypostalcode' => $delivery_data['postal_code'],
 			'pmt_deliverycity'       => $delivery_data['city'],
 			'pmt_deliverycountry'    => $delivery_data['country'],
-			'pmt_sellercosts'        => WC_Utils_Maksuturva::filter_price( $this->shipping_cost ),
+			'pmt_sellercosts'        => WC_Utils_Maksuturva::filter_price( $this->shipping_cost + $this->total_fees ),
 			'pmt_rows'               => count( $payment_row_data ),
 			'pmt_rows_data'          => $payment_row_data,
 		);
@@ -184,6 +193,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$payment_row_discount = $this->create_payment_row_discount_data( $order );
 		if ( is_array( $payment_row_discount ) ) {
 			$payment_rows[] = $payment_row_discount;
+		}
+		$payment_row_fees = $this->create_payment_row_fee_data( $order );
+		if ( is_array( $payment_row_fees ) ) {
+			$payment_rows = array_merge( $payment_rows, $payment_row_fees );
 		}
 
 		return $payment_rows;
@@ -254,6 +267,50 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			);
 		}
 
+		return null;
+	}
+
+	/**
+	 * Add fee rows.
+	 *
+	 * If the order has any fees, data is added.
+	 *
+	 * @param WC_Order $order The order.
+	 *
+	 * @since 2.0.4
+	 *
+	 * @return array|null
+	 */
+	private function create_payment_row_fee_data( WC_Order $order ) {
+		$fees = $order->get_fees();
+		$fee_rows = array();
+
+		foreach ( $fees as $fee ) {
+
+			$fee_total = $fee['line_total'] + $fee['line_tax'];
+			$this->total_fees += $fee_total;
+
+			if ( $fee_total > 0 ) {
+				$fee_tax = 100 * $fee['line_tax'] / $fee['line_total'];
+			} else {
+				$fee_tax = 0;
+			}
+
+			$fee_rows[] = array(
+				'pmt_row_name'               => __( 'Fee', $this->td ),
+				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_description( $fee['name'] ),
+				'pmt_row_quantity'           => 1,
+				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
+				'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $fee_total ),
+				'pmt_row_vat'                => WC_Utils_Maksuturva::filter_price( $fee_tax ),
+				'pmt_row_discountpercentage' => '00,00',
+				'pmt_row_type'               => 3,
+			);
+		}
+
+		if ( count( $fee_rows ) ) {
+			return $fee_rows;
+		}
 		return null;
 	}
 
