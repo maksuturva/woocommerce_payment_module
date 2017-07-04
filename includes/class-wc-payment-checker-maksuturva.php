@@ -52,15 +52,41 @@ class WC_Payment_Checker_Maksuturva {
 	public static function install_db() {
 		global $wpdb;
 
+		// Truncate the table if the current version is below the specified DB version.
+		$version = get_option( WC_Maksuturva::OPTION_DB_VERSION );
+		if ( version_compare( $version, WC_Maksuturva::DB_VERSION ) < 0 ) {
+			self::truncate_table();
+		}
+
 		$tbl = $wpdb->prefix . self::TABLE_NAME;
 
 		$sql = 'CREATE TABLE `' . $tbl . '` (
 		`payment_id` varchar(36) NOT NULL,
 		`response` LONGBLOB NOT NULL,
-		`date_added` DATETIME NOT NULL
+		`query_count` INT NOT NULL DEFAULT 1,
+		`date_added` DATETIME NOT NULL,
+		UNIQUE KEY `payment_id` (payment_id)
 		) DEFAULT CHARSET=utf8;';
 
 		dbDelta( $sql );
+	}
+
+	/**
+	 * Truncate table.
+	 *
+	 * Truncates the status query log table.
+	 *
+	 * @since 2.0.5
+	 */
+	private function truncate_table() {
+		global $wpdb;
+		$tbl = $wpdb->prefix . self::TABLE_NAME;
+
+		$sql    = 'TRUNCATE TABLE `' . $tbl . '`;';
+		$result = $wpdb->query( $sql );
+		if ( $result === false ) {
+			_log( 'Could not truncate status log table ' . $tbl );
+		}
 	}
 
 	/**
@@ -154,10 +180,36 @@ class WC_Payment_Checker_Maksuturva {
 	protected function log( $payment, array $response ) {
 		global $wpdb;
 
-		$wpdb->insert( $wpdb->prefix . self::TABLE_NAME, array(
-			'payment_id' => $payment->get_payment_id(),
-			'response'   => wp_json_encode( $response ),
-			'date_added' => date( 'Y-m-d H:i:s' ),
-		) ); // Db call ok.
+		$tbl        = $wpdb->prefix . self::TABLE_NAME;
+		$payment_id = $payment->get_payment_id();
+
+		// First get the results for the payment.
+		$results = $wpdb->get_results( $wpdb->prepare(
+			'SELECT payment_id, date_added, query_count FROM `' . $tbl . '` WHERE payment_id = %s', $payment_id ) );
+
+		// By default we set query count to 1. Loop through any found results and increment the query_count.
+		$query_count = 1;
+		foreach ( $results as $result ) {
+			$query_count += $result->query_count;
+		}
+
+		// If we found anything, e.g. query_count is over 1, update the record and increase the query_count by one.
+		if ( $query_count > 1 ) {
+			$wpdb->update( $tbl, array(
+				'response'    => wp_json_encode( $response ),
+				'query_count' => $query_count,
+			), array(
+					'payment_id' => $payment_id,
+				)
+			); // Db call ok.
+		} else {
+			// No results found, insert new record.
+			$wpdb->insert( $tbl, array(
+				'payment_id'  => $payment_id,
+				'response'    => wp_json_encode( $response ),
+				'query_count' => $query_count,
+				'date_added'  => date( 'Y-m-d H:i:s' ),
+			) ); // Db call ok.
+		}
 	}
 }

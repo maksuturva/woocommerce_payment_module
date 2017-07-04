@@ -9,7 +9,7 @@
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Maksuturva, which provides intelligent online payment services consisting of the most
  * comprehensive set of high quality service features in the Finnish market
- * Version:     2.0.3
+ * Version:     2.0.5
  * Author:      Maksuturva Group Oy
  * Author URI:  http://www.maksuturva.fi
  * Text Domain: wc-maksuturva
@@ -75,7 +75,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.0.3';
+	const VERSION = '2.0.5';
 
 	/**
 	 * Plugin DB version.
@@ -84,7 +84,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string DB_VERSION The plugin DB version.
 	 */
-	const DB_VERSION = '2.0.3';
+	const DB_VERSION = '2.0.5';
 
 	/**
 	 * Plugin DB version option name.
@@ -434,7 +434,7 @@ class WC_Maksuturva {
 	 *
 	 * @since 2.0.3
 	 */
-	public function set_option($key, $value) {
+	public function set_option( $key, $value ) {
 		( get_option( $key ) === false ) ? add_option( $key, $value ) : update_option( $key, $value );
 	}
 
@@ -468,7 +468,7 @@ class WC_Maksuturva {
 		WC_Payment_Maksuturva::install_db();
 		WC_Payment_Checker_Maksuturva::install_db();
 
-		$this->set_option(self::OPTION_DB_VERSION, self::DB_VERSION);
+		$this->set_option( self::OPTION_DB_VERSION, self::DB_VERSION );
 	}
 }
 

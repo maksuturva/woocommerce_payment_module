@@ -2,10 +2,10 @@
 Contributors: maksuturva
 Tags: maksuturva, payment gateway
 Requires at least: 4.0
-Tested up to: 4.4.2
-Stable tag: 2.0.4
+Tested up to: 4.8
+Stable tag: 2.0.5
 WC requires at least: 2.2.10
-WC tested up to: 2.5
+WC tested up to: 3.1
 License: LGPL v. 2.1 or later
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
@@ -65,3 +65,8 @@ The fee is shown as an extra row in the order both on the receipt and the admini
 = 2.0.4 =
 * Fix order total discount issue, by forcing the order total discount value to be float.
 * Fix issue when no fee payment rows are added to the order. Re-calculate totals to match fees.
+
+= 2.0.5 =
+* Fix issue when payment status log table size increases. There will only be one status log per payment.
+* IMPORTANT: The plugin update will truncate the payment status log table, so it's essential that you back
+up your database table before updating the plugin, if you want to preserve the logs.
