@@ -84,7 +84,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string DB_VERSION The plugin DB version.
 	 */
-	const DB_VERSION = '2.0.3';
+	const DB_VERSION = '2.0.5';
 
 	/**
 	 * Plugin DB version option name.
