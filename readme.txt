@@ -2,10 +2,10 @@
 Contributors: maksuturva
 Tags: maksuturva, payment gateway
 Requires at least: 4.0
-Tested up to: 4.4.2
-Stable tag: 2.0.3
+Tested up to: 4.8
+Stable tag: 2.0.5
 WC requires at least: 2.2.10
-WC tested up to: 2.5
+WC tested up to: 3.1
 License: LGPL v. 2.1 or later
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
