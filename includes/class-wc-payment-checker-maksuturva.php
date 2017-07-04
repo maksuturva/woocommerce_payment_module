@@ -184,7 +184,7 @@ class WC_Payment_Checker_Maksuturva {
 
 		// First get the results for the payment.
 		$results = $wpdb->get_results( $wpdb->prepare(
-			'SELECT payment_id, date_added, query_count FROM %s WHERE payment_id = %s', $tbl, $payment_id ) );
+			'SELECT payment_id, date_added, query_count FROM `' . $tbl . '` WHERE payment_id = %s', $payment_id ) );
 
 		// By default we set query count to 1. Loop through any found results and increment the query_count.
 		$query_count = 1;
