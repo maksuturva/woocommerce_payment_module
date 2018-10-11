@@ -22,7 +22,7 @@ Maksuturva service might send to your service.
 TESTING WITH A TEST ACCOUNT
 ---------------------------
 For testing the module with actual internet bank, credit card, invoice or part payment services, you can order a 
-test account for yourself at https://test1.maksuturva.fi/tilaapalvelu
+test account for yourself. For more details see Testing section at http://docs.maksuturva.fi/.
 
 When ordering a test account signing the order with your TUPAS bank credentials is not required. When you have 
 completed the order and stored your test account ID and secret key, we kindly ask you to contact us for us to 
@@ -36,8 +36,7 @@ test environment.
 For testing our payment service without using actual money, you need to set communication URL in the module 
 configurations as https://test1.maksuturva.fi. All our test environment services are found under that domain 
 unlike our production environment services which are found under the domain https://www.maksuturva.fi. 
-Test environment for KauppiasExtranet can be found similarly at https://test1.maksuturva.fi/extranet/.
-
+Test environment for Extranet services can be found similarly at https://test1.maksuturva.fi/extranet/ and https://test1.maksuturva.fi/dashboard/.
 
 If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, 
 seller id or secret key. In that case you should first check that they are correct and no extra spaces are added 
