@@ -572,27 +572,35 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				$this->order_fail( $order, $payment );
-				$this->add_notice( __( 'Error from Maksuturva received.', $this->td ), 'error' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Error from Maksuturva received.', $this->td ), 'error' );
+				}
+				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 				$this->order_delay( $order, $payment );
-				$this->add_notice( __( 'Payment delayed by Maksuturva.', $this->td ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Payment delayed by Maksuturva.', $this->td ), 'notice' );
+				}
+				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
 				$this->order_cancel( $order, $payment );
-				$this->add_notice( __( 'Cancellation from Maksuturva received.', $this->td ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $order->get_cancel_order_url() ) );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Cancellation from Maksuturva received.', $this->td ), 'notice' );
+				}
+				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $order->get_cancel_order_url() ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_COMPLETED:
 			default:
 				$this->order_complete( $order, $payment );
 				$woocommerce->cart->empty_cart();
-				$this->add_notice( __( 'Payment confirmed by Maksuturva.', $this->td ), 'success' );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Payment confirmed by Maksuturva.', $this->td ), 'success' );
+				}
 				wp_redirect( $this->get_return_url( $order ) );
 				break;
 		}
