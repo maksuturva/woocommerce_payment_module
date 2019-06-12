@@ -30,7 +30,7 @@ require_once 'class-wc-gateway-implementation-maksuturva.php';
 require_once 'class-wc-meta-box-maksuturva.php';
 require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-payment-maksuturva.php';
-require_once 'class-wc-order-compatibility-handler.php ';
+require_once 'class-wc-order-compatibility-handler.php';
 
 /**
  * Class WC_Gateway_Maksuturva.
