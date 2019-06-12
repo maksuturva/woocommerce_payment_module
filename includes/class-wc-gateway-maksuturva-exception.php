@@ -6,7 +6,7 @@
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x
+ * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Maksuturva
  * Last update: 08/03/2016
  *

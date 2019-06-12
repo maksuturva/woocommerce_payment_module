@@ -7,9 +7,8 @@
  * @wordpress-plugin
  * Plugin Name: WooCommerce Maksuturva Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
- * Description: A plugin for Maksuturva, which provides intelligent online payment services consisting of the most
- * comprehensive set of high quality service features in the Finnish market
- * Version:     2.0.5
+ * Description: A plugin for Maksuturva, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
+ * Version:     2.0.6
  * Author:      Maksuturva Group Oy
  * Author URI:  http://www.maksuturva.fi
  * Text Domain: wc-maksuturva
@@ -20,7 +19,7 @@
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x
+ * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Maksuturva
  * Last update: 08/03/2016
  *
@@ -75,7 +74,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.0.5';
+	const VERSION = '2.0.6';
 
 	/**
 	 * Plugin DB version.

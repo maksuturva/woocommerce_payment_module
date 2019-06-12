@@ -6,7 +6,7 @@
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x
+ * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Maksuturva
  * Last update: 08/03/2016
  *
@@ -30,6 +30,8 @@ require_once 'class-wc-gateway-maksuturva-exception.php';
 require_once 'class-wc-gateway-abstract-maksuturva.php';
 require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-utils-maksuturva.php';
+require_once 'class-wc-order-compatibility-handler.php ';
+require_once 'class-wc-product-compatibility-handler.php';
 
 /**
  * Class WC_Gateway_Implementation_Maksuturva.
@@ -116,11 +118,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$buyer_data       = $this->create_buyer_data( $order );
 		$delivery_data    = $this->create_delivery_data( $order );
 		$payment_id       = $this->get_payment_id( $order );
+		$order_handler    = new WC_Order_Compatibility_Handler( $order );
 
 		return array(
 			'pmt_keygeneration'      => $gateway->get_secret_key_version(),
 			'pmt_id'                 => $payment_id,
-			'pmt_orderid'            => $order->id,
+			'pmt_orderid'            => $order_handler->get_id(),
 			'pmt_reference'          => $this->get_internal_payment_id( $order ),
 			'pmt_sellerid'           => $this->seller_id,
 			'pmt_duedate'            => date( 'd.m.Y' ),
@@ -328,22 +331,23 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array
 	 */
 	private function create_buyer_data( WC_Order $order ) {
-		$email = $order->billing_email;
-		if ( ! empty( $order->customer_user ) ) {
-			$user = get_user_by( 'id', $order->customer_user );
+		$order_handler = new WC_Order_Compatibility_Handler( $order );
+		$email         = $order_handler->get_billing_email();
+		if ( ! empty( $order_handler->get_customer_id() ) ) {
+			$user = get_user_by( 'id', $order_handler->get_customer_id() );
 			if ( $user && empty( $email ) ) {
 				$email = $user->user_email;
 			}
 		}
 
 		return array(
-			'name'        => trim( $order->billing_first_name . ' ' . $order->billing_last_name ),
-			'address'     => trim( $order->billing_address_1 . ', ' . $order->billing_address_2, ', ' ),
-			'postal_code' => $order->billing_postcode,
-			'city'        => $order->billing_city,
-			'country'     => $order->billing_country,
+			'name'        => trim( $order_handler->get_billing_first_name() . ' ' . $order_handler->get_billing_last_name() ),
+			'address'     => trim( $order_handler->get_billing_address_1() . ', ' . $order_handler->get_billing_address_2(), ', ' ),
+			'postal_code' => $order_handler->get_billing_postcode(),
+			'city'        => $order_handler->get_billing_city(),
+			'country'     => $order_handler->get_billing_country(),
 			'email'       => $email,
-			'phone'       => $order->billing_phone,
+			'phone'       => $order_handler->get_billing_phone(),
 		);
 	}
 
@@ -359,12 +363,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array
 	 */
 	private function create_delivery_data( WC_Order $order ) {
+		$order_handler = new WC_Order_Compatibility_Handler( $order );
 		return array(
-			'name'        => trim( $order->shipping_first_name . ' ' . $order->shipping_last_name ),
-			'address'     => trim( $order->shipping_address_1 . ', ' . $order->shipping_address_2, ', ' ),
-			'postal_code' => $order->shipping_postcode,
-			'city'        => $order->shipping_city,
-			'country'     => $order->shipping_country,
+			'name'        => trim( $order_handler->get_shipping_first_name() . ' ' . $order_handler->get_shipping_last_name() ),
+			'address'     => trim( $order_handler->get_shipping_address_1() . ', ' . $order_handler->get_shipping_address_2(), ', ' ),
+			'postal_code' => $order_handler->get_shipping_postcode(),
+			'city'        => $order_handler->get_shipping_city(),
+			'country'     => $order_handler->get_shipping_country(),
 		);
 	}
 
@@ -425,7 +430,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return int
 	 */
 	private function get_internal_payment_id( WC_Order $order ) {
-		return $order->id + 100;
+		$order_handler = new WC_Order_Compatibility_Handler( $order );
+		return $order_handler->get_id() + 100;
 	}
 
 	/**
@@ -533,18 +539,21 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return string
 	 */
 	protected function get_product_description( $product, $order, $order_item_id ) {
-		$description = '';
+		$description     = '';
+		$order_handler   = new WC_Order_Compatibility_Handler( $order );
+		$product_handler = new WC_Product_Compatibility_Handler( $product );
 
-		$item_meta = new WC_Order_Item_Meta( $order->get_item_meta( $order_item_id ) );
+		$item_meta = new WC_Order_Item_Meta( $order_handler->get_item_meta( $order_item_id ) );
 		if ( $formatted = $item_meta->get_formatted() ) {
 			foreach ( $formatted as $attr ) {
 				$description .= implode( '=', $attr ) . '|';
 			}
 		}
-		if ( 'variable' === $product->product_type ) {
+		if ( 'variable' === $product_handler->get_type() ) {
 			$description .= implode( ',', $product->get_variation_attributes() ) . ' ';
 		}
-		$description .= ( $product->post->post_excerpt );
+		$post         = $product_handler->get_post();
+		$description .= $post->post_excerpt;
 
 		return $description;
 	}

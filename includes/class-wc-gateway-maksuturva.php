@@ -6,7 +6,7 @@
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x
+ * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Maksuturva
  * Last update: 08/03/2016
  *
@@ -30,6 +30,7 @@ require_once 'class-wc-gateway-implementation-maksuturva.php';
 require_once 'class-wc-meta-box-maksuturva.php';
 require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-payment-maksuturva.php';
+require_once 'class-wc-order-compatibility-handler.php ';
 
 /**
  * Class WC_Gateway_Maksuturva.
@@ -39,6 +40,11 @@ require_once 'class-wc-payment-maksuturva.php';
  * @since 2.0.0
  */
 class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
+
+	/**
+	 * Major WooCommerce version no longer supporting notices on cancellation, thank you etc
+	 */
+	const NO_NOTICE_VERSION = 3;
 
 	/**
 	 * The text domain to use for translations.
@@ -469,12 +475,13 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @inheritdoc
 	 */
 	public function process_payment( $order_id ) {
-		$order = wc_get_order( $order_id );
+		$order         = wc_get_order( $order_id );
+		$order_handler = new WC_Order_Compatibility_Handler( $order );
 
 		return array(
 			'result'   => 'success',
-			'redirect' => add_query_arg( 'order-pay', $order->id,
-			add_query_arg( 'key', $order->order_key, $order->get_checkout_order_received_url() ) ),
+			'redirect' => add_query_arg( 'order-pay', $order_handler->get_id(),
+			add_query_arg( 'key', $order_handler->get_order_key(), $order->get_checkout_order_received_url() ) ),
 		);
 	}
 
@@ -491,12 +498,13 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		$order               = wc_get_order( $order_id );
 		$gateway             = new WC_Gateway_Implementation_Maksuturva( $this, $order );
+		$order_handler       = new WC_Order_Compatibility_Handler( $order );
 		$payment_gateway_url = $gateway->get_payment_url();
 		$data                = $gateway->get_field_array();
 
 		// Create the payment for Maksuturva.
 		WC_Payment_Maksuturva::create( array(
-			'order_id'      => $order->id,
+			'order_id'      => $order_handler->get_id(),
 			'payment_id'    => $data['pmt_id'],
 			'data_sent'     => $data,
 			'data_received' => array(),
@@ -537,8 +545,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			return;
 		}
 
+		$order_handler = new WC_Order_Compatibility_Handler( $order );
 		try {
-			$payment = new WC_Payment_Maksuturva( $order->id );
+			$payment = new WC_Payment_Maksuturva( $order_handler->get_id() );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			_log( (string) $e );
 			$this->add_notice( __( 'Could not process order.', $this->td ), 'error' );
@@ -563,27 +572,35 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				$this->order_fail( $order, $payment );
-				$this->add_notice( __( 'Error from Maksuturva received.', $this->td ), 'error' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Error from Maksuturva received.', $this->td ), 'error' );
+				}
+				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 				$this->order_delay( $order, $payment );
-				$this->add_notice( __( 'Payment delayed by Maksuturva.', $this->td ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Payment delayed by Maksuturva.', $this->td ), 'notice' );
+				}
+				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
 				$this->order_cancel( $order, $payment );
-				$this->add_notice( __( 'Cancellation from Maksuturva received.', $this->td ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $order->get_cancel_order_url() ) );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Cancellation from Maksuturva received.', $this->td ), 'notice' );
+				}
+				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $order->get_cancel_order_url() ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_COMPLETED:
 			default:
 				$this->order_complete( $order, $payment );
 				$woocommerce->cart->empty_cart();
-				$this->add_notice( __( 'Payment confirmed by Maksuturva.', $this->td ), 'success' );
+				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+					$this->add_notice( __( 'Payment confirmed by Maksuturva.', $this->td ), 'success' );
+				}
 				wp_redirect( $this->get_return_url( $order ) );
 				break;
 		}
