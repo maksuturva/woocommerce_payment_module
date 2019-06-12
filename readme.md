@@ -1,12 +1,12 @@
 # Maksuturva for WooCommerce
-**Contributors:** maksuturva
-**Tags:** maksuturva, payment gateway
-**Requires at least:** 4.0
-**Tested up to:** 5.1.1
-**Stable tag:** 2.0.6
-**WC requires at least:** 2.2.10
-**WC tested up to:** 3.6.4
-**License:** LGPL v. 2.1 or later
+**Contributors:** maksuturva  
+**Tags:** maksuturva, payment gateway  
+**Requires at least:** 4.0  
+**Tested up to:** 5.1.1  
+**Stable tag:** 2.0.7  
+**WC requires at least:** 2.2.10  
+**WC tested up to:** 3.6.4  
+**License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
 Maksuturva payment module for WooCommerce.
@@ -36,6 +36,9 @@ written for Maksuturva Group Oy
 [https://www.maksuturva.fi](https://www.maksuturva.fi/)
 
 ## Changelog
+
+### 2.0.7
+* Fix issue WooCommerce compatibility classes not loading in Linux environment
 
 ### 2.0.6
 * Not using deprecated magic order and product properties when WooCommerce major version is 3 or higher
