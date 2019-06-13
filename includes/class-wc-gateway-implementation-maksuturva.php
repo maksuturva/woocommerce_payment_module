@@ -540,15 +540,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	protected function get_product_description( $product, $order, $order_item_id ) {
 		$description     = '';
-		$order_handler   = new WC_Order_Compatibility_Handler( $order );
 		$product_handler = new WC_Product_Compatibility_Handler( $product );
 
-		$item_meta = new WC_Order_Item_Meta( $order_handler->get_item_meta( $order_item_id ) );
-		if ( $formatted = $item_meta->get_formatted() ) {
-			foreach ( $formatted as $attr ) {
-				$description .= implode( '=', $attr ) . '|';
-			}
+		if ( version_compare( WC_VERSION, 3, '<' ) ) {
+			$description .= $this->get_meta_description_wc2( $order, $order_item_id );
 		}
+
 		if ( 'variable' === $product_handler->get_type() ) {
 			$description .= implode( ',', $product->get_variation_attributes() ) . ' ';
 		}
@@ -557,4 +554,29 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 		return $description;
 	}
+
+	/**
+	 * Get the product description from the order meta data e.g. colors, sizes,
+	 * and such, according to WooCommerce 2.* way
+	 *
+	 * @param WC_Order $order         The order.
+	 * @param int      $order_item_id The order item id.
+	 *
+	 * @since 2.0.8
+	 *
+	 * @return string
+	 */
+	private function get_meta_description_wc2( $order, $order_item_id ) {
+		$description   = '';
+		$order_handler = new WC_Order_Compatibility_Handler( $order );
+		$item_meta     = new WC_Order_Item_Meta( $order_handler->get_item_meta( $order_item_id ) );
+		$formatted     = $item_meta->get_formatted();
+		if ( $formatted ) {
+			foreach ( $formatted as $attr ) {
+				$description .= implode( '=', $attr ) . '|';
+			}
+		}
+		return $description;
+	}
+
 }
