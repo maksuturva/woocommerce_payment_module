@@ -30,7 +30,7 @@ require_once 'class-wc-gateway-maksuturva-exception.php';
 require_once 'class-wc-gateway-abstract-maksuturva.php';
 require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-utils-maksuturva.php';
-require_once 'class-wc-order-compatibility-handler.php ';
+require_once 'class-wc-order-compatibility-handler.php';
 require_once 'class-wc-product-compatibility-handler.php';
 
 /**
