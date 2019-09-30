@@ -13,7 +13,7 @@ Maksuturva payment module for WooCommerce.
 
 ## Description
 
-Copyright (C) 2016 Maksuturva Group Oy
+Copyright (C) 2016 Svea Developments Oy
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later
@@ -24,16 +24,16 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Le
 more details.
 
 > Contact information:
-Maksuturva Group Oy
-Keilaranta 5
-02150 Espoo
+Svea Payments Oy
+Mechelininkatu 1a
+00180 Helsinki
 Finland
-e-mail: info@maksuturva.fi
+e-mail: info.payments@svea.fi
 
-Maksuturva Group Oy, hereby disclaims all copyright interest in the library 'maksuturva-for-woocommerce'
-written for Maksuturva Group Oy
+Svea Developments Oy, hereby disclaims all copyright interest in the library 'maksuturva-for-woocommerce'
+written for Svea Payments Oy
 
-[https://www.maksuturva.fi](https://www.maksuturva.fi/)
+[https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
 
