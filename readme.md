@@ -1,6 +1,6 @@
 # Maksuturva for WooCommerce
-**Contributors:** maksuturva  
-**Tags:** maksuturva, payment gateway  
+**Contributors:** Svea Payments  
+**Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 4.0  
 **Tested up to:** 5.1.1  
 **Stable tag:** 2.0.8  
@@ -9,7 +9,7 @@
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
-Maksuturva payment module for WooCommerce.
+Svea Payments payment module for WooCommerce.
 
 ## Description
 
