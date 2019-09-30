@@ -1,4 +1,4 @@
-# Maksuturva for WooCommerce
+# Svea Payments for WooCommerce
 **Contributors:** Svea Payments  
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 4.0  
