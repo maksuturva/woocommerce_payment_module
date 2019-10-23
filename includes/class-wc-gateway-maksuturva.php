@@ -94,7 +94,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		$this->notify_url = WC()->api_request_url( $this->id );
 
-		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'maksuturva_logo.png';
+		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 
 		$this->table_name = $wpdb->prefix . 'maksuturva_queue';
 
