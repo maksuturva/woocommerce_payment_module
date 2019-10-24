@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payment Gateway
  *
- * @package WooCommerce Maksuturva Payment Gateway
+ * @package WooCommerce Svea Payment Gateway
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
- * Plugin developed for Maksuturva
- * Last update: 08/03/2016
+ * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Plugin developed for Svea
+ * Last update: 24/10/2019
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -64,7 +64,7 @@ class WC_Meta_Box_Maksuturva {
 			$order    = wc_get_order( $post );
 			$payment  = new WC_Payment_Maksuturva( $order->id );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
-			// If the payment was not found, it probably means that the order was not paid with Maksuturva.
+			// If the payment was not found, it probably means that the order was not paid with Svea.
 			return;
 		}
 
@@ -77,7 +77,7 @@ class WC_Meta_Box_Maksuturva {
 	 *
 	 * Returns the messages for the given payment.
 	 *
-	 * @param WC_Payment_Maksuturva $payment The Maksuturva payment object.
+	 * @param WC_Payment_Maksuturva $payment The Svea payment object.
 	 *
 	 * @since 2.0.0
 	 *
@@ -91,21 +91,21 @@ class WC_Meta_Box_Maksuturva {
 
 		switch ( $payment->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_COMPLETED:
-				$msg = __( 'The payment is confirmed by Maksuturva', self::$td );
+				$msg = __( 'The payment is confirmed by Svea', self::$td );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
-				$msg = __( 'The payment is canceled by Maksuturva', self::$td );
+				$msg = __( 'The payment is canceled by Svea', self::$td );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				$msg = __( 'The payment could not be confirmed by Maksuturva, please check manually', self::$td );
+				$msg = __( 'The payment could not be confirmed by Svea, please check manually', self::$td );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 			case WC_Payment_Maksuturva::STATUS_PENDING:
 			default:
-				$msg = __( 'The payment is still waiting for confirmation by Maksuturva', self::$td );
+				$msg = __( 'The payment is still waiting for confirmation by Svea', self::$td );
 				break;
 		}
 

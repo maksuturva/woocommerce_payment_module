@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payment Gateway
  *
- * @package WooCommerce Maksuturva Payment Gateway
+ * @package WooCommerce Svea Payment Gateway
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
- * Plugin developed for Maksuturva
- * Last update: 08/03/2016
+ * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Plugin developed for Svea
+ * Last update: 24/10/2019
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
