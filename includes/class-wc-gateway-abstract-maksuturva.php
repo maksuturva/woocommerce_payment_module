@@ -1,12 +1,12 @@
 <?php
 /**
- * WooCommerce Svea Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Svea Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Svea
  * Last update: 24/10/2019
  *
@@ -29,12 +29,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WC_Gateway_Abstract_Maksuturva.
  *
- * Abstract for the Svea payment gateway. Handles basic functionality against the Svea Payment Gateway.
+ * Abstract for the Svea payments gateway. Handles basic functionality against the Svea Payments Gateway.
  *
  * @since 2.0.0
  *
  * @property int $pmt_orderid The Svea order id.
- * @property int $pmt_id      The Svea payment id.
+ * @property int $pmt_id      The Svea payments id.
  */
 abstract class WC_Gateway_Abstract_Maksuturva {
 
@@ -319,7 +319,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		'pmt_errorreturn',          // Alphanumeric  max-length: 200  -.
 		'pmt_cancelreturn',         // Alphanumeric  max-length: 200  -.
 		'pmt_delayedpayreturn',     // Alphanumeric  max-length: 200  -.
-		'pmt_escrow',               // Alpha         max-length: 1    min-length: 1   Svea=Y, eMaksut=N.
+		'pmt_escrow',               // Alpha         max-length: 1    min-length: 1   Y/N.
 		'pmt_escrowchangeallowed',  // Alpha         max-length: 1    min-length: 1   N.
 		'pmt_buyername',            // Alphanumeric  max-length: 40   -.
 		'pmt_buyeraddress',         // Alphanumeric  max-length: 40   -.
@@ -1116,7 +1116,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	/**
 	 * Set payment data.
 	 *
-	 * Sets the payment data to be sent to the Svea payment gateway.
+	 * Sets the payment data to be sent to the Svea payments gateway.
 	 *
 	 * @param array $payment_data The payment data.
 	 *

@@ -1,12 +1,12 @@
 <?php
 /**
- * WooCommerce Svea Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Svea Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Svea
  * Last update: 24/10/2019
  *
@@ -115,7 +115,7 @@ class WC_Payment_Maksuturva {
 	/**
 	 * Payment id.
 	 *
-	 * @var string $payment_id The Svea payment id.
+	 * @var string $payment_id The Svea payments id.
 	 */
 	protected $payment_id;
 
@@ -222,7 +222,7 @@ class WC_Payment_Maksuturva {
 		) ); // Db call ok.
 
 		if ( false === $result ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to create Svea payment.' );
+			throw new WC_Gateway_Maksuturva_Exception( 'Failed to create Svea payments.' );
 		}
 
 		return new self( (int) $data['order_id'] );
@@ -504,7 +504,7 @@ class WC_Payment_Maksuturva {
 		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
 
 		if ( ! ( is_array( $data ) && count( $data ) === 1 ) ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payment!' );
+			throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payments!' );
 		}
 
 		$this->order_id      = (int) $data[0]->order_id;
@@ -538,7 +538,7 @@ class WC_Payment_Maksuturva {
 		array( 'order_id' => $this->order_id, 'payment_id' => $this->payment_id ) ); // Db call ok; No-cache ok.
 
 		if ( false === $result ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to update Svea payment!' );
+			throw new WC_Gateway_Maksuturva_Exception( 'Failed to update Svea payments!' );
 		}
 	}
 }

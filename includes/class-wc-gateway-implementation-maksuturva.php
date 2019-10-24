@@ -1,12 +1,12 @@
 <?php
 /**
- * WooCommerce Svea Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Svea Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Svea
  * Last update: 24/10/2019
  *
@@ -105,7 +105,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	/**
 	 * Create payment data.
 	 *
-	 * Creates the payment data to be used for the Svea payment gateway.
+	 * Creates the payment data to be used for the Svea payments gateway.
 	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
 	 * @param WC_Order              $order   The order.
@@ -487,17 +487,18 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		return ( ( (int) $pmt_id - 100 ) == $this->pmt_orderid );
 	}
 
-	/**
-	 * Validate a payment.
-	 *
-	 * Runs the Svea Payment Validator on the given params.
-	 *
-	 * @param array $params The parameters to validate.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return WC_Payment_Validator_Maksuturva
-	 */
+    /**
+     * Validate a payment.
+     *
+     * Runs the Svea Payments Validator on the given params.
+     *
+     * @param array $params The parameters to validate.
+     *
+     * @return WC_Payment_Validator_Maksuturva
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.0
+     *
+     */
 	public function validate_payment( array $params ) {
 		$validator = new WC_Payment_Validator_Maksuturva( $this );
 

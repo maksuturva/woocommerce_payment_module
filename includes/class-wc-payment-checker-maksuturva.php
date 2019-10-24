@@ -1,12 +1,12 @@
 <?php
 /**
- * WooCommerce Svea Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Svea Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Svea
  * Last update: 24/10/2019
  *

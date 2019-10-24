@@ -1,8 +1,8 @@
-# Copyright (C) 2016 WooCommerce Svea Payment Gateway
-# This file is distributed under the same license as the WooCommerce Svea Payment Gateway package.
+# Copyright (C) 2016 WooCommerce Svea Payments Gateway
+# This file is distributed under the same license as the WooCommerce Svea Payments Gateway package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Svea Payment Gateway\n"
+"Project-Id-Version: WooCommerce Svea Payments Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgid "Enable/Disable"
 msgstr "Ota käyttöön / poista käytöstä"
 
 #: includes/class-wc-gateway-maksuturva.php:128
-msgid "Enable Svea Payment Gateway"
+msgid "Enable Svea Payments Gateway"
 msgstr "Käytä Svean maksunvälitystä"
 
 #: includes/class-wc-gateway-maksuturva.php:133
@@ -233,7 +233,7 @@ msgid "Settings"
 msgstr "Asetukset"
 
 #. Plugin Name of the plugin/theme
-msgid "WooCommerce Svea Payment Gateway"
+msgid "WooCommerce Svea Payments Gateway"
 msgstr "Svean maksunvälityspalvelu"
 
 #. Plugin URI of the plugin/theme

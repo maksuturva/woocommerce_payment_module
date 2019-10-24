@@ -1,12 +1,12 @@
 <?php
 /**
- * WooCommerce Svea Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Svea Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Svea
  * Last update: 24/10/2019
  *
@@ -35,7 +35,7 @@ require_once 'class-wc-order-compatibility-handler.php';
 /**
  * Class WC_Gateway_Maksuturva.
  *
- * Handles the administration of the Svea payment gateway. Handles checking of Svea responses.
+ * Handles the administration of the Svea payments gateway. Handles checking of Svea responses.
  *
  * @since 2.0.0
  */
@@ -131,7 +131,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$form['enabled'] = array(
 			'title'   => __( 'Enable/Disable', $this->td ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Svea Payment Gateway', $this->td ),
+			'label'   => __( 'Enable Svea Payments Gateway', $this->td ),
 			'default' => 'yes',
 		);
 
@@ -309,7 +309,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Returns the OK, ERROR, CANCEL, DELAY URL for the payment gateway.
 	 *
-	 * @param string $payment_id The Svea payment ID.
+	 * @param string $payment_id The Svea payments ID.
 	 * @param string $type       The type, one of: ok, cancel, error, delay
 	 *
 	 * @since 2.0.0
@@ -327,7 +327,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Constructs the URL from notify_url, and adds session id and order id to the URL.
 	 *
-	 * @param string $payment_id The Svea payment ID.
+	 * @param string $payment_id The Svea payments ID.
 	 *
 	 * @since 2.0.0
 	 *
@@ -455,7 +455,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Returns the order found by the given payment id.
 	 *
-	 * @param string $pmt_id The Svea payment id.
+	 * @param string $pmt_id The Svea payments id.
 	 *
 	 * @since 2.0.0
 	 *

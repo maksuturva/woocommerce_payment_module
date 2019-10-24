@@ -1,12 +1,12 @@
 <?php
 /**
- * WooCommerce Svea Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Svea Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Svea Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Svea
  * Last update: 24/10/2019
  *
@@ -77,7 +77,7 @@ class WC_Meta_Box_Maksuturva {
 	 *
 	 * Returns the messages for the given payment.
 	 *
-	 * @param WC_Payment_Maksuturva $payment The Svea payment object.
+	 * @param WC_Payment_Maksuturva $payment The Svea payments object.
 	 *
 	 * @since 2.0.0
 	 *
