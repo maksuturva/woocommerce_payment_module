@@ -490,7 +490,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
     /**
      * Validate a payment.
      *
-     * Runs the Svea Payments Validator on the given params.
+     * Runs the Svea Payment Validator on the given params.
      *
      * @param array $params The parameters to validate.
      *

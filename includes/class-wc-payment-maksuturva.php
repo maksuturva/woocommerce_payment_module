@@ -115,7 +115,7 @@ class WC_Payment_Maksuturva {
 	/**
 	 * Payment id.
 	 *
-	 * @var string $payment_id The Svea payments id.
+	 * @var string $payment_id The Svea payment id.
 	 */
 	protected $payment_id;
 
@@ -222,7 +222,7 @@ class WC_Payment_Maksuturva {
 		) ); // Db call ok.
 
 		if ( false === $result ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to create Svea payments.' );
+			throw new WC_Gateway_Maksuturva_Exception( 'Failed to create Svea payment.' );
 		}
 
 		return new self( (int) $data['order_id'] );
@@ -504,7 +504,7 @@ class WC_Payment_Maksuturva {
 		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
 
 		if ( ! ( is_array( $data ) && count( $data ) === 1 ) ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payments!' );
+			throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payment!' );
 		}
 
 		$this->order_id      = (int) $data[0]->order_id;
@@ -538,7 +538,7 @@ class WC_Payment_Maksuturva {
 		array( 'order_id' => $this->order_id, 'payment_id' => $this->payment_id ) ); // Db call ok; No-cache ok.
 
 		if ( false === $result ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to update Svea payments!' );
+			throw new WC_Gateway_Maksuturva_Exception( 'Failed to update Svea payment!' );
 		}
 	}
 }

@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 2.0.0
  *
  * @property int $pmt_orderid The Svea order id.
- * @property int $pmt_id      The Svea payments id.
+ * @property int $pmt_id      The Svea payment id.
  */
 abstract class WC_Gateway_Abstract_Maksuturva {
 

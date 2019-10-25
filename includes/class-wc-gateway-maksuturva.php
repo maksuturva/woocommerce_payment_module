@@ -309,7 +309,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Returns the OK, ERROR, CANCEL, DELAY URL for the payment gateway.
 	 *
-	 * @param string $payment_id The Svea payments ID.
+	 * @param string $payment_id The Svea payment ID.
 	 * @param string $type       The type, one of: ok, cancel, error, delay
 	 *
 	 * @since 2.0.0
@@ -327,7 +327,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Constructs the URL from notify_url, and adds session id and order id to the URL.
 	 *
-	 * @param string $payment_id The Svea payments ID.
+	 * @param string $payment_id The Svea payment ID.
 	 *
 	 * @since 2.0.0
 	 *
@@ -455,7 +455,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Returns the order found by the given payment id.
 	 *
-	 * @param string $pmt_id The Svea payments id.
+	 * @param string $pmt_id The Svea payment id.
 	 *
 	 * @since 2.0.0
 	 *

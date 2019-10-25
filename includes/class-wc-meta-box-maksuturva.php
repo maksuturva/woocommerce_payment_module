@@ -77,7 +77,7 @@ class WC_Meta_Box_Maksuturva {
 	 *
 	 * Returns the messages for the given payment.
 	 *
-	 * @param WC_Payment_Maksuturva $payment The Svea payments object.
+	 * @param WC_Payment_Maksuturva $payment The Svea payment object.
 	 *
 	 * @since 2.0.0
 	 *
