@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 4.0  
 **Tested up to:** 5.1.1  
-**Stable tag:** 2.0.9  
+**Stable tag:** 2.1.0  
 **WC requires at least:** 2.2.10  
 **WC tested up to:** 3.8.0 
 **License:** LGPL v. 2.1 or later  
@@ -36,6 +36,8 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+### 2.1.0
+* Brand Maksuturva changed to Svea Payments
 
 ### 2.0.9
 * Added timestamp and platform information to status query API request
