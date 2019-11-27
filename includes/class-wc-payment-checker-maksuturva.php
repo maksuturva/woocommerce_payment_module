@@ -106,6 +106,10 @@ class WC_Payment_Checker_Maksuturva {
 		try {
 			$gateway  = new WC_Gateway_Maksuturva();
 			$order    = wc_get_order( $payment->get_order_id() );
+			if ($order==NULL) {
+				_log("Order for id " . $payment->get_order_id() . " not found!" );
+			}
+			
 			$response = ( new WC_Gateway_Implementation_Maksuturva( $gateway, $order ) )->status_query();
 			$this->log( $payment, $response );
 
