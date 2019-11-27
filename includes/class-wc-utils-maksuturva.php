@@ -90,7 +90,7 @@ class WC_Utils_Maksuturva {
 	 */
 	public static function get_user_agent()
 	{
-		$user_agent = "Svea Payments module/" . WC_Maksuturva::VERSION;
+		$user_agent = "Svea Payments for WC/" . WC_Maksuturva::VERSION;
 
 		try {
 			$user_agent = mb_convert_encoding($user_agent . " (" . php_uname('s') . 
