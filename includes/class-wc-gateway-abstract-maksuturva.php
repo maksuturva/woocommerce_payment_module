@@ -1159,11 +1159,14 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 
 	public function get_user_agent()
 	{
-		$module_version = "Svea Woocommerce module/" . WC_Maksuturva::VERSION;
+		$user_agent = "Svea Payments module/" . WC_Maksuturva::VERSION;
+
 		try {
-			return $module_version . " (" . php_uname('s') . " " . php_uname('r') . ") Woocommerce/" . WC_VERSION;
+			$user_agent = mb_convert_encoding($user_agent . " (" . php_uname('s') . 
+				" " . php_uname('r') . ") Woocommerce/" . WC_VERSION . " PHP/" . phpversion(), "ASCII");
 		} catch (Exception $e) {
-			return $module_version;
+			// nop
 		}
+
 	}
 }
