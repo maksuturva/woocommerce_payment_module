@@ -1167,6 +1167,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		} catch (Exception $e) {
 			// nop
 		}
-
+		return $user_agent;
 	}
 }

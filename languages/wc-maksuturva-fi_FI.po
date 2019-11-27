@@ -56,7 +56,7 @@ msgstr "Tämä viesti näkyy maksukäytävävalinnan alapuolella kassalla."
 
 #: includes/class-wc-gateway-maksuturva.php:144
 msgid "Pay via Maksuturva."
-msgstr "Maksa Maksuturvalla."
+msgstr "Maksa Svea Payments maksutavalla."
 
 #: includes/class-wc-gateway-maksuturva.php:150
 msgid "Account settings"

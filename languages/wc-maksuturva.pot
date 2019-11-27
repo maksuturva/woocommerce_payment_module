@@ -56,7 +56,7 @@ msgstr ""
 
 #: includes/class-wc-gateway-maksuturva.php:144
 msgid "Pay via Maksuturva."
-msgstr ""
+msgstr "Pay via Svea Payments"
 
 #: includes/class-wc-gateway-maksuturva.php:150
 msgid "Account settings"
