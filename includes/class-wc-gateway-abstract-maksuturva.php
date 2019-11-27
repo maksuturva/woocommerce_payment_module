@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Maksuturva Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
- * Plugin developed for Maksuturva
- * Last update: 08/03/2016
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
+ * Plugin developed for Svea
+ * Last update: 24/10/2019
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,12 +29,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WC_Gateway_Abstract_Maksuturva.
  *
- * Abstract for the Maksuturva payment gateway. Handles basic functionality against the Maksuturva Payment Gateway.
+ * Abstract for the Svea payments gateway. Handles basic functionality against the Svea Payments Gateway.
  *
  * @since 2.0.0
  *
- * @property int $pmt_orderid The Maksuturva order id.
- * @property int $pmt_id      The Maksuturva payment id.
+ * @property int $pmt_orderid The Svea order id.
+ * @property int $pmt_id      The Svea payment id.
  */
 abstract class WC_Gateway_Abstract_Maksuturva {
 
@@ -319,7 +319,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		'pmt_errorreturn',          // Alphanumeric  max-length: 200  -.
 		'pmt_cancelreturn',         // Alphanumeric  max-length: 200  -.
 		'pmt_delayedpayreturn',     // Alphanumeric  max-length: 200  -.
-		'pmt_escrow',               // Alpha         max-length: 1    min-length: 1   Maksuturva=Y, eMaksut=N.
+		'pmt_escrow',               // Alpha         max-length: 1    min-length: 1   Y/N.
 		'pmt_escrowchangeallowed',  // Alpha         max-length: 1    min-length: 1   N.
 		'pmt_buyername',            // Alphanumeric  max-length: 40   -.
 		'pmt_buyeraddress',         // Alphanumeric  max-length: 40   -.
@@ -619,9 +619,9 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	/**
 	 * Get the reference number.
 	 *
-	 * Turn the given reference number into a Maksuturva reference number.
+	 * Turn the given reference number into a Svea reference number.
 	 *
-	 * @param int $number The reference number to apply to the Maksuturva reference number.
+	 * @param int $number The reference number to apply to the Svea reference number.
 	 *
 	 * @since 2.0.0
 	 *
@@ -883,7 +883,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * @since 2.0.0
 	 *
 	 * @return array|bool
-	 * @throws WC_Gateway_Maksuturva_Exception If curl not found, or failure to communicate with Maksuturva.
+	 * @throws WC_Gateway_Maksuturva_Exception If curl not found, or failure to communicate with Svea.
 	 */
 	public function status_query( $data = array() ) {
 		if ( ! function_exists( 'curl_init' ) ) {
@@ -1118,7 +1118,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	/**
 	 * Set payment data.
 	 *
-	 * Sets the payment data to be sent to the Maksuturva payment gateway.
+	 * Sets the payment data to be sent to the Svea payments gateway.
 	 *
 	 * @param array $payment_data The payment data.
 	 *

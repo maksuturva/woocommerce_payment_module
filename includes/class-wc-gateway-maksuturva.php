@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Maksuturva Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
- * Plugin developed for Maksuturva
- * Last update: 08/03/2016
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
+ * Plugin developed for Svea
+ * Last update: 24/10/2019
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,7 @@ require_once 'class-wc-order-compatibility-handler.php';
 /**
  * Class WC_Gateway_Maksuturva.
  *
- * Handles the administration of the Maksuturva payment gateway. Handles checking of Maksuturva responses.
+ * Handles the administration of the Svea payments gateway. Handles checking of Svea responses.
  *
  * @since 2.0.0
  */
@@ -65,7 +65,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	protected $notify_url;
 
 	/**
-	 * The Maksuturva queue table name.
+	 * The Svea queue table name.
 	 *
 	 * @since 2.0.0
 	 *
@@ -89,12 +89,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		$this->title              = $this->get_option( 'title' );
 		$this->description        = $this->get_option( 'description' );
-		$this->method_title       = __( 'Maksuturva', $this->td );
-		$this->method_description = __( 'Take payments via Maksuturva.', $this->td );
+		$this->method_title       = __( 'Svea', $this->td );
+		$this->method_description = __( 'Take payments via Svea.', $this->td );
 
 		$this->notify_url = WC()->api_request_url( $this->id );
 
-		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'maksuturva_logo.png';
+		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 
 		$this->table_name = $wpdb->prefix . 'maksuturva_queue';
 
@@ -131,7 +131,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$form['enabled'] = array(
 			'title'   => __( 'Enable/Disable', $this->td ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Maksuturva Payment Gateway', $this->td ),
+			'label'   => __( 'Enable Svea Payments Gateway', $this->td ),
 			'default' => 'yes',
 		);
 
@@ -139,7 +139,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'title'       => __( 'Title', $this->td ),
 			'type'        => 'text',
 			'description' => __( 'This controls the title which the user sees during checkout.', $this->td ),
-			'default'     => __( 'Maksuturva', $this->td ),
+			'default'     => __( 'Svea', $this->td ),
 			'desc_tip'    => true,
 		);
 
@@ -147,7 +147,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'title'       => __( 'Customer Message', $this->td ),
 			'type'        => 'textarea',
 			'description' => __( 'This message is shown below the payment method on the checkout page.', $this->td ),
-			'default'     => __( 'Pay via Maksuturva.', $this->td ),
+			'default'     => __( 'Pay via Svea.', $this->td ),
 			'desc_tip'    => true,
 			'css'         => 'width: 25em;',
 		);
@@ -162,20 +162,20 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'type'        => 'textfield',
 			'title'       => __( 'Seller id', $this->td ),
 			'desc_tip'    => true,
-			'description' => __( 'The seller identification provided by Maksuturva upon your registration.',
+			'description' => __( 'The seller identification provided by Svea upon your registration.',
 			$this->td ),
 		);
 		$form['maksuturva_secretkey']  = array(
 			'type'        => 'textfield',
 			'title'       => __( 'Secret Key', $this->td ),
 			'desc_tip'    => true,
-			'description' => __( 'Your unique secret key provided by Maksuturva.', $this->td ),
+			'description' => __( 'Your unique secret key provided by Svea.', $this->td ),
 		);
 		$form['maksuturva_keyversion'] = array(
 			'type'        => 'textfield',
 			'title'       => __( 'Secret Key Version', $this->td ),
 			'desc_tip'    => true,
-			'description' => __( 'The version of the secret key provided by Maksuturva.', $this->td ),
+			'description' => __( 'The version of the secret key provided by Svea.', $this->td ),
 			'default'     => get_option( 'maksuturva_keyversion', '001' ),
 		);
 
@@ -190,7 +190,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'type'        => 'textfield',
 			'title'       => __( 'Gateway URL', $this->td ),
 			'desc_tip'    => true,
-			'description' => __( 'The URL used to communicate with Maksuturva. Do not change this configuration unless you know what you are doing.',
+			'description' => __( 'The URL used to communicate with Svea. Do not change this configuration unless you know what you are doing.',
 			$this->td ),
 			'default'     => get_option( 'maksuturva_url', 'https://www.maksuturva.fi' ),
 		);
@@ -207,17 +207,17 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'type'        => 'checkbox',
 			'title'       => __( 'Sandbox mode', $this->td ),
 			'default'     => 'no',
-			'description' => __( 'Maksuturva sandbox can be used to test payments. None of the payments will be real.',
+			'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.',
 			$this->td ),
 			'options'     => array( 'yes' => '1', 'no' => '0' ),
 		);
 
 		$form['maksuturva_encoding'] = array(
 			'type'        => 'radio',
-			'title'       => __( 'Maksuturva encoding', $this->td ),
+			'title'       => __( 'Svea encoding', $this->td ),
 			'desc_tip'    => true,
 			'default'     => 'UTF-8',
-			'description' => __( 'The encoding used for Maksuturva.', $this->td ),
+			'description' => __( 'The encoding used for Svea.', $this->td ),
 			'options'     => array( 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ),
 		);
 
@@ -294,7 +294,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	/**
 	 * Get the queue table name.
 	 *
-	 * Returns the name of the Maksuturva queue table.
+	 * Returns the name of the Svea queue table.
 	 *
 	 * @since 2.0.0
 	 *
@@ -309,7 +309,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Returns the OK, ERROR, CANCEL, DELAY URL for the payment gateway.
 	 *
-	 * @param string $payment_id The Maksuturva payment ID.
+	 * @param string $payment_id The Svea payment ID.
 	 * @param string $type       The type, one of: ok, cancel, error, delay
 	 *
 	 * @since 2.0.0
@@ -327,7 +327,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Constructs the URL from notify_url, and adds session id and order id to the URL.
 	 *
-	 * @param string $payment_id The Maksuturva payment ID.
+	 * @param string $payment_id The Svea payment ID.
 	 *
 	 * @since 2.0.0
 	 *
@@ -455,7 +455,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Returns the order found by the given payment id.
 	 *
-	 * @param string $pmt_id The Maksuturva payment id.
+	 * @param string $pmt_id The Svea payment id.
 	 *
 	 * @since 2.0.0
 	 *
@@ -485,15 +485,16 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		);
 	}
 
-	/**
-	 * Print receipt page.
-	 *
-	 * Shows the receipt page and redirects the user to the payment gateway.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param int $order_id The order id.
-	 */
+    /**
+     * Print receipt page.
+     *
+     * Shows the receipt page and redirects the user to the payment gateway.
+     *
+     * @param int $order_id The order id.
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.0
+     *
+     */
 	public function receipt_page( $order_id ) {
 
 		$order               = wc_get_order( $order_id );
@@ -502,7 +503,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$payment_gateway_url = $gateway->get_payment_url();
 		$data                = $gateway->get_field_array();
 
-		// Create the payment for Maksuturva.
+		// Create the payment for Svea.
 		WC_Payment_Maksuturva::create( array(
 			'order_id'      => $order_handler->get_id(),
 			'payment_id'    => $data['pmt_id'],
@@ -518,7 +519,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	/**
 	 * Check response.
 	 *
-	 * Checks the response from Maksuturva, validates the response, and redirects to correct URL.
+	 * Checks the response from Svea, validates the response, and redirects to correct URL.
 	 *
 	 * @since 2.0.0
 	 */
@@ -573,7 +574,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				$this->order_fail( $order, $payment );
 				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Error from Maksuturva received.', $this->td ), 'error' );
+					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
 				}
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
@@ -581,7 +582,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 				$this->order_delay( $order, $payment );
 				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Payment delayed by Maksuturva.', $this->td ), 'notice' );
+					$this->add_notice( __( 'Payment delayed by Svea.', $this->td ), 'notice' );
 				}
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
@@ -589,7 +590,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
 				$this->order_cancel( $order, $payment );
 				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Cancellation from Maksuturva received.', $this->td ), 'notice' );
+					$this->add_notice( __( 'Cancellation from Svea received.', $this->td ), 'notice' );
 				}
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $order->get_cancel_order_url() ) );
 				break;
@@ -599,7 +600,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				$this->order_complete( $order, $payment );
 				$woocommerce->cart->empty_cart();
 				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Payment confirmed by Maksuturva.', $this->td ), 'success' );
+					$this->add_notice( __( 'Payment confirmed by Svea.', $this->td ), 'success' );
 				}
 				wp_redirect( $this->get_return_url( $order ) );
 				break;
@@ -664,20 +665,21 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		}
 	}
 
-	/**
-	 * Fails order.
-	 *
-	 * Fails the order and payment if not already failed.
-	 *
-	 * @param WC_Order $order The order.
-	 * @param WC_Payment_Maksuturva $payment The payment.
-	 *
-	 * @since 2.0.2
-	 */
+    /**
+     * Fails order.
+     *
+     * Fails the order and payment if not already failed.
+     *
+     * @param WC_Order $order The order.
+     * @param WC_Payment_Maksuturva $payment The payment.
+     *
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.2
+     */
 	protected function order_fail( $order, $payment ) {
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_FAILED ) ) {
 			$order->update_status( WC_Payment_Maksuturva::STATUS_FAILED,
-				__( 'Error from Maksuturva received.', $this->td ) );
+				__( 'Error from Svea received.', $this->td ) );
 		}
 
 		if (! $payment->is_error() ) {
@@ -686,19 +688,20 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		}
 	}
 
-	/**
-	 * Cancel order.
-	 *
-	 * Cancels the order and payment if not already cancelled.
-	 *
-	 * @param WC_Order $order The order.
-	 * @param WC_Payment_Maksuturva $payment The payment.
-	 *
-	 * @since 2.0.2
-	 */
+    /**
+     * Cancel order.
+     *
+     * Cancels the order and payment if not already cancelled.
+     *
+     * @param WC_Order $order The order.
+     * @param WC_Payment_Maksuturva $payment The payment.
+     *
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.2
+     */
 	protected function order_cancel( $order, $payment ) {
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_CANCELLED ) ) {
-			$order->cancel_order( __( 'Cancellation from Maksuturva received.', $this->td ) );
+			$order->cancel_order( __( 'Cancellation from Svea received.', $this->td ) );
 		}
 
 		if ( ! $payment->is_cancelled() ) {
@@ -706,16 +709,17 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		}
 	}
 
-	/**
-	 * Delay order.
-	 *
-	 * Delay the order and payment if not already delayed.
-	 *
-	 * @param WC_Order $order The order.
-	 * @param WC_Payment_Maksuturva $payment The payment.
-	 *
-	 * @since 2.0.2
-	 */
+    /**
+     * Delay order.
+     *
+     * Delay the order and payment if not already delayed.
+     *
+     * @param WC_Order $order The order.
+     * @param WC_Payment_Maksuturva $payment The payment.
+     *
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.2
+     */
 	protected function order_delay( $order, $payment ) {
 		if ( ! $payment->is_delayed() ) {
 			$this->add_surcharge( $payment, $order );
@@ -723,16 +727,17 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		}
 	}
 
-	/**
-	 * Complete order.
-	 *
-	 * Completes the order and payment if not already completed.
-	 *
-	 * @param WC_Order $order The order.
-	 * @param WC_Payment_Maksuturva $payment The payment.
-	 *
-	 * @since 2.0.2
-	 */
+    /**
+     * Complete order.
+     *
+     * Completes the order and payment if not already completed.
+     *
+     * @param WC_Order $order The order.
+     * @param WC_Payment_Maksuturva $payment The payment.
+     *
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.2
+     */
 	protected function order_complete( $order, $payment ) {
 		if ( ! $this->is_order_paid( $order ) ) {
 			$order->payment_complete( $payment->get_payment_id() );

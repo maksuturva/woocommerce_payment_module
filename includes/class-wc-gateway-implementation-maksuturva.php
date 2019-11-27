@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Maksuturva Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
- * Plugin developed for Maksuturva
- * Last update: 08/03/2016
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
+ * Plugin developed for Svea
+ * Last update: 24/10/2019
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -83,14 +83,15 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	public $td;
 
-	/**
-	 * WC_Gateway_Implementation_Maksuturva constructor.
-	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
-	 * @param WC_Order              $order   The order.
-	 *
-	 * @since 2.0.0
-	 */
+    /**
+     * WC_Gateway_Implementation_Maksuturva constructor.
+     *
+     * @param WC_Gateway_Maksuturva $gateway The gateway object.
+     * @param WC_Order $order The order.
+     *
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.0
+     */
 	public function __construct( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
 		$this->set_base_url( $gateway->get_gateway_url() );
 		$this->seller_id  = ( $gateway->is_sandbox() ? self::SANDBOX_SELLER_ID : $gateway->get_seller_id() );
@@ -104,7 +105,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	/**
 	 * Create payment data.
 	 *
-	 * Creates the payment data to be used for the Maksuturva payment gateway.
+	 * Creates the payment data to be used for the Svea payments gateway.
 	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
 	 * @param WC_Order              $order   The order.
@@ -384,7 +385,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	/**
 	 * Get locale.
 	 *
-	 * Returns the locale to be used with Maksuturva.
+	 * Returns the locale to be used with Svea.
 	 *
 	 * @since 2.0.0
 	 *
@@ -409,7 +410,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	/**
 	 * Get the payment id.
 	 *
-	 * Returns the payment id for Maksuturva.
+	 * Returns the payment id for Svea.
 	 *
 	 * @param WC_Order $order The order.
 	 *
@@ -494,17 +495,18 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		return ( ( (int) $pmt_id - 100 ) == $this->pmt_orderid );
 	}
 
-	/**
-	 * Validate a payment.
-	 *
-	 * Runs the Maksuturva Payment Validator on the given params.
-	 *
-	 * @param array $params The parameters to validate.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return WC_Payment_Validator_Maksuturva
-	 */
+    /**
+     * Validate a payment.
+     *
+     * Runs the Svea Payment Validator on the given params.
+     *
+     * @param array $params The parameters to validate.
+     *
+     * @return WC_Payment_Validator_Maksuturva
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.0.0
+     *
+     */
 	public function validate_payment( array $params ) {
 		$validator = new WC_Payment_Validator_Maksuturva( $this );
 
