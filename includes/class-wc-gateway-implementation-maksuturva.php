@@ -222,6 +222,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		if ( $this->shipping_cost > 0 ) {
 			if ( floatval( $order->get_total_shipping() ) > 0 ) {
 				$shipping_tax = 100 * ( floatval( $order->get_shipping_tax() ) / floatval( $order->get_total_shipping() ) );
+				/***
+			 	* Round shipping tax to nearest 0.5
+			 	*/
+				$shipping_tax = round($shipping_tax*2)/2;
 			} else {
 				$shipping_tax = 0;
 			}
@@ -296,6 +300,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			if ( $fee_total > 0 ) {
 				$fee_tax = 100 * ($fee['line_tax'] / $fee['line_total']);
+				/***
+			 	* Round fee tax to nearest 0.5
+			 	*/
+				$fee_tax = round($fee_tax*2)/2;
 			} else {
 				$fee_tax = 0;
 			}

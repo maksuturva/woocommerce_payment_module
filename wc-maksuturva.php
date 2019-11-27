@@ -1,15 +1,15 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payment Gateway
  *
- * @package     WooCommerce Maksuturva Payment Gateway
+ * @package     WooCommerce Svea Payment Gateway
  *
  * @wordpress-plugin
- * Plugin Name: WooCommerce Maksuturva Payment Gateway
+ * Plugin Name: WooCommerce Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
- * Description: A plugin for Maksuturva, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.0.8
- * Author:      Maksuturva Group Oy
+ * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
+ * Version:     2.0.9
+ * Author:      Svea Development Oy
  * Author URI:  http://www.maksuturva.fi
  * Text Domain: wc-maksuturva
  * Domain Path: /languages/
@@ -19,7 +19,7 @@
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Maksuturva
  * Last update: 08/03/2016
  *
@@ -74,7 +74,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.0.8';
+	const VERSION = '2.0.9';
 
 	/**
 	 * Plugin DB version.

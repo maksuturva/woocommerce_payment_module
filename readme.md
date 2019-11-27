@@ -13,7 +13,7 @@ Svea Payments payment module for WooCommerce.
 
 ## Description
 
-Copyright (C) 2016 Svea Developments Oy
+Copyright (C) 2016 Svea Development Oy
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later
@@ -30,12 +30,16 @@ Mechelininkatu 1a
 Finland
 e-mail: info.payments@svea.fi
 
-Svea Developments Oy, hereby disclaims all copyright interest in the library 'maksuturva-for-woocommerce'
+Svea Development Oy, hereby disclaims all copyright interest in the library 'maksuturva-for-woocommerce'
 written for Svea Payments Oy
 
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.0.9
+* Added timestamp and platform information to status query API request
+* Changed sales_tax ALV rounding to nearest .5 decimal
 
 ### 2.0.8
 * Removed usage of deprecated class WC_Order_Item_Meta if WooCommerce version is 3 or higher

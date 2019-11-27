@@ -900,7 +900,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_resptype'      => 'XML',
 			'pmtq_return'        => '',
 			'pmtq_hashversion'   => $this->payment_data['pmt_hashversion'],
-			'pmtq_keygeneration' => '001',
+			'pmtq_keygeneration' => '001', 
+			"req_ts_ms"          => \DateTime::createFromFormat('U.u', microtime(TRUE))->format('Y-m-d H:i:s:u')
 		);
 		// Overrides with user-defined fields.
 		$this->status_query_data = array_merge( $default_fields, $data );
@@ -925,6 +926,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		curl_setopt( $request, CURLOPT_POST, 1 );
 		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
 		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 120 );
+		curl_setopt( $request, CURLOPT_USERAGENT, $this->get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
 		$res = curl_exec( $request );
 		if ( false === $res ) {
@@ -1152,6 +1154,16 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 				'the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!',
 				self::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED
 			);
+		}
+	}
+
+	public function get_user_agent()
+	{
+		$module_version = "Svea Woocommerce module/" . WC_Maksuturva::VERSION;
+		try {
+			return $module_version . " (" . php_uname('s') . " " . php_uname('r') . ") Woocommerce/" . WC_VERSION;
+		} catch (Exception $e) {
+			return $module_version;
 		}
 	}
 }
