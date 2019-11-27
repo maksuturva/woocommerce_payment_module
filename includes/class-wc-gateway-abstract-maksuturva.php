@@ -926,7 +926,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		curl_setopt( $request, CURLOPT_POST, 1 );
 		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
 		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 120 );
-		curl_setopt( $request, CURLOPT_USERAGENT, $this->get_user_agent() );
+		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
 		$res = curl_exec( $request );
 		if ( false === $res ) {
@@ -1136,6 +1136,10 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 				$this->payment_data[ $key ] = str_replace( '&amp;', '', $value );
 			}
 		}
+
+		$this->payment_data['client_info'] = WC_Utils_Maksuturva::get_user_agent();
+		$this->payment_data['req_ts_ms'] = \DateTime::createFromFormat('U.u', microtime(TRUE))->format('Y-m-d H:i:s:u');
+
 		$hashing_algorithms = hash_algos();
 		if ( in_array( 'sha512', $hashing_algorithms ) ) {
 			$this->payment_data['pmt_hashversion'] = 'SHA-512';
@@ -1155,18 +1159,5 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 				self::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED
 			);
 		}
-	}
-
-	public function get_user_agent()
-	{
-		$user_agent = "Svea Payments module/" . WC_Maksuturva::VERSION;
-
-		try {
-			$user_agent = mb_convert_encoding($user_agent . " (" . php_uname('s') . 
-				" " . php_uname('r') . ") Woocommerce/" . WC_VERSION . " PHP/" . phpversion(), "ASCII");
-		} catch (Exception $e) {
-			// nop
-		}
-		return $user_agent;
 	}
 }

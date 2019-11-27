@@ -84,4 +84,20 @@ class WC_Utils_Maksuturva {
 	public static function filter_description( $description ) {
 		return self::filter_characters( html_entity_decode( strip_tags( $description ) ) );
 	}
+
+	/***
+	 * Generate S2S User-Agent
+	 */
+	public static function get_user_agent()
+	{
+		$user_agent = "Svea Payments module/" . WC_Maksuturva::VERSION;
+
+		try {
+			$user_agent = mb_convert_encoding($user_agent . " (" . php_uname('s') . 
+				" " . php_uname('r') . ") Woocommerce/" . WC_VERSION . " PHP/" . phpversion(), "ASCII");
+		} catch (Exception $e) {
+			// nop
+		}
+		return $user_agent;
+	}
 }
