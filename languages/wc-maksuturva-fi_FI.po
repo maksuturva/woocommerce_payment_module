@@ -1,8 +1,8 @@
-# Copyright (C) 2016 WooCommerce Maksuturva Payment Gateway
-# This file is distributed under the same license as the WooCommerce Maksuturva Payment Gateway package.
+# Copyright (C) 2016 WooCommerce Svea Payments Gateway
+# This file is distributed under the same license as the WooCommerce Svea Payments Gateway package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Maksuturva Payment Gateway\n"
+"Project-Id-Version: WooCommerce Svea Payments Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
@@ -23,20 +23,20 @@ msgstr "Alennus"
 
 #: includes/class-wc-gateway-maksuturva.php:86
 #: includes/class-wc-gateway-maksuturva.php:136
-msgid "Maksuturva"
-msgstr "Maksuturva"
+msgid "Svea"
+msgstr "Svea"
 
 #: includes/class-wc-gateway-maksuturva.php:87
-msgid "Take payments via Maksuturva."
-msgstr "Vastaanota maksuja Maksuturvan kautta."
+msgid "Take payments via Svea."
+msgstr "Vastaanota maksuja Svean kautta."
 
 #: includes/class-wc-gateway-maksuturva.php:126
 msgid "Enable/Disable"
 msgstr "Ota käyttöön / poista käytöstä"
 
 #: includes/class-wc-gateway-maksuturva.php:128
-msgid "Enable Maksuturva Payment Gateway"
-msgstr "Käytä Maksuturvan maksunvälitystä"
+msgid "Enable Svea Payments Gateway"
+msgstr "Käytä Svean maksunvälitystä"
 
 #: includes/class-wc-gateway-maksuturva.php:133
 msgid "Title"
@@ -55,8 +55,8 @@ msgid "This message is shown below the payment method on the checkout page."
 msgstr "Tämä viesti näkyy maksukäytävävalinnan alapuolella kassalla."
 
 #: includes/class-wc-gateway-maksuturva.php:144
-msgid "Pay via Maksuturva."
-msgstr "Maksa Svea Payments maksutavalla."
+msgid "Pay via Svea."
+msgstr "Maksa Maksuturvalla."
 
 #: includes/class-wc-gateway-maksuturva.php:150
 msgid "Account settings"
@@ -67,7 +67,7 @@ msgid "Seller id"
 msgstr "Kauppiastunnus"
 
 #: includes/class-wc-gateway-maksuturva.php:159
-msgid "The seller identification provided by Maksuturva upon your registration."
+msgid "The seller identification provided by Svea upon your registration."
 msgstr "Kauppiastunnus, jonka saa rekisteröityessä Maksuturvaan kauppiaaksi."
 
 #: includes/class-wc-gateway-maksuturva.php:164
@@ -75,16 +75,16 @@ msgid "Secret Key"
 msgstr "Salainen avain"
 
 #: includes/class-wc-gateway-maksuturva.php:166
-msgid "Your unique secret key provided by Maksuturva."
-msgstr "Maksuturvan toimittama salainen avain"
+msgid "Your unique secret key provided by Svea."
+msgstr "Svean toimittama salainen avain"
 
 #: includes/class-wc-gateway-maksuturva.php:170
 msgid "Secret Key Version"
 msgstr "Salaisen avaimen versio"
 
 #: includes/class-wc-gateway-maksuturva.php:172
-msgid "The version of the secret key provided by Maksuturva."
-msgstr "Maksuturvan toimittaman avaimen versio."
+msgid "The version of the secret key provided by Svea."
+msgstr "Svean toimittaman avaimen versio."
 
 #: includes/class-wc-gateway-maksuturva.php:177
 msgid "Advanced settings"
@@ -95,8 +95,8 @@ msgid "Gateway URL"
 msgstr "Välityspalvelun URL"
 
 #: includes/class-wc-gateway-maksuturva.php:187
-msgid "The URL used to communicate with Maksuturva. Do not change this configuration unless you know what you are doing."
-msgstr "URL, jota käytetään Maksuturvan kanssa. Yleensä tätä ei pidä muuttaa."
+msgid "The URL used to communicate with Svea. Do not change this configuration unless you know what you are doing."
+msgstr "URL, jota käytetään Svean kanssa. Yleensä tätä ei pidä muuttaa."
 
 #: includes/class-wc-gateway-maksuturva.php:194
 msgid "Payment Prefix"
@@ -104,23 +104,23 @@ msgstr "Maksun etuliite"
 
 #: includes/class-wc-gateway-maksuturva.php:196
 msgid "Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall."
-msgstr "Maksun etuosa, joka lisätään maksutapahtuman numeroon. Voidaan käyttää yksilöimään maksutapahtumat esimerkiksi Woocommercen uudelleenasennuksen jälkeen, mikäli Maksuturva palauttaa virheitä päällekkäisistä tilausnumeroista."
+msgstr "Maksun etuosa, joka lisätään maksutapahtuman numeroon. Voidaan käyttää yksilöimään maksutapahtumat esimerkiksi Woocommercen uudelleenasennuksen jälkeen, mikäli Svea palauttaa virheitä päällekkäisistä tilausnumeroista."
 
 #: includes/class-wc-gateway-maksuturva.php:202
 msgid "Sandbox mode"
 msgstr "Käytä yleistä testitunnusta"
 
 #: includes/class-wc-gateway-maksuturva.php:204
-msgid "Maksuturva sandbox can be used to test payments. None of the payments will be real."
+msgid "Svea sandbox can be used to test payments. None of the payments will be real."
 msgstr "Sandbox-moodia voidaan käyttää testaamiseen. Mitään maksuja ei suoriteta."
 
 #: includes/class-wc-gateway-maksuturva.php:211
-msgid "Maksuturva encoding"
+msgid "Svea encoding"
 msgstr "Merkistöenkoodaus"
 
 #: includes/class-wc-gateway-maksuturva.php:214
-msgid "The encoding used for Maksuturva."
-msgstr "Merkistöenkoodaus jota Maksuturva tukee."
+msgid "The encoding used for Svea."
+msgstr "Merkistöenkoodaus jota Svea tukee."
 
 #: includes/class-wc-gateway-maksuturva.php:524
 msgid "Payment gateway not available."
@@ -136,40 +136,40 @@ msgstr "Tilausta ei voitu käsitellä."
 
 #: includes/class-wc-gateway-maksuturva.php:563
 #: includes/class-wc-gateway-maksuturva.php:660
-msgid "Error from Maksuturva received."
-msgstr "Maksuturva palautti virheen."
+msgid "Error from Svea received."
+msgstr "Svea palautti virheen."
 
 #: includes/class-wc-gateway-maksuturva.php:569
-msgid "Payment delayed by Maksuturva."
+msgid "Payment delayed by Svea."
 msgstr "Viivästetty maksu Maksuturvassa."
 
 #: includes/class-wc-gateway-maksuturva.php:575
 #: includes/class-wc-gateway-maksuturva.php:681
-msgid "Cancellation from Maksuturva received."
+msgid "Cancellation from Svea received."
 msgstr "Peruutettu Maksuturvassa."
 
 #: includes/class-wc-gateway-maksuturva.php:583
-msgid "Payment confirmed by Maksuturva."
-msgstr "Maksuturva varmensi maksun."
+msgid "Payment confirmed by Svea."
+msgstr "Svea varmensi maksun."
 
 #: includes/class-wc-gateway-maksuturva.php:623
 msgid "Surcharge from Payment Gateway"
 msgstr "Lisämaksu maksukäytävästä"
 
 #: includes/class-wc-meta-box-maksuturva.php:94
-msgid "The payment is confirmed by Maksuturva"
+msgid "The payment is confirmed by Svea"
 msgstr "Maksu varmistettiin Maksuturvassa"
 
 #: includes/class-wc-meta-box-maksuturva.php:98
-msgid "The payment is canceled by Maksuturva"
+msgid "The payment is canceled by Svea"
 msgstr "Tilaus peruttiin Maksuturvassa"
 
 #: includes/class-wc-meta-box-maksuturva.php:102
-msgid "The payment could not be confirmed by Maksuturva, please check manually"
+msgid "The payment could not be confirmed by Svea, please check manually"
 msgstr "Tapahtui virhe eikä maksusuoritusta voitu vahvistaa. Varmista maksusuoritus manuaalisesti."
 
 #: includes/class-wc-meta-box-maksuturva.php:108
-msgid "The payment is still waiting for confirmation by Maksuturva"
+msgid "The payment is still waiting for confirmation by Svea"
 msgstr "Maksusuoritus odottaa vahvistusta"
 
 #: includes/class-wc-payment-validator-maksuturva.php:196
@@ -205,12 +205,12 @@ msgid "Invalid payment amount (obtained %s, expected %s)"
 msgstr "Virheellinen maksun määrä (saatiin %s, odotettiin %s)"
 
 #: templates/admin/not-supported-banner.php:39
-msgid "Maksuturva does not support your store currency. Only EUR is supported."
-msgstr "Maksuturva ei tue kaupan valuuttaa. Vain EUR on tuettu."
+msgid "Svea does not support your store currency. Only EUR is supported."
+msgstr "Svea ei tue kaupan valuuttaa. Vain EUR on tuettu."
 
 #: templates/frontend/maksuturva-form.php:42
-msgid "Thank you for your order. You will now be redirected to Maksuturva to complete the payment."
-msgstr "Kiitos tilauksestasi. Ohjaamme sinut nyt Maksuturvan sivuille maksamista varten."
+msgid "Thank you for your order. You will now be redirected to Svea to complete the payment."
+msgstr "Kiitos tilauksestasi. Ohjaamme sinut nyt Svean sivuille maksamista varten."
 
 #: templates/frontend/maksuturva-form.php:74
 msgid "Cancel order"
@@ -221,8 +221,8 @@ msgid "Pay for order"
 msgstr "Maksa tilaus"
 
 #: wc-maksuturva.php:197
-msgid "Maksuturva order details"
-msgstr "Maksuturvan tilauksen tiedot"
+msgid "Svea order details"
+msgstr "Svean tilauksen tiedot"
 
 #: wc-maksuturva.php:215
 msgid "Once every 5 minutes"
@@ -233,19 +233,19 @@ msgid "Settings"
 msgstr "Asetukset"
 
 #. Plugin Name of the plugin/theme
-msgid "WooCommerce Maksuturva Payment Gateway"
-msgstr "Maksuturvan maksunvälityspalvelu"
+msgid "WooCommerce Svea Payments Gateway"
+msgstr "Svean maksunvälityspalvelu"
 
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/maksuturva/woocommerce_payment_module"
 msgstr ""
 
 #. Description of the plugin/theme
-msgid "A plugin for Maksuturva, which provides intelligent online payment services consisting of the most"
-msgstr "Maksuturva on maksupalveluntarjoaja, jonka älykäs palvelukokonaisuus vastaa vaativankin verkkokaupan tarpeisiin."
+msgid "A plugin for Svea, which provides intelligent online payment services consisting of the most"
+msgstr "Svea on maksupalveluntarjoaja, jonka älykäs palvelukokonaisuus vastaa vaativankin verkkokaupan tarpeisiin."
 
 #. Author of the plugin/theme
-msgid "Maksuturva Group Oy"
+msgid "Svea Payments Oy"
 msgstr ""
 
 #. Author URI of the plugin/theme

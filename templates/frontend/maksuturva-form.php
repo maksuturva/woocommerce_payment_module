@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Maksuturva Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
- * Plugin developed for Maksuturva
- * Last update: 08/03/2016
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
+ * Plugin developed for Svea
+ * Last update: 24/10/2019
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @var WC_Gateway_Maksuturva $this                The context where this template is called from.
  * @var WC_Order              $order               The order.
- * @var array                 $data                The data to be sent to Maksuturva.
+ * @var array                 $data                The data to be sent to Svea.
  * @var string                $payment_gateway_url The gateway URL.
  *
  * @since 2.0.0
@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <?php
-$msg = __( 'Thank you for your order. You will now be redirected to Maksuturva to complete the payment.', $this->td );
+$msg = __( 'Thank you for your order. You will now be redirected to Svea to complete the payment.', $this->td );
 wc_enqueue_js( '
 		$.blockUI({
 				message: "' . esc_js( $msg ) . '",

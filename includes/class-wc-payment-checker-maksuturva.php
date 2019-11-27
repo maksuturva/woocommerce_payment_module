@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Maksuturva Payment Gateway
+ * WooCommerce Svea Payments Gateway
  *
- * @package WooCommerce Maksuturva Payment Gateway
+ * @package WooCommerce Svea Payments Gateway
  */
 
 /**
- * Maksuturva Payment Gateway Plugin for WooCommerce 2.x, 3.x
- * Plugin developed for Maksuturva
- * Last update: 08/03/2016
+ * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
+ * Plugin developed for Svea
+ * Last update: 24/10/2019
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WC_Payment_Checker_Maksuturva.
  *
- * Handles checking the status of payments using the Maksuturva API.
+ * Handles checking the status of payments using the Svea API.
  *
  * @since 2.0.2
  */
@@ -92,7 +92,7 @@ class WC_Payment_Checker_Maksuturva {
 	/**
 	 * Checks a payments status.
 	 *
-	 * Queries Maksuturva API for payment status and updates order if needed.
+	 * Queries Svea API for payment status and updates order if needed.
 	 *
 	 * @param WC_Payment_Maksuturva $payment the payment.
 	 *
@@ -129,7 +129,7 @@ class WC_Payment_Checker_Maksuturva {
 				case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED_PARTIAL_RETURN:
 				case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_RECLAMATION:
 				case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_CANCELLED:
-					// The payment was canceled in Maksuturva
+					// The payment was canceled in Svea
 					$payment->cancel();
 					$order->cancel_order();
 					break;
@@ -154,7 +154,7 @@ class WC_Payment_Checker_Maksuturva {
 	/**
 	 * Checks a list of payments statuses.
 	 *
-	 * Queries Maksuturva API for payment statuses and updates orders if needed.
+	 * Queries Svea API for payment statuses and updates orders if needed.
 	 *
 	 * @param WC_Payment_Maksuturva[] $payments the payments.
 	 *
@@ -174,7 +174,7 @@ class WC_Payment_Checker_Maksuturva {
 	/**
 	 * Inserts status query log.
 	 *
-	 * Inserts a log entry to the db for the Maksuturva API status query.
+	 * Inserts a log entry to the db for the Svea API status query.
 	 *
 	 * @param WC_Payment_Maksuturva $payment  the payment.
 	 * @param array                 $response the response.
