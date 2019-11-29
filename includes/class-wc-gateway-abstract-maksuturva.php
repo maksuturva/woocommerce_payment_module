@@ -1137,7 +1137,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			}
 		}
 
-		$this->payment_data['client_info'] = WC_Utils_Maksuturva::get_user_agent();
+		$this->payment_data['server_info'] = WC_Utils_Maksuturva::get_user_agent();
 		$this->payment_data['req_ts_ms'] = \DateTime::createFromFormat('U.u', microtime(TRUE))->format('Y-m-d H:i:s:u');
 
 		$hashing_algorithms = hash_algos();

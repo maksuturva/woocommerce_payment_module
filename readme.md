@@ -5,7 +5,7 @@
 **Tested up to:** 5.1.1  
 **Stable tag:** 2.1.0  
 **WC requires at least:** 2.2.10  
-**WC tested up to:** 3.8.0 
+**WC tested up to:** 3.8.1   
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
