@@ -36,7 +36,7 @@ msgstr "Ota käyttöön / poista käytöstä"
 
 #: includes/class-wc-gateway-maksuturva.php:128
 msgid "Enable Svea Payments Gateway"
-msgstr "Käytä Svean maksunvälitystä"
+msgstr "Käytä Svea Payments maksupalvelua"
 
 #: includes/class-wc-gateway-maksuturva.php:133
 msgid "Title"
@@ -56,7 +56,7 @@ msgstr "Tämä viesti näkyy maksukäytävävalinnan alapuolella kassalla."
 
 #: includes/class-wc-gateway-maksuturva.php:144
 msgid "Pay via Svea."
-msgstr "Maksa Maksuturvalla."
+msgstr "Svea Payments maksu"
 
 #: includes/class-wc-gateway-maksuturva.php:150
 msgid "Account settings"
