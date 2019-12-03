@@ -1,14 +1,14 @@
 <?php
 /**
- * WooCommerce Svea Payment Gateway
+ * Svea Payment Gateway
  *
- * @package     WooCommerce Svea Payment Gateway
+ * @package     Svea Payment Gateway
  *
  * @wordpress-plugin
- * Plugin Name: WooCommerce Svea Payment Gateway
+ * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.1.0
+ * Version:     2.1.1
  * Author:      Svea Development Oy
  * Author URI:  http://www.maksuturva.fi
  * Text Domain: wc-maksuturva
@@ -16,6 +16,8 @@
  * Requires at least: 4.0
  * Tested up to: 4.4.2
  * License:      LGPL2.1
+ * WC requires at least: 2.2.0
+ * WC tested up to: 3.8.1
  */
 
 /**
@@ -51,9 +53,9 @@ if ( ! function_exists( '_log' ) ) {
 	 */
 	function _log( $message ) {
 		if ( is_array( $message ) || is_object( $message ) ) {
-			error_log( var_export( $message, true ) );
+			error_log('**************** HENE ################ Maksuturva plugin: ' . var_export( $message, true ) );
 		} else {
-			error_log( $message );
+			error_log('**************** HENE ################ Maksuturva plugin: ' . $message );
 		}
 	}
 }
@@ -74,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.1.0';
+	const VERSION = '2.1.1';
 
 	/**
 	 * Plugin DB version.
@@ -184,23 +186,27 @@ class WC_Maksuturva {
 	 * @since 2.0.2 Add cron schedules, and action to check pending payments.
 	 * @since 2.0.0
 	 */
-	public function init() {
-		$this->update_db_check();
+	public function init()
+	{
+		try {
+			$this->update_db_check();
 
-		load_plugin_textdomain( 'wc-maksuturva', false, basename( dirname( __FILE__ ) ) . '/languages' );
+			load_plugin_textdomain('wc-maksuturva', false, basename(dirname(__FILE__)) . '/languages');
 
-		add_filter( 'woocommerce_payment_gateways', array( $this, 'add_maksuturva_gateway' ) );
-		add_filter( 'plugin_action_links_' . $this->plugin_name, array( __CLASS__, 'maksuturva_action_links' ) );
+			add_filter('woocommerce_payment_gateways', array($this, 'add_maksuturva_gateway'));
+			add_filter('plugin_action_links_' . $this->plugin_name, array(__CLASS__, 'maksuturva_action_links'));
+			add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
+			add_filter('cron_schedules', array($this, 'register_cron_schedules'));
 
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+			if (!wp_next_scheduled('maksuturva_check_pending_payments')) {
+				_log("Adding new payment status event loop.");
+				wp_schedule_event(time(), 'five_minutes', 'maksuturva_check_pending_payments');
+			}
 
-		add_filter( 'cron_schedules', array( $this, 'register_cron_schedules' ) );
-
-		if ( ! wp_next_scheduled( 'maksuturva_check_pending_payments' ) ) {
-			wp_schedule_event( time(), 'five_minutes', 'maksuturva_check_pending_payments' );
-		}
-
-		add_action( 'maksuturva_check_pending_payments', array( $this, 'check_pending_payments' ) );
+			add_action('maksuturva_check_pending_payments', array($this, 'check_pending_payments'));
+		} catch (Exception $e) { 
+			_log("Error in Maksuturva module inititalization: " . $e->getMessage());
+		}	
 	}
 
 	/**
@@ -220,7 +226,7 @@ class WC_Maksuturva {
 	/**
 	 * Register new cron schedules.
 	 *
-	 * Register new cron schedules used buy this module.
+	 * Register new cron schedules used by this module.
 	 *
 	 * @param array $schedules The schedules.
 	 *
@@ -247,11 +253,11 @@ class WC_Maksuturva {
 	public function check_pending_payments() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$this->load_class( 'WC_Payment_Checker_Maksuturva' );
-
+	
 		$payments = WC_Payment_Maksuturva::findPending();
 		if ( ! empty( $payments ) ) {
 			( new WC_Payment_Checker_Maksuturva() )->check_payments( $payments );
-		}
+		} 
 	}
 
 	/**

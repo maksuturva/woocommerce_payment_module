@@ -36,6 +36,12 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+### 2.1.1
+* Fixed hanging order status queries. If order is deleted and trashed, remove payment from status query queue in next 
+status check.
+* Changed static 5 minute payment status query interval to more dynamic implementation. If order age is below 2 hours
+check once in ten minutes. If order age is 2 to 24 hours check every other hour. After that check twice a day.
+
 ### 2.1.0
 * Brand Maksuturva changed to Svea Payments
 

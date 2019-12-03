@@ -139,7 +139,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'title'       => __( 'Title', $this->td ),
 			'type'        => 'text',
 			'description' => __( 'This controls the title which the user sees during checkout.', $this->td ),
-			'default'     => __( 'Svea', $this->td ),
+			'default'     => __( 'Svea Payments', $this->td ),
 			'desc_tip'    => true,
 		);
 
@@ -147,7 +147,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'title'       => __( 'Customer Message', $this->td ),
 			'type'        => 'textarea',
 			'description' => __( 'This message is shown below the payment method on the checkout page.', $this->td ),
-			'default'     => __( 'Pay via Svea.', $this->td ),
+			'default'     => __( 'Make payment using Svea Payments card, mobile, invoice and bank payment methods', $this->td ),
 			'desc_tip'    => true,
 			'css'         => 'width: 25em;',
 		);

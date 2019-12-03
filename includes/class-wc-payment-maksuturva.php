@@ -242,7 +242,7 @@ class WC_Payment_Maksuturva {
 
 		$tbl   = $wpdb->prefix . self::TABLE_NAME;
 		$query = $wpdb->prepare( 'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN ("%s","%s")',
-		self::STATUS_PENDING, self::STATUS_DELAYED );
+			self::STATUS_PENDING, self::STATUS_DELAYED );
 		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
 
 		$payments = array();
@@ -260,6 +260,23 @@ class WC_Payment_Maksuturva {
 		return $payments;
 	}
 
+	public static function updateToCancelled($order_id)
+	{
+		global $wpdb;
+		$tbl   = $wpdb->prefix . self::TABLE_NAME;
+
+		try {
+			$sql = "UPDATE " . $tbl . 
+				" SET status='" . self::STATUS_CANCELLED . "',date_updated='" . date( 'Y-m-d H:i:s' ) . 
+				"' WHERE (order_id = '" . $order_id . "');";
+			$result = $wpdb->query($sql);
+			if ($result === false) {
+				_log('Could not cancel order ' .  $order_id . ' in thr queue.');
+			}
+		} catch (Exception $e) {
+			_log("Order cancel in thr queue failed: " . $e->getMessage());
+		}
+	}
 	/**
 	 * Get order ID.
 	 *
@@ -297,6 +314,30 @@ class WC_Payment_Maksuturva {
 	 */
 	public function get_status() {
 		return $this->status;
+	}
+
+	/**
+	 * Get date added
+	 * 
+	 * Returns date when payment was added
+	 * 
+	 * @since 2.1.1
+	 */
+	public function get_date_added()
+	{
+		return $this->date_added;
+	}
+
+	/**
+	 * Get date updated
+	 * 
+	 * Returns date when payment was updated last time
+	 * 
+	 * @since 2.1.1
+	 */
+	public function get_date_updated()
+	{
+		return $this->date_updated;
 	}
 
 	/**
@@ -525,7 +566,7 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	protected function update() {
+	public function update() {
 		global $wpdb;
 
 		$data = array(
