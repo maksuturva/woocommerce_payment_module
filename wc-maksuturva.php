@@ -53,9 +53,9 @@ if ( ! function_exists( '_log' ) ) {
 	 */
 	function _log( $message ) {
 		if ( is_array( $message ) || is_object( $message ) ) {
-			error_log('**************** HENE ################ Maksuturva plugin: ' . var_export( $message, true ) );
+			error_log('Svea Payments plugin: ' . var_export( $message, true ) );
 		} else {
-			error_log('**************** HENE ################ Maksuturva plugin: ' . $message );
+			error_log('Svea Payments plugin: ' . $message );
 		}
 	}
 }
