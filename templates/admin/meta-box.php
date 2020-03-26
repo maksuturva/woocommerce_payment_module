@@ -36,6 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <p class="comment-notes">
+	<a href="<?php echo esc_url( $extranet_payment_url ); ?>" target="_blank"><?php echo esc_attr( $payment_id ); ?></a>:
 	<?php echo esc_attr( $message ); ?>
 </p>
 

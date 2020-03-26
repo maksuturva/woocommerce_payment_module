@@ -69,7 +69,7 @@ class WC_Meta_Box_Maksuturva {
 		}
 
 		/** @var WC_Gateway_Maksuturva $gateway */
-		$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ) ) );
+		$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );
 	}
 
 	/**
@@ -110,5 +110,19 @@ class WC_Meta_Box_Maksuturva {
 		}
 
 		return $msg;
+	}
+
+	/**
+	 * Get extranet payment url.
+	 *
+	 * Returns the extranet payment url for the given payment.
+	 *
+	 * @param WC_Payment_Maksuturva $payment The Svea payment object.
+	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
+	 *
+	 * @return string
+	 */
+	private static function get_extranet_payment_url($payment, $gateway) {
+		return $gateway->get_gateway_url() . '/dashboard/PaymentEvent.db?pmt_id=' . $payment->get_payment_id();
 	}
 }
