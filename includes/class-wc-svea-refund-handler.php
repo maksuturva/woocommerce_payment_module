@@ -145,6 +145,15 @@ class WC_Svea_Refund_Handler {
 		$return_code = $cancel_response['pmtc_returncode'];
 		$return_text = $cancel_response['pmtc_returntext'];
 
+		if ( $return_code === '00' ) {
+
+			$this->create_comment(
+				'Made a refund of ' . $amount . ' € through Svea'
+			);
+
+			return true;
+		}
+
 		if ( $return_code === '30' ) {
 
 			$refund_after_settlement_response = $this->post_to_svea(
@@ -156,10 +165,16 @@ class WC_Svea_Refund_Handler {
 
 			$return_code = $refund_after_settlement_response['pmtc_returncode'];
 			$return_text = $refund_after_settlement_response['pmtc_returntext'];
-		}
 
-		if ( $return_code === '00' ) {
-			return true;
+			if ($return_code === '00') {
+				$this->create_comment(
+					$this->get_refund_payment_required_message(
+						$refund_after_settlement_response
+					)
+				);
+
+				return true;
+			}
 		}
 
 		if ( $return_code === '99' ) {
@@ -251,9 +266,29 @@ class WC_Svea_Refund_Handler {
 
 		$array_response = json_decode( json_encode( $xml_response ), true );
 
-		$this->verify_response_hash( $array_response );
+		if ($array_response['pmtc_returncode'] === '00') {
+			$this->verify_response_hash( $array_response );
+		}
 
 		return $array_response;
+	}
+
+	/**
+	 * Returns a comment data array with content
+	 * 
+	 * @param string $content Content.
+	 * 
+	 * @return array
+	 */
+	private function create_comment( $content ) {
+		wp_insert_comment(
+			[
+				'comment_author' => 'Svea Payments plugin',
+				'comment_content' => $content,
+				'comment_post_ID' => $this->order->get_id(),
+				'comment_type' => 'order_note'
+			]
+		);
 	}
 
 	/**
@@ -274,6 +309,21 @@ class WC_Svea_Refund_Handler {
 		}
 
 		return $this->gateway->create_hash( $hash_data );
+	}
+
+	/**
+	 * Returns a refund payment required message
+	 * 
+	 * @param array $response Response.
+	 * 
+	 * @return string
+	 */
+	private function get_refund_payment_required_message( $response ) {
+		return 'Payment is already settled. A payment to Svea is required to finalize refund.'
+			. '<br />Recipient: ' . $response['pmtc_pay_with_recipientname']
+			. '<br />IBAN: ' . $response['pmtc_pay_with_iban']
+			. '<br />Reference: ' . $response['pmtc_pay_with_reference']
+			. '<br />Amount: ' . $response['pmtc_pay_with_amount'] . ' €';
 	}
 
 	/**
