@@ -121,6 +121,13 @@ class WC_Svea_Refund_Handler {
 	private $gateway;
 
 	/**
+	 * The gateway url.
+	 *
+	 * @var string $gateway_url The gateway url.
+	 */
+	private $gateway_url;
+
+	/**
 	 * The order.
 	 *
 	 * @var WC_Order $order The order.
@@ -154,6 +161,7 @@ class WC_Svea_Refund_Handler {
 		$this->payment = $payment;
 
 		$this->gateway = new WC_Gateway_Implementation_Maksuturva( $gateway, $this->order );
+		$this->gateway_url = $gateway->get_gateway_url();
 		$this->seller_id = $gateway->get_seller_id();
 	}
 
@@ -191,6 +199,17 @@ class WC_Svea_Refund_Handler {
 			return true;
 		}
 
+		if ( $return_code === '99' ) {
+
+			$this->create_comment(
+				$this->get_refund_failed_message()
+			);
+
+			throw new WC_Gateway_Maksuturva_Exception(
+				$return_text
+			);
+		}
+
 		if ( $return_code === '30' ) {
 
 			$refund_after_settlement_response = $this->post_to_svea(
@@ -212,12 +231,12 @@ class WC_Svea_Refund_Handler {
 
 				return true;
 			}
-		}
 
-		if ( $return_code === '99' ) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				$return_text
-			);
+			if ( $return_code === '99' ) {
+				throw new WC_Gateway_Maksuturva_Exception(
+					$return_text
+				);
+			}
 		}
 
 		return false;
@@ -350,6 +369,22 @@ class WC_Svea_Refund_Handler {
 		}
 
 		return $this->gateway->create_hash( $hash_data );
+	}
+
+	/**
+	 * Returns a refund failed message
+	 *
+	 * @return string
+	 */
+	private function get_refund_failed_message() {
+
+		$extranet_payment_url = $this->gateway_url
+			. '/dashboard/PaymentEvent.db'
+			. '?pmt_id=' . $this->payment->get_payment_id();
+
+		return 'Creating a refund failed. '
+			. 'Make a refund directly in '
+			. '<a href="' . $extranet_payment_url . '">Svea Extranet</a>.';
 	}
 
 	/**
