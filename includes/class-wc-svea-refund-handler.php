@@ -37,11 +37,46 @@ require_once 'class-wc-gateway-maksuturva-exception.php';
 class WC_Svea_Refund_Handler {
 
 	/**
+	 * Cancel action.
+	 *
+	 * @var string ACTION_CANCEL
+	 */
+	private const ACTION_CANCEL = 'CANCEL';
+
+	/**
+	 * Refund after settlement action.
+	 *
+	 * @var string ACTION_REFUND_AFTER_SETTLEMENT
+	 */
+	private const ACTION_REFUND_AFTER_SETTLEMENT = 'REFUND_AFTER_SETTLEMENT';
+
+	/**
+	 * Full refund cancel type.
+	 *
+	 * @var string CANCEL_TYPE_FULL_REFUND
+	 */
+	private const CANCEL_TYPE_FULL_REFUND = 'FULL_REFUND';
+
+	/**
+	 * Partial refund cancel type.
+	 *
+	 * @var string CANCEL_TYPE_PARTIAL_REFUND
+	 */
+	private const CANCEL_TYPE_PARTIAL_REFUND = 'PARTIAL_REFUND';
+
+	/**
+	 * Refund after settlement cancel type.
+	 *
+	 * @var string CANCEL_TYPE_REFUND_AFTER_SETTLEMENT
+	 */
+	private const CANCEL_TYPE_REFUND_AFTER_SETTLEMENT = 'REFUND_AFTER_SETTLEMENT';
+
+	/**
 	 * Payment cancellation route.
 	 *
 	 * @var string ROUTE_CANCEL_PAYMENT
 	 */
-	const ROUTE_CANCEL_PAYMENT = '/PaymentCancel.pmt';
+	private const ROUTE_CANCEL_PAYMENT = '/PaymentCancel.pmt';
 
 	/**
 	 * Fields that should be used for hashing post data.
@@ -138,8 +173,10 @@ class WC_Svea_Refund_Handler {
 		$cancel_response = $this->post_to_svea(
 			$amount,
 			$reason,
-			'CANCEL',
-			'PARTIAL_REFUND'
+			self::ACTION_CANCEL,
+			$amount === $this->order->get_total()
+				? self::CANCEL_TYPE_FULL_REFUND
+				: self::CANCEL_TYPE_PARTIAL_REFUND
 		);
 
 		$return_code = $cancel_response['pmtc_returncode'];
@@ -159,8 +196,8 @@ class WC_Svea_Refund_Handler {
 			$refund_after_settlement_response = $this->post_to_svea(
 				$amount,
 				$reason,
-				'REFUND_AFTER_SETTLEMENT',
-				'REFUND_AFTER_SETTLEMENT'
+				self::ACTION_REFUND_AFTER_SETTLEMENT,
+				self::CANCEL_TYPE_REFUND_AFTER_SETTLEMENT
 			);
 
 			$return_code = $refund_after_settlement_response['pmtc_returncode'];
@@ -232,6 +269,10 @@ class WC_Svea_Refund_Handler {
 			'pmtc_sellerid' => $this->seller_id,
 			'pmtc_version' => '0005'
 		];
+
+		if ( $cancel_type === self::CANCEL_TYPE_FULL_REFUND ) {
+			unset( $post_fields['pmtc_cancelamount'] );
+		}
 
 		if ( $post_fields['pmtc_canceldescription'] === '' ) {
 			unset( $post_fields['pmtc_canceldescription'] );
