@@ -143,6 +143,7 @@ class WC_Svea_Refund_Handler {
 		);
 
 		$return_code = $cancel_response['pmtc_returncode'];
+		$return_text = $cancel_response['pmtc_returntext'];
 
 		if ( $return_code === '30' ) {
 
@@ -154,6 +155,7 @@ class WC_Svea_Refund_Handler {
 			);
 
 			$return_code = $refund_after_settlement_response['pmtc_returncode'];
+			$return_text = $refund_after_settlement_response['pmtc_returntext'];
 		}
 
 		if ( $return_code === '00' ) {
@@ -162,7 +164,7 @@ class WC_Svea_Refund_Handler {
 
 		if ( $return_code === '99' ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				$cancel_response['pmtc_returntext']
+				$return_text
 			);
 		}
 
