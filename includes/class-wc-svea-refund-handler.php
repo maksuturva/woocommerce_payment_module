@@ -72,6 +72,27 @@ class WC_Svea_Refund_Handler {
 	private const CANCEL_TYPE_REFUND_AFTER_SETTLEMENT = 'REFUND_AFTER_SETTLEMENT';
 
 	/**
+	 * Already settled response type.
+	 *
+	 * @var string RESPONSE_TYPE_ALREADY_SETTLED
+	 */
+	private const RESPONSE_TYPE_ALREADY_SETTLED = '30';
+
+	/**
+	 * Failed response type.
+	 *
+	 * @var string RESPONSE_TYPE_FAILED
+	 */
+	private const RESPONSE_TYPE_FAILED = '99';
+
+	/**
+	 * OK response type.
+	 *
+	 * @var string RESPONSE_TYPE_OK
+	 */
+	private const RESPONSE_TYPE_OK = '00';
+
+	/**
 	 * Payment cancellation route.
 	 *
 	 * @var string ROUTE_CANCEL_PAYMENT
@@ -190,7 +211,7 @@ class WC_Svea_Refund_Handler {
 		$return_code = $cancel_response['pmtc_returncode'];
 		$return_text = $cancel_response['pmtc_returntext'];
 
-		if ( $return_code === '00' ) {
+		if ( $return_code === self::RESPONSE_TYPE_OK ) {
 
 			$this->create_comment(
 				'Made a refund of ' . $amount . ' € through Svea'
@@ -199,7 +220,7 @@ class WC_Svea_Refund_Handler {
 			return true;
 		}
 
-		if ( $return_code === '99' ) {
+		if ( $return_code === self::RESPONSE_TYPE_FAILED ) {
 
 			$this->create_comment(
 				$this->get_refund_failed_message()
@@ -210,7 +231,7 @@ class WC_Svea_Refund_Handler {
 			);
 		}
 
-		if ( $return_code === '30' ) {
+		if ( $return_code === self::RESPONSE_TYPE_ALREADY_SETTLED ) {
 
 			$refund_after_settlement_response = $this->post_to_svea(
 				$amount,
@@ -222,7 +243,7 @@ class WC_Svea_Refund_Handler {
 			$return_code = $refund_after_settlement_response['pmtc_returncode'];
 			$return_text = $refund_after_settlement_response['pmtc_returntext'];
 
-			if ($return_code === '00') {
+			if ($return_code === self::RESPONSE_TYPE_OK) {
 				$this->create_comment(
 					$this->get_refund_payment_required_message(
 						$refund_after_settlement_response
@@ -232,7 +253,7 @@ class WC_Svea_Refund_Handler {
 				return true;
 			}
 
-			if ( $return_code === '99' ) {
+			if ( $return_code === self::RESPONSE_TYPE_FAILED ) {
 				throw new WC_Gateway_Maksuturva_Exception(
 					$return_text
 				);
