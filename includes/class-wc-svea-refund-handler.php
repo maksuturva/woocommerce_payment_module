@@ -169,6 +169,13 @@ class WC_Svea_Refund_Handler {
 	 */
 	private $seller_id;
 
+	/**
+	 * The text domain to use for translations.
+	 *
+	 * @var string $td The text domain.
+	 */
+	public $td;
+
 	/*
 	 * WC_Svea_Refund_Handler constructor.
 	 * 
@@ -184,6 +191,7 @@ class WC_Svea_Refund_Handler {
 		$this->gateway = new WC_Gateway_Implementation_Maksuturva( $gateway, $this->order );
 		$this->gateway_url = $gateway->get_gateway_url();
 		$this->seller_id = $gateway->get_seller_id();
+		$this->td = $gateway->td;
 	}
 
 	/**
@@ -214,7 +222,10 @@ class WC_Svea_Refund_Handler {
 		if ( $return_code === self::RESPONSE_TYPE_OK ) {
 
 			$this->create_comment(
-				'Made a refund of ' . $amount . ' € through Svea'
+				sprintf(
+					__( 'Made a refund of %s € through Svea', $this->td ),
+					$this->format_amount( $amount )
+				)
 			);
 
 			return true;
@@ -403,9 +414,12 @@ class WC_Svea_Refund_Handler {
 			. '/dashboard/PaymentEvent.db'
 			. '?pmt_id=' . $this->payment->get_payment_id();
 
-		return 'Creating a refund failed. '
-			. 'Make a refund directly in '
-			. '<a href="' . $extranet_payment_url . '">Svea Extranet</a>.';
+		return __( 'Creating a refund failed', $this->td )
+			. '. '
+			. __( 'Make a refund directly', $this->td )
+			. ' <a href="' . $extranet_payment_url . '" target="_blank">'
+			. __( 'in Svea Extranet', $this->td )
+			. '</a>.';
 	}
 
 	/**
@@ -416,11 +430,16 @@ class WC_Svea_Refund_Handler {
 	 * @return string
 	 */
 	private function get_refund_payment_required_message( $response ) {
-		return 'Payment is already settled. A payment to Svea is required to finalize refund.'
-			. '<br />Recipient: ' . $response['pmtc_pay_with_recipientname']
-			. '<br />IBAN: ' . $response['pmtc_pay_with_iban']
-			. '<br />Reference: ' . $response['pmtc_pay_with_reference']
-			. '<br />Amount: ' . $response['pmtc_pay_with_amount'] . ' €';
+		return implode(
+			'<br />',
+			[
+				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', $this->td ),
+				__( 'Recipient', $this->td ) . ': ' . $response['pmtc_pay_with_recipientname'],
+				__( 'IBAN', $this->td ) . ': ' . $response['pmtc_pay_with_iban'],
+				__( 'Reference', $this->td ) . ': ' . $response['pmtc_pay_with_reference'],
+				__( 'Amount', $this->td ) . ': ' . $response['pmtc_pay_with_amount'] . ' €'
+			]
+		);
 	}
 
 	/**
