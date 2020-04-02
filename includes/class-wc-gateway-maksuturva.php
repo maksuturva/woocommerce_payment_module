@@ -31,6 +31,7 @@ require_once 'class-wc-meta-box-maksuturva.php';
 require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-payment-maksuturva.php';
 require_once 'class-wc-order-compatibility-handler.php';
+require_once 'class-wc-svea-refund-handler.php';
 
 /**
  * Class WC_Gateway_Maksuturva.
@@ -99,6 +100,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->table_name = $wpdb->prefix . 'maksuturva_queue';
 
 		$this->has_fields = false;
+
+		$this->supports[] = 'refunds';
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -222,6 +225,15 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		);
 
 		$this->form_fields = $form;
+	}
+
+	/**
+	 * More documentation: https://docs.woocommerce.com/wc-apidocs/class-WC_Payment_Gateway.html#_process_refund
+	 */
+	public function process_refund( $order_id, $amount = null, $reason = "" ) {
+		$payment = new WC_Payment_Maksuturva( $order_id );
+		$svea_refund_handler = new WC_Svea_Refund_Handler( $order_id, $payment, $this );
+		return $svea_refund_handler->process_refund( $amount, $reason );
 	}
 
 	/**
