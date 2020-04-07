@@ -37,14 +37,14 @@ require_once 'class-wc-svea-api-request-handler.php';
  */
 class WC_Svea_Delivery_Handler {
 
-  /**
+	/**
 	 * Payment cancellation route.
 	 *
 	 * @var string ROUTE_ADD_DELIVERY_INFO
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
-  private const ROUTE_ADD_DELIVERY_INFO = '/addDeliveryInfo.pmt';
+	private const ROUTE_ADD_DELIVERY_INFO = '/addDeliveryInfo.pmt';
 
 	/**
 	 * Fields that should be used for hashing request data.
@@ -53,7 +53,7 @@ class WC_Svea_Delivery_Handler {
 	 * 
 	 * @var array $request_hash_fields Request hash fields.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private static $request_hash_fields = [
 		"pkg_id",
@@ -61,39 +61,39 @@ class WC_Svea_Delivery_Handler {
 		"pkg_allsent",
 	];
 
-  /**
+	/**
 	 * Fields that should be used for hashing response data.
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
 	 * 
 	 * @var array $response_hash_fields Response hash fields.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private static $response_hash_fields = [
 		'pkg_sellerid',
 		'pkg_id',
 		'pkg_resultcode'
-  ];
+	];
 
-  /**
+	/**
 	 * WC_Svea_Delivery_Handler constructor.
-   * 
+	 * 
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
 	 * @param int $order_id The order.
 	 * 
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public function __construct( $gateway, $order_id ) {
 		$this->gateway = new WC_Gateway_Implementation_Maksuturva( $gateway, wc_get_order( $order_id ) );
 		$this->seller_id = $gateway->get_seller_id();
 		$this->order_id = $order_id;
-  }
+	}
 
 	/**
 	 *	Sends delivery info to Svea API
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return array
 	 */
@@ -101,7 +101,7 @@ class WC_Svea_Delivery_Handler {
 
 		$payment = new WC_Payment_Maksuturva( $this->order_id );
 
-    $gateway_data = $this->gateway->get_field_array();
+		$gateway_data = $this->gateway->get_field_array();
 
 		$post_fields = [
 			"pkg_version" => "0002",
@@ -126,5 +126,5 @@ class WC_Svea_Delivery_Handler {
 				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pkg_resultcode'
 			]
 		);
-  }
+	}
 }

@@ -34,7 +34,7 @@ require_once 'class-wc-svea-api-request-handler.php';
  *
  * Handles payment cancellations and refunding after settlement
  *
- * @since  2.1.2
+ * @since 2.1.2
  */
 class WC_Svea_Refund_Handler {
 
@@ -43,7 +43,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string ACTION_CANCEL
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const ACTION_CANCEL = 'CANCEL';
 
@@ -52,7 +52,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string ACTION_REFUND_AFTER_SETTLEMENT
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const ACTION_REFUND_AFTER_SETTLEMENT = 'REFUND_AFTER_SETTLEMENT';
 
@@ -61,7 +61,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string CANCEL_TYPE_FULL_REFUND
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const CANCEL_TYPE_FULL_REFUND = 'FULL_REFUND';
 
@@ -70,7 +70,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string CANCEL_TYPE_PARTIAL_REFUND
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const CANCEL_TYPE_PARTIAL_REFUND = 'PARTIAL_REFUND';
 
@@ -79,7 +79,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string CANCEL_TYPE_REFUND_AFTER_SETTLEMENT
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const CANCEL_TYPE_REFUND_AFTER_SETTLEMENT = 'REFUND_AFTER_SETTLEMENT';
 
@@ -88,7 +88,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string RESPONSE_TYPE_ALREADY_SETTLED
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const RESPONSE_TYPE_ALREADY_SETTLED = '30';
 
@@ -97,7 +97,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string RESPONSE_TYPE_FAILED
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const RESPONSE_TYPE_FAILED = '99';
 
@@ -106,7 +106,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string ROUTE_CANCEL_PAYMENT
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private const ROUTE_CANCEL_PAYMENT = '/PaymentCancel.pmt';
 
@@ -117,7 +117,7 @@ class WC_Svea_Refund_Handler {
 	 * 
 	 * @var array $request_hash_fields Request hash fields.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private static $request_hash_fields = [
 		'pmtc_action',
@@ -138,7 +138,7 @@ class WC_Svea_Refund_Handler {
 	 * 
 	 * @var array $response_hash_fields Response hash fields.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private static $response_hash_fields = [
 		'pmtc_action',
@@ -154,7 +154,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var WC_Gateway_Implementation_Maksuturva $gateway The gateway.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private $gateway;
 
@@ -163,7 +163,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string $gateway_url The gateway url.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private $gateway_url;
 
@@ -172,7 +172,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var WC_Order $order The order.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private $order;
 
@@ -181,7 +181,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var WC_Payment_Maksuturva $order The payment.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private $payment;
 
@@ -190,7 +190,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string $seller_id The seller id.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private $seller_id;
 
@@ -199,7 +199,7 @@ class WC_Svea_Refund_Handler {
 	 *
 	 * @var string $td The text domain.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public $td;
 
@@ -210,7 +210,7 @@ class WC_Svea_Refund_Handler {
 	 * @param WC_Payment_Maksuturva $payment Payment.
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public function __construct( $order_id, $payment, $gateway ) {
 
@@ -230,7 +230,7 @@ class WC_Svea_Refund_Handler {
 	 * @param int $amount Amount.
 	 * @param string $reason Reason.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return bool
 	 */
@@ -310,7 +310,7 @@ class WC_Svea_Refund_Handler {
 	 * 
 	 * @param int $amount Amount.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return string
 	 */
@@ -328,7 +328,7 @@ class WC_Svea_Refund_Handler {
 	 * @param string $action Action.
 	 * @param string $cancel_type Cancel type.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return array
 	 */
@@ -377,7 +377,7 @@ class WC_Svea_Refund_Handler {
 	 * 
 	 * @param string $content Content.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return array
 	 */
@@ -395,7 +395,7 @@ class WC_Svea_Refund_Handler {
 	/**
 	 * Returns a refund failed message
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return string
 	 */
@@ -418,7 +418,7 @@ class WC_Svea_Refund_Handler {
 	 * 
 	 * @param array $response Response.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return string
 	 */
@@ -440,7 +440,7 @@ class WC_Svea_Refund_Handler {
 	 * 
 	 * @param int $amount Amount.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private function verify_amount_has_value( $amount ) {
 		if ( ! isset( $amount ) ) {

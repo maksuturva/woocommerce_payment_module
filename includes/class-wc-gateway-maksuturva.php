@@ -248,7 +248,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @param int $amount The amount.
 	 * @param string $reason The reason.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = "" ) {
 		$payment = new WC_Payment_Maksuturva( $order_id );
@@ -787,9 +787,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * @param int $order_id The order id.
 	 * @param string $old_status The old status.
-	 * @param array  $new_status The new status.
+	 * @param array $new_status The new status.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public function order_status_changed_event( $order_id, $old_status, $new_status ) {
 

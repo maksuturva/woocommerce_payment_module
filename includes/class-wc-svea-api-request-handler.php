@@ -42,7 +42,7 @@ class WC_Svea_Api_Request_Handler {
 	 *
 	 * @var string RESPONSE_TYPE_OK
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public const RESPONSE_TYPE_OK = '00';
 
@@ -51,7 +51,7 @@ class WC_Svea_Api_Request_Handler {
 	 *
 	 * @var string SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public const SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH = 'fields_included_in_request_hash';
 
@@ -60,7 +60,7 @@ class WC_Svea_Api_Request_Handler {
 	 *
 	 * @var string SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public const SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH = 'fields_included_in_response_hash';
 
@@ -69,7 +69,7 @@ class WC_Svea_Api_Request_Handler {
 	 *
 	 * @var string SETTINGS_HASH_FIELD
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public const SETTINGS_HASH_FIELD = 'hash_field';
 
@@ -78,7 +78,7 @@ class WC_Svea_Api_Request_Handler {
 	 *
 	 * @var string SETTINGS_RETURN_CODE_FIELD
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public const SETTINGS_RETURN_CODE_FIELD = 'return_code_field';
 
@@ -87,7 +87,7 @@ class WC_Svea_Api_Request_Handler {
 	 *
 	 * @param WC_Gateway_Implementation_Maksuturva $gateway The gateway.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	public function __construct( $gateway ) {
 		$this->gateway = $gateway;
@@ -100,14 +100,14 @@ class WC_Svea_Api_Request_Handler {
 	 * @param array $data Data to post.
 	 * @param array $settings Settings for handling post request creation and result validation.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return array
 	 */
 	public function post($route, $data, $settings) {
 
 		$payment_api = rtrim( $this->gateway->get_payment_url(), '/' );
-    $request = curl_init( $payment_api . $route );
+		$request = curl_init( $payment_api . $route );
 
 		$hash_field = $settings[self::SETTINGS_HASH_FIELD];
 		$data[$hash_field] = $this->get_hash(
@@ -124,9 +124,9 @@ class WC_Svea_Api_Request_Handler {
 		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
 		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 120 );
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
-    curl_setopt( $request, CURLOPT_POSTFIELDS, $data );
+		curl_setopt( $request, CURLOPT_POSTFIELDS, $data );
 
-    $response = curl_exec( $request );
+		$response = curl_exec( $request );
 
 		$this->verify_response_has_value( $response );
 
@@ -151,7 +151,7 @@ class WC_Svea_Api_Request_Handler {
 	 * @param array $data Data.
 	 * @param array $hash_fields Fields to use to generate hash.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return string
 	 */
@@ -166,14 +166,14 @@ class WC_Svea_Api_Request_Handler {
 		}
 
 		return $this->gateway->create_hash( $hash_data );
-  }
+	}
 
 	/**
 	 * Parse raw XML to array format
 	 * 
 	 * @param string $response Response data.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 *
 	 * @return array
 	 */
@@ -190,12 +190,12 @@ class WC_Svea_Api_Request_Handler {
 		return json_decode( json_encode( $xml_response ), true );
 	}
 
-  /**
+	/**
 	 * Verifies that the response has value
 	 *
 	 * @param array $response Response.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private function verify_response_has_value( $response ) {
 		if ( $response === false ) {
@@ -210,7 +210,7 @@ class WC_Svea_Api_Request_Handler {
 	 * 
 	 * @param array $response Response.
 	 *
-	 * @since  2.1.2
+	 * @since 2.1.2
 	 */
 	private function verify_response_hash( $response, $fields_included_in_hash, $hash_field ) {
 
