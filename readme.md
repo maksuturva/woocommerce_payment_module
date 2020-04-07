@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 4.0  
 **Tested up to:** 5.1.1  
-**Stable tag:** 2.1.1  
-**WC requires at least:** 2.2.10  
-**WC tested up to:** 3.8.1   
+**Stable tag:** 2.1.2  
+**WC requires at least:** 3.8.1  
+**WC tested up to:** 4.0.1   
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -13,7 +13,7 @@ Svea Payments payment module for WooCommerce.
 
 ## Description
 
-Copyright (C) 2016-2019 Svea Development Oy
+Copyright (C) 2016-2020 Svea Development Oy
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later
@@ -37,8 +37,8 @@ written for Svea Payments Oy
 
 ## Changelog
 ### 2.1.2
-* Refund support
-* Automated support for delayed capture methods
+* Added refund functionality to the Woocommerce order management and link to open the event in Svea Extranet.
+* Added functionality for sending delivery info without tracking to Svea API
 
 ### 2.1.1
 * Fixed hanging order status queries. If order is deleted and trashed, remove payment from status query queue in next 
