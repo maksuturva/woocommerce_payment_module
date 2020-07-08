@@ -26,12 +26,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-maksuturva-exception.php';
 require_once 'class-wc-gateway-abstract-maksuturva.php';
-require_once 'class-wc-payment-validator-maksuturva.php';
-require_once 'class-wc-utils-maksuturva.php';
+require_once 'class-wc-gateway-maksuturva-exception.php';
 require_once 'class-wc-order-compatibility-handler.php';
+require_once 'class-wc-payment-method-select.php';
+require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-product-compatibility-handler.php';
+require_once 'class-wc-utils-maksuturva.php';
 
 /**
  * Class WC_Gateway_Implementation_Maksuturva.
@@ -48,13 +49,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @var string SANDBOX_SELLER_ID
 	 */
 	const SANDBOX_SELLER_ID = 'testikauppias';
-
-	/**
-	 * Sandbox secret key.
-	 *
-	 * @var string SANDBOX_SECRET_KEY
-	 */
-	const SANDBOX_SECRET_KEY = '11223344556677889900';
 
 	/**
 	 * Shipping cost.
@@ -93,9 +87,9 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
      * @since 2.0.0
      */
 	public function __construct( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
+		$this->wc_gateway = $gateway;
 		$this->set_base_url( $gateway->get_gateway_url() );
 		$this->seller_id  = ( $gateway->is_sandbox() ? self::SANDBOX_SELLER_ID : $gateway->get_seller_id() );
-		$this->secret_key = ( $gateway->is_sandbox() ? self::SANDBOX_SECRET_KEY : $gateway->get_secret_key() );
 		$this->set_encoding( $gateway->get_encoding() );
 		$this->set_payment_id_prefix( $gateway->get_payment_id_prefix() );
 		$this->set_payment_data( $this->create_payment_data( $gateway, $order ) );
@@ -115,13 +109,14 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array
 	 */
 	private function create_payment_data( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
+
 		$payment_row_data = $this->create_payment_row_data( $order );
 		$buyer_data       = $this->create_buyer_data( $order );
 		$delivery_data    = $this->create_delivery_data( $order );
 		$payment_id       = $this->get_payment_id( $order );
 		$order_handler    = new WC_Order_Compatibility_Handler( $order );
 
-		return array(
+		$data = [
 			'pmt_keygeneration'      => $gateway->get_secret_key_version(),
 			'pmt_id'                 => $payment_id,
 			'pmt_orderid'            => $order_handler->get_id(),
@@ -150,7 +145,16 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_sellercosts'        => WC_Utils_Maksuturva::filter_price( $this->shipping_cost + $this->total_fees ),
 			'pmt_rows'               => count( $payment_row_data ),
 			'pmt_rows_data'          => $payment_row_data,
-		);
+		];
+
+		$payment_method_select = new WC_Payment_Method_Select( $gateway );
+		if ( $payment_method_select->payment_method_is_selected_in_webstore() ) {
+			$data['pmt_paymentmethod'] = WC_Utils_Maksuturva::filter_alphanumeric(
+				$_GET[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ]
+			);
+		}
+
+		return $data;
 	}
 
 	/**

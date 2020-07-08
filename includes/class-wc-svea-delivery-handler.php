@@ -47,6 +47,24 @@ class WC_Svea_Delivery_Handler {
 	private const ROUTE_ADD_DELIVERY_INFO = '/addDeliveryInfo.pmt';
 
 	/**
+	 * Gateway.
+	 *
+	 * @var WC_Gateway_Maksuturva $gateway The gateway.
+	 *
+	 * @since 2.0.10
+	 */
+	private $gateway;
+
+	/**
+	 * Order id.
+	 *
+	 * @var int $order_id The order id.
+	 *
+	 * @since 2.0.10
+	 */
+	private $order_id;
+
+	/**
 	 * Fields that should be used for hashing request data.
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
@@ -77,6 +95,15 @@ class WC_Svea_Delivery_Handler {
 	];
 
 	/**
+	 * Seller id.
+	 *
+	 * @var int $seller_id The seller id.
+	 *
+	 * @since 2.0.10
+	 */
+	private $seller_id;
+
+	/**
 	 * WC_Svea_Delivery_Handler constructor.
 	 * 
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
@@ -85,9 +112,9 @@ class WC_Svea_Delivery_Handler {
 	 * @since 2.1.2
 	 */
 	public function __construct( $gateway, $order_id ) {
-		$this->gateway = new WC_Gateway_Implementation_Maksuturva( $gateway, wc_get_order( $order_id ) );
-		$this->seller_id = $gateway->get_seller_id();
+		$this->gateway = $gateway;
 		$this->order_id = $order_id;
+		$this->seller_id = $gateway->get_seller_id();
 	}
 
 	/**
@@ -101,7 +128,8 @@ class WC_Svea_Delivery_Handler {
 
 		$payment = new WC_Payment_Maksuturva( $this->order_id );
 
-		$gateway_data = $this->gateway->get_field_array();
+		$gateway_implementation = new WC_Gateway_Implementation_Maksuturva( $this->gateway, wc_get_order( $this->order_id ) );
+		$gateway_data = $gateway_implementation->get_field_array();
 
 		$post_fields = [
 			"pkg_version" => "0002",

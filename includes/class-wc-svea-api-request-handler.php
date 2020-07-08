@@ -85,11 +85,11 @@ class WC_Svea_Api_Request_Handler {
 	/**
 	 * WC_Svea_Api_Request_Handler constructor.
 	 *
-	 * @param WC_Gateway_Implementation_Maksuturva $gateway The gateway.
+	 * @param WC_Gateway_Maksuturva $gateway The gateway.
 	 *
 	 * @since 2.1.2
 	 */
-	public function __construct( $gateway ) {
+	public function __construct( WC_Gateway_Maksuturva $gateway ) {
 		$this->gateway = $gateway;
 	}
 
@@ -104,16 +104,18 @@ class WC_Svea_Api_Request_Handler {
 	 *
 	 * @return array
 	 */
-	public function post($route, $data, $settings) {
+	public function post( $route, $data, $settings = [] ) {
 
-		$payment_api = rtrim( $this->gateway->get_payment_url(), '/' );
+		$payment_api = $this->gateway->get_gateway_url();
 		$request = curl_init( $payment_api . $route );
 
-		$hash_field = $settings[self::SETTINGS_HASH_FIELD];
-		$data[$hash_field] = $this->get_hash(
-			$data,
-			$settings[self::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH]
-		);
+		if ( isset( $settings[self::SETTINGS_HASH_FIELD] ) ) {
+			$hash_field = $settings[self::SETTINGS_HASH_FIELD];
+			$data[$hash_field] = $this->get_hash(
+				$data,
+				$settings[self::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH]
+			);
+		}
 
 		curl_setopt( $request, CURLOPT_HEADER, 0 );
 		curl_setopt( $request, CURLOPT_FRESH_CONNECT, 1 );
@@ -134,12 +136,14 @@ class WC_Svea_Api_Request_Handler {
 
 		$array_response = $this->parse_response( $response );
 
-		if ( $array_response[$settings[self::SETTINGS_RETURN_CODE_FIELD]] === self::RESPONSE_TYPE_OK ) {
-			$this->verify_response_hash(
-				$array_response,
-				$settings[self::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH],
-				$settings[self::SETTINGS_HASH_FIELD]
-			);
+		if ( isset( $settings[self::SETTINGS_HASH_FIELD] ) ) {
+			if ( $array_response[$settings[self::SETTINGS_RETURN_CODE_FIELD]] === self::RESPONSE_TYPE_OK ) {
+				$this->verify_response_hash(
+					$array_response,
+					$settings[self::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH],
+					$settings[self::SETTINGS_HASH_FIELD]
+				);
+			}
 		}
 
 		return $array_response;
@@ -165,7 +169,8 @@ class WC_Svea_Api_Request_Handler {
 			}
 		}
 
-		return $this->gateway->create_hash( $hash_data );
+		$data_hasher = new WC_Data_Hasher( $this->gateway );
+		return $data_hasher->create_hash( $hash_data );
 	}
 
 	/**

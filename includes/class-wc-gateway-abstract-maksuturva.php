@@ -26,6 +26,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+require_once 'class-wc-data-hasher.php';
+
 /**
  * Class WC_Gateway_Abstract_Maksuturva.
  *
@@ -218,6 +220,15 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	protected $base_url_status_query = 'https://www.maksuturva.fi/PaymentStatusQuery.pmt';
 
 	/**
+	 * The WC_Payment_Gateway extension.
+	 *
+	 * @since 2.0.10
+	 * 
+	 * @var WC_Gateway_Maksuturva $wc_gateway The WC_Payment_Gateway extension.
+	 */
+	public $wc_gateway;
+
+	/**
 	 * Seller ID.
 	 *
 	 * @since 2.0.0
@@ -225,15 +236,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * @var string $seller_id Seller ID to use for identification when calling the gateway.
 	 */
 	protected $seller_id;
-
-	/**
-	 * Seller secret key.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var string $secret_key Seller secret key to use for identification when calling the gateway.
-	 */
-	protected $secret_key;
 
 	/**
 	 * Charset.
@@ -613,7 +615,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			}
 		}
 
-		return $this->create_hash( $hash_data );
+		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
+		return $data_hasher->create_hash( $hash_data );
 	}
 
 	/**
@@ -695,7 +698,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			$hash_data[ $field ] = $data[ $field ];
 		}
 
-		if ( $this->create_hash( $hash_data ) != $data['pmtq_hash'] ) {
+		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
+		if ( $data_hasher->create_hash( $hash_data ) != $data['pmtq_hash'] ) {
 			return false;
 		}
 
@@ -831,29 +835,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	}
 
 	/**
-	 * Create hash.
-	 *
-	 * Calculates a hash for given data.
-	 *
-	 * @param array $hash_data The data to hash.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return string
-	 */
-	public function create_hash( array $hash_data ) {
-		$hash_string = '';
-		foreach ( $hash_data as $key => $data ) {
-			if ( 'pmt_hash' != $key ) {
-				$hash_string .= $data . '&';
-			}
-		}
-		$hash_string .= $this->secret_key . '&';
-
-		return strtoupper( hash( $this->hash_algorithm, $hash_string ) );
-	}
-
-	/**
 	 * Status query.
 	 *
 	 * Perform a status query to maksuturva's server using the current payment data.
@@ -916,7 +897,10 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		foreach ( $hash_fields as $field ) {
 			$hash_data[ $field ] = $this->status_query_data[ $field ];
 		}
-		$this->status_query_data['pmtq_hash'] = $this->create_hash( $hash_data );
+
+		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
+		$this->status_query_data['pmtq_hash'] = $data_hasher->create_hash( $hash_data );
+
 		// Now the request is made to maksuturva.
 		$request = curl_init( $this->base_url_status_query );
 		curl_setopt( $request, CURLOPT_HEADER, 0 );
@@ -1127,6 +1111,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * @throws WC_Gateway_Maksuturva_Exception If hash algorithm is not supported.
 	 */
 	public function set_payment_data( array $payment_data ) {
+
 		foreach ( $payment_data as $key => $value ) {
 			if ( 'pmt_rows_data' === $key ) {
 				foreach ( $value as $k => $v ) {
@@ -1139,25 +1124,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 
 		$this->payment_data['server_info'] = WC_Utils_Maksuturva::get_user_agent();
 		$this->payment_data['req_ts_ms'] = \DateTime::createFromFormat('U.u', microtime(TRUE))->format('Y-m-d H:i:s:u');
-
-		$hashing_algorithms = hash_algos();
-		if ( in_array( 'sha512', $hashing_algorithms ) ) {
-			$this->payment_data['pmt_hashversion'] = 'SHA-512';
-			$this->hash_algorithm                  = 'sha512';
-		} elseif ( in_array( 'sha256', $hashing_algorithms ) ) {
-			$this->payment_data['pmt_hashversion'] = 'SHA-256';
-			$this->hash_algorithm                  = 'sha256';
-		} elseif ( in_array( 'sha1', $hashing_algorithms ) ) {
-			$this->payment_data['pmt_hashversion'] = 'SHA-1';
-			$this->hash_algorithm                  = 'sha1';
-		} elseif ( in_array( 'md5', $hashing_algorithms ) ) {
-			$this->payment_data['pmt_hashversion'] = 'MD5';
-			$this->hash_algorithm                  = 'md5';
-		} else {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!',
-				self::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED
-			);
-		}
+		$this->payment_data['pmt_hashversion'] = WC_Data_Hasher::get_hash_algorithm();
 	}
 }

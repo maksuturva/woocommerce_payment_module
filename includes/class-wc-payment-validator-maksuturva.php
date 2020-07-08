@@ -171,19 +171,19 @@ class WC_Payment_Validator_Maksuturva {
 		$this->gateway = $gateway;
 	}
 
-    /**
-     * Validates a payment requests.
-     *
-     * If the payment gateway return an 'ok' response, only then will the entire request be validated.
-     * In other cases, we rely on the gateway status code.
-     *
-     * @param array $params List of parameters to validate.
-     *
-     * @return WC_Payment_Validator_Maksuturva
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.0
-     *
-     */
+	/**
+	 * Validates a payment requests.
+	 *
+	 * If the payment gateway return an 'ok' response, only then will the entire request be validated.
+	 * In other cases, we rely on the gateway status code.
+	 *
+	 * @param array $params List of parameters to validate.
+	 *
+	 * @return WC_Payment_Validator_Maksuturva
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.0
+	 *
+	 */
 	public function validate( array $params ) {
 		switch ( $this->get_action( $params ) ) {
 			case self::ACTION_CANCEL:
@@ -339,21 +339,22 @@ class WC_Payment_Validator_Maksuturva {
 	 * @since 2.0.0
 	 */
 	protected function validate_checksum( array $values ) {
-		if ( ! isset( $values['pmt_hash'] ) || $this->gateway->create_hash( $values ) != $values['pmt_hash'] ) {
+		$data_hasher = new WC_Data_Hasher( $this->gateway->wc_gateway );
+		if ( ! isset( $values['pmt_hash'] ) || $data_hasher->create_hash( $values ) != $values['pmt_hash'] ) {
 			$this->error( __( 'Payment verification checksum does not match', $this->gateway->td ) );
 		}
 	}
 
-    /**
-     * Validate reference number.
-     *
-     * Validates that the reference number matches the reference number of the order information.
-     *
-     * @param array $values List of values.
-     *
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.0
-     */
+	/**
+	 * Validate reference number.
+	 *
+	 * Validates that the reference number matches the reference number of the order information.
+	 *
+	 * @param array $values List of values.
+	 *
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.0
+	 */
 	protected function validate_reference_number( array $values ) {
 		if ( ! isset( $values['pmt_reference'] )
 		     || ! $this->gateway->check_payment_reference_number( $values['pmt_reference'] )

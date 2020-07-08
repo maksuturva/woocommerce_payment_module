@@ -26,13 +26,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+require_once 'class-wc-gateway-admin-form-fields.php';
 require_once 'class-wc-gateway-implementation-maksuturva.php';
 require_once 'class-wc-meta-box-maksuturva.php';
-require_once 'class-wc-payment-validator-maksuturva.php';
-require_once 'class-wc-payment-maksuturva.php';
 require_once 'class-wc-order-compatibility-handler.php';
+require_once 'class-wc-payment-maksuturva.php';
+require_once 'class-wc-payment-method-select.php';
+require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-svea-delivery-handler.php';
 require_once 'class-wc-svea-refund-handler.php';
+require_once 'class-wc-utils-maksuturva.php';
 
 /**
  * Class WC_Gateway_Maksuturva.
@@ -76,6 +79,15 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	protected $table_name;
 
 	/**
+	 * The payment method select handler
+	 *
+	 * @since 2.0.10
+	 *
+	 * @var WC_Payment_Method_Select $payment_method_select The payment method select handler.
+	 */
+	private $payment_method_select;
+
+	/**
 	 * WC_Gateway_Maksuturva constructor.
 	 *
 	 * Initializes the gateway, and adds necessary actions for parsing the
@@ -100,7 +112,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		$this->table_name = $wpdb->prefix . 'maksuturva_queue';
 
-		$this->has_fields = false;
+		$this->payment_method_select = new WC_Payment_Method_Select( $this );
+
+		$this->has_fields = $this->payment_method_select->payment_method_is_selected_in_webstore();
 
 		$this->supports[] = 'refunds';
 
@@ -132,111 +146,45 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @inheritdoc
 	 */
 	public function init_form_fields() {
-		$form = array();
+		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
+		$this->form_fields = $gateway_admin_form_fields->as_array();
+	}
 
-		$form['enabled'] = array(
-			'title'   => __( 'Enable/Disable', $this->td ),
-			'type'    => 'checkbox',
-			'label'   => __( 'Enable Svea Payments Gateway', $this->td ),
-			'default' => 'yes',
-		);
+	/**
+	 * Payment fields method definition for selecting payment method in webstore.
+	 *
+	 * @since 2.0.10
+	 */
+	public function payment_fields() {
 
-		$form['title'] = array(
-			'title'       => __( 'Title', $this->td ),
-			'type'        => 'text',
-			'description' => __( 'This controls the title which the user sees during checkout.', $this->td ),
-			'default'     => __( 'Svea Payments', $this->td ),
-			'desc_tip'    => true,
-		);
+		if ( $this->payment_method_select->payment_method_is_selected_in_webstore() ) {
+			
+			global $woocommerce;
+			return $this->payment_method_select->initialize_payment_method_select(
+				$woocommerce->cart->total
+			);
+		}
 
-		$form['description'] = array(
-			'title'       => __( 'Customer Message', $this->td ),
-			'type'        => 'textarea',
-			'description' => __( 'This message is shown below the payment method on the checkout page.', $this->td ),
-			'default'     => __( 'Make payment using Svea Payments card, mobile, invoice and bank payment methods', $this->td ),
-			'desc_tip'    => true,
-			'css'         => 'width: 25em;',
-		);
+		return parent::payment_fields();
+	}
 
-		$form['account_settings'] = array(
-			'title' => __( 'Account settings', $this->td ),
-			'type'  => 'title',
-			'id'    => 'account_settings',
-		);
+	/**
+	 * Validating payment method that is selected in webstore.
+	 *
+	 * @since 2.0.10
+	 */
+	public function validate_fields() {
 
-		$form['maksuturva_sellerid']   = array(
-			'type'        => 'textfield',
-			'title'       => __( 'Seller id', $this->td ),
-			'desc_tip'    => true,
-			'description' => __( 'The seller identification provided by Svea upon your registration.',
-			$this->td ),
-		);
-		$form['maksuturva_secretkey']  = array(
-			'type'        => 'textfield',
-			'title'       => __( 'Secret Key', $this->td ),
-			'desc_tip'    => true,
-			'description' => __( 'Your unique secret key provided by Svea.', $this->td ),
-		);
-		$form['maksuturva_keyversion'] = array(
-			'type'        => 'textfield',
-			'title'       => __( 'Secret Key Version', $this->td ),
-			'desc_tip'    => true,
-			'description' => __( 'The version of the secret key provided by Svea.', $this->td ),
-			'default'     => get_option( 'maksuturva_keyversion', '001' ),
-		);
+		if ( $this->payment_method_select->payment_method_is_selected_in_webstore() ) {
 
-		$form['advanced_settings'] = array(
-			'title' => __( 'Advanced settings', $this->td ),
-			'type'  => 'title',
-			'id'    => 'advanced_settings',
-		);
+			$valid = $this->payment_method_select->validate_payment_method_select();
 
-		/* I don't think these are needed at the UI, but enabled it for now / JH */
-		$form['maksuturva_url'] = array(
-			'type'        => 'textfield',
-			'title'       => __( 'Gateway URL', $this->td ),
-			'desc_tip'    => true,
-			'description' => __( 'The URL used to communicate with Svea. Do not change this configuration unless you know what you are doing.',
-			$this->td ),
-			'default'     => get_option( 'maksuturva_url', 'https://www.maksuturva.fi' ),
-		);
+			if (!$valid) {
+				return false;
+			}
+		}
 
-		$form['maksuturva_orderid_prefix'] = array(
-			'type'        => 'textfield',
-			'title'       => __( 'Payment Prefix', $this->td ),
-			'desc_tip'    => true,
-			'description' => __( 'Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall.',
-			$this->td ),
-		);
-
-		$form['maksuturva_send_delivery_information_status'] = [
-			'type'        => 'select',
-			'title'       => __( 'Send delivery information on status change to status', $this->td ),
-			'desc_tip'    => true,
-			'default'     => 'none',
-			'description' => __( 'Send delivery information to Svea when this status is selected.', $this->td ),
-			'options'     => ['' => '-'] + wc_get_order_statuses()
-		];
-
-		$form['sandbox'] = array(
-			'type'        => 'checkbox',
-			'title'       => __( 'Sandbox mode', $this->td ),
-			'default'     => 'no',
-			'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.',
-			$this->td ),
-			'options'     => array( 'yes' => '1', 'no' => '0' ),
-		);
-
-		$form['maksuturva_encoding'] = array(
-			'type'        => 'radio',
-			'title'       => __( 'Svea encoding', $this->td ),
-			'desc_tip'    => true,
-			'default'     => 'UTF-8',
-			'description' => __( 'The encoding used for Svea.', $this->td ),
-			'options'     => array( 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ),
-		);
-
-		$this->form_fields = $form;
+		return parent::validate_fields();
 	}
 
 	/**
@@ -507,13 +455,22 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @inheritdoc
 	 */
 	public function process_payment( $order_id ) {
+
 		$order         = wc_get_order( $order_id );
 		$order_handler = new WC_Order_Compatibility_Handler( $order );
 
+		$url = $order->get_checkout_order_received_url();
+		$url = add_query_arg( 'key', $order_handler->get_order_key(), $url );
+		$url = add_query_arg( 'order-pay', $order_handler->get_id(), $url );
+
+		if ( $this->payment_method_select->payment_method_is_selected_in_webstore() ) {
+			$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
+			$url = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+		}
+
 		return array(
 			'result'   => 'success',
-			'redirect' => add_query_arg( 'order-pay', $order_handler->get_id(),
-			add_query_arg( 'key', $order_handler->get_order_key(), $order->get_checkout_order_received_url() ) ),
+			'redirect' => $url,
 		);
 	}
 
