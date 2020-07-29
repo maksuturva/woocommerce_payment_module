@@ -222,7 +222,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	/**
 	 * The WC_Payment_Gateway extension.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 * 
 	 * @var WC_Gateway_Maksuturva $wc_gateway The WC_Payment_Gateway extension.
 	 */

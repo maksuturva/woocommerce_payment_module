@@ -40,7 +40,7 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @param string $string The string to filter.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @return string
 	 */

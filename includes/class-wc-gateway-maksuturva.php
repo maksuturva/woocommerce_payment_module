@@ -81,7 +81,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	/**
 	 * The payment method select handler
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @var WC_Payment_Method_Select $payment_method_select The payment method select handler.
 	 */
@@ -122,11 +122,11 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->init_settings();
 
 		// Save the settings.
-		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id,
-		array( $this, 'process_admin_options' ) );
+		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options'] );
+		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'save_payment_method_handling_costs'] );
 
-		add_action( 'woocommerce_api_wc_gateway_maksuturva', array( $this, 'check_response' ) );
-		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+		add_action( 'woocommerce_api_wc_gateway_maksuturva', [$this, 'check_response'] );
+		add_action( 'woocommerce_receipt_' . $this->id, [$this, 'receipt_page'] );
 
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
 	}
@@ -150,10 +150,20 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->form_fields = $gateway_admin_form_fields->as_array();
 	}
 
+	public function generate_payment_method_handling_cost_table_html() {
+		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
+		return $gateway_admin_form_fields->generate_payment_method_handling_cost_table_html();
+	}
+
+	public function save_payment_method_handling_costs() {
+		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
+		return $gateway_admin_form_fields->save_payment_method_handling_costs();
+	}
+
 	/**
 	 * Payment fields method definition for selecting payment method in webstore.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 */
 	public function payment_fields() {
 
@@ -171,7 +181,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	/**
 	 * Validating payment method that is selected in webstore.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 */
 	public function validate_fields() {
 

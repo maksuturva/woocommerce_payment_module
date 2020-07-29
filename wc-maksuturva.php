@@ -203,7 +203,8 @@ class WC_Maksuturva {
 				wp_schedule_event(time(), 'five_minutes', 'maksuturva_check_pending_payments');
 			}
 
-			add_action('maksuturva_check_pending_payments', array($this, 'check_pending_payments'));
+			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
+			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 		} catch (Exception $e) { 
 			_log("Error in Maksuturva module inititalization: " . $e->getMessage());
 		}	
@@ -474,6 +475,20 @@ class WC_Maksuturva {
 		WC_Payment_Checker_Maksuturva::install_db();
 
 		$this->set_option( self::OPTION_DB_VERSION, self::DB_VERSION );
+	}
+
+	/**
+	 * Sets the payment method handling cost in checkout page
+	 *
+	 * @since 2.1.3
+	 */
+	public function set_handling_cost() {
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
+
+		$this->load_class( 'WC_Payment_Handling_Costs' );
+		$handling_costs_handler = new WC_Payment_Handling_Costs( $gateway );
+		$handling_costs_handler->set_handling_cost();
 	}
 }
 

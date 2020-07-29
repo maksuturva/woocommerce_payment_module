@@ -29,32 +29,54 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Variables defined.
  *
+ * @var string $currency_symbol Symbol for inidicating the currency
+ * @var array $payment_method_handling_costs Configured payment method handling costs.
  * @var string $payment_method_select_id The name to use for payment method select field.
  * @var array $payment_methods Available payment methods.
  * @var array $terms Terms.
  *
- * @since 2.0.10
+ * @since 2.1.3
  */
 
 ?>
 
-<?php foreach ($payment_methods as $payment_method) { ?>
+<?php foreach ( $payment_methods as $payment_method ) { ?>
 	<div style="clear: both;">
 		<input
-			class="input-radio"
-			id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method["code"]; ?>"
+			class="input-radio svea-payment-method-select-radio"
+			id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
 			name="<?php echo $payment_method_select_id; ?>"
 			type="radio"
-			value="<?php echo $payment_method["code"]; ?>"
+			value="<?php echo $payment_method['code']; ?>"
 		/>
-		<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method["code"]; ?>">
+		<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
 			<img
-				alt="<?php echo $payment_method["displayname"]; ?>"
-				src="<?php echo $payment_method["imageurl"]; ?>"
+				alt="<?php echo $payment_method['displayname']; ?>"
+				src="<?php echo $payment_method['imageurl']; ?>"
 			/>
 		</label>
+		<?php 
+			foreach ( $payment_method_handling_costs as $handling_cost ) {
+				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
+					echo $handling_cost['handling_cost_amount'] . ' ' . $currency_symbol . ' + VAT';
+					break;
+				}
+			}
+		?>
 	</div>
 <?php } ?>
+
+<script>
+(function() {
+	var radioButtons = document.querySelectorAll( '.svea-payment-method-select-radio' );
+
+	for( var i = 0; i < radioButtons.length; ++i ) {
+		radioButtons[i].addEventListener('click', function() {
+			document.querySelector( 'body' ).dispatchEvent( new CustomEvent('update_checkout') );
+		});
+	}
+})();
+</script>
 
 <p><a href="<?php echo $terms['url']; ?>"><?php echo $terms['text']; ?></a></p>
 

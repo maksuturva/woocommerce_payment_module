@@ -51,7 +51,7 @@ class WC_Svea_Delivery_Handler {
 	 *
 	 * @var WC_Gateway_Maksuturva $gateway The gateway.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 */
 	private $gateway;
 
@@ -60,7 +60,7 @@ class WC_Svea_Delivery_Handler {
 	 *
 	 * @var int $order_id The order id.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 */
 	private $order_id;
 
@@ -99,7 +99,7 @@ class WC_Svea_Delivery_Handler {
 	 *
 	 * @var int $seller_id The seller id.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 */
 	private $seller_id;
 

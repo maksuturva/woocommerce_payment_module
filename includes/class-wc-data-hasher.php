@@ -35,7 +35,7 @@ require_once 'class-wc-gateway-maksuturva-exception.php';
  *
  * Handles encryption of data.
  *
- * @since 2.0.10
+ * @since 2.1.3
  */
 class WC_Data_Hasher {
 
@@ -67,36 +67,36 @@ class WC_Data_Hasher {
 	 */
 	const ALGORITHM_MD5 = 'MD5';
 
-  /**
+	/**
 	 * Sandbox secret key.
 	 *
 	 * @var string SANDBOX_SECRET_KEY
 	 */
-  const SANDBOX_SECRET_KEY = '11223344556677889900';
+	const SANDBOX_SECRET_KEY = '11223344556677889900';
 
-  /**
+	/**
 	 * Seller secret key.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @var string $secret_key Seller secret key to use for identification when calling the gateway.
 	 */
 	private $secret_key;
 
-  /**
-   * WC_Data_Hasher constructor.
-   *
-   * @param WC_Gateway_Maksuturva $gateway The gateway object.
-   *
-   * @since 2.0.10
-   */
-  public function __construct( WC_Gateway_Maksuturva $gateway ) {
-    $this->secret_key = $gateway->is_sandbox()
-      ? self::SANDBOX_SECRET_KEY
-      : $gateway->get_secret_key();
-  }
+	/**
+	 * WC_Data_Hasher constructor.
+	 *
+	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
+	 *
+	 * @since 2.1.3
+	 */
+	public function __construct( WC_Gateway_Maksuturva $gateway ) {
+		$this->secret_key = $gateway->is_sandbox()
+			? self::SANDBOX_SECRET_KEY
+			: $gateway->get_secret_key();
+	}
 
-  /**
+	/**
 	 * Create hash.
 	 *
 	 * Calculates a hash for given data.
@@ -109,13 +109,13 @@ class WC_Data_Hasher {
 	 */
 	public function create_hash( array $hash_data ) {
 
-    $hash_string = '';
+		$hash_string = '';
 
 		foreach ( $hash_data as $key => $data ) {
 			if ( 'pmt_hash' != $key ) {
 				$hash_string .= $data . '&';
 			}
-    }
+		}
 
 		$hash_string .= $this->secret_key . '&';
 
@@ -132,7 +132,7 @@ class WC_Data_Hasher {
 	/**
 	 * Get best hash algorithm available.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @return string
 	 */
@@ -174,7 +174,7 @@ class WC_Data_Hasher {
 	 *
 	 * For example transforms SHA-256 into sha256
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @return string
 	 */

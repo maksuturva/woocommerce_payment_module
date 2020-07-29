@@ -27,6 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once 'class-wc-gateway-implementation-maksuturva.php';
+require_once 'class-wc-payment-handling-costs.php';
 require_once 'class-wc-svea-api-request-handler.php';
 require_once 'class-wc-utils-maksuturva.php';
 
@@ -35,7 +36,7 @@ require_once 'class-wc-utils-maksuturva.php';
  *
  * Handles functionalities related to the payment method selection.
  *
- * @since 2.0.10
+ * @since 2.1.3
  */
 class WC_Payment_Method_Select {
 
@@ -44,7 +45,7 @@ class WC_Payment_Method_Select {
 	 *
 	 * @var string PAYMENT_METHOD_SELECT_ID
 	 */
-	public const PAYMENT_METHOD_SELECT_ID = 'svea-payment-method';
+	public const PAYMENT_METHOD_SELECT_ID = 'svea_payment_method';
 
 	/**
 	 * Payment method is selected in svea.
@@ -60,55 +61,58 @@ class WC_Payment_Method_Select {
 	 */
 	public const SELECT_PAYMENT_METHOD_SYSTEM_WEBSTORE = '1';
 
-  /**
+	/**
 	 * Payment cancellation route.
 	 *
 	 * @var string ROUTE_ADD_DELIVERY_INFO
 	 */
-  private const ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS = '/GetPaymentMethods.pmt';
+	private const ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS = '/GetPaymentMethods.pmt';
 
-  /**
+	/**
 	 * Gateway.
 	 *
 	 * @var WC_Gateway_Maksuturva $gateway The gateway.
 	 */
-  private $gateway;
+	private $gateway;
 
-  /**
+	/**
 	 * Seller id.
 	 *
 	 * @var int $seller_id The seller id.
 	 */
-  private $seller_id;
+	private $seller_id;
 
-  /**
+	/**
 	 * WC_Payment_Method_Select constructor.
 	 * 
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
 	 * @param int $order_id The order.
 	 * 
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 */
 	public function __construct( WC_Gateway_Maksuturva $gateway ) {
 		$this->gateway = $gateway;
-    $this->seller_id = $gateway->get_seller_id();
-  }
+		$this->seller_id = $gateway->get_seller_id();
+	}
 
 	/**
 	 * Initialize payment method select box content
 	 *
 	 * @param int $price The price
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 */
-  public function initialize_payment_method_select( $price ) {
+	public function initialize_payment_method_select( $price ) {
 
-    $available_payment_methods = $this->get_available_payment_methods( $price );
+		$available_payment_methods = $this->get_available_payment_methods( $price );
+		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->gateway );
 
-    $this->gateway->render(
+		$this->gateway->render(
 			'payment-method-form',
 			'frontend',
 			[
+				'currency_symbol' => get_woocommerce_currency_symbol(),
+				'payment_method_handling_costs' => $payment_handling_costs_handler->get_handling_costs_by_payment_method(),
 				'payment_method_select_id' => self::PAYMENT_METHOD_SELECT_ID,
 				'payment_methods' => $available_payment_methods['paymentmethod'],
 				'terms' => [
@@ -122,7 +126,7 @@ class WC_Payment_Method_Select {
 	/**
 	 * Returns true if the payment method selected in webstore.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @return bool
 	 */
@@ -133,24 +137,24 @@ class WC_Payment_Method_Select {
 	/**
 	 * Validates that the payment method is selected.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @return bool
 	 */
-  public function validate_payment_method_select() {
+	public function validate_payment_method_select() {
 
-		if ( !isset( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
+		if ( !isset( $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
 			wc_add_notice( __( 'Payment method not selected', $this->gateway->td ), 'error' );
 			return false;
 		}
 
 		return true;
-  }
+	}
 
-  /**
+	/**
 	 *	Fetches available payment methods from Svea api.
 	 *
-	 * @since 2.0.10
+	 * @since 2.1.3
 	 *
 	 * @param int $price The price
 	 *
@@ -159,9 +163,9 @@ class WC_Payment_Method_Select {
 	private function get_available_payment_methods( $price ) {
 
 		$post_fields = [
-      'request_locale' => explode( '_', get_user_locale() )[0],
-      'sellerid' => $this->seller_id,
-      'totalamount' => WC_Utils_Maksuturva::filter_price( $price )
+			'request_locale' => explode( '_', get_user_locale() )[0],
+			'sellerid' => $this->seller_id,
+			'totalamount' => WC_Utils_Maksuturva::filter_price( $price )
 		];
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
