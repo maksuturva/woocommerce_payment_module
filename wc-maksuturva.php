@@ -480,15 +480,17 @@ class WC_Maksuturva {
 	/**
 	 * Sets the payment method handling cost in checkout page
 	 *
+	 * @param WC_Cart $cart The cart.
+	 *
 	 * @since 2.1.3
 	 */
-	public function set_handling_cost() {
+	public function set_handling_cost( WC_Cart $cart ) {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
 
 		$this->load_class( 'WC_Payment_Handling_Costs' );
 		$handling_costs_handler = new WC_Payment_Handling_Costs( $gateway );
-		$handling_costs_handler->set_handling_cost();
+		$handling_costs_handler->set_handling_cost( $cart );
 	}
 }
 

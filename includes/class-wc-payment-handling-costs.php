@@ -94,10 +94,12 @@ class WC_Payment_Handling_Costs {
 
 	/**
 	 * Set handling cost in checkout page
-	 * 
+	 *
+	 * @param WC_Cart $cart The cart.
+	 *
 	 * @since 2.1.3
 	 */
-	public function set_handling_cost() {
+	public function set_handling_cost( WC_Cart $cart ) {
 		if ( ! $_POST || ( is_admin() && ! is_ajax() ) ) {
 			return;
 		}
@@ -124,7 +126,45 @@ class WC_Payment_Handling_Costs {
 		);
 
 		if ( $payment_method_handling_cost !== null ) {
-			WC()->cart->add_fee( 'Maksutapalisä', $payment_method_handling_cost, true );
+			$tax_rate = $this->get_payment_method_handling_cost_tax_rate();
+			$cart->add_fee(
+				__( 'Payment handling fee', $this->gateway->td ),
+				$payment_method_handling_cost / ( 1 + $tax_rate / 100 ),
+				true,
+				$this->get_payment_method_handling_cost_tax_class()
+			);
 		}
+	}
+
+	/**
+	 * Get payment method handling cost tax class
+	 *
+	 * @return string
+	 *
+	 * @since 2.1.3
+	 */
+	public function get_payment_method_handling_cost_tax_class() {
+		return $this->gateway->get_option(
+			'payment_method_handling_cost_tax_class'
+		);
+	}
+
+	/**
+	 * Get payment method handling cost tax rate
+	 *
+	 * @return int
+	 *
+	 * @since 2.1.3
+	 */
+	public function get_payment_method_handling_cost_tax_rate() {
+		$tax_class = $this->get_payment_method_handling_cost_tax_class();
+
+		$rate = 0;
+
+		foreach ( WC_Tax::get_rates($tax_class) as $tax_rate ) {
+			$rate += $tax_rate['rate'];
+		}
+
+		return $rate;
 	}
 }

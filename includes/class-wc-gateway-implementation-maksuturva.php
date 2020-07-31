@@ -348,13 +348,16 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			return null;
 		}
 
+		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->wc_gateway );
+		$tax_rate = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
+ 
 		return [
-			'pmt_row_name'               => __( 'Handling cost', $this->td ),
-			'pmt_row_desc'               => __( 'Handling cost', $this->td ),
+			'pmt_row_name'               => __( 'Payment handling cost', $this->td ),
+			'pmt_row_desc'               => __( 'Payment handling cost', $this->td ),
 			'pmt_row_quantity'           => 1,
 			'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 			'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $payment_method_handling_cost ),
-			'pmt_row_vat'                => '00,00',
+			'pmt_row_vat'                => WC_Utils_Maksuturva::filter_price( $tax_rate ),
 			'pmt_row_discountpercentage' => '00,00',
 			'pmt_row_type'               => 3,
 		];

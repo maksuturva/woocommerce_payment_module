@@ -107,6 +107,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'title'                            => __( 'Payment handling costs', $this->gateway->td ),
 				'type'                             => 'payment_method_handling_cost_table'
 			],
+			'payment_method_handling_cost_tax_class' => [
+				'type'        => 'select',
+				'title'       => __( 'Payment handling costs tax class', $this->gateway->td ),
+				'desc_tip'    => true,
+				'default'     => '',
+				'description' => __( 'Tax class determines the tax percentage used for the payment handling costs.', $this->gateway->td ),
+				'options'     => $this->get_tax_class_options()
+			],
 			'account_settings' => [
 				'title' => __( 'Account settings', $this->gateway->td ),
 				'type'  => 'title',
@@ -209,6 +217,19 @@ class WC_Gateway_Admin_Form_Fields {
 		);
 
 		return ob_get_clean();
+	}
+
+	public function get_tax_class_options() {
+
+		foreach (WC_Tax::get_tax_classes() as $tax_class) {
+			$tax_classes[sanitize_title( $tax_class )] = $tax_class;
+		}
+
+		$tax_classes = $tax_classes + ['' => __( 'Standard', 'woocommerce' )];
+
+		asort($tax_classes);
+
+		return $tax_classes;
 	}
 
 	/**

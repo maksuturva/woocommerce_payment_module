@@ -58,7 +58,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php 
 			foreach ( $payment_method_handling_costs as $handling_cost ) {
 				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-					echo $handling_cost['handling_cost_amount'] . ' ' . $currency_symbol . ' + VAT';
+					echo $handling_cost['handling_cost_amount'] . ' ' . $currency_symbol;
 					break;
 				}
 			}
