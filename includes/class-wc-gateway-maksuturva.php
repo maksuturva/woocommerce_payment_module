@@ -168,10 +168,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	public function payment_fields() {
 
 		if ( $this->payment_method_select->payment_method_is_selected_in_webstore() ) {
-			
-			global $woocommerce;
 			return $this->payment_method_select->initialize_payment_method_select(
-				$woocommerce->cart->total
+				WC_Payment_Gateway::get_order_total()
 			);
 		}
 
