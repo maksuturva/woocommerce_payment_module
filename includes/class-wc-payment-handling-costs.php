@@ -108,8 +108,15 @@ class WC_Payment_Handling_Costs {
 			return;
 		}
 
+		$gateways_with_handling_costs = [
+			WC_Gateway_Svea_Credit_Card_And_Mobile::class,
+			WC_Gateway_Svea_Invoice_And_Hire_Purchase::class,
+			WC_Gateway_Svea_Online_Bank_Payments::class,
+			WC_Gateway_Svea_Other_Payments::class,
+		];
+
 		$chosen_gateway = WC()->session->get( 'chosen_payment_method' );
-		if ( $chosen_gateway !== WC_Gateway_Maksuturva::class ) {
+		if ( !in_array( $chosen_gateway, $gateways_with_handling_costs ) ) {
 			return;
 		}
 

@@ -48,20 +48,6 @@ class WC_Payment_Method_Select {
 	public const PAYMENT_METHOD_SELECT_ID = 'svea_payment_method';
 
 	/**
-	 * Payment method is selected in svea.
-	 *
-	 * @var string SELECT_PAYMENT_METHOD_SYSTEM_SVEA
-	 */
-	public const SELECT_PAYMENT_METHOD_SYSTEM_SVEA = '0';
-
-	/**
-	 * Payment method is selected in webstore.
-	 *
-	 * @var string SELECT_PAYMENT_METHOD_SYSTEM_WEBSTORE
-	 */
-	public const SELECT_PAYMENT_METHOD_SYSTEM_WEBSTORE = '1';
-
-	/**
 	 * Payment cancellation route.
 	 *
 	 * @var string ROUTE_ADD_DELIVERY_INFO
@@ -83,6 +69,13 @@ class WC_Payment_Method_Select {
 	private $seller_id;
 
 	/**
+	 * Available payment methods.
+	 *
+	 * @var array $available_payment_methods The available payment methods.
+	 */
+	private static $available_payment_methods;
+
+	/**
 	 * WC_Payment_Method_Select constructor.
 	 * 
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
@@ -102,36 +95,24 @@ class WC_Payment_Method_Select {
 	 *
 	 * @since 2.1.3
 	 */
-	public function initialize_payment_method_select( $price ) {
+	public function initialize_payment_method_select( $payment_type, $price ) {
 
-		$available_payment_methods = $this->get_available_payment_methods( $price );
 		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->gateway );
 
 		$this->gateway->render(
-			'payment-method-form',
+			'payment-method-' . $payment_type . '-form',
 			'frontend',
 			[
 				'currency_symbol' => get_woocommerce_currency_symbol(),
 				'payment_method_handling_costs' => $payment_handling_costs_handler->get_handling_costs_by_payment_method(),
 				'payment_method_select_id' => self::PAYMENT_METHOD_SELECT_ID,
-				'payment_methods' => $available_payment_methods['paymentmethod'],
+				'payment_methods' => $this->get_payment_type_payment_methods( $payment_type, $price ),
 				'terms' => [
-					'text' => $available_payment_methods['termstext'],
-					'url' => $available_payment_methods['termsurl']
+					'text' => $this->get_terms_text( $price ),
+					'url' => $this->get_terms_url( $price )
 				]
 			]
 		);
-	}
-
-	/**
-	 * Returns true if the payment method selected in webstore.
-	 *
-	 * @since 2.1.3
-	 *
-	 * @return bool
-	 */
-	public function payment_method_is_selected_in_webstore() {
-		return $this->gateway->get_option( 'select_payment_method_in_system' ) === self::SELECT_PAYMENT_METHOD_SYSTEM_WEBSTORE;
 	}
 
 	/**
@@ -152,7 +133,81 @@ class WC_Payment_Method_Select {
 	}
 
 	/**
-	 *	Fetches available payment methods from Svea api.
+	 * Sorts payment methods to categories.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @return array
+	 */
+	public function get_payment_type_payment_methods( $payment_type, $price ) {
+
+		$available_payment_methods = $this->get_available_payment_methods( $price );
+
+		$payment_type_payment_methods = [
+			'credit-card-and-mobile' => [],
+			'invoice-and-hire-purchase' => [],
+			'online-bank-payments' => [],
+			'other-payments' => [],
+		];
+
+		if ( isset( $available_payment_methods['ERROR'] ) ) {
+			return $payment_type_payment_methods;
+		}
+
+		foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
+			if ( in_array( substr( $payment_method['code'], 0, 3 ), ['FI0', 'FI1'] ) ) {
+				$payment_type_payment_methods['online-bank-payments'][] = $payment_method;
+				unset( $available_payment_methods['paymentmethod'][$key] );
+			}
+		}
+
+		foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
+			if ( in_array( substr($payment_method['code'], 0, 3 ), ['FI5']) ) {
+				$payment_type_payment_methods['credit-card-and-mobile'][] = $payment_method;
+				unset( $available_payment_methods['paymentmethod'][$key] );
+			}
+		}
+
+		foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
+			if ( in_array(substr($payment_method['code'], 0, 3), ['FI6', 'FI7']) ) {
+				$payment_type_payment_methods['invoice-and-hire-purchase'][] = $payment_method;
+				unset( $available_payment_methods['paymentmethod'][$key] );
+			}
+		}
+
+		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
+			$payment_type_payment_methods['other-payments'][] = $payment_method;
+		}
+
+		return $payment_type_payment_methods[$payment_type];
+	}
+
+	/**
+	 * Fetches terms text
+	 *
+	 * @since 2.1.3
+	 *
+	 * @return string
+	 */
+	private function get_terms_text( $price ) {
+		$available_payment_methods = $this->get_available_payment_methods( $price );
+		return $available_payment_methods['termstext'];
+	}
+
+	/**
+	 * Fetches terms url
+	 *
+	 * @since 2.1.3
+	 *
+	 * @return string
+	 */
+	private function get_terms_url( $price ) {
+		$available_payment_methods = $this->get_available_payment_methods( $price );
+		return $available_payment_methods['termsurl'];
+	}
+
+	/**
+	 *	Fetches payment type payment methods from Svea api.
 	 *
 	 * @since 2.1.3
 	 *
@@ -162,6 +217,10 @@ class WC_Payment_Method_Select {
 	 */
 	private function get_available_payment_methods( $price ) {
 
+		if ( isset( self::$available_payment_methods ) ) {
+			return self::$available_payment_methods;
+		}
+
 		$post_fields = [
 			'request_locale' => explode( '_', get_user_locale() )[0],
 			'sellerid' => $this->seller_id,
@@ -170,9 +229,11 @@ class WC_Payment_Method_Select {
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
 
-		return $api->post(
+		self::$available_payment_methods = $api->post(
 			self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,
 			$post_fields
 		);
+
+		return self::$available_payment_methods;
 	}
 }

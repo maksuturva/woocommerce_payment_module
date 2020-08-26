@@ -85,7 +85,16 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * @var WC_Payment_Method_Select $payment_method_select The payment method select handler.
 	 */
-	private $payment_method_select;
+	protected $payment_method_select;
+
+	/**
+	 * The payment method type
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var string $payment_method_type The payment method type.
+	 */
+	protected $payment_method_type;
 
 	/**
 	 * WC_Gateway_Maksuturva constructor.
@@ -95,10 +104,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * @since 2.0.0
 	 */
-	public function __construct() {
+	public function __construct( $id = null ) {
 		global $wpdb;
 
-		$this->id = 'WC_Gateway_Maksuturva';
+		$this->id = isset($id) ? $id : WC_Gateway_Maksuturva::class;
 		$this->td = 'wc-maksuturva';
 
 		$this->title              = $this->get_option( 'title' );
@@ -106,7 +115,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->method_title       = __( 'Svea', $this->td );
 		$this->method_description = __( 'Take payments via Svea.', $this->td );
 
-		$this->notify_url = WC()->api_request_url( $this->id );
+		$this->notify_url = WC()->api_request_url( WC_Gateway_Maksuturva::class );
 
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 
@@ -114,7 +123,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		$this->payment_method_select = new WC_Payment_Method_Select( $this );
 
-		$this->has_fields = $this->payment_method_select->payment_method_is_selected_in_webstore();
+		$this->has_fields = true;
 
 		$this->supports[] = 'refunds';
 
@@ -129,6 +138,40 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		add_action( 'woocommerce_receipt_' . $this->id, [$this, 'receipt_page'] );
 
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
+
+		add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
+	}
+
+	/**
+	 * Hide gateways without payment methods from shop
+	 *
+	 * @param array $available_gateways The available gateways.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @return array
+	 */
+	public function payment_gateway_disable_empty( $available_gateways ) {
+
+		if ( $this->id === WC_Gateway_Maksuturva::class ) {
+			unset( $available_gateways[$this->id] );
+			return $available_gateways;
+		}
+
+		$payment_method_type = explode( 'WC_Gateway_Svea_', $this->id )[1];
+		$payment_method_type = strtolower( $payment_method_type );
+		$payment_method_type = str_replace( '_', '-', $payment_method_type );
+
+		$payment_methods = $this->payment_method_select->get_payment_type_payment_methods(
+			$payment_method_type,
+			WC_Payment_Gateway::get_order_total()
+		);
+
+		if ( count( $payment_methods ) === 0 ) {
+			unset( $available_gateways[$this->id] );
+		}
+
+		return $available_gateways;
 	}
 
 	/**
@@ -150,11 +193,21 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->form_fields = $gateway_admin_form_fields->as_array();
 	}
 
+	/**
+	 * Generates payment method handling cost table html
+	 *
+	 * @since 2.1.3
+	 */
 	public function generate_payment_method_handling_cost_table_html() {
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
 		return $gateway_admin_form_fields->generate_payment_method_handling_cost_table_html();
 	}
 
+	/**
+	 * Handles saving the payment method handling cost table values
+	 *
+	 * @since 2.1.3
+	 */
 	public function save_payment_method_handling_costs() {
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
 		return $gateway_admin_form_fields->save_payment_method_handling_costs();
@@ -167,13 +220,14 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 */
 	public function payment_fields() {
 
-		if ( $this->payment_method_select->payment_method_is_selected_in_webstore() ) {
-			return $this->payment_method_select->initialize_payment_method_select(
-				WC_Payment_Gateway::get_order_total()
-			);
-		}
+		$payment_method_type = explode( 'WC_Gateway_Svea_', $this->id )[1];
+		$payment_method_type = strtolower( $payment_method_type );
+		$payment_method_type = str_replace( '_', '-', $payment_method_type );
 
-		return parent::payment_fields();
+		return $this->payment_method_select->initialize_payment_method_select(
+			$payment_method_type,
+			WC_Payment_Gateway::get_order_total()
+		);
 	}
 
 	/**
@@ -183,13 +237,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 */
 	public function validate_fields() {
 
-		if ( $this->payment_method_select->payment_method_is_selected_in_webstore() ) {
+		$valid = $this->payment_method_select->validate_payment_method_select();
 
-			$valid = $this->payment_method_select->validate_payment_method_select();
-
-			if (!$valid) {
-				return false;
-			}
+		if ( !$valid ) {
+			return false;
 		}
 
 		return parent::validate_fields();
@@ -348,6 +399,29 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Get option
+	 *
+	 * Returns the main gateway's option when it is used, otherwise current gateway's option.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @return string|int|array|null
+	 */
+	public function get_option( $key, $empty_value = null ) {
+
+		if ( $key === 'enabled' ) {
+			return parent::get_option( $key, $empty_value );
+		}
+
+		$main_settings = get_option( 'woocommerce_' . WC_Gateway_Maksuturva::class . '_settings' );
+		if ( isset( $main_settings[$key] ) ) {
+			return $main_settings[$key];
+		}
+
+		return parent::get_option( $key, $empty_value );
+	}
+
+	/**
 	 * Get the seller id.
 	 *
 	 * Returns the defined seller id.
@@ -471,10 +545,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$url = add_query_arg( 'key', $order_handler->get_order_key(), $url );
 		$url = add_query_arg( 'order-pay', $order_handler->get_id(), $url );
 
-		if ( $this->payment_method_select->payment_method_is_selected_in_webstore() ) {
-			$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
-			$url = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
-		}
+		$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
+		$url = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
 
 		return array(
 			'result'   => 'success',

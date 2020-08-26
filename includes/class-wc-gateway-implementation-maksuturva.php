@@ -110,7 +110,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private function create_payment_data( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
 
-		$selected_payment_method = $this->get_selected_payment_method( $gateway );
+		$selected_payment_method = $this->get_selected_payment_method();
 		$payment_method_handling_cost = $this->get_payment_method_handling_cost( $selected_payment_method );
 
 		$payment_row_data = $this->create_payment_row_data( $order, $payment_method_handling_cost );
@@ -186,15 +186,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * @return string|null
 	 */
-	private function get_selected_payment_method( WC_Gateway_Maksuturva $gateway ) {
-		$payment_method_select = new WC_Payment_Method_Select( $gateway );
-		if ( $payment_method_select->payment_method_is_selected_in_webstore() ) {
-			return WC_Utils_Maksuturva::filter_alphanumeric(
-				$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
-			);
-		}
-
-		return null;
+	private function get_selected_payment_method() {
+		return WC_Utils_Maksuturva::filter_alphanumeric(
+			$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
+		);
 	}
 
 	/**

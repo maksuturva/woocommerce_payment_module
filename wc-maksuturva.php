@@ -271,8 +271,21 @@ class WC_Maksuturva {
 	 * @return array The list of payment gateways.
 	 */
 	public function add_maksuturva_gateway( $methods ) {
+
 		$this->load_class( 'WC_Gateway_Maksuturva' );
-		$methods[] = 'WC_Gateway_Maksuturva';
+		$methods[] = WC_Gateway_Maksuturva::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Credit_Card_And_Mobile' );
+		$methods[] = WC_Gateway_Svea_Credit_Card_And_Mobile::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
+		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Online_Bank_Payments' );
+		$methods[] = WC_Gateway_Svea_Online_Bank_Payments::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Other_Payments' );
+		$methods[] = WC_Gateway_Svea_Other_Payments::class;
 
 		return $methods;
 	}
@@ -485,6 +498,7 @@ class WC_Maksuturva {
 	 * @since 2.1.3
 	 */
 	public function set_handling_cost( WC_Cart $cart ) {
+
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
 

@@ -86,17 +86,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'css'         => 'width: 25em;',
 			],
-			'select_payment_method_in_system' => [
-				'type'        => 'select',
-				'title'       => __( 'Choose payment method in', $this->gateway->td ),
-				'desc_tip'    => true,
-				'default'     => WC_Payment_Method_Select::SELECT_PAYMENT_METHOD_SYSTEM_SVEA,
-				'description' => __( 'Payment method can be selected in webstore or in Svea.', $this->gateway->td ),
-				'options'     => [
-					WC_Payment_Method_Select::SELECT_PAYMENT_METHOD_SYSTEM_SVEA => 'Svea',
-					WC_Payment_Method_Select::SELECT_PAYMENT_METHOD_SYSTEM_WEBSTORE => 'Webstore'
-				]
-			],
 			'payment_method_handling_cost_table' => [
 				'add_new_button_text'              => __( 'Add new', $this->gateway->td ),
 				'amount_column_title'              => __( 'Handling cost amount', $this->gateway->td ),
