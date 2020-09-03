@@ -104,7 +104,8 @@ class WC_Payment_Handling_Costs {
 			return;
 		}
 
-		if ( ! isset( $_POST['post_data']) ) {
+		$payment_method_select_id = $this->getPaymentMethodSelectId();
+		if ( $payment_method_select_id === null ) {
 			return;
 		}
 
@@ -120,16 +121,8 @@ class WC_Payment_Handling_Costs {
 			return;
 		}
 
-		$post_data_array = [];
-		$post_data_string = $_POST['post_data'];
-		parse_str( $post_data_string, $post_data_array );
-
-		if ( !isset( $post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
-			return;
-		}
-
 		$payment_method_handling_cost = $this->get_payment_method_handling_cost(
-			$post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
+			$payment_method_select_id
 		);
 
 		if ( $payment_method_handling_cost !== null ) {
@@ -173,5 +166,32 @@ class WC_Payment_Handling_Costs {
 		}
 
 		return $rate;
+	}
+
+	/**
+	 * Get the payment method select id
+	 *
+	 * @return string
+	 *
+	 * @since 2.1.3
+	 */
+	private function getPaymentMethodSelectId() {
+
+		if ( isset( $_POST['post_data']) ) {
+
+			$post_data_array = [];
+			$post_data_string = $_POST['post_data'];
+			parse_str( $post_data_string, $post_data_array );
+
+			if ( isset( $post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
+				return $post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+			}
+		}
+
+		if ( isset ( $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
+			return $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+		}
+
+		return null;
 	}
 }
