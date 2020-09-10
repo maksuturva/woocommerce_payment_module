@@ -79,7 +79,6 @@ class WC_Payment_Method_Select {
 	 * WC_Payment_Method_Select constructor.
 	 * 
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
-	 * @param int $order_id The order.
 	 * 
 	 * @since 2.1.3
 	 */

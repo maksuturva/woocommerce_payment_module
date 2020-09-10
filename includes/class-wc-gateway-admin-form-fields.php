@@ -93,15 +93,15 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'                         => true,
 				'description'                      => __( 'Payment method handling costs', $this->gateway->td ),
 				'remove_selected_rows_button_text' => __( 'Remove selected rows', $this->gateway->td ),
-				'title'                            => __( 'Payment handling costs', $this->gateway->td ),
+				'title'                            => __( 'Payment handling fees', $this->gateway->td ),
 				'type'                             => 'payment_method_handling_cost_table'
 			],
 			'payment_method_handling_cost_tax_class' => [
 				'type'        => 'select',
-				'title'       => __( 'Payment handling costs tax class', $this->gateway->td ),
+				'title'       => __( 'Payment handling fees tax class', $this->gateway->td ),
 				'desc_tip'    => true,
 				'default'     => '',
-				'description' => __( 'Tax class determines the tax percentage used for the payment handling costs.', $this->gateway->td ),
+				'description' => __( 'Tax class determines the tax percentage used for the payment handling fees.', $this->gateway->td ),
 				'options'     => $this->get_tax_class_options()
 			],
 			'account_settings' => [

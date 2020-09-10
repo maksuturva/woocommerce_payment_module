@@ -69,6 +69,15 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	private $total_fees = 0.00;
 
 	/**
+	 * Fees.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var float $removed_fees Total removed fees of the order.
+	 */
+	private $removed_fees = 0.00;
+
+	/**
 	 * The text domain to use for translations.
 	 *
 	 * @since 2.0.0
@@ -131,7 +140,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_errorreturn'        => $gateway->get_payment_url( $payment_id, 'error' ),
 			'pmt_cancelreturn'       => $gateway->get_payment_url( $payment_id, 'cancel' ),
 			'pmt_delayedpayreturn'   => $gateway->get_payment_url( $payment_id, 'delay' ),
-			'pmt_amount'             => WC_Utils_Maksuturva::filter_price( $order->get_total() - $this->shipping_cost - $this->total_fees ),
+			'pmt_amount'             => WC_Utils_Maksuturva::filter_price( $order->get_total() - $this->shipping_cost - $this->total_fees - $this->removed_fees ),
 			'pmt_buyername'          => $buyer_data['name'],
 			'pmt_buyeraddress'       => $buyer_data['address'],
 			'pmt_buyerpostalcode'    => $buyer_data['postal_code'],
@@ -375,7 +384,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 		foreach ( $fees as $fee ) {
 
-			$fee_total        = $fee['line_total'] + $fee['line_tax'];
+			$fee_total = $fee['line_total'] + $fee['line_tax'];
+
+			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->td )) {
+				$this->removed_fees += $fee_total;
+				continue;
+			}
+
 			$this->total_fees += $fee_total;
 
 			if ( $fee_total > 0 ) {

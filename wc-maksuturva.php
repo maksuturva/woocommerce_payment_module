@@ -207,7 +207,7 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 		} catch (Exception $e) { 
 			_log("Error in Maksuturva module inititalization: " . $e->getMessage());
-		}	
+		}
 	}
 
 	/**
