@@ -40,31 +40,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<?php foreach ( $payment_methods as $payment_method ) { ?>
-	<div style="clear: both;">
-		<input
-			class="input-radio svea-payment-method-select-radio"
-			id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
-			name="<?php echo $payment_method_select_id; ?>"
-			type="radio"
-			value="<?php echo $payment_method['code']; ?>"
-		/>
-		<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
-			<img
-				alt="<?php echo $payment_method['displayname']; ?>"
-				src="<?php echo $payment_method['imageurl']; ?>"
-			/>
-		</label>
-		<?php 
-			foreach ( $payment_method_handling_costs as $handling_cost ) {
-				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-					echo $handling_cost['handling_cost_amount'] . ' ' . $currency_symbol;
-					break;
+<div>
+	<?php foreach ( $payment_methods as $payment_method ) { ?>
+		<div class="svea-payment-method-select" style="clear: both;">
+			<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
+				<img
+					alt="<?php echo $payment_method['displayname']; ?>"
+					src="<?php echo $payment_method['imageurl']; ?>"
+				/>
+			</label>
+			<?php 
+				foreach ( $payment_method_handling_costs as $handling_cost ) {
+					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
+						echo '<div class="handling-cost-amount">+' . $handling_cost['handling_cost_amount'] . $currency_symbol . "</div>";
+						break;
+					}
 				}
-			}
-		?>
-	</div>
-<?php } ?>
+			?>
+			<input
+				class="input-radio svea-payment-method-select-radio"
+				id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
+				name="<?php echo $payment_method_select_id; ?>"
+				type="radio"
+				value="<?php echo $payment_method['code']; ?>"
+			/>
+		</div>
+	<?php } ?>
+</div>
+
+<p><?php echo $terms['text']; ?> (<a href="<?php echo $terms['url']; ?>">PDF</a>)</p>
+
+<div style="clear: both;"></div>
 
 <script>
 (function() {
@@ -78,6 +84,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 })();
 </script>
 
-<p><a href="<?php echo $terms['url']; ?>"><?php echo $terms['text']; ?></a></p>
+<style>
+	#payment .payment_methods li .svea-payment-method-select-radio:focus {
+		outline: none;
+	}
 
-<div style="clear: both;"></div>
+	#payment .payment_methods li .svea-payment-method-select {
+		display: inline-block;
+		margin-bottom: 1.5em;
+		max-width: 9rem;
+		min-width: 5rem;
+		position: relative;
+		text-align: center;
+		width: 49%;
+	}
+
+	#payment .payment_methods li .svea-payment-method-select .handling-cost-amount {
+		font-size: 0.8em;
+		margin-bottom: 0.3em;
+		margin-left: 0.8em;
+		position: absolute;
+		left: 50%;
+		text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
+		bottom: 0;
+	}
+
+	#payment .payment_methods li .svea-payment-method-select img {
+		float: none;
+		margin-left: auto;
+		margin-right: auto;
+		max-height: 3em;
+	}
+</style>
