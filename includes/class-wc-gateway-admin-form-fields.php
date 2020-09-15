@@ -224,6 +224,8 @@ class WC_Gateway_Admin_Form_Fields {
 	/**
 	 * Handles saving payment method handling costs
 	 * 
+	 * @return array
+	 * 
 	 * @since 2.1.3
 	 */
 	public function save_payment_method_handling_costs() {
@@ -237,9 +239,15 @@ class WC_Gateway_Admin_Form_Fields {
 		$payment_method_types = array_map( 'wc_clean', $_POST['payment_method_type'] );
 		$handling_cost_amounts = array_map( 'wc_clean', $_POST['handling_cost_amount'] );
 
+		$errors = [];
+
 		foreach ( array_keys( $payment_method_types ) as $i ) {
 			if ( ! isset( $payment_method_types[$i] ) ) {
 				continue;
+			}
+
+			if ( !is_numeric( $handling_cost_amounts[$i] ) ) {
+				$errors[] = __( 'Invalid number in payment method handling costs', $this->gateway->td );
 			}
 
 			$payment_method_handling_costs[] = [
@@ -248,6 +256,12 @@ class WC_Gateway_Admin_Form_Fields {
 			];
 		}
 
+		if ( count ( $errors ) > 0 ) {
+			return $errors;
+		}
+
 		update_option( 'payment_method_handling_costs', $payment_method_handling_costs );
+
+		return [];
 	}
 }

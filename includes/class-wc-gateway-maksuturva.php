@@ -132,7 +132,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		// Save the settings.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options'] );
-		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'save_payment_method_handling_costs'] );
 
 		add_action( 'woocommerce_api_wc_gateway_maksuturva', [$this, 'check_response'] );
 		add_action( 'woocommerce_receipt_' . $this->id, [$this, 'receipt_page'] );
@@ -204,13 +203,22 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Handles saving the payment method handling cost table values
+	 * Handles processing adming options
 	 *
 	 * @since 2.1.3
 	 */
-	public function save_payment_method_handling_costs() {
+	public function process_admin_options() {
+
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
-		return $gateway_admin_form_fields->save_payment_method_handling_costs();
+		$errors = $gateway_admin_form_fields->save_payment_method_handling_costs();
+
+		$settings = new WC_Admin_Settings();
+
+		foreach ($errors as $error) {
+			$settings->add_error( $error );
+		}
+
+		parent::process_admin_options();
 	}
 
 	/**
