@@ -52,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php 
 				foreach ( $payment_method_handling_costs as $handling_cost ) {
 					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-						echo '<div class="handling-cost-amount">+' . $handling_cost['handling_cost_amount'] . $currency_symbol . "</div>";
+						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . $currency_symbol . "</div>";
 						break;
 					}
 				}
@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php } ?>
 </div>
 
-<p><?php echo $terms['text']; ?> (<a href="<?php echo $terms['url']; ?>">PDF</a>)</p>
+<p><?php echo $terms['text']; ?> (<a href="<?php echo $terms['url']; ?>" target="_blank">PDF</a>)</p>
 
 <div style="clear: both;"></div>
 
