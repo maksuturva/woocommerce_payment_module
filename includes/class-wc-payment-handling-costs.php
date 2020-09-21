@@ -78,6 +78,8 @@ class WC_Payment_Handling_Costs {
 	/**
 	 * Get payment method handling cost
 	 * 
+	 * @param string $payment_method_type The payment method type.
+	 *
 	 * @return int
 	 * 
 	 * @since 2.1.3
@@ -104,7 +106,7 @@ class WC_Payment_Handling_Costs {
 			return;
 		}
 
-		$payment_method_select_id = $this->getPaymentMethodSelectId();
+		$payment_method_select_id = $this->get_payment_method_select_id();
 		if ( $payment_method_select_id === null ) {
 			return;
 		}
@@ -121,15 +123,14 @@ class WC_Payment_Handling_Costs {
 			return;
 		}
 
-		$payment_method_handling_cost = $this->get_payment_method_handling_cost(
+		$payment_method_handling_cost_without_tax = $this->get_payment_method_handling_cost_without_tax(
 			$payment_method_select_id
 		);
 
-		if ( $payment_method_handling_cost !== null ) {
-			$tax_rate = $this->get_payment_method_handling_cost_tax_rate();
+		if ( $payment_method_handling_cost_without_tax !== null ) {
 			$cart->add_fee(
 				__( 'Payment handling fee', $this->gateway->td ),
-				$payment_method_handling_cost / ( 1 + $tax_rate / 100 ),
+				$payment_method_handling_cost_without_tax,
 				true,
 				$this->get_payment_method_handling_cost_tax_class()
 			);
@@ -169,13 +170,83 @@ class WC_Payment_Handling_Costs {
 	}
 
 	/**
+	 * Update payment handling fee
+	 * 
+	 * @param WC_Order $order The order.
+	 * 
+	 * @since 2.1.3
+	 */
+	public function update_payment_handling_cost_fee( $order ) {
+
+		$payment_handling_cost_fee = $this->get_payment_method_handling_cost_without_tax(
+			$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
+		);
+
+		if ( $payment_handling_cost_fee === null ) {
+			foreach ( $order->get_fees() as $fee )
+			{
+				if ( $fee['name'] === __( 'Payment handling fee', $this->gateway->td ) ) {
+					$fee['total'] = 0;
+					$order->calculate_totals();
+					return;
+				}
+			}
+
+			return;
+		}
+
+		$fee_already_exists = false;
+
+		foreach ( $order->get_fees() as $fee )
+		{
+			if ( $fee['name'] === __( 'Payment handling fee', $this->gateway->td ) ) {
+				$fee['total'] = $payment_handling_cost_fee;
+				$fee_already_exists = true;
+			}
+		}
+
+		if ( !$fee_already_exists ) {
+			$fee          = new stdClass();
+			$fee->name    = __( 'Payment handling fee', $this->gateway->td );
+			$fee->amount  = $payment_handling_cost_fee;
+			$fee->taxable = true;
+			$order->add_fee( $fee );
+		}
+
+		$order->calculate_totals();
+	}
+
+	/**
+	 * Get payment method handling cost without tax
+	 * 
+	 * @param string $payment_method_type The payment method type.
+	 *
+	 * @return int
+	 * 
+	 * @since 2.1.3
+	 */
+	private function get_payment_method_handling_cost_without_tax( $payment_method_type ) {
+
+		$payment_method_handling_cost = $this->get_payment_method_handling_cost(
+			$payment_method_type
+		);
+
+		if ( $payment_method_handling_cost === null ) {
+			return null;
+		}
+
+		$tax_rate = $this->get_payment_method_handling_cost_tax_rate();
+		return $payment_method_handling_cost / ( 1 + $tax_rate / 100 );
+	}
+
+	/**
 	 * Get the payment method select id
 	 *
 	 * @return string
 	 *
 	 * @since 2.1.3
 	 */
-	private function getPaymentMethodSelectId() {
+	private function get_payment_method_select_id() {
 
 		if ( isset( $_POST['post_data']) ) {
 

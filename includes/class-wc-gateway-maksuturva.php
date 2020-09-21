@@ -574,7 +574,11 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
      */
 	public function receipt_page( $order_id ) {
 
-		$order               = wc_get_order( $order_id );
+		$order = wc_get_order( $order_id );
+
+		$payment_handling_costs = new WC_Payment_Handling_Costs( $this );
+		$payment_handling_costs->update_payment_handling_cost_fee( $order );
+
 		$gateway             = new WC_Gateway_Implementation_Maksuturva( $this, $order );
 		$order_handler       = new WC_Order_Compatibility_Handler( $order );
 		$payment_gateway_url = $gateway->get_payment_url();
