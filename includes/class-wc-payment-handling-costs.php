@@ -85,13 +85,11 @@ class WC_Payment_Handling_Costs {
 	 * @since 2.1.3
 	 */
 	public function get_payment_method_handling_cost( $payment_method_type ) {
-		foreach ( $this->get_handling_costs_by_payment_method() as $handling_cost ) {
-			if ( $handling_cost['payment_method_type'] === $payment_method_type ) {
-				return $handling_cost['handling_cost_amount'];
-			}
+		if ( wc_prices_include_tax() ) {
+			return $this->get_payment_method_handling_base_cost( $payment_method_type );
 		}
 
-		return null;
+		return $this->get_payment_method_handling_cost_without_tax( $payment_method_type );
 	}
 
 	/**
@@ -135,6 +133,25 @@ class WC_Payment_Handling_Costs {
 				$this->get_payment_method_handling_cost_tax_class()
 			);
 		}
+	}
+
+	/**
+	 * Get payment method base cost
+	 * 
+	 * @param string $payment_method_type The payment method type.
+	 *
+	 * @return int
+	 * 
+	 * @since 2.1.3
+	 */
+	public function get_payment_method_handling_base_cost( $payment_method_type ) {
+		foreach ( $this->get_handling_costs_by_payment_method() as $handling_cost ) {
+			if ( $handling_cost['payment_method_type'] === $payment_method_type ) {
+				return $handling_cost['handling_cost_amount'];
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -227,7 +244,7 @@ class WC_Payment_Handling_Costs {
 	 */
 	private function get_payment_method_handling_cost_without_tax( $payment_method_type ) {
 
-		$payment_method_handling_cost = $this->get_payment_method_handling_cost(
+		$payment_method_handling_cost = $this->get_payment_method_handling_base_cost(
 			$payment_method_type
 		);
 
