@@ -44,9 +44,9 @@ class WC_Gateway_Svea_Online_Bank_Payments extends WC_Gateway_Maksuturva {
 	 */
 	public function __construct() {
 		parent::__construct( WC_Gateway_Svea_Online_Bank_Payments::class );
-		$this->method_title = 'Svea Online Bank Payments';
-		$this->method_description = sprintf( 'General Svea settings are managed <a href="%s">here</a>.', '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$this->title = 'Online Bank Payments';
+		$this->method_title = 'Svea ' . __( 'Online Bank Payments', $this->td );
+		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$this->title = __( 'Online Bank Payments', $this->td );
 	}
 
 	/**

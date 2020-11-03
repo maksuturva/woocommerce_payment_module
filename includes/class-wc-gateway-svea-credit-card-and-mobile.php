@@ -35,24 +35,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WC_Gateway_Svea_Credit_Card_And_Mobile extends WC_Gateway_Maksuturva {
 
-  /**
+	/**
 	 * WC_Gateway_Svea_Credit_Card_And_Mobile constructor.
 	 *
 	 * Sets the values for gateway specific parent class properties
 	 *
 	 * @since 2.1.3
 	 */
-  public function __construct() {
+	public function __construct() {
 		parent::__construct( WC_Gateway_Svea_Credit_Card_And_Mobile::class );
-    $this->method_title = 'Svea Credit Card and Mobile';
-    $this->method_description = sprintf( 'General Svea settings are managed <a href="%s">here</a>.', '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$this->title = 'Credit Card and Mobile';
-  }
+		$this->method_title = 'Svea ' . __( 'Credit Card and Mobile', $this->td );
+		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$this->title = __( 'Credit Card and Mobile', $this->td );
+	}
 
-  /**
+	/**
 	 * @inheritdoc
 	 */
-  public function init_form_fields() {
-    $this->form_fields = [];
-  }
+	public function init_form_fields() {
+		$this->form_fields = [];
+	}
 }

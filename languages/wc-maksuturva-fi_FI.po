@@ -207,6 +207,26 @@ msgstr "Svea varmensi maksun."
 msgid "Surcharge from Payment Gateway"
 msgstr "Lisämaksu maksukäytävästä"
 
+#: includes/class-wc-gateway-svea-credit-card-and-mobile.php:47
+msgid "Credit Card and Mobile"
+msgstr "Kortti- ja mobiilimaksut"
+
+#: includes/class-wc-gateway-svea-credit-card-and-mobile.php:48
+msgid "General Svea settings are managed <a href="%s">here</a>."
+msgstr "Yleisiä Svean maksutapojen asetuksia voi muokata <a href="%s">täällä</a>."
+
+#: includes/class-wc-gateway-svea-invoice-and-hire-purchase.php:47
+msgid "Invoice and Hire Purchase"
+msgstr "Lasku ja erämaksu"
+
+#: includes/class-wc-gateway-svea-online-bank-payments.php:47
+msgid "Online Bank Payments"
+msgstr "Verkkopankkimaksut"
+
+#: includes/class-wc-gateway-svea-other-payments.php:47
+msgid "Other Payments"
+msgstr "Muut maksutavat"
+
 #: includes/class-wc-meta-box-maksuturva.php:94
 msgid "The payment is confirmed by Svea"
 msgstr "Maksu varmistettiin Maksuturvassa"
