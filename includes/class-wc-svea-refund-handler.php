@@ -152,20 +152,11 @@ class WC_Svea_Refund_Handler {
 	/**
 	 * The Svea gateway.
 	 *
-	 * @var WC_Gateway_Implementation_Maksuturva $gateway The gateway.
+	 * @var WC_Gateway_Maksuturva $gateway The gateway.
 	 *
 	 * @since 2.1.2
 	 */
 	private $gateway;
-
-	/**
-	 * The gateway url.
-	 *
-	 * @var string $gateway_url The gateway url.
-	 *
-	 * @since 2.1.2
-	 */
-	private $gateway_url;
 
 	/**
 	 * The order.
@@ -185,24 +176,6 @@ class WC_Svea_Refund_Handler {
 	 */
 	private $payment;
 
-	/**
-	 * The seller id.
-	 *
-	 * @var string $seller_id The seller id.
-	 *
-	 * @since 2.1.2
-	 */
-	private $seller_id;
-
-	/**
-	 * The text domain to use for translations.
-	 *
-	 * @var string $td The text domain.
-	 *
-	 * @since 2.1.2
-	 */
-	public $td;
-
 	/*
 	 * WC_Svea_Refund_Handler constructor.
 	 * 
@@ -213,14 +186,9 @@ class WC_Svea_Refund_Handler {
 	 * @since 2.1.2
 	 */
 	public function __construct( $order_id, $payment, $gateway ) {
-
 		$this->order = wc_get_order( $order_id );
 		$this->payment = $payment;
-
-		$this->gateway = new WC_Gateway_Implementation_Maksuturva( $gateway, $this->order );
-		$this->gateway_url = $gateway->get_gateway_url();
-		$this->seller_id = $gateway->get_seller_id();
-		$this->td = $gateway->td;
+		$this->gateway = $gateway;
 	}
 
 	/**
@@ -254,7 +222,7 @@ class WC_Svea_Refund_Handler {
 
 			$this->create_comment(
 				sprintf(
-					__( 'Made a refund of %s € through Svea', $this->td ),
+					__( 'Made a refund of %s € through Svea', $this->gateway->td ),
 					$this->format_amount( $amount )
 				)
 			);
@@ -334,7 +302,8 @@ class WC_Svea_Refund_Handler {
 	 */
 	private function post_to_svea( $amount, $reason, $action, $cancel_type ) {
 
-		$gateway_data = $this->gateway->get_field_array();
+		$gateway_implementation = new WC_Gateway_Implementation_Maksuturva( $this->gateway, $this->order );
+		$gateway_data = $gateway_implementation->get_field_array();
 
 		$post_fields = [
 			'pmtc_action' => $action,
@@ -347,7 +316,7 @@ class WC_Svea_Refund_Handler {
 			'pmtc_id' => $this->payment->get_payment_id(),
 			'pmtc_keygeneration' => '001',
 			'pmtc_resptype' => 'XML',
-			'pmtc_sellerid' => $this->seller_id,
+			'pmtc_sellerid' => $this->gateway->get_seller_id(),
 			'pmtc_version' => '0005'
 		];
 
@@ -401,15 +370,15 @@ class WC_Svea_Refund_Handler {
 	 */
 	private function get_refund_failed_message() {
 
-		$extranet_payment_url = $this->gateway_url
+		$extranet_payment_url = $this->gateway->get_gateway_url()
 			. '/dashboard/PaymentEvent.db'
 			. '?pmt_id=' . $this->payment->get_payment_id();
 
-		return __( 'Creating a refund failed', $this->td )
+		return __( 'Creating a refund failed', $this->gateway->td )
 			. '. '
-			. __( 'Make a refund directly', $this->td )
+			. __( 'Make a refund directly', $this->gateway->td )
 			. ' <a href="' . $extranet_payment_url . '" target="_blank">'
-			. __( 'in Svea Extranet', $this->td )
+			. __( 'in Svea Extranet', $this->gateway->td )
 			. '</a>.';
 	}
 
@@ -426,11 +395,11 @@ class WC_Svea_Refund_Handler {
 		return implode(
 			'<br />',
 			[
-				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', $this->td ),
-				__( 'Recipient', $this->td ) . ': ' . $response['pmtc_pay_with_recipientname'],
-				__( 'IBAN', $this->td ) . ': ' . $response['pmtc_pay_with_iban'],
-				__( 'Reference', $this->td ) . ': ' . $response['pmtc_pay_with_reference'],
-				__( 'Amount', $this->td ) . ': ' . $response['pmtc_pay_with_amount'] . ' €'
+				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', $this->gateway->td ),
+				__( 'Recipient', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_recipientname'],
+				__( 'IBAN', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_iban'],
+				__( 'Reference', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_reference'],
+				__( 'Amount', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_amount'] . ' €'
 			]
 		);
 	}

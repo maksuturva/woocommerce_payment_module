@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.1.2';
+	const VERSION = '2.1.3';
 
 	/**
 	 * Plugin DB version.
@@ -203,10 +203,11 @@ class WC_Maksuturva {
 				wp_schedule_event(time(), 'five_minutes', 'maksuturva_check_pending_payments');
 			}
 
-			add_action('maksuturva_check_pending_payments', array($this, 'check_pending_payments'));
+			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
+			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 		} catch (Exception $e) { 
 			_log("Error in Maksuturva module inititalization: " . $e->getMessage());
-		}	
+		}
 	}
 
 	/**
@@ -270,8 +271,21 @@ class WC_Maksuturva {
 	 * @return array The list of payment gateways.
 	 */
 	public function add_maksuturva_gateway( $methods ) {
+
 		$this->load_class( 'WC_Gateway_Maksuturva' );
-		$methods[] = 'WC_Gateway_Maksuturva';
+		$methods[] = WC_Gateway_Maksuturva::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Credit_Card_And_Mobile' );
+		$methods[] = WC_Gateway_Svea_Credit_Card_And_Mobile::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
+		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Online_Bank_Payments' );
+		$methods[] = WC_Gateway_Svea_Online_Bank_Payments::class;
+
+		$this->load_class( 'WC_Gateway_Svea_Other_Payments' );
+		$methods[] = WC_Gateway_Svea_Other_Payments::class;
 
 		return $methods;
 	}
@@ -474,6 +488,23 @@ class WC_Maksuturva {
 		WC_Payment_Checker_Maksuturva::install_db();
 
 		$this->set_option( self::OPTION_DB_VERSION, self::DB_VERSION );
+	}
+
+	/**
+	 * Sets the payment method handling cost in checkout page
+	 *
+	 * @param WC_Cart $cart The cart.
+	 *
+	 * @since 2.1.3
+	 */
+	public function set_handling_cost( WC_Cart $cart ) {
+
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
+
+		$this->load_class( 'WC_Payment_Handling_Costs' );
+		$handling_costs_handler = new WC_Payment_Handling_Costs( $gateway );
+		$handling_costs_handler->set_handling_cost( $cart );
 	}
 }
 

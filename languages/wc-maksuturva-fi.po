@@ -21,6 +21,10 @@ msgstr "Toimituskulut"
 msgid "Discount"
 msgstr "Alennus"
 
+#: includes/class-wc-gateway-implementation-maksuturva.php:359
+msgid "Payment handling fee"
+msgstr "Laskutuslisä"
+
 #: includes/class-wc-gateway-maksuturva.php:93
 msgid "Svea"
 msgstr "Svea"
@@ -29,97 +33,145 @@ msgstr "Svea"
 msgid "Take payments via Svea."
 msgstr "Vastaanota maksuja Svean kautta."
 
-#: includes/class-wc-gateway-maksuturva.php:135
+#: includes/class-wc-gateway-admin-form-fields.php:69
 msgid "Enable/Disable"
 msgstr "Ota käyttöön / poista käytöstä"
 
-#: includes/class-wc-gateway-maksuturva.php:137
+#: includes/class-wc-gateway-admin-form-fields.php:71
 msgid "Enable Svea Payments Gateway"
 msgstr "Käytä Svea Payments maksupalvelua"
 
-#: includes/class-wc-gateway-maksuturva.php:142
+#: includes/class-wc-gateway-admin-form-fields.php:75
 msgid "Title"
 msgstr "Otsikko"
 
-#: includes/class-wc-gateway-maksuturva.php:144
+#: includes/class-wc-gateway-admin-form-fields.php:77
 msgid "This controls the title which the user sees during checkout."
 msgstr "Tämä otsikko näkyy käyttäjälle kassalla."
 
-#: includes/class-wc-gateway-maksuturva.php:150
+#: includes/class-wc-gateway-admin-form-fields.php:82
 msgid "Customer Message"
 msgstr "Viesti käyttäjälle"
 
-#: includes/class-wc-gateway-maksuturva.php:152
+#: includes/class-wc-gateway-admin-form-fields.php:84
 msgid "This message is shown below the payment method on the checkout page."
 msgstr "Tämä viesti näkyy maksukäytävävalinnan alapuolella kassalla."
+
+#: includes/class-wc-gateway-admin-form-fields.php:90
+msgid "Add new"
+msgstr "Lisää uusi"
+
+#: includes/class-wc-gateway-admin-form-fields.php:91
+msgid "Handling cost amount"
+msgstr "Laskutuslisän suuruus"
+
+#: includes/class-wc-gateway-admin-form-fields.php:92
+msgid "Payment method code"
+msgstr "Maksutavan koodi"
+
+#: includes/class-wc-gateway-admin-form-fields.php:94
+msgid "Payment method handling costs"
+msgstr "Maksutapojen laskutuslisät"
+
+#: includes/class-wc-gateway-admin-form-fields.php:95
+msgid "Remove selected rows"
+msgstr "Poista valitut rivit"
+
+#: includes/class-wc-gateway-admin-form-fields.php:96
+msgid "Payment handling fees"
+msgstr "Laskutuslisät"
+
+#: includes/class-wc-gateway-admin-form-fields.php:101
+msgid "Payment handling fees tax class"
+msgstr "Laskutuslisien veroluokka"
+
+#: includes/class-wc-gateway-admin-form-fields.php:104
+msgid "Tax class determines the tax percentage used for the payment handling fees."
+msgstr "Veroluokan perusteella lasketaan laskutuslisän veron määrä."
 
 #: includes/class-wc-gateway-maksuturva.php:144
 msgid "Pay via Svea."
 msgstr "Svea Payments maksu"
 
-#: includes/class-wc-gateway-maksuturva.php:159
+#: includes/class-wc-gateway-admin-form-fields.php:108
 msgid "Account settings"
 msgstr "Tiliasetukset"
 
-#: includes/class-wc-gateway-maksuturva.php:166
+#: includes/class-wc-gateway-admin-form-fields.php:114
 msgid "Seller id"
 msgstr "Kauppiastunnus"
 
-#: includes/class-wc-gateway-maksuturva.php:168
+#: includes/class-wc-gateway-admin-form-fields.php:116
 msgid "The seller identification provided by Svea upon your registration."
 msgstr "Kauppiastunnus, jonka saa rekisteröityessä Maksuturvaan kauppiaaksi."
 
-#: includes/class-wc-gateway-maksuturva.php:173
+#: includes/class-wc-gateway-admin-form-fields.php:120
 msgid "Secret Key"
 msgstr "Salainen avain"
 
-#: includes/class-wc-gateway-maksuturva.php:175
+#: includes/class-wc-gateway-admin-form-fields.php:122
 msgid "Your unique secret key provided by Svea."
 msgstr "Svean toimittama salainen avain"
 
-#: includes/class-wc-gateway-maksuturva.php:179
+#: includes/class-wc-gateway-admin-form-fields.php:126
 msgid "Secret Key Version"
 msgstr "Salaisen avaimen versio"
 
-#: includes/class-wc-gateway-maksuturva.php:181
+#: includes/class-wc-gateway-admin-form-fields.php:128
 msgid "The version of the secret key provided by Svea."
 msgstr "Svean toimittaman avaimen versio."
 
-#: includes/class-wc-gateway-maksuturva.php:186
+#: includes/class-wc-gateway-admin-form-fields.php:132
 msgid "Advanced settings"
 msgstr "Lisäasetukset"
 
-#: includes/class-wc-gateway-maksuturva.php:194
+#: includes/class-wc-gateway-admin-form-fields.php:139
 msgid "Gateway URL"
 msgstr "Välityspalvelun URL"
 
-#: includes/class-wc-gateway-maksuturva.php:196
+#: includes/class-wc-gateway-admin-form-fields.php:141
 msgid "The URL used to communicate with Svea. Do not change this configuration unless you know what you are doing."
 msgstr "URL, jota käytetään Svean kanssa. Yleensä tätä ei pidä muuttaa."
 
-#: includes/class-wc-gateway-maksuturva.php:203
+#: includes/class-wc-gateway-admin-form-fields.php:146
 msgid "Payment Prefix"
 msgstr "Maksun etuliite"
 
-#: includes/class-wc-gateway-maksuturva.php:205
+#: includes/class-wc-gateway-admin-form-fields.php:148
 msgid "Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall."
 msgstr "Maksun etuosa, joka lisätään maksutapahtuman numeroon. Voidaan käyttää yksilöimään maksutapahtumat esimerkiksi Woocommercen uudelleenasennuksen jälkeen, mikäli Svea palauttaa virheitä päällekkäisistä tilausnumeroista."
 
-#: includes/class-wc-gateway-maksuturva.php:211
+#: includes/class-wc-gateway-admin-form-fields.php:152
+msgid "Send delivery information on status change to status"
+msgstr "Lähetä toimitustiedot kun maksun tila muuttuu tilaan"
+
+#: includes/class-wc-gateway-admin-form-fields.php:155
+msgid "Send delivery information to Svea when this status is selected."
+msgstr "Lähetä toimitustiedot Svealle kun tilauksen tila muuttuu tässä määriteltyyn tilaan."
+
+#: includes/class-wc-gateway-admin-form-fields.php:160
 msgid "Sandbox mode"
 msgstr "Käytä yleistä testitunnusta"
 
-#: includes/class-wc-gateway-maksuturva.php:213
+#: includes/class-wc-gateway-admin-form-fields.php:162
 msgid "Svea sandbox can be used to test payments. None of the payments will be real."
 msgstr "Sandbox-moodia voidaan käyttää testaamiseen. Mitään maksuja ei suoriteta."
 
-#: includes/class-wc-gateway-maksuturva.php:220
+#: includes/class-wc-gateway-admin-form-fields.php:167
 msgid "Svea encoding"
 msgstr "Merkistöenkoodaus"
 
-#: includes/class-wc-gateway-maksuturva.php:223
+#: includes/class-wc-gateway-admin-form-fields.php:170
 msgid "The encoding used for Svea."
 msgstr "Merkistöenkoodaus jota Svea tukee."
+
+#: includes/class-wc-gateway-admin-form-fields.php:249
+msgid "Invalid number in payment method handling costs"
+msgstr "Laskutuslisälle on määriteltynä virheellinen suuruus"
+
+#: includes/class-wc-payment-method-select.php:127
+msgid "Payment method not selected"
+msgstr "Maksutapa puuttuu"
 
 #: includes/class-wc-gateway-maksuturva.php:546
 msgid "Payment gateway not available."
@@ -154,6 +206,26 @@ msgstr "Svea varmensi maksun."
 #: includes/class-wc-gateway-maksuturva.php:656
 msgid "Surcharge from Payment Gateway"
 msgstr "Lisämaksu maksukäytävästä"
+
+#: includes/class-wc-gateway-svea-credit-card-and-mobile.php:47
+msgid "Credit Card and Mobile"
+msgstr "Kortti- ja mobiilimaksut"
+
+#: includes/class-wc-gateway-svea-credit-card-and-mobile.php:48
+msgid "General Svea settings are managed <a href="%s">here</a>."
+msgstr "Yleisiä Svean maksutapojen asetuksia voi muokata <a href="%s">täällä</a>."
+
+#: includes/class-wc-gateway-svea-invoice-and-hire-purchase.php:47
+msgid "Invoice and Hire Purchase"
+msgstr "Lasku ja erämaksu"
+
+#: includes/class-wc-gateway-svea-online-bank-payments.php:47
+msgid "Online Bank Payments"
+msgstr "Verkkopankkimaksut"
+
+#: includes/class-wc-gateway-svea-other-payments.php:47
+msgid "Other Payments"
+msgstr "Muut maksutavat"
 
 #: includes/class-wc-meta-box-maksuturva.php:94
 msgid "The payment is confirmed by Svea"
