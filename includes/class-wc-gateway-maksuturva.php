@@ -31,6 +31,7 @@ require_once 'class-wc-meta-box-maksuturva.php';
 require_once 'class-wc-payment-validator-maksuturva.php';
 require_once 'class-wc-payment-maksuturva.php';
 require_once 'class-wc-order-compatibility-handler.php';
+require_once 'class-wc-svea-delivery-handler.php';
 require_once 'class-wc-svea-refund-handler.php';
 
 /**
@@ -112,6 +113,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		add_action( 'woocommerce_api_wc_gateway_maksuturva', array( $this, 'check_response' ) );
 		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+
+		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
 	}
 
 	/**
@@ -206,6 +209,15 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			$this->td ),
 		);
 
+		$form['maksuturva_send_delivery_information_status'] = [
+			'type'        => 'select',
+			'title'       => __( 'Send delivery information on status change to status', $this->td ),
+			'desc_tip'    => true,
+			'default'     => 'none',
+			'description' => __( 'Send delivery information to Svea when this status is selected.', $this->td ),
+			'options'     => ['' => '-'] + wc_get_order_statuses()
+		];
+
 		$form['sandbox'] = array(
 			'type'        => 'checkbox',
 			'title'       => __( 'Sandbox mode', $this->td ),
@@ -228,7 +240,15 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Process refund
+	 *
 	 * More documentation: https://docs.woocommerce.com/wc-apidocs/class-WC_Payment_Gateway.html#_process_refund
+	 *
+	 * @param int $order_id The order id.
+	 * @param int $amount The amount.
+	 * @param string $reason The reason.
+	 *
+	 * @since 2.1.2
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = "" ) {
 		$payment = new WC_Payment_Maksuturva( $order_id );
@@ -758,6 +778,38 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		if ( ! $payment->is_completed() ) {
 			$this->add_surcharge( $payment, $order );
 			$payment->complete();
+		}
+	}
+
+
+	/**
+	 * Handles the order status change event
+	 *
+	 * @param int $order_id The order id.
+	 * @param string $old_status The old status.
+	 * @param array $new_status The new status.
+	 *
+	 * @since 2.1.2
+	 */
+	public function order_status_changed_event( $order_id, $old_status, $new_status ) {
+
+		if ( $old_status === $new_status ) {
+			return;
+		}
+
+		$option = $this->get_option(
+			'maksuturva_send_delivery_information_status'
+		);
+
+		if ( ! is_string( $option ) ) {
+			return;
+		}
+
+		$sendDeliveryInformationToSveaStatus = preg_replace( '/^wc-/', '', $option );
+
+		if ( $new_status === $sendDeliveryInformationToSveaStatus ) {
+			$deliveryHandler = new WC_Svea_Delivery_Handler( $this, $order_id );
+			$deliveryHandler->send_delivery_info();
 		}
 	}
 

@@ -8,7 +8,7 @@
 /**
  * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
  * Plugin developed for Svea
- * Last update: 24/10/2019
+ * Last update: 3/4/2020
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,13 +26,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-utils-maksuturva.php';
 require_once 'class-wc-gateway-maksuturva-exception.php';
+require_once 'class-wc-svea-api-request-handler.php';
 
 /**
- * Class WC_Svea_Fefund_Handler.
+ * Class WC_Svea_Refund_Handler.
  *
  * Handles payment cancellations and refunding after settlement
+ *
+ * @since 2.1.2
  */
 class WC_Svea_Refund_Handler {
 
@@ -40,6 +42,8 @@ class WC_Svea_Refund_Handler {
 	 * Cancel action.
 	 *
 	 * @var string ACTION_CANCEL
+	 *
+	 * @since 2.1.2
 	 */
 	private const ACTION_CANCEL = 'CANCEL';
 
@@ -47,6 +51,8 @@ class WC_Svea_Refund_Handler {
 	 * Refund after settlement action.
 	 *
 	 * @var string ACTION_REFUND_AFTER_SETTLEMENT
+	 *
+	 * @since 2.1.2
 	 */
 	private const ACTION_REFUND_AFTER_SETTLEMENT = 'REFUND_AFTER_SETTLEMENT';
 
@@ -54,6 +60,8 @@ class WC_Svea_Refund_Handler {
 	 * Full refund cancel type.
 	 *
 	 * @var string CANCEL_TYPE_FULL_REFUND
+	 *
+	 * @since 2.1.2
 	 */
 	private const CANCEL_TYPE_FULL_REFUND = 'FULL_REFUND';
 
@@ -61,6 +69,8 @@ class WC_Svea_Refund_Handler {
 	 * Partial refund cancel type.
 	 *
 	 * @var string CANCEL_TYPE_PARTIAL_REFUND
+	 *
+	 * @since 2.1.2
 	 */
 	private const CANCEL_TYPE_PARTIAL_REFUND = 'PARTIAL_REFUND';
 
@@ -68,6 +78,8 @@ class WC_Svea_Refund_Handler {
 	 * Refund after settlement cancel type.
 	 *
 	 * @var string CANCEL_TYPE_REFUND_AFTER_SETTLEMENT
+	 *
+	 * @since 2.1.2
 	 */
 	private const CANCEL_TYPE_REFUND_AFTER_SETTLEMENT = 'REFUND_AFTER_SETTLEMENT';
 
@@ -75,6 +87,8 @@ class WC_Svea_Refund_Handler {
 	 * Already settled response type.
 	 *
 	 * @var string RESPONSE_TYPE_ALREADY_SETTLED
+	 *
+	 * @since 2.1.2
 	 */
 	private const RESPONSE_TYPE_ALREADY_SETTLED = '30';
 
@@ -82,31 +96,30 @@ class WC_Svea_Refund_Handler {
 	 * Failed response type.
 	 *
 	 * @var string RESPONSE_TYPE_FAILED
+	 *
+	 * @since 2.1.2
 	 */
 	private const RESPONSE_TYPE_FAILED = '99';
-
-	/**
-	 * OK response type.
-	 *
-	 * @var string RESPONSE_TYPE_OK
-	 */
-	private const RESPONSE_TYPE_OK = '00';
 
 	/**
 	 * Payment cancellation route.
 	 *
 	 * @var string ROUTE_CANCEL_PAYMENT
+	 *
+	 * @since 2.1.2
 	 */
 	private const ROUTE_CANCEL_PAYMENT = '/PaymentCancel.pmt';
 
 	/**
-	 * Fields that should be used for hashing post data.
+	 * Fields that should be used for hashing request data.
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
 	 * 
-	 * @var array $hash_fields Hash fields.
+	 * @var array $request_hash_fields Request hash fields.
+	 *
+	 * @since 2.1.2
 	 */
-	private static $post_data_hash_fields = [
+	private static $request_hash_fields = [
 		'pmtc_action',
 		'pmtc_version',
 		'pmtc_sellerid',
@@ -123,7 +136,9 @@ class WC_Svea_Refund_Handler {
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
 	 * 
-	 * @var array $hash_fields Hash fields.
+	 * @var array $response_hash_fields Response hash fields.
+	 *
+	 * @since 2.1.2
 	 */
 	private static $response_hash_fields = [
 		'pmtc_action',
@@ -137,7 +152,9 @@ class WC_Svea_Refund_Handler {
 	/**
 	 * The Svea gateway.
 	 *
-	 * @var WC_Gateway_Implementation_Maksuturva $gateway The gateway
+	 * @var WC_Gateway_Implementation_Maksuturva $gateway The gateway.
+	 *
+	 * @since 2.1.2
 	 */
 	private $gateway;
 
@@ -145,6 +162,8 @@ class WC_Svea_Refund_Handler {
 	 * The gateway url.
 	 *
 	 * @var string $gateway_url The gateway url.
+	 *
+	 * @since 2.1.2
 	 */
 	private $gateway_url;
 
@@ -152,6 +171,8 @@ class WC_Svea_Refund_Handler {
 	 * The order.
 	 *
 	 * @var WC_Order $order The order.
+	 *
+	 * @since 2.1.2
 	 */
 	private $order;
 
@@ -159,6 +180,8 @@ class WC_Svea_Refund_Handler {
 	 * The payment.
 	 *
 	 * @var WC_Payment_Maksuturva $order The payment.
+	 *
+	 * @since 2.1.2
 	 */
 	private $payment;
 
@@ -166,6 +189,8 @@ class WC_Svea_Refund_Handler {
 	 * The seller id.
 	 *
 	 * @var string $seller_id The seller id.
+	 *
+	 * @since 2.1.2
 	 */
 	private $seller_id;
 
@@ -173,6 +198,8 @@ class WC_Svea_Refund_Handler {
 	 * The text domain to use for translations.
 	 *
 	 * @var string $td The text domain.
+	 *
+	 * @since 2.1.2
 	 */
 	public $td;
 
@@ -182,6 +209,8 @@ class WC_Svea_Refund_Handler {
 	 * @param int $order_id Order id.
 	 * @param WC_Payment_Maksuturva $payment Payment.
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 *
+	 * @since 2.1.2
 	 */
 	public function __construct( $order_id, $payment, $gateway ) {
 
@@ -200,7 +229,9 @@ class WC_Svea_Refund_Handler {
 	 * 
 	 * @param int $amount Amount.
 	 * @param string $reason Reason.
-	 * 
+	 *
+	 * @since 2.1.2
+	 *
 	 * @return bool
 	 */
 	public function process_refund( $amount = null, $reason = '' ) {
@@ -219,7 +250,7 @@ class WC_Svea_Refund_Handler {
 		$return_code = $cancel_response['pmtc_returncode'];
 		$return_text = $cancel_response['pmtc_returntext'];
 
-		if ( $return_code === self::RESPONSE_TYPE_OK ) {
+		if ( $return_code === WC_Svea_Api_Request_Handler::RESPONSE_TYPE_OK ) {
 
 			$this->create_comment(
 				sprintf(
@@ -254,7 +285,7 @@ class WC_Svea_Refund_Handler {
 			$return_code = $refund_after_settlement_response['pmtc_returncode'];
 			$return_text = $refund_after_settlement_response['pmtc_returntext'];
 
-			if ($return_code === self::RESPONSE_TYPE_OK) {
+			if ( $return_code === WC_Svea_Api_Request_Handler::RESPONSE_TYPE_OK ) {
 				$this->create_comment(
 					$this->get_refund_payment_required_message(
 						$refund_after_settlement_response
@@ -278,7 +309,9 @@ class WC_Svea_Refund_Handler {
 	 * Formats an int into comma separated numeric string
 	 * 
 	 * @param int $amount Amount.
-	 * 
+	 *
+	 * @since 2.1.2
+	 *
 	 * @return string
 	 */
 	private function format_amount( $amount ) {
@@ -288,23 +321,20 @@ class WC_Svea_Refund_Handler {
 	}
 
 	/**
-	 * Posts data to Svea payment api and checks that the return value is valid XML.
+	 * Posts data to Svea payment api.
 	 * 
 	 * @param int $amount Amount.
 	 * @param string $reason Reason.
 	 * @param string $action Action.
 	 * @param string $cancel_type Cancel type.
-	 * 
+	 *
+	 * @since 2.1.2
+	 *
 	 * @return array
 	 */
 	private function post_to_svea( $amount, $reason, $action, $cancel_type ) {
 
-		$url = rtrim( $this->gateway->get_payment_url(), '/' )
-			. self::ROUTE_CANCEL_PAYMENT;
-
-		$data = $this->gateway->get_field_array();
-
-		$request = curl_init( $url );
+		$gateway_data = $this->gateway->get_field_array();
 
 		$post_fields = [
 			'pmtc_action' => $action,
@@ -313,7 +343,7 @@ class WC_Svea_Refund_Handler {
 			'pmtc_canceldescription' => $reason,
 			'pmtc_canceltype' => $cancel_type,
 			'pmtc_currency' => 'EUR',
-			'pmtc_hashversion' => $data['pmt_hashversion'],
+			'pmtc_hashversion' => $gateway_data['pmt_hashversion'],
 			'pmtc_id' => $this->payment->get_payment_id(),
 			'pmtc_keygeneration' => '001',
 			'pmtc_resptype' => 'XML',
@@ -329,47 +359,26 @@ class WC_Svea_Refund_Handler {
 			unset( $post_fields['pmtc_canceldescription'] );
 		}
 
-		$post_fields['pmtc_hash'] = $this->get_hash( $post_fields, self::$post_data_hash_fields );
-
-		curl_setopt( $request, CURLOPT_HEADER, 0 );
-		curl_setopt( $request, CURLOPT_FRESH_CONNECT, 1 );
-		curl_setopt( $request, CURLOPT_FOLLOWLOCATION, 1 );
-		curl_setopt( $request, CURLOPT_FORBID_REUSE, 1 );
-		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $request, CURLOPT_POST, 1 );
-		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 120 );
-		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
-		curl_setopt( $request, CURLOPT_POSTFIELDS, $post_fields );
-
-		$response = curl_exec( $request );
-
-		$this->verify_response_has_value( $response );
-
-		curl_close( $request );
-
-		try {
-			$xml_response = new SimpleXMLElement( $response );
-		} catch (Exception $e) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'Not able to parse response XML.'
-			);
-		}
-
-		$array_response = json_decode( json_encode( $xml_response ), true );
-
-		if ($array_response['pmtc_returncode'] === '00') {
-			$this->verify_response_hash( $array_response );
-		}
-
-		return $array_response;
+		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
+		return $api->post(
+			self::ROUTE_CANCEL_PAYMENT,
+			$post_fields,
+			[
+				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH => self::$request_hash_fields,
+				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH => self::$response_hash_fields,
+				WC_Svea_Api_Request_Handler::SETTINGS_HASH_FIELD => 'pmtc_hash',
+				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pmtc_returncode'
+			]
+		);
 	}
 
 	/**
 	 * Returns a comment data array with content
 	 * 
 	 * @param string $content Content.
-	 * 
+	 *
+	 * @since 2.1.2
+	 *
 	 * @return array
 	 */
 	private function create_comment( $content ) {
@@ -384,27 +393,9 @@ class WC_Svea_Refund_Handler {
 	}
 
 	/**
-	 * Generates a hash based on data.
-	 * 
-	 * @param array $data Data.
-	 * 
-	 * @return string
-	 */
-	private function get_hash( $data, $hash_fields ) {
-
-		$hash_data = [];
-
-		foreach ( $hash_fields as $field ) {
-			if ( isset( $data[$field] ) ) {
-				$hash_data[$field] = $data[$field];
-			}
-		}
-
-		return $this->gateway->create_hash( $hash_data );
-	}
-
-	/**
 	 * Returns a refund failed message
+	 *
+	 * @since 2.1.2
 	 *
 	 * @return string
 	 */
@@ -426,7 +417,9 @@ class WC_Svea_Refund_Handler {
 	 * Returns a refund payment required message
 	 * 
 	 * @param array $response Response.
-	 * 
+	 *
+	 * @since 2.1.2
+	 *
 	 * @return string
 	 */
 	private function get_refund_payment_required_message( $response ) {
@@ -446,43 +439,13 @@ class WC_Svea_Refund_Handler {
 	 * Verifies that the amount is not null.
 	 * 
 	 * @param int $amount Amount.
+	 *
+	 * @since 2.1.2
 	 */
 	private function verify_amount_has_value( $amount ) {
 		if ( ! isset( $amount ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Refund amount is not defined.'
-			);
-		}
-	}
-
-	/**
-	 * Verifies that the response's hash is valid.
-	 * 
-	 * @param array $response Response.
-	 */
-	private function verify_response_hash( $response ) {
-
-		$hash_of_response = $this->get_hash(
-			$response,
-			self::$response_hash_fields
-		);
-
-		if ( $hash_of_response !== $response['pmtc_hash'] ) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'The authenticity of the answer could not be verified. Hashes did not match.'
-			);
-		}
-	}
-
-	/**
-	 * Verifies that the response has value
-	 * 
-	 * @param array $response Response.
-	 */
-	private function verify_response_has_value( $response ) {
-		if ( $response === false ) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'Failed to communicate with Svea. Please check the network connection.'
 			);
 		}
 	}

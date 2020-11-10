@@ -36,8 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
-### 2.1.2  
+### 2.1.2
 * Added refund functionality to the Woocommerce order management and link to open the event in Svea Extranet.
+* Added functionality for sending delivery info without tracking to Svea API
 
 ### 2.1.1
 * Fixed hanging order status queries. If order is deleted and trashed, remove payment from status query queue in next 
