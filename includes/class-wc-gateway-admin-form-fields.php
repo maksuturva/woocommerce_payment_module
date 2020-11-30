@@ -6,9 +6,9 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 2.x, 3.x
+ * Svea Payments Gateway Plugin for WooCommerce 3.x, 4.x
  * Plugin developed for Svea
- * Last update: 24/10/2019
+ * Last update: 30/11/2020
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -229,34 +229,36 @@ class WC_Gateway_Admin_Form_Fields {
 	 * @since 2.1.3
 	 */
 	public function save_payment_method_handling_costs() {
-
+		$errors = [];
 		$payment_method_handling_costs = [];
 
-		if ( !isset( $_POST['payment_method_type'] ) ) {
-			return;
+		if (isset($_POST['payment_method_type'])) {
+			$payment_method_types = array_map('wc_clean', $_POST['payment_method_type']);
+			$handling_cost_amounts = array_map('wc_clean', $_POST['handling_cost_amount']);
+
+			foreach (array_keys($payment_method_types) as $i) {
+				if (!isset($payment_method_types[$i]) || $payment_method_types[$i] === '') {
+					continue;
+				}
+
+				if (!is_numeric($handling_cost_amounts[$i])) {
+					// accept comma decimals
+					if (!is_numeric(str_replace(',', '.', $handling_cost_amounts[$i]))) {
+						$errors[] = __('Invalid payment method handling costs, not a valid numeric value -> "'
+						.  $handling_cost_amounts[$i] . "'", $this->gateway->td);
+					} else {
+						$handling_cost_amounts[$i] = floatval(str_replace(',', '.', $handling_cost_amounts[$i]));
+					}
+				}
+
+				$payment_method_handling_costs[] = [
+					'payment_method_type' => $payment_method_types[$i],
+					'handling_cost_amount' => $handling_cost_amounts[$i],
+				];
+			}
 		}
 
-		$payment_method_types = array_map( 'wc_clean', $_POST['payment_method_type'] );
-		$handling_cost_amounts = array_map( 'wc_clean', $_POST['handling_cost_amount'] );
-
-		$errors = [];
-
-		foreach ( array_keys( $payment_method_types ) as $i ) {
-			if ( ! isset( $payment_method_types[$i] ) ) {
-				continue;
-			}
-
-			if ( !is_numeric( $handling_cost_amounts[$i] ) ) {
-				$errors[] = __( 'Invalid number in payment method handling costs', $this->gateway->td );
-			}
-
-			$payment_method_handling_costs[] = [
-				'payment_method_type' => $payment_method_types[$i],
-				'handling_cost_amount' => $handling_cost_amounts[$i],
-			];
-		}
-
-		if ( count ( $errors ) > 0 ) {
+		if (count($errors) > 0) {
 			return $errors;
 		}
 

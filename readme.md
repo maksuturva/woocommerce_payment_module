@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+### 2.1.3
+* Fixed Admin settings for Payment handling fees. Empty table and row removal functionality fixed. Allow comma separated
+fee values.  
 ### 2.1.2
 * Added refund functionality to the Woocommerce order management and link to open the event in Svea Extranet.
 * Added functionality for sending delivery info without tracking to Svea API
