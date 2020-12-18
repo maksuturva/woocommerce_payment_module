@@ -68,7 +68,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php } ?>
 </div>
 
-<p><?php echo $terms['text']; ?> (<a href="<?php echo $terms['url']; ?>" target="_blank">PDF</a>)</p>
+<p><?php if (!empty($terms['text']) ) { echo $terms['text']; ?>  
+(<a href="<?php echo $terms['url']; ?>" target="_blank">PDF</a>)</p>
+<?php } ?>
 
 <div style="clear: both;"></div>
 

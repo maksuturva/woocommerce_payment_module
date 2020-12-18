@@ -146,8 +146,8 @@ class WC_Payment_Method_Select {
 			'credit-card-and-mobile' => [],
 			'invoice-and-hire-purchase' => [],
 			'online-bank-payments' => [],
-			'other-payments' => [],
 			'estonia-payments' => [],
+			'other-payments' => [],
 		];
 
 		if ( isset( $available_payment_methods['ERROR'] ) ) {
@@ -176,17 +176,14 @@ class WC_Payment_Method_Select {
 		}
 
 		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
-			$payment_type_payment_methods['other-payments'][] = $payment_method;
+			if ( $payment_method['code']=="EEAC" ) { 
+				$payment_type_payment_methods['estonia-payments'][] = $payment_method;
+				unset( $available_payment_methods['paymentmethod'][$key] );
+			}
 		}
 
-		/* 
-			Estonia Payment types, 18.12.2020 
-
-			Estonia payment method image must be customizable
-		*/
-		//TODO: Hene
 		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
-			$payment_type_payment_methods['estonia-payments'][] = $payment_method;
+			$payment_type_payment_methods['other-payments'][] = $payment_method;
 		}
 
 		return $payment_type_payment_methods[$payment_type];
@@ -201,7 +198,10 @@ class WC_Payment_Method_Select {
 	 */
 	private function get_terms_text( $price ) {
 		$available_payment_methods = $this->get_available_payment_methods( $price );
-		return $available_payment_methods['termstext'];
+		if (isset($available_payment_methods['termtext']))
+			return $available_payment_methods['termstext'];
+		else
+			return "";
 	}
 
 	/**
@@ -213,7 +213,10 @@ class WC_Payment_Method_Select {
 	 */
 	private function get_terms_url( $price ) {
 		$available_payment_methods = $this->get_available_payment_methods( $price );
-		return $available_payment_methods['termsurl'];
+		if (isset($available_payment_methods['termsurl']))
+			return $available_payment_methods['termsurl'];
+		else
+			return "";
 	}
 
 	/**
@@ -226,7 +229,6 @@ class WC_Payment_Method_Select {
 	 * @return array
 	 */
 	private function get_available_payment_methods( $price ) {
-
 		if ( isset( self::$available_payment_methods ) ) {
 			return self::$available_payment_methods;
 		}
@@ -239,13 +241,23 @@ class WC_Payment_Method_Select {
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
 
-		self::$available_payment_methods = $api->post(
+		$result_methods = $api->post(
 			self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,
 			$post_fields
 		);
 
-		error_log("######## " . var_dump($available_payment_methods));
-		
+		/**
+		 * bugfix: if there is only one payment method, the request handler will not return
+		 * array... this will cause problems later
+		 *
+		 * at this point, we will check this and fix the variable type
+		 */
+		if ( is_array($result_methods['paymentmethod'])) {
+			if ( !array_key_exists("0", $result_methods['paymentmethod']) ) {
+				$result_methods['paymentmethod'] = array ($result_methods['paymentmethod'] );
+			}
+		}	
+		self::$available_payment_methods = $result_methods;
 		return self::$available_payment_methods;
 	}
 }

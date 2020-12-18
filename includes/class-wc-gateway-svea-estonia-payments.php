@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.1.4
  */
-class WC_Gateway_Svea_Other_Payments extends WC_Gateway_Maksuturva {
+class WC_Gateway_Svea_Estonia_Payments extends WC_Gateway_Maksuturva {
 
 	/**
 	 * WC_Gateway_Svea_Other_Payments constructor.
@@ -44,9 +44,12 @@ class WC_Gateway_Svea_Other_Payments extends WC_Gateway_Maksuturva {
 	 */
 	public function __construct() {
 		parent::__construct( WC_Gateway_Svea_Estonia_Payments::class );
-		$this->method_title = 'Svea ' . __( 'Estonia Payments', $this->td );
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$this->title = __( 'Estonia Payments', $this->td );
+		// this is shown on admin page
+		$this->method_title = 'Svea ' . __( 'Payments Estonia', $this->td );
+		$this->method_description = sprintf( 
+			__('General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		// this is shown on checkout page
+		$this->title = __( 'Svea Payments Estonia', $this->td );
 	}
 
 	/**
