@@ -147,6 +147,7 @@ class WC_Payment_Method_Select {
 			'invoice-and-hire-purchase' => [],
 			'online-bank-payments' => [],
 			'other-payments' => [],
+			'estonia-payments' => [],
 		];
 
 		if ( isset( $available_payment_methods['ERROR'] ) ) {
@@ -176,6 +177,16 @@ class WC_Payment_Method_Select {
 
 		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
 			$payment_type_payment_methods['other-payments'][] = $payment_method;
+		}
+
+		/* 
+			Estonia Payment types, 18.12.2020 
+
+			Estonia payment method image must be customizable
+		*/
+		//TODO: Hene
+		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
+			$payment_type_payment_methods['estonia-payments'][] = $payment_method;
 		}
 
 		return $payment_type_payment_methods[$payment_type];
@@ -233,6 +244,8 @@ class WC_Payment_Method_Select {
 			$post_fields
 		);
 
+		error_log("######## " . var_dump($available_payment_methods));
+		
 		return self::$available_payment_methods;
 	}
 }

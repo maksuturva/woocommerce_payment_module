@@ -227,6 +227,10 @@ msgstr ""
 msgid "Other Payments"
 msgstr ""
 
+#: includes/class-wc-gateway-svea-estonia-payments.php:47
+msgid "Estonia Payments"
+msgstr ""
+
 #: includes/class-wc-meta-box-maksuturva.php:94
 msgid "The payment is confirmed by Svea"
 msgstr ""
