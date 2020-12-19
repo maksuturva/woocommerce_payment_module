@@ -176,7 +176,9 @@ class WC_Payment_Method_Select {
 		}
 
 		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
-			if ( $payment_method['code']=="EEAC" ) { 
+			if ( $payment_method['code']=="EEAC" ) {
+				/* check if plugin has EAAC_logo.png and if exist, use it as payment method logo */
+				$payment_method['imageurl'] = $this->get_eeac_payment_method_logo_url($payment_method['imageurl']);	
 				$payment_type_payment_methods['estonia-payments'][] = $payment_method;
 				unset( $available_payment_methods['paymentmethod'][$key] );
 			}
@@ -217,6 +219,25 @@ class WC_Payment_Method_Select {
 			return $available_payment_methods['termsurl'];
 		else
 			return "";
+	}
+
+	/**
+	 * Allow override payment method logo for Estonia EEAC payment method
+	 * 
+	 * install to plugin path as file EEAC_logo.png
+	 *
+	 * @since 2.1.4
+	 *
+	 * @return string
+	 */
+	private function get_eeac_payment_method_logo_url( $original_url ) {
+		$logo_path = WP_PLUGIN_DIR . '/woocommerce_payment_module/EEAC_logo.png';
+		$override_logo = file_exists( $logo_path );
+		if ($override_logo) {
+			return WC_Maksuturva::get_instance()->get_plugin_url() . 'EEAC_logo.png';
+		} else {
+			return $original_url;
+		}
 	}
 
 	/**

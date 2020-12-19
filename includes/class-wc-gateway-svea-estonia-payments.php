@@ -49,7 +49,7 @@ class WC_Gateway_Svea_Estonia_Payments extends WC_Gateway_Maksuturva {
 		$this->method_description = sprintf( 
 			__('General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
 		// this is shown on checkout page
-		$this->title = __( 'Svea Payments Estonia', $this->td );
+		$this->title = __( 'Svea Payments', $this->td );
 	}
 
 	/**
