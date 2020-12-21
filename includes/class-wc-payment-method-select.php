@@ -146,6 +146,7 @@ class WC_Payment_Method_Select {
 			'credit-card-and-mobile' => [],
 			'invoice-and-hire-purchase' => [],
 			'online-bank-payments' => [],
+			'estonia-payments' => [],
 			'other-payments' => [],
 		];
 
@@ -175,6 +176,15 @@ class WC_Payment_Method_Select {
 		}
 
 		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
+			if ( $payment_method['code']=="EEAC" ) {
+				/* check if plugin has EAAC_logo.png and if exist, use it as payment method logo */
+				$payment_method['imageurl'] = $this->get_eeac_payment_method_logo_url($payment_method['imageurl']);	
+				$payment_type_payment_methods['estonia-payments'][] = $payment_method;
+				unset( $available_payment_methods['paymentmethod'][$key] );
+			}
+		}
+
+		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
 			$payment_type_payment_methods['other-payments'][] = $payment_method;
 		}
 
@@ -190,7 +200,10 @@ class WC_Payment_Method_Select {
 	 */
 	private function get_terms_text( $price ) {
 		$available_payment_methods = $this->get_available_payment_methods( $price );
-		return $available_payment_methods['termstext'];
+		if (isset($available_payment_methods['termtext']))
+			return $available_payment_methods['termstext'];
+		else
+			return "";
 	}
 
 	/**
@@ -202,7 +215,29 @@ class WC_Payment_Method_Select {
 	 */
 	private function get_terms_url( $price ) {
 		$available_payment_methods = $this->get_available_payment_methods( $price );
-		return $available_payment_methods['termsurl'];
+		if (isset($available_payment_methods['termsurl']))
+			return $available_payment_methods['termsurl'];
+		else
+			return "";
+	}
+
+	/**
+	 * Allow override payment method logo for Estonia EEAC payment method
+	 * 
+	 * install to plugin path as file EEAC_logo.png
+	 *
+	 * @since 2.1.4
+	 *
+	 * @return string
+	 */
+	private function get_eeac_payment_method_logo_url( $original_url ) {
+		$logo_path = WP_PLUGIN_DIR . '/woocommerce_payment_module/EEAC_logo.png';
+		$override_logo = file_exists( $logo_path );
+		if ($override_logo) {
+			return WC_Maksuturva::get_instance()->get_plugin_url() . 'EEAC_logo.png';
+		} else {
+			return $original_url;
+		}
 	}
 
 	/**
@@ -215,7 +250,6 @@ class WC_Payment_Method_Select {
 	 * @return array
 	 */
 	private function get_available_payment_methods( $price ) {
-
 		if ( isset( self::$available_payment_methods ) ) {
 			return self::$available_payment_methods;
 		}
@@ -228,11 +262,23 @@ class WC_Payment_Method_Select {
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
 
-		self::$available_payment_methods = $api->post(
+		$result_methods = $api->post(
 			self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,
 			$post_fields
 		);
 
+		/**
+		 * bugfix: if there is only one payment method, the request handler will not return
+		 * array... this will cause problems later
+		 *
+		 * at this point, we will check this and fix the variable type
+		 */
+		if ( is_array($result_methods['paymentmethod'])) {
+			if ( !array_key_exists("0", $result_methods['paymentmethod']) ) {
+				$result_methods['paymentmethod'] = array ($result_methods['paymentmethod'] );
+			}
+		}	
+		self::$available_payment_methods = $result_methods;
 		return self::$available_payment_methods;
 	}
 }
