@@ -522,6 +522,19 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Is Estonia Special Delivery functionality enabled.
+	 *
+	 * Checks if the Estonia delivery functionality is enabled
+	 *
+	 * @since 2.1.5
+	 *
+	 * @return bool
+	 */
+	public function is_estonia_special_delivery() {
+		return ( $this->get_option( 'estonia_special_delivery' ) === 'yes' );
+	}
+
+	/**
 	 * Load order by payment id.
 	 *
 	 * Returns the order found by the given payment id.
@@ -550,6 +563,42 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$order         = wc_get_order( $order_id );
 		$order_handler = new WC_Order_Compatibility_Handler( $order );
 
+		/**
+		 * special functionality for Estonia EEAC payment method, needs to be activated in the admin panel
+		 * 
+		 */
+		if ($this->is_estonia_special_delivery() && 
+			$order->get_payment_method() == "WC_Gateway_Svea_Estonia_Payments" &&
+			trim($order->get_shipping_first_name()=='') &&
+			trim($order->get_shipping_last_name()=='') &&
+			trim($order->get_shipping_address_1()=='') &&
+			trim($order->get_shipping_city())=='' &&
+			trim($order->get_shipping_postcode())=='' &&
+			trim($order->get_billing_email())!='') {
+
+			_log("################################################# ORDER: " 
+			. print_r($order, true));
+	
+			if (trim($order->get_customer_note())!='')
+				$order->set_customer_note($order->get_customer_note() . "Delivery and shipping information is filled automatically.");
+			else
+				$order->set_customer_note("Delivery and shipping information is filled automatically.");
+			
+			$order->set_billing_first_name("none");
+			$order->set_billing_last_name("none");
+			$order->set_billing_address_1("none");
+			$order->set_billing_postcode("00000");
+			$order->set_billing_city("none");
+			$order->set_billing_country("EE");
+			
+			$order->set_shipping_first_name("none");
+			$order->set_shipping_last_name("none");
+			$order->set_shipping_address_1("none");
+			$order->set_shipping_postcode("00000");
+			$order->set_shipping_city("none");
+			$order->set_shipping_country("EE");
+			$order->save();
+		}
 		$url = $order->get_checkout_order_received_url();
 		$url = add_query_arg( 'key', $order_handler->get_order_key(), $url );
 		$url = add_query_arg( 'order-pay', $order_handler->get_id(), $url );
