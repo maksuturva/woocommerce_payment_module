@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.5
+* Added support for the special delivery and billing information for Svea Payments Estonia partners 
+
 ### 2.1.4
 * Added a new payment method class for Svea Payments Estonia partners  
 * Fixed checkout page when there is only one payment method available

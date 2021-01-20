@@ -565,38 +565,38 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		/**
 		 * special functionality for Estonia EEAC payment method, needs to be activated in the admin panel
-		 * 
+		 * @since 2.1.5
 		 */
-		if ($this->is_estonia_special_delivery() && 
-			$order->get_payment_method() == "WC_Gateway_Svea_Estonia_Payments" &&
-			trim($order->get_shipping_first_name()=='') &&
-			trim($order->get_shipping_last_name()=='') &&
-			trim($order->get_shipping_address_1()=='') &&
-			trim($order->get_shipping_city())=='' &&
-			trim($order->get_shipping_postcode())=='' &&
-			trim($order->get_billing_email())!='') {
+		if ($this->is_estonia_special_delivery() && $order->get_payment_method() == "WC_Gateway_Svea_Estonia_Payments")
+		{ 
+			_log("###### SVEA ### ORDER: " . print_r($order, true));
 
-			_log("################################################# ORDER: " 
-			. print_r($order, true));
-	
-			if (trim($order->get_customer_note())!='')
-				$order->set_customer_note($order->get_customer_note() . "Delivery and shipping information is filled automatically.");
-			else
-				$order->set_customer_note("Delivery and shipping information is filled automatically.");
-			
-			$order->set_billing_first_name("none");
-			$order->set_billing_last_name("none");
-			$order->set_billing_address_1("none");
-			$order->set_billing_postcode("00000");
-			$order->set_billing_city("none");
-			$order->set_billing_country("EE");
-			
-			$order->set_shipping_first_name("none");
-			$order->set_shipping_last_name("none");
-			$order->set_shipping_address_1("none");
-			$order->set_shipping_postcode("00000");
-			$order->set_shipping_city("none");
-			$order->set_shipping_country("EE");
+			if (trim($order->get_shipping_postcode())=='') {
+				$order->set_shipping_postcode("00000");
+			}
+			if (trim($order->get_shipping_city())=='') {
+				$order->set_shipping_city("none");
+			}
+
+			if (trim($order->get_billing_first_name())=='') {
+				$order->set_billing_first_name("none");
+			}
+			if (trim($order->get_billing_last_name())=='') {
+				$order->set_billing_last_name("none");
+			}
+			if (trim($order->get_billing_address_1())=='') {
+				$order->set_billing_address_1("none");
+			}
+			if (trim($order->get_billing_postcode())=='') {
+				$order->set_billing_postcode("00000");
+			}
+			if (trim($order->get_billing_city())=='') {
+				$order->set_billing_city("none");
+			}
+			if (trim($order->get_billing_country())=='') {
+				$order->set_billing_country("EE");
+			}
+
 			$order->save();
 		}
 		$url = $order->get_checkout_order_received_url();
