@@ -99,6 +99,7 @@ class WC_Utils_Maksuturva {
 		if (trim($description)!='') {
 			$description="-";
 		}
+		return $description;
 		//return self::filter_characters( html_entity_decode( strip_tags( $description ) ) );
 	}
 
