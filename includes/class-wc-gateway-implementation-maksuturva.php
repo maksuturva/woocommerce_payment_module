@@ -102,6 +102,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$this->set_encoding( $gateway->get_encoding() );
 		$this->set_payment_id_prefix( $gateway->get_payment_id_prefix() );
 		$this->set_payment_data( $this->create_payment_data( $gateway, $order ) );
+		
 		$this->td = $gateway->td;
 	}
 

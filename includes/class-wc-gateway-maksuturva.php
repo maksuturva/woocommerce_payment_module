@@ -569,8 +569,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		 */
 		if ($this->is_estonia_special_delivery() && $order->get_payment_method() == "WC_Gateway_Svea_Estonia_Payments")
 		{ 
-			_log("###### SVEA ### ORDER: " . print_r($order, true));
-
 			if (trim($order->get_shipping_postcode())=='') {
 				$order->set_shipping_postcode("00000");
 			}
@@ -597,6 +595,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				$order->set_billing_country("EE");
 			}
 
+			if (trim($order->get_billing_country())=='') {
+				$order->set_billing_country("EE");
+			}
 			$order->save();
 		}
 		$url = $order->get_checkout_order_received_url();
