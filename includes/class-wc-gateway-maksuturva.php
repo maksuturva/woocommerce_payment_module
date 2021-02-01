@@ -522,6 +522,19 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Is Estonia Special Delivery functionality enabled.
+	 *
+	 * Checks if the Estonia delivery functionality is enabled
+	 *
+	 * @since 2.1.5
+	 *
+	 * @return bool
+	 */
+	public function is_estonia_special_delivery() {
+		return ( $this->get_option( 'estonia_special_delivery' ) === 'yes' );
+	}
+
+	/**
 	 * Load order by payment id.
 	 *
 	 * Returns the order found by the given payment id.
@@ -550,6 +563,43 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$order         = wc_get_order( $order_id );
 		$order_handler = new WC_Order_Compatibility_Handler( $order );
 
+		/**
+		 * special functionality for Estonia EEAC payment method, needs to be activated in the admin panel
+		 * @since 2.1.5
+		 */
+		if ($this->is_estonia_special_delivery() && $order->get_payment_method() == "WC_Gateway_Svea_Estonia_Payments")
+		{ 
+			if (trim($order->get_shipping_postcode())=='') {
+				$order->set_shipping_postcode("00000");
+			}
+			if (trim($order->get_shipping_city())=='') {
+				$order->set_shipping_city("none");
+			}
+
+			if (trim($order->get_billing_first_name())=='') {
+				$order->set_billing_first_name("none");
+			}
+			if (trim($order->get_billing_last_name())=='') {
+				$order->set_billing_last_name("none");
+			}
+			if (trim($order->get_billing_address_1())=='') {
+				$order->set_billing_address_1("none");
+			}
+			if (trim($order->get_billing_postcode())=='') {
+				$order->set_billing_postcode("00000");
+			}
+			if (trim($order->get_billing_city())=='') {
+				$order->set_billing_city("none");
+			}
+			if (trim($order->get_billing_country())=='') {
+				$order->set_billing_country("EE");
+			}
+
+			if (trim($order->get_billing_country())=='') {
+				$order->set_billing_country("EE");
+			}
+			$order->save();
+		}
 		$url = $order->get_checkout_order_received_url();
 		$url = add_query_arg( 'key', $order_handler->get_order_key(), $url );
 		$url = add_query_arg( 'order-pay', $order_handler->get_id(), $url );

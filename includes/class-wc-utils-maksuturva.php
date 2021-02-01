@@ -86,7 +86,7 @@ class WC_Utils_Maksuturva {
 	/**
 	 * Filter a description string.
 	 *
-	 * Applies html_entity_decode and strip_tags on the given description.
+	 * Replace information with dash
 	 *
 	 * @param string $description The description string.
 	 *
@@ -95,7 +95,12 @@ class WC_Utils_Maksuturva {
 	 * @return string
 	 */
 	public static function filter_description( $description ) {
-		return self::filter_characters( html_entity_decode( strip_tags( $description ) ) );
+		/* 2.1.5 item description is not necessary for payment backend, replace with dash if not empty */
+		if (trim($description)!='') {
+			$description="-";
+		}
+		return $description;
+		//return self::filter_characters( html_entity_decode( strip_tags( $description ) ) );
 	}
 
 	/***

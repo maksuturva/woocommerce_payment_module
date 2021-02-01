@@ -169,6 +169,13 @@ class WC_Gateway_Admin_Form_Fields {
 				'default'     => 'UTF-8',
 				'description' => __( 'The encoding used for Svea.', $this->gateway->td ),
 				'options'     => [ 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ],
+			],
+			'estonia_special_delivery' => [
+				'type'        => 'checkbox',
+				'title'       => __( 'Estonia Payment Method EEAC / Enable special delivery functionality', $this->gateway->td ),
+				'default'     => 'no',
+				'description' => __( 'This enables the special functionality for delivery info plugins without checkout addresses.', $this->gateway->td ),
+				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			]
 		];
 	}

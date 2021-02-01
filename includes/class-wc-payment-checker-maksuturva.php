@@ -174,7 +174,7 @@ class WC_Payment_Checker_Maksuturva {
 		try {
 			foreach ($payments as $payment) {
 				$check_me = $this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated());
-				//_log("Is time to check payment " . $payment->get_payment_id() . " = " . var_export($check_me, true));
+				
 				if ($check_me) {
 					$responses[$payment->get_payment_id()] = $this->check_payment($payment);
 				}
