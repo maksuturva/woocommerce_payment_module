@@ -193,13 +193,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
 	 *
 	 * @since 2.1.3
-	 *
+	 * 
 	 * @return string|null
 	 */
 	private function get_selected_payment_method() {
-		return WC_Utils_Maksuturva::filter_alphanumeric(
-			$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
-		);
+		$spm = $_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+		if ($spm)
+			return WC_Utils_Maksuturva::filter_alphanumeric($spm);
 	}
 
 	/**

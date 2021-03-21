@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 4.0  
 **Tested up to:** 5.5.3  
-**Stable tag:** 2.1.5  
+**Stable tag:** 2.1.6  
 **WC requires at least:** 3.8.1  
-**WC tested up to:** 4.8.0   
+**WC tested up to:** 5.1.0   
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.6
+* Fixed some bugs seen on the logfile and meta box is not rendered when payment method is not yet selected.
 
 ### 2.1.5
 * Added support for the special delivery and billing information for Svea Payments Estonia partners 
