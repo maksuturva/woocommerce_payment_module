@@ -137,8 +137,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		add_action( 'woocommerce_receipt_' . $this->id, [$this, 'receipt_page'] );
 
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
-
-		add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
+		// see Github issue #23
+		if (!is_admin()) {
+			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
+		}
 	}
 
 	/**
