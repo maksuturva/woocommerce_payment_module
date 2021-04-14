@@ -6,9 +6,9 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 3.x, 4.x
+ * Svea Payments Gateway Plugin for WooCommerce 4.x, 5.x
  * Plugin developed for Svea
- * Last update: 30/11/2020
+ * Last update: 11/04/2021
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -137,8 +137,11 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		add_action( 'woocommerce_receipt_' . $this->id, [$this, 'receipt_page'] );
 
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
-
-		add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
+		
+		// see Github issue #23, @since 2.1.7
+		if (!is_admin()) {
+			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
+		}
 	}
 
 	/**
