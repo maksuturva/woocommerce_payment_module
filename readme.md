@@ -1,11 +1,11 @@
 # Svea Payments for WooCommerce
 **Contributors:** Svea Payments  
 **Tags:** maksuturva, payment gateway, svea, svea payments  
-**Requires at least:** 5.0  
+**Requires at least:** 5.0   
 **Tested up to:** 5.7  
-**Stable tag:** 2.1.7 
-**WC requires at least:** 4.7
-**WC tested up to:** 5.2.1   
+**Stable tag:** 2.1.7   
+**WC requires at least:** 4.7  
+**WC tested up to:** 5.2.1     
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
