@@ -1,11 +1,11 @@
 # Svea Payments for WooCommerce
 **Contributors:** Svea Payments  
 **Tags:** maksuturva, payment gateway, svea, svea payments  
-**Requires at least:** 4.0  
-**Tested up to:** 5.5.3  
-**Stable tag:** 2.1.6  
-**WC requires at least:** 3.8.1  
-**WC tested up to:** 5.1.0   
+**Requires at least:** 5.0  
+**Tested up to:** 5.7  
+**Stable tag:** 2.1.7 
+**WC requires at least:** 4.7
+**WC tested up to:** 5.2.1   
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.7
+* Fixed woocommerce available payment gateways -hook added only when request is not for admin page (reported issue #23)
 
 ### 2.1.6
 * Fixed some bugs seen on the logfile and meta box is not rendered when payment method is not yet selected.
