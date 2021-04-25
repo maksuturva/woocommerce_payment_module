@@ -197,9 +197,11 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return string|null
 	 */
 	private function get_selected_payment_method() {
-		$spm = $_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
-		if ($spm)
-			return WC_Utils_Maksuturva::filter_alphanumeric($spm);
+		if ( isset($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]) && !empty($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] )) {
+			$spm = $_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+			if ($spm)
+				return WC_Utils_Maksuturva::filter_alphanumeric($spm);
+		}
 	}
 
 	/**
