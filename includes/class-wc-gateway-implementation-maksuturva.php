@@ -219,8 +219,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$payment_rows = array();
 		foreach ( $order->get_items() as $order_item_id => $item ) {
 			/* @var WC_Product $product */
-			$product = $order->get_product_from_item( $item );
-
+			$product = $item->get_product();
+			
 			$description = $this->get_product_description( $product, $order, $order_item_id );
 
 			$payment_row_product = array();
