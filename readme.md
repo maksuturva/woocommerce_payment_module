@@ -2,10 +2,10 @@
 **Contributors:** Svea Payments  
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
-**Tested up to:** 5.7  
-**Stable tag:** 2.1.7   
+**Tested up to:** 5.7.2  
+**Stable tag:** 2.1.8   
 **WC requires at least:** 4.7  
-**WC tested up to:** 5.2.1     
+**WC tested up to:** 5.2.2     
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,10 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.8
+* Fixed selected payment method undefined index -error after payment is successful
+* Fixed deprecated item product data access 
 
 ### 2.1.7
 * Fixed woocommerce available payment gateways -hook added only when request is not for admin page (reported issue #23)

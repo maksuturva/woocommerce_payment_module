@@ -197,9 +197,11 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return string|null
 	 */
 	private function get_selected_payment_method() {
-		$spm = $_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
-		if ($spm)
-			return WC_Utils_Maksuturva::filter_alphanumeric($spm);
+		if ( isset($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]) && !empty($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] )) {
+			$spm = $_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+			if ($spm)
+				return WC_Utils_Maksuturva::filter_alphanumeric($spm);
+		}
 	}
 
 	/**
@@ -219,8 +221,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$payment_rows = array();
 		foreach ( $order->get_items() as $order_item_id => $item ) {
 			/* @var WC_Product $product */
-			$product = $order->get_product_from_item( $item );
-
+			$product = $item->get_product();
+			
 			$description = $this->get_product_description( $product, $order, $order_item_id );
 
 			$payment_row_product = array();
