@@ -102,6 +102,9 @@ class WC_Payment_Checker_Maksuturva {
 	 */
 	public function check_payment( $payment ) {
 		$response = array();
+		if (!$payment instanceof WC_Payment_Maksuturva) {
+                        _log("Not a Svea payment method, skipping status check");
+                }
 
 		try {
 			$gateway  = new WC_Gateway_Maksuturva();

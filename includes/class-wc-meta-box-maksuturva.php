@@ -92,7 +92,9 @@ class WC_Meta_Box_Maksuturva {
 	 * @return string
 	 */
 	private static function get_messages( $payment ) {
-
+		if (!$payment instanceof WC_Payment_Maksuturva) {
+			_log("Not a Svea payment method, skipping status check");
+		}
 		if ($payment->is_delayed() || $payment->is_pending()) {
 			( new WC_Payment_Checker_Maksuturva() )->check_payment( $payment );
 		}
