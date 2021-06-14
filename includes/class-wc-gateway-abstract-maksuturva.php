@@ -881,7 +881,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_resptype'      => 'XML',
 			'pmtq_return'        => '',
 			'pmtq_hashversion'   => $this->payment_data['pmt_hashversion'],
-			'pmtq_keygeneration' => '001', 
+			'pmtq_keygeneration' => $this->payment_data['pmt_keygeneration'], 
 			"req_ts_ms"          => \DateTime::createFromFormat('U.u', microtime(TRUE))->format('Y-m-d H:i:s:u')
 		);
 		// Overrides with user-defined fields.

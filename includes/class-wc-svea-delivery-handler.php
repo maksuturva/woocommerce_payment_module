@@ -140,7 +140,7 @@ class WC_Svea_Delivery_Handler {
 			"pkg_allsent" => "Y",
 			"pkg_resptype" => "XML",
 			"pkg_hashversion" => $gateway_data['pmt_hashversion'],
-			"pkg_keygeneration" => "001"
+			"pkg_keygeneration" => $this->gateway->get_secret_key_version()
 		];
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
