@@ -314,7 +314,7 @@ class WC_Svea_Refund_Handler {
 			'pmtc_currency' => 'EUR',
 			'pmtc_hashversion' => $gateway_data['pmt_hashversion'],
 			'pmtc_id' => $this->payment->get_payment_id(),
-			'pmtc_keygeneration' => '001',
+			'pmtc_keygeneration' => $this->gateway->get_secret_key_version(),
 			'pmtc_resptype' => 'XML',
 			'pmtc_sellerid' => $this->gateway->get_seller_id(),
 			'pmtc_version' => '0005'

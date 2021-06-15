@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.9
+* Fixed secret key version parameter on APIs
+
 ### 2.1.8
 * Fixed selected payment method undefined index -error after payment is successful
 * Fixed deprecated item product data access 
