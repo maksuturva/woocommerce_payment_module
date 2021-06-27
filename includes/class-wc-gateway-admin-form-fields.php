@@ -109,9 +109,16 @@ class WC_Gateway_Admin_Form_Fields {
 				'type'  => 'title',
 				'id'    => 'account_settings',
 			],
+			'maksuturva_url' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Gateway URL', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'The URL used to communicate with Svea Payments API.', $this->gateway->td ),
+				'default'     => get_option( 'maksuturva_url', 'https://www.maksuturva.fi' ),
+			],
 			'maksuturva_sellerid' => [
 				'type'        => 'textfield',
-				'title'       => __( 'Seller id', $this->gateway->td ),
+				'title'       => __( 'Seller Id', $this->gateway->td ),
 				'desc_tip'    => true,
 				'description' => __( 'The seller identification provided by Svea upon your registration.', $this->gateway->td ),
 			],
@@ -132,14 +139,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'title' => __( 'Advanced settings', $this->gateway->td ),
 				'type'  => 'title',
 				'id'    => 'advanced_settings',
-			],
-			/* I don't think these are needed at the UI, but enabled it for now / JH */
-			'maksuturva_url' => [
-				'type'        => 'textfield',
-				'title'       => __( 'Gateway URL', $this->gateway->td ),
-				'desc_tip'    => true,
-				'description' => __( 'The URL used to communicate with Svea. Do not change this configuration unless you know what you are doing.', $this->gateway->td ),
-				'default'     => get_option( 'maksuturva_url', 'https://www.maksuturva.fi' ),
 			],
 			'maksuturva_orderid_prefix' => [
 				'type'        => 'textfield',
