@@ -164,11 +164,15 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$payment_method_type = strtolower( $payment_method_type );
 		$payment_method_type = str_replace( '_', '-', $payment_method_type );
 
-		$payment_methods = $this->payment_method_select->get_payment_type_payment_methods(
-			$payment_method_type,
-			WC_Payment_Gateway::get_order_total()
-		);
-
+		try {
+			$payment_methods = $this->payment_method_select->get_payment_type_payment_methods(
+				$payment_method_type,
+				WC_Payment_Gateway::get_order_total()
+			);
+		} catch (Exception $e) {
+			_log("Couldn't get available payment gateways, reason: " . $e->getMessage());
+		}
+		
 		if ( count( $payment_methods ) === 0 ) {
 			unset( $available_gateways[$this->id] );
 		}
