@@ -43,7 +43,7 @@ seller id or secret key. In that case you should first check that they are corre
 in the beginning or end of the inputs.
 
 
-Maksuturva payment service APIs and Integration Guidelines
+Svea Payments service APIs and Integration Guidelines
 -------------------------------
 Instructions and manuals for integration can be found at:  
 http://docs.maksuturva.fi/
