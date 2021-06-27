@@ -173,7 +173,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			_log("Couldn't get available payment gateways, reason: " . $e->getMessage());
 		}
 
-		if ( !is_countable($payment_methods) || count( $payment_methods ) === 0 ) {
+		if ( !isset($payment_methods) || count( $payment_methods ) === 0 ) {
 			unset( $available_gateways[$this->id] );
 		}
 
