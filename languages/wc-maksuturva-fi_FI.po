@@ -98,7 +98,7 @@ msgid "Account settings"
 msgstr "Tiliasetukset"
 
 #: includes/class-wc-gateway-admin-form-fields.php:114
-msgid "Seller id"
+msgid "Seller Id"
 msgstr "Kauppiastunnus"
 
 #: includes/class-wc-gateway-admin-form-fields.php:116
