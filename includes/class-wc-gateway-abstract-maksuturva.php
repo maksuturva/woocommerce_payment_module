@@ -703,7 +703,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			return false;
 		}
 
-		_log("Orderid: ". str($data['pmtq_orderid']) );
+		_log("Debug Orderid: ". print_r($data['pmtq_orderid'], true) );
 		return true;
 	}
 
@@ -902,7 +902,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
 		$this->status_query_data['pmtq_hash'] = $data_hasher->create_hash( $hash_data );
 
-		_log("Status query debug: " . print_r($this->status_query_data, true));
+		_log("Debug Status query debug request: " . print_r($this->status_query_data, true));
 
 		// Now the request is made to maksuturva.
 		$request = curl_init( $this->base_url_status_query );
@@ -916,9 +916,11 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
 		$res = curl_exec( $request );
+		_log("Debug Status query response: " . print_r($this->status_query_data, true));
+
 		if ( false === $res ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Failed to communicate with maksuturva. Please check the network connection.'
+				'Failed to communicate with Svea Payments API. Please check the network connection.'
 			);
 		}
 		curl_close( $request );
