@@ -703,6 +703,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			return false;
 		}
 
+		_log("Orderid: ". str($data['pmtq_orderid']) );
 		return true;
 	}
 
@@ -901,6 +902,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
 		$this->status_query_data['pmtq_hash'] = $data_hasher->create_hash( $hash_data );
 
+		_log("Status query debug: " . print_r($this->status_query_data, true));
+
 		// Now the request is made to maksuturva.
 		$request = curl_init( $this->base_url_status_query );
 		curl_setopt( $request, CURLOPT_HEADER, 0 );
@@ -939,6 +942,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_buyeraddress2',
 			'pmtq_buyerpostalcode',
 			'pmtq_buyercity',
+			'pmtq_orderid',
+			'pmtq_invoicingfee',
 			'pmtq_hash',
 		);
 		foreach ( $response_fields as $field ) {

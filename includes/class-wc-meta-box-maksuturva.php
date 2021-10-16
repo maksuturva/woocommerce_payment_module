@@ -92,6 +92,8 @@ class WC_Meta_Box_Maksuturva {
 	 * @return string
 	 */
 	private static function get_messages( $payment ) {
+		$msg = __( 'Debug check payment');
+
 		if (!$payment instanceof WC_Payment_Maksuturva) {
 			_log("Not a Svea payment method, skipping status check");
 		}
