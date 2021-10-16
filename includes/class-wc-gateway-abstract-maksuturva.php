@@ -680,6 +680,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_sellercosts',
 			'pmtq_paymentmethod',
 			'pmtq_escrow',
+			'pmtq_orderid',
+			'pmtq_invoicingfee',
 		);
 
 		$hash_data = array();
@@ -876,7 +878,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		}
 		$default_fields = array(
 			'pmtq_action'        => 'PAYMENT_STATUS_QUERY',
-			'pmtq_version'       => '0004',
+			'pmtq_version'       => '0005',
 			'pmtq_sellerid'      => $this->payment_data['pmt_sellerid'],
 			'pmtq_id'            => $this->payment_data['pmt_id'],
 			'pmtq_resptype'      => 'XML',
