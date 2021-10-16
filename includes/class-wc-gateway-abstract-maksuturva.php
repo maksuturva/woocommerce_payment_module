@@ -918,7 +918,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
 		$res = curl_exec( $request );
-		_log("Debug Status query response: " . print_r($this->status_query_data, true));
+		_log("Debug Status query response: " . print_r($res, true));
 
 		if ( false === $res ) {
 			throw new WC_Gateway_Maksuturva_Exception(
