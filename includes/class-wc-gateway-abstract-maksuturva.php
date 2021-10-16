@@ -678,10 +678,12 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 
 		$optional_hash_fields = array(
 			'pmtq_sellercosts',
-			'pmtq_paymentmethod',
-			'pmtq_escrow',
 			'pmtq_orderid',
 			'pmtq_invoicingfee',
+			'pmtq_paymentmethod',
+			'pmtq_escrow',
+            "pmtq_certification",
+            "pmtq_paymentdate"
 		);
 
 		$hash_data = array();
@@ -947,7 +949,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_buyerpostalcode',
 			'pmtq_buyercity',
 			'pmtq_orderid',
-			'pmtq_invoicingfee',
+			//'pmtq_invoicingfee',
 			'pmtq_hash',
 		);
 		foreach ( $response_fields as $field ) {
