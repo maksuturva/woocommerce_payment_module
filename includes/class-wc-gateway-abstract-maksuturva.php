@@ -1006,7 +1006,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		if ( abs($this->payment_data['pmt_amount'] - $parsed_response['pmtq_amount']) > 5.00 ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Status query response amount does not match the requested payment amount. Amount ' . 
-				$this->payment_data['pmt_amount'] . ' vs response ' $parsed_response['pmtq_amount'],
+				$this->payment_data['pmt_amount'] . ' vs response ' . $parsed_response['pmtq_amount'],
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
