@@ -664,27 +664,28 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 */
 	private function verify_status_query_response( $data ) {
 		$hash_fields = array(
-			'pmtq_action',
-			'pmtq_version',
-			'pmtq_sellerid',
-			'pmtq_id',
-			'pmtq_amount',
-			'pmtq_returncode',
-			'pmtq_returntext',
-			'pmtq_sellercosts',
-			'pmtq_paymentmethod',
-			'pmtq_escrow',
+				'pmtq_action',
+				'pmtq_version',
+				'pmtq_sellerid',
+				'pmtq_id',
+				'pmtq_amount',
+				'pmtq_returncode',
+				'pmtq_returntext',
+				'pmtq_sellercosts',
+				'pmtq_paymentmethod',
+				'pmtq_escrow',
+				'pmtq_certification',
+				'pmtq_paymentdate'
 		);
 
 		$optional_hash_fields = array(
-			'pmtq_sellercosts',
-			'pmtq_orderid',
-			'pmtq_invoicingfee',
-			'pmtq_paymentmethod',
-			'pmtq_escrow',
-            "pmtq_certification",
-            "pmtq_paymentdate"
+				'pmtq_sellercosts',
+				'pmtq_paymentmethod',
+				'pmtq_escrow',
+				'pmtq_certification',
+				'pmtq_paymentdate'
 		);
+
 
 		$hash_data = array();
 		foreach ( $hash_fields as $field ) {
@@ -941,15 +942,17 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_returntext',
 			'pmtq_trackingcodes',
 			'pmtq_sellercosts',
+			'pmtq_invoicingfee',
+			'pmtq_orderid',
 			'pmtq_paymentmethod',
 			'pmtq_escrow',
+			'pmtq_certification',
+			'pmtq_paymentdate',
 			'pmtq_buyername',
 			'pmtq_buyeraddress1',
 			'pmtq_buyeraddress2',
 			'pmtq_buyerpostalcode',
 			'pmtq_buyercity',
-			'pmtq_orderid',
-			//'pmtq_invoicingfee',
 			'pmtq_hash',
 		);
 		foreach ( $response_fields as $field ) {
@@ -966,6 +969,9 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			);
 		}
 
+		// Validate order to match payment data
+		_log("Debug order id: " . $this->payment_data['pmt_orderid'] . 
+			" vs " . $parsed_response['pmtq_orderid'] );
 		// Return the response - verified.
 		return $parsed_response;
 	}
