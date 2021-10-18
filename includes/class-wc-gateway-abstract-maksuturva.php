@@ -979,15 +979,13 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		// Validate order to match payment data
 		if ( !($this->payment_data['pmt_orderid'] === $parsed_response['pmtq_orderid']) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query response order id does not match the requested payment order id.',
+				'Status query response order id does not match the requested payment order id. ' . 
+				$this->payment_data['pmt_orderid'] ' vs response ' . $parsed_response['pmtq_orderid'],
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
-		
-		//'pmt_amount'             
-		//=> WC_Utils_Maksuturva::filter_price( $order->get_total() - $this->shipping_cost - $this->total_fees - $this->removed_fees ),
-			
-		// Check payment total, 5.00 is maximum accpted sum difference
+
+		// Check payment total and seller costs
 		$pmtq_amount = floatval(str_replace(',', '.', $parsed_response["pmtq_amount"]) );
 		if ( empty($parsed_response["pmtq_sellercosts"]) )
 			$pmtq_sellercosts = floatval(str_replace(',', '.', "0,00") );
@@ -997,31 +995,22 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		_log("Debug payment: " . $this->payment_data['pmt_amount'] . " " . $this->payment_data['pmt_sellercosts'] );
 		_log("Debug pmtq: " . $parsed_response['pmtq_amount'] . " " . $parsed_response['pmtq_sellercosts'] );
 
-		if ( !($this->payment_data['pmt_sellercosts'] === $parsed_response['pmtq_sellercosts']) ) {
+		if ( abs($this->payment_data['pmt_sellercosts'] - $parsed_response['pmtq_sellercosts']) > 1.00 ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query response seller costs does not match the requested payment seller costs.',
+				'Status query response seller costs does not match the requested payment seller costs. ' . 
+				$this->payment_data['pmt_sellercosts'] . ' vs response ' . $parsed_response['pmtq_sellercosts'],
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
-/*
-        if ( empty($parsed_response["pmtq_sellercosts"]) )
-            $pmtq_sellercosts = floatval(str_replace(',', '.', "0,00") );
-        else
-            $pmtq_sellercosts = floatval(str_replace(',', '.', $parsed_response["pmtq_sellercosts"]) );
-        if ( empty($parsed_response["pmtq_invoicingfee"]) )
-            $pmtq_invoicingfee = floatval(str_replace(',', '.', "0,00") );
-        else
-            $pmtq_invoicingfee = floatval(str_replace(',', '.', $parsed_response["pmtq_invoicingfee"]) );
-        $total = floatval(str_replace(',', '.', $order->getGrandTotal() ) );
 
-		if ( abs($total - ($pmtq_amount+$pmtq_sellercosts-$pmtq_invoicingfee)) > 5.00) {
-			$result['message'] = __('Order and status query response sum mismatch! Status update failed.');
-			$result['success'] = "error";
-			$this->helper->sveaLoggerError("Order " . $incrementid . " sum (amount " . $pmtq_amount . " + sellercosts " . 
-				$pmtq_sellercosts .  " - invoicingfee " . $pmtq_invoicingfee . ") does not match order total " . $total);
-			return $result;
+		if ( abs($this->payment_data['pmt_amount'] - $parsed_response['pmtq_amount']) > 5.00 ) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Status query response amount does not match the requested payment amount. Amount ' . 
+				$this->payment_data['pmt_amount'] . ' vs response ' $parsed_response['pmtq_amount'],
+				self::EXCEPTION_CODE_DATA_MISMATCH
+			);
 		}
-*/
+
 		// Return the response - verified.
 		return $parsed_response;
 	}
