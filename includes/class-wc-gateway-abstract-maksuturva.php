@@ -980,7 +980,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		if ( !($this->payment_data['pmt_orderid'] === $parsed_response['pmtq_orderid']) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Status query response order id does not match the requested payment order id. ' . 
-				$this->payment_data['pmt_orderid'] ' vs response ' . $parsed_response['pmtq_orderid'],
+				$this->payment_data['pmt_orderid'] . ' vs response ' . $parsed_response['pmtq_orderid'],
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
