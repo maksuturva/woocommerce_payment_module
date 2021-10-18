@@ -38,7 +38,7 @@ written for Svea Payments Oy
 ## Changelog
 
 ### 2.1.11
-* Changed status query check to validate order information
+* Added status query check to validate the order data to match the requested order
  
 ### 2.1.10
 * Fixed the checkout page was broken if the module was unable to communicate the backend API

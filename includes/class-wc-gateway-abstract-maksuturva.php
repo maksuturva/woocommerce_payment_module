@@ -715,7 +715,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			return false;
 		}
 
-		_log("Debug Orderid: ". print_r($data['pmtq_orderid'], true) );
 		return true;
 	}
 
@@ -914,8 +913,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
 		$this->status_query_data['pmtq_hash'] = $data_hasher->create_hash( $hash_data );
 
-		_log("Debug Status query debug request: " . print_r($this->status_query_data, true));
-
 		// Now the request is made to maksuturva.
 		$request = curl_init( $this->base_url_status_query );
 		curl_setopt( $request, CURLOPT_HEADER, 0 );
@@ -928,7 +925,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
 		$res = curl_exec( $request );
-		_log("Debug Status query response: " . print_r($res, true));
 
 		if ( false === $res ) {
 			throw new WC_Gateway_Maksuturva_Exception(
@@ -991,10 +987,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			$pmtq_sellercosts = floatval(str_replace(',', '.', "0,00") );
 		else
 			$pmtq_sellercosts = floatval(str_replace(',', '.', $parsed_response["pmtq_sellercosts"]) );
-
-			$pmtq_amount = floatval("4.00");
-		_log("Debug payment: " . $this->payment_data['pmt_amount'] . " " . $this->payment_data['pmt_sellercosts'] );
-		_log("Debug pmtq: " . $pmtq_amount . " " . $pmtq_sellercosts );
 
 		if ( abs(floatval(str_replace(',', '.', $this->payment_data['pmt_sellercosts'])) - $pmtq_sellercosts) > 1.00 ) {
 			throw new WC_Gateway_Maksuturva_Exception(
