@@ -993,9 +993,9 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			$pmtq_sellercosts = floatval(str_replace(',', '.', $parsed_response["pmtq_sellercosts"]) );
 
 		_log("Debug payment: " . $this->payment_data['pmt_amount'] . " " . $this->payment_data['pmt_sellercosts'] );
-		_log("Debug pmtq: " . $parsed_response['pmtq_amount'] . " " . $parsed_response['pmtq_sellercosts'] );
+		_log("Debug pmtq: " . $pmtq_amount . " " . $pmtq_sellercosts );
 
-		if ( abs($this->payment_data['pmt_sellercosts'] - $parsed_response['pmtq_sellercosts']) > 1.00 ) {
+		if ( abs(floatval(str_replace(',', '.', $this->payment_data['pmt_sellercosts'])) - $pmtq_sellercosts) > 1.00 ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Status query response seller costs does not match the requested payment seller costs. ' . 
 				$this->payment_data['pmt_sellercosts'] . ' vs response ' . $parsed_response['pmtq_sellercosts'],
@@ -1003,7 +1003,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			);
 		}
 
-		if ( abs($this->payment_data['pmt_amount'] - $parsed_response['pmtq_amount']) > 5.00 ) {
+		if ( abs(floatval(str_replace(',', '.', $this->payment_data['pmt_amount'])) - $pmtq_amount) > 5.00 ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Status query response amount does not match the requested payment amount. Amount ' . 
 				$this->payment_data['pmt_amount'] . ' vs response ' . $parsed_response['pmtq_amount'],
