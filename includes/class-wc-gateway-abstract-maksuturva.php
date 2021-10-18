@@ -188,6 +188,13 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	const EXCEPTION_CODE_HASHES_DONT_MATCH = '07';
 
 	/**
+	 * Order vs status query response data mismatch
+	 *
+	 * @var string EXCEPTION_CODE_DATA_MISMATCH
+	 */
+	const EXCEPTION_CODE_DATA_MISMATCH = '08';
+
+	/**
 	 * Route to payment.
 	 *
 	 * @var string ROUTE_PAYMENT
@@ -664,23 +671,28 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 */
 	private function verify_status_query_response( $data ) {
 		$hash_fields = array(
-			'pmtq_action',
-			'pmtq_version',
-			'pmtq_sellerid',
-			'pmtq_id',
-			'pmtq_amount',
-			'pmtq_returncode',
-			'pmtq_returntext',
-			'pmtq_sellercosts',
-			'pmtq_paymentmethod',
-			'pmtq_escrow',
+				'pmtq_action',
+				'pmtq_version',
+				'pmtq_sellerid',
+				'pmtq_id',
+				'pmtq_amount',
+				'pmtq_returncode',
+				'pmtq_returntext',
+				'pmtq_sellercosts',
+				'pmtq_paymentmethod',
+				'pmtq_escrow',
+				'pmtq_certification',
+				'pmtq_paymentdate'
 		);
 
 		$optional_hash_fields = array(
-			'pmtq_sellercosts',
-			'pmtq_paymentmethod',
-			'pmtq_escrow',
+				'pmtq_sellercosts',
+				'pmtq_paymentmethod',
+				'pmtq_escrow',
+				'pmtq_certification',
+				'pmtq_paymentdate'
 		);
+
 
 		$hash_data = array();
 		foreach ( $hash_fields as $field ) {
@@ -875,7 +887,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		}
 		$default_fields = array(
 			'pmtq_action'        => 'PAYMENT_STATUS_QUERY',
-			'pmtq_version'       => '0004',
+			'pmtq_version'       => '0005',
 			'pmtq_sellerid'      => $this->payment_data['pmt_sellerid'],
 			'pmtq_id'            => $this->payment_data['pmt_id'],
 			'pmtq_resptype'      => 'XML',
@@ -913,9 +925,10 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
 		$res = curl_exec( $request );
+
 		if ( false === $res ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Failed to communicate with maksuturva. Please check the network connection.'
+				'Failed to communicate with Svea Payments API. Please check the network connection.'
 			);
 		}
 		curl_close( $request );
@@ -932,8 +945,12 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_returntext',
 			'pmtq_trackingcodes',
 			'pmtq_sellercosts',
+			'pmtq_invoicingfee',
+			'pmtq_orderid',
 			'pmtq_paymentmethod',
 			'pmtq_escrow',
+			'pmtq_certification',
+			'pmtq_paymentdate',
 			'pmtq_buyername',
 			'pmtq_buyeraddress1',
 			'pmtq_buyeraddress2',
@@ -952,6 +969,38 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'The authenticity of the answer could not be verified. Hashes did not match.',
 				self::EXCEPTION_CODE_HASHES_DONT_MATCH
+			);
+		}
+
+		// Validate order to match payment data
+		if ( !($this->payment_data['pmt_orderid'] === $parsed_response['pmtq_orderid']) ) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Status query response order id does not match the requested payment order id. ' . 
+				$this->payment_data['pmt_orderid'] . ' vs response ' . $parsed_response['pmtq_orderid'],
+				self::EXCEPTION_CODE_DATA_MISMATCH
+			);
+		}
+
+		// Check payment total and seller costs
+		$pmtq_amount = floatval(str_replace(',', '.', $parsed_response["pmtq_amount"]) );
+		if ( empty($parsed_response["pmtq_sellercosts"]) )
+			$pmtq_sellercosts = floatval(str_replace(',', '.', "0,00") );
+		else
+			$pmtq_sellercosts = floatval(str_replace(',', '.', $parsed_response["pmtq_sellercosts"]) );
+
+		if ( abs(floatval(str_replace(',', '.', $this->payment_data['pmt_sellercosts'])) - $pmtq_sellercosts) > 1.00 ) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Status query response seller costs does not match the requested payment seller costs. ' . 
+				$this->payment_data['pmt_sellercosts'] . ' vs response ' . $parsed_response['pmtq_sellercosts'],
+				self::EXCEPTION_CODE_DATA_MISMATCH
+			);
+		}
+
+		if ( abs(floatval(str_replace(',', '.', $this->payment_data['pmt_amount'])) - $pmtq_amount) > 5.00 ) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Status query response amount does not match the requested payment amount. Amount ' . 
+				$this->payment_data['pmt_amount'] . ' vs response ' . $parsed_response['pmtq_amount'],
+				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
 
