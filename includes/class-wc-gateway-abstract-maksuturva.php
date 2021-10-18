@@ -992,6 +992,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		else
 			$pmtq_sellercosts = floatval(str_replace(',', '.', $parsed_response["pmtq_sellercosts"]) );
 
+			$pmtq_amount = floatval("4.00");
 		_log("Debug payment: " . $this->payment_data['pmt_amount'] . " " . $this->payment_data['pmt_sellercosts'] );
 		_log("Debug pmtq: " . $pmtq_amount . " " . $pmtq_sellercosts );
 
