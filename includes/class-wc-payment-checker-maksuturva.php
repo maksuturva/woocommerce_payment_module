@@ -108,8 +108,23 @@ class WC_Payment_Checker_Maksuturva {
         }
 
 		try {
-			$gateway  = new WC_Gateway_Maksuturva();
+			$gateway  = new WC_Gateway_Maksuturva();			
 			$order    = wc_get_order($payment->get_order_id());
+
+			// don't query status in sandbox mode
+			if ($gateway->is_sandbox()) {
+				_log("Payment check is disabled for sandbox mode. Skipping status query for order " . $payment->get_order_id() );
+				return;
+			}
+
+			/**
+			 * check time windows for status query
+			 */
+			if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
+				_log("Payment check is skipped for the order " . $payment->get_order_id() . ", because it does not fullfill the time window rules." );
+				return;
+			}
+
 			/**
 			 * if order is not found anymore, skip payment checks and cancel it it Maksuturva status queue (2.12.2019) 
 			 */
@@ -153,7 +168,6 @@ class WC_Payment_Checker_Maksuturva {
 				}
 			}
 		} catch (WC_Gateway_Maksuturva_Exception $e) {
-			// Error while communicating with maksuturva
 			_log((string) $e);
 		}
 
@@ -167,7 +181,6 @@ class WC_Payment_Checker_Maksuturva {
 	 *
 	 * @param WC_Payment_Maksuturva[] $payments the payments.
 	 *
-	 * @since 2.1.1	Dynamic interval for payment checks
 	 * @since 2.0.2
 	 *
 	 * @return array
@@ -178,9 +191,10 @@ class WC_Payment_Checker_Maksuturva {
 		try {
 			foreach ($payments as $payment) {
 				$check_me = $this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated());
-				
 				if ($check_me) {
-					$responses[$payment->get_payment_id()] = $this->check_payment($payment);
+					$sqresponse = $this->check_payment($payment);
+					if (!emtpy($sqresponse))
+						$responses[$payment->get_payment_id()] = $sqresponse;
 				}
 			}
 		} catch (Exception $e) {
@@ -202,16 +216,35 @@ class WC_Payment_Checker_Maksuturva {
 		$create_diff = $now_time - strtotime($payment_date_added);
 		/* if there is no 'updated date', so do status query */
 		if (is_null($payment_date_updated)) {
+			_log("DEBUG No 'updated date'. Is_time_to_check " .  $payment_date_added . " is true.");
 			return true;
 		}
 		$update_diff = $now_time - strtotime($payment_date_updated);
 		/***
-		 * Step tresholds, units in seconds
-		 * all cases tested 3.12.2019
+		 * Simplified the rules, 7.11.2021
 		 */
-		return $this->in_range($create_diff, 0, 2*3600) ? (($update_diff > 600) ?  true : false) : 
-				($this->in_range($create_diff, 2*3600, 24*3600) ? (($update_diff > 2 * 3600) ?  true : false) : 
-					(($update_diff > 12 * 3600) ?  true : false));
+		$checkrule = 0;
+		if ($this->in_range($create_diff, 0, 2*3600) && $update_diff > 600) {
+			$checkrule = 1;
+		}
+		if ($this->in_range($create_diff, 0, 2*3600) && $update_diff > 600) {
+			$checkrule = 2;
+		} 
+		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2 * 3600) {
+			$checkrule = 3;
+		} 
+		// 168 hours = 7 days. No older than 7 days allowed.
+		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) {
+			$checkrule = 4;
+		}
+
+		_log("DEBUG Check payment with " . $payment_date_added . ", updated " . $payment_date_updated . 
+			" result rule is " . $checkrule );
+
+		if ($checkrule>0)
+			return true;
+		else
+			return false;
 	}
 
 	/**

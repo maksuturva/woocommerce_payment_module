@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 5.8.1  
-**Stable tag:** 2.1.11   
+**Stable tag:** 2.1.12   
 **WC requires at least:** 5.0  
-**WC tested up to:** 5.8.0
+**WC tested up to:** 5.8.0  
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.12
+* xxx
 
 ### 2.1.11
 * Added status query check to validate the order data to match the requested order
