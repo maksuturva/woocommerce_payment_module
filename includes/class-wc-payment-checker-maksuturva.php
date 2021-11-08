@@ -216,7 +216,7 @@ class WC_Payment_Checker_Maksuturva {
 		$create_diff = $now_time - strtotime($payment_date_added);
 		/* if there is no 'updated date', so do status query */
 		if (is_null($payment_date_updated)) {
-			_log("DEBUG No 'updated date'. Is_time_to_check " .  $payment_date_added . " is true.");
+			// _log("DEBUG No 'updated date'. Is_time_to_check " .  $payment_date_added . " is true.");
 			return true;
 		}
 		$update_diff = $now_time - strtotime($payment_date_updated);
@@ -238,9 +238,10 @@ class WC_Payment_Checker_Maksuturva {
 			$checkrule = 4;
 		}
 
+		/*
 		_log("DEBUG Check payment with " . $payment_date_added . ", updated " . $payment_date_updated . 
 			" result rule is " . $checkrule );
-
+		*/
 		if ($checkrule>0)
 			return true;
 		else
