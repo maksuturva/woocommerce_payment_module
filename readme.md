@@ -37,6 +37,8 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.13
+
 ### 2.1.12
 * Fixed status query check to skip orders more than 7 days old from creation date
 * Changed to skip status query check when in sandbox mode

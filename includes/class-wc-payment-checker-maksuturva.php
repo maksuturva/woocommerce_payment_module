@@ -193,7 +193,7 @@ class WC_Payment_Checker_Maksuturva {
 				$check_me = $this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated());
 				if ($check_me) {
 					$sqresponse = $this->check_payment($payment);
-					if (!emtpy($sqresponse))
+					if (!empty($sqresponse))
 						$responses[$payment->get_payment_id()] = $sqresponse;
 				}
 			}
