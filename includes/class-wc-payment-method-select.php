@@ -273,7 +273,7 @@ class WC_Payment_Method_Select {
 		 *
 		 * at this point, we will check this and fix the variable type
 		 */
-		if ( array_key_exists('payment_method',$result_methods) is_array($result_methods['paymentmethod'])) {
+		if ( array_key_exists('payment_method', $result_methods) && is_array($result_methods['paymentmethod'])) {
 			if ( !array_key_exists("0", $result_methods['paymentmethod']) ) {
 				$result_methods['paymentmethod'] = array ($result_methods['paymentmethod'] );
 			}
