@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 5.8.1  
-**Stable tag:** 2.1.12   
+**Stable tag:** 2.1.13   
 **WC requires at least:** 5.0  
-**WC tested up to:** 5.8.0  
+**WC tested up to:** 5.9.0  
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -38,6 +38,7 @@ written for Svea Payments Oy
 ## Changelog
 
 ### 2.1.13
+* Fixed the payment method listing when only one payment method is available
 
 ### 2.1.12
 * Fixed status query check to skip orders more than 7 days old from creation date
