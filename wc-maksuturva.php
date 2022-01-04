@@ -197,6 +197,7 @@ class WC_Maksuturva {
 			add_filter('plugin_action_links_' . $this->plugin_name, array(__CLASS__, 'maksuturva_action_links'));
 			add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
 			add_filter('cron_schedules', array($this, 'register_cron_schedules'));
+			remove_filter('get_header', 'wc_clear_cart_after_payment');
 
 			if (!wp_next_scheduled('maksuturva_check_pending_payments')) {
 				_log("Adding new payment status event loop.");
