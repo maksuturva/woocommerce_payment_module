@@ -5,13 +5,15 @@ msgstr ""
 "Project-Id-Version: WooCommerce Svea Payments Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
+"PO-Revision-Date: 2022-01-05 11:47+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: includes/class-wc-gateway-implementation-maksuturva.php:214
 msgid "Shipping cost"
@@ -103,7 +105,7 @@ msgstr "Kauppiastunnus"
 
 #: includes/class-wc-gateway-admin-form-fields.php:116
 msgid "The seller identification provided by Svea upon your registration."
-msgstr "Kauppiastunnus, jonka saa rekisteröityessä Maksuturvaan kauppiaaksi."
+msgstr "Kauppiastunnus, jonka saa rekisteröityessä Sveaan kauppiaaksi."
 
 #: includes/class-wc-gateway-admin-form-fields.php:120
 msgid "Secret Key"
@@ -192,12 +194,12 @@ msgstr "Svea palautti virheen."
 
 #: includes/class-wc-gateway-maksuturva.php:597
 msgid "Payment delayed by Svea."
-msgstr "Viivästetty maksu Maksuturvassa."
+msgstr "Viivästetty maksu Sveassa."
 
 #: includes/class-wc-gateway-maksuturva.php:605
 #: includes/class-wc-gateway-maksuturva.php:716
 msgid "Cancellation from Svea received."
-msgstr "Peruutettu Maksuturvassa."
+msgstr "Peruutettu Sveassa."
 
 #: includes/class-wc-gateway-maksuturva.php:615
 msgid "Payment confirmed by Svea."
@@ -212,8 +214,8 @@ msgid "Credit Card and Mobile"
 msgstr "Kortti- ja mobiilimaksut"
 
 #: includes/class-wc-gateway-svea-credit-card-and-mobile.php:48
-msgid "General Svea settings are managed <a href="%s">here</a>."
-msgstr "Yleisiä Svean maksutapojen asetuksia voi muokata <a href="%s">täällä</a>."
+msgid "General Svea settings are managed <a href=\"%s\">here</a>."
+msgstr "Yleisiä Svean maksutapojen asetuksia voi muokata <a href=\"%s\">täällä</a>."
 
 #: includes/class-wc-gateway-svea-invoice-and-hire-purchase.php:47
 msgid "Invoice and Hire Purchase"
@@ -233,11 +235,11 @@ msgstr "Viron maksutavat"
 
 #: includes/class-wc-meta-box-maksuturva.php:94
 msgid "The payment is confirmed by Svea"
-msgstr "Maksu varmistettiin Maksuturvassa"
+msgstr "Maksu varmistettiin Sveassa"
 
 #: includes/class-wc-meta-box-maksuturva.php:98
 msgid "The payment is canceled by Svea"
-msgstr "Tilaus peruttiin Maksuturvassa"
+msgstr "Tilaus peruttiin Sveassa"
 
 #: includes/class-wc-meta-box-maksuturva.php:102
 msgid "The payment could not be confirmed by Svea, please check manually"
