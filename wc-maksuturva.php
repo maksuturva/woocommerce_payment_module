@@ -215,12 +215,12 @@ class WC_Maksuturva {
 	}
 
 	/**
-	 * Osamaksulaskuri injection next to the price
+	 * Svea Part Payment injection next to the price
 	 */ 
 	public function svea_add_part_payment_widget( $price, $product ) {
-		if (isset($price) && isset($product)) {
-			$widgetSellerId = "CLOQCQOQ"
-			$widgetHtml = "<script src=\"https://www.henet.fi/images/partPaymentTest.js\" class=\"svea-pp-widget-part-payment\""
+		if (is_product() && isset($price) && isset($product)) {
+			$widgetSellerId = "ABCDEFG"; // edit this to use your production seller id
+			$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
 				. " data-sellerid=\"" . $widgetSellerId . "\"" 
 				. " data-price=\"" . $product->get_price() . "\""
 				. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
