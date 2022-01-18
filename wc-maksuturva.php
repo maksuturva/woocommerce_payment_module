@@ -208,7 +208,7 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 
 			// Uncomment the filter below to enable the part payment widget. Don't forget to edit widgetSellerId below.
-			add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
+			// add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
