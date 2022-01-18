@@ -206,9 +206,25 @@ class WC_Maksuturva {
 
 			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
+			add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_laskuri'], 99, 2 );
 		} catch (Exception $e) { 
 			_log("Error in Maksuturva module inititalization: " . $e->getMessage());
 		}
+	}
+
+	/**
+	 * Osamaksulaskuri injection next to the price
+	 */ 
+	public function svea_add_laskuri( $price, $product ) {
+		$osamaksulaskuriHtml = "<script src=\"https://www.henet.fi/images/partPaymentTest.js\" class=\"svea-pp-widget-part-payment\" data-sellerid=\"CLOQCQOQ\"" 
+			. " data-price=\"" . $product->get_price() . "\""
+			. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
+			. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
+			. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
+			. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
+
+    		$priceHtml = $price . "<br />" . $osamaksulaskuriHtml;
+    		return $priceHtml;
 	}
 
 	/**
