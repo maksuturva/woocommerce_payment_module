@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.15
+* Added template implementation for Svea Part Payment widget, see docs/Part Payment Widget.md for more information
+
 ### 2.1.14
 * Changed, the cart is saved when the payment is not completed
 * Changed Maksuturva branding in UI messages
