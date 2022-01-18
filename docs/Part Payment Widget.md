@@ -1,8 +1,7 @@
 # Svea Part Payment Widget
 
-This is a short guide how to enable Part Payment Widget on the product page.
-
-To enable this feature, you need to edit `wc-maksuturva.php` file and add your information to the widget code.
+This is a short guide how to enable the Part Payment Widget on the product page. The feature is available from module version 2.15 and above, 
+and can be used with the production seller id credentials only.
 
 ## General information
 
@@ -12,7 +11,7 @@ The JavaScript based widget and it's parameters are documented here: https://cdn
 
 The widget is visible on the product page and below the current product price.  
 
-* edit wc-maksuturva.php and find text PARTPAYMENTWIDGET. Uncomment this line. As follows:
+* edit wc-maksuturva.php and find the line below. Uncomment this line. As follows:
 ````
     add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
 ````
@@ -27,5 +26,3 @@ The widget is visible on the product page and below the current product price.
 ````
     // add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
 ````
-
-

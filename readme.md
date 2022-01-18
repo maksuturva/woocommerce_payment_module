@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 5.9  
-**Stable tag:** 2.1.14   
+**Stable tag:** 2.1.15   
 **WC requires at least:** 5.0  
 **WC tested up to:** 6.0.0  
 **License:** LGPL v. 2.1 or later  
@@ -13,7 +13,7 @@ Svea Payments payment module for WooCommerce.
 
 ## Description
 
-Copyright (C) 2016-2021 Svea Development Oy
+Copyright (C) 2016-2022 Svea Development Oy
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later
@@ -38,7 +38,7 @@ written for Svea Payments Oy
 ## Changelog
 
 ### 2.1.15
-* Added template implementation for Svea Part Payment widget, see docs/Part Payment Widget.md for more information
+* Added a template implementation for Svea Part Payment widget on the product page, see docs/Part Payment Widget.md for more information
 
 ### 2.1.14
 * Changed, the cart is saved when the payment is not completed

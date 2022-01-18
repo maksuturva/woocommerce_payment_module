@@ -207,7 +207,7 @@ class WC_Maksuturva {
 			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 
-			// PARTPAYMENTWIDGET, uncomment the filter below to enable the part payment widget
+			// Uncomment the filter below to enable the part payment widget. Don't forget to edit widgetSellerId below.
 			add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
