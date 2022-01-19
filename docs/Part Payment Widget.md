@@ -1,6 +1,6 @@
 # Svea Part Payment Widget
 
-This is a short guide how to enable the Part Payment Widget on the product page. The feature is available from module version 2.15 and above, 
+This is a short guide how to enable the Part Payment Widget on the product page. The feature is available from module version 2.1.15 and above, 
 and can be used with the production seller id credentials only.
 
 ## General information
