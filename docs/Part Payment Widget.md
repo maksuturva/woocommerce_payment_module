@@ -5,7 +5,7 @@ and can be used with the production seller id credentials only.
 
 ## General information
 
-The JavaScript based widget and it's parameters are documented here: https://cdn2.hubspot.net/hubfs/2478856/Payments/Materiaalipankki/Toimitusehdot%20ja%20maksutapakuvaukset/Svea_Part_Payment_Widget.pdf
+The JavaScript based widget and it's parameters are documented here: https://www.sveapayments.fi/hubfs/Payments/Materiaalipankki/Toimitusehdot%20ja%20maksutapakuvaukset/Svea_Part_Payment_Widget.pdf
 
 ## How to enable the widget
 
@@ -17,7 +17,7 @@ The widget is visible on the product page and below the current product price.
 ````
 * find the function named svea_add_part_payment_widget in wc-maksuturva.php
 * edit widgetSellerId to match your production seller id value
-* update other data-xxx fields if needed, description for fields: https://cdn2.hubspot.net/hubfs/2478856/Payments/Materiaalipankki/Toimitusehdot%20ja%20maksutapakuvaukset/Svea_Part_Payment_Widget.pdf
+* update other data-xxx fields if needed, description for fields: https://www.sveapayments.fi/hubfs/Payments/Materiaalipankki/Toimitusehdot%20ja%20maksutapakuvaukset/Svea_Part_Payment_Widget.pdf
 * pay attention to string escaping, don't forget to use `\"`
 
 ## How to disable the widget
