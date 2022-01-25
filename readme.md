@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 5.9  
-**Stable tag:** 2.1.15   
+**Stable tag:** 2.1.16   
 **WC requires at least:** 5.0  
-**WC tested up to:** 6.0.0  
+**WC tested up to:** 6.1.1  
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.16
+* Changed Pivo and Siirto to Card Payments
 
 ### 2.1.15
 * Added a template implementation for Svea Part Payment widget on the product page, see docs/Part Payment Widget.md for more information
