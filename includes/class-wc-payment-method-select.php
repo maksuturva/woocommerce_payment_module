@@ -162,7 +162,8 @@ class WC_Payment_Method_Select {
 		}
 
 		foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
-			if ( in_array( substr($payment_method['code'], 0, 3 ), ['FI5']) ) {
+			if ( in_array( substr($payment_method['code'], 0, 3 ), ['FI5']) || in_array( substr($payment_method['code'], 0, 4 ), ['PIVO']) 
+				|| in_array( substr($payment_method['code'], 0, 4 ), ['SIIR']) ) {
 				$payment_type_payment_methods['credit-card-and-mobile'][] = $payment_method;
 				unset( $available_payment_methods['paymentmethod'][$key] );
 			}
