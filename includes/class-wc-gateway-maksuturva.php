@@ -138,32 +138,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
 		
-		add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
-
 		// see Github issue #23, @since 2.1.7
 		if (!is_admin()) {
 			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
-		}
-	}
-
-		/**
-	 * Svea Part Payment injection next to the price
-	 */ 
-	public function svea_add_part_payment_widget( $price, $product ) {
-		_log("WIDGET SELLERID: " . $this->get_seller_id() );
-		
-		if (is_product() && isset($price) && isset($product)) {
-			$widgetSellerId = "ABCDEFG"; // edit this to use your production seller id
-			$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
-				. " data-sellerid=\"" . $widgetSellerId . "\"" 
-				. " data-price=\"" . $product->get_price() . "\""
-				. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
-				. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
-				. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
-				. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
-
-    		$priceHtml = $price . "<br />" . $widgetHtml;
-    		return $priceHtml;
 		}
 	}
 
