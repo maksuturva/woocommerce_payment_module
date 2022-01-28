@@ -218,7 +218,7 @@ msgid "General Svea settings are managed <a href=\"%s\">here</a>."
 msgstr "Yleisiä Svean maksutapojen asetuksia voi muokata <a href=\"%s\">täällä</a>."
 
 #: includes/class-wc-gateway-svea-invoice-and-hire-purchase.php:47
-msgid "Invoice and Hire Purchase"
+msgid "Invoice and Part Payment"
 msgstr "Lasku ja erämaksu"
 
 #: includes/class-wc-gateway-svea-online-bank-payments.php:47
