@@ -220,13 +220,11 @@ class WC_Maksuturva {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
 
-		_log("WIDGET : " . $gateway->get_option( 'partpayment_widget'));
-
 		if ($gateway->get_option( 'partpayment_widget')==="yes") {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
 			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
-				$widgetHtml = "<script src=\"https://www.henet.fi/images/partPaymentTest.js\" class=\"svea-pp-widget-part-payment\""
+				$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
 					. " data-sellerid=\"" . $widgetSellerId . "\"" 
 					. " data-locale=\"fi\""
 					. " data-price=\"" . $product->get_price() . "\"></script>";
@@ -240,6 +238,8 @@ class WC_Maksuturva {
 				return $priceHtml;
 			}
 		}
+
+		return $price;
 	}
 
 	/**
