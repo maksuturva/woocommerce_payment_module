@@ -225,7 +225,7 @@ class WC_Maksuturva {
 		if ($gateway->get_option( 'partpayment_widget')==="yes") {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
-			if (is_product() && isset($price) && isset($product)) {
+			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
 				$widgetHtml = "<script src=\"https://www.henet.fi/images/partPaymentTest.js\" class=\"svea-pp-widget-part-payment\""
 					. " data-sellerid=\"" . $widgetSellerId . "\"" 
 					. " data-locale=\"fi\""
