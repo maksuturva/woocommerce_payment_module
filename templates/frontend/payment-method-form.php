@@ -44,15 +44,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php foreach ( $payment_methods as $payment_method ) { ?>
 		<div class="svea-payment-method-select" style="clear: both;">
 			<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
-				<?php
-				// show logo only for Invoice and Estonia payment method
-				if (!empty($payment_method['code']) && !(strpos($payment_method['code'], "Svea_Invoice")===false && strpos($payment_method['code'], "Svea_Estonia")===false) ) {
-				?>
 				<img
 					alt="<?php echo $payment_method['displayname']; ?>"
 					src="<?php echo $payment_method['imageurl']; ?>"
 				/>
-				<?php } ?>
 			</label>
 			<?php 
 				foreach ( $payment_method_handling_costs as $handling_cost ) {
