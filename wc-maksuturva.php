@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.1.15';
+	const VERSION = '2.1.16';
 
 	/**
 	 * Plugin DB version.
@@ -207,8 +207,7 @@ class WC_Maksuturva {
 			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 
-			// Uncomment the filter below to enable the part payment widget. Don't forget to edit widgetSellerId below.
-			// add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
+			add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
@@ -218,19 +217,29 @@ class WC_Maksuturva {
 	 * Svea Part Payment injection next to the price
 	 */ 
 	public function svea_add_part_payment_widget( $price, $product ) {
-		if (is_product() && isset($price) && isset($product)) {
-			$widgetSellerId = "ABCDEFG"; // edit this to use your production seller id
-			$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
-				. " data-sellerid=\"" . $widgetSellerId . "\"" 
-				. " data-price=\"" . $product->get_price() . "\""
-				. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
-				. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
-				. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
-				. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
 
-    		$priceHtml = $price . "<br />" . $widgetHtml;
-    		return $priceHtml;
+		if ($gateway->get_option( 'partpayment_widget')==="yes") {
+			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
+
+			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
+				$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
+					. " data-sellerid=\"" . $widgetSellerId . "\"" 
+					. " data-locale=\"fi\""
+					. " data-price=\"" . $product->get_price() . "\"></script>";
+					/*
+					. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
+					. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
+					. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
+					. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
+					*/
+				$priceHtml = $price . "<br />" . $widgetHtml;
+				return $priceHtml;
+			}
 		}
+
+		return $price;
 	}
 
 	/**

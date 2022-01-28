@@ -161,6 +161,13 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			],
+			'partpayment_widget' => [
+				'type'        => 'checkbox',
+				'title'       => __( 'Part Payment widget on Product page', $this->gateway->td ),
+				'default'     => 'no',
+				'description' => __( 'Enable the Part Payment widget on the product page.', $this->gateway->td ),
+				'options'     => [ 'yes' => '1', 'no' => '0' ],
+			],
 			'maksuturva_encoding' => [
 				'type'        => 'radio',
 				'title'       => __( 'Svea encoding', $this->gateway->td ),

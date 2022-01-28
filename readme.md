@@ -39,6 +39,7 @@ written for Svea Payments Oy
 
 ### 2.1.16
 * Changed Pivo and Siirto to Card Payments
+* Added Svea Part Payment widget configuration switch to the admin page
 
 ### 2.1.15
 * Added a template implementation for Svea Part Payment widget on the product page, see docs/Part Payment Widget.md for more information
