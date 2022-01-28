@@ -221,12 +221,12 @@ class WC_Maksuturva {
 		$gateway = new WC_Gateway_Maksuturva();
 
 		_log("WIDGET : " . $gateway->get_option( 'partpayment_widget'));
-		
-		if ($gateway->get_option( 'partpayment_widget')) {
+
+		if ($gateway->get_option( 'partpayment_widget')==="yes") {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
 			if (is_product() && isset($price) && isset($product)) {
-				$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
+				$widgetHtml = "<script src=\"https://www.henet.fi/images/partPaymentTest.js\" class=\"svea-pp-widget-part-payment\""
 					. " data-sellerid=\"" . $widgetSellerId . "\"" 
 					. " data-price=\"" . $product->get_price() . "\""
 					. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
