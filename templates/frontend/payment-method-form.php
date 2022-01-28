@@ -46,7 +46,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
 				<?php
 				// show logo only for Invoice and Estonia payment method
-				if (!empty($payment_method['code']) && (str_contains($payment_method['code'], "Svea_Invoice") || str_contains($payment_method['code'], "Svea_Estonia")) ) {
+				if (!empty($payment_method['code']) && !(strpos($payment_method['code'], "Svea_Invoice")===false && strpos($payment_method['code'], "Svea_Estonia")===false) ) {
 				?>
 				<img
 					alt="<?php echo $payment_method['displayname']; ?>"
