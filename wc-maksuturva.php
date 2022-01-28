@@ -228,12 +228,14 @@ class WC_Maksuturva {
 			if (is_product() && isset($price) && isset($product)) {
 				$widgetHtml = "<script src=\"https://www.henet.fi/images/partPaymentTest.js\" class=\"svea-pp-widget-part-payment\""
 					. " data-sellerid=\"" . $widgetSellerId . "\"" 
-					. " data-price=\"" . $product->get_price() . "\""
+					. " data-locale=\"fi\""
+					. " data-price=\"" . $product->get_price() . "\"></script>";
+					/*
 					. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
 					. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
 					. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
 					. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
-
+					*/
 				$priceHtml = $price . "<br />" . $widgetHtml;
 				return $priceHtml;
 			}
