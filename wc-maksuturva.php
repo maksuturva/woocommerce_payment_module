@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.1.15';
+	const VERSION = '2.1.16';
 
 	/**
 	 * Plugin DB version.
@@ -207,8 +207,7 @@ class WC_Maksuturva {
 			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 
-			// Uncomment the filter below to enable the part payment widget. Don't forget to edit widgetSellerId below.
-			// add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
+			add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
@@ -218,6 +217,8 @@ class WC_Maksuturva {
 	 * Svea Part Payment injection next to the price
 	 */ 
 	public function svea_add_part_payment_widget( $price, $product ) {
+		_log("WIDGET SELLERID: " . get_option( 'maksuturva_sellerid' ));
+		
 		if (is_product() && isset($price) && isset($product)) {
 			$widgetSellerId = "ABCDEFG"; // edit this to use your production seller id
 			$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
