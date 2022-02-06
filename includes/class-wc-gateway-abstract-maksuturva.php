@@ -879,6 +879,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * @throws WC_Gateway_Maksuturva_Exception If curl not found, or failure to communicate with Svea.
 	 */
 	public function status_query( $data = array() ) {
+		error_log("########## Svea Status Query: " . $this->payment_data['pmt_sellerid'] . " " . $this->payment_data['pmt_id']);
 		if ( ! function_exists( 'curl_init' ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'cURL is needed in order to communicate with the maksuturva server. Check your PHP installation.',
