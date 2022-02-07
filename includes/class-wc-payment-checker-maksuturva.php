@@ -214,8 +214,8 @@ class WC_Payment_Checker_Maksuturva {
 		$now_time = strtotime(date('Y-m-d H:i:s'));
 
 		$create_diff = $now_time - strtotime($payment_date_added);
-		/* if there is no 'updated date', so do status query */
-		if (is_null($payment_date_updated)) {
+		/* if there is no 'updated date', so do status query if order is created max 7 days ago */
+		if (is_null($payment_date_updated) && $this->in_range($create_diff, 0, 168*3600)) {
 			// _log("DEBUG No 'updated date'. Is_time_to_check " .  $payment_date_added . " is true.");
 			return true;
 		}
