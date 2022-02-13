@@ -37,6 +37,10 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.17 - 2022-02-13
+* Changed, the activated part payment widget is visible only when the product price is equal or greater than 50.00
+* Changed, status query is skipped if the order is older than 7 days
+
 ### 2.1.16
 * Changed Pivo and Siirto to Card Payments
 * Added Svea Part Payment widget configuration switch to the admin page

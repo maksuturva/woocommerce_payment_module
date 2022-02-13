@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.1.16  
+ * Version:     2.1.17  
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
  * Text Domain: wc-maksuturva
@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.1.16';
+	const VERSION = '2.1.17';
 
 	/**
 	 * Plugin DB version.
@@ -224,21 +224,24 @@ class WC_Maksuturva {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
 			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
-				$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
-					. " data-sellerid=\"" . $widgetSellerId . "\"" 
-					. " data-locale=\"fi\""
-					. " data-price=\"" . $product->get_price() . "\"></script>";
-					/*
-					. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
-					. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
-					. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
-					. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
-					*/
-				$priceHtml = $price . "<br />" . $widgetHtml;
-				return $priceHtml;
+				$floatPrice = floatval($product->get_price())
+				if ($floatPrice && $floatPrice>=50.00) {
+					$widgetHtml = "<script src=\"https://henet.fi/images/partPayment.js\" class=\"svea-pp-widget-part-payment\""
+						. " data-sellerid=\"" . $widgetSellerId . "\"" 
+						. " data-locale=\"fi\""
+						. " data-price=\"" . $product->get_price() . "\"></script>";
+						/*
+						. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
+						. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
+						. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
+						. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
+						*/
+					$priceHtml = $price . "<br />" . $widgetHtml;
+					return $priceHtml;
+				}
 			}
 		}
-
+		// otherwise, return the original html price content
 		return $price;
 	}
 
