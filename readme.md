@@ -5,7 +5,7 @@
 **Tested up to:** 5.9  
 **Stable tag:** 2.1.16   
 **WC requires at least:** 5.0  
-**WC tested up to:** 6.1.1  
+**WC tested up to:** 6.2.0  
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,12 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.17 - 2022-02-13
+* Fixed, recompiled the language localization files
+* Fixed, the part payment widget locale
+* Changed, the activated part payment widget is visible only when the product price is equal or greater than 50.00
+* Changed, status query is skipped if the order is older than 7 days
 
 ### 2.1.16
 * Changed Pivo and Siirto to Card Payments

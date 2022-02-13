@@ -100,7 +100,7 @@ class WC_Meta_Box_Maksuturva {
 		 * query current status from Svea Payments if payment is not yet completed
 		 */
 		if ($payment->is_delayed() || $payment->is_pending()) {
-			_log("Payment is pending or delayed... checking status from Svea Payments.");
+			_log("Payment is pending or delayed... requesting the status from Svea Payments.");
 			( new WC_Payment_Checker_Maksuturva() )->check_payment( $payment );
 		}
 
