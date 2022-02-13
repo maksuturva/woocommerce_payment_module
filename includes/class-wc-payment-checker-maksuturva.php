@@ -121,7 +121,7 @@ class WC_Payment_Checker_Maksuturva {
 			 * check time windows for status query
 			 */
 			if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
-				_log("Payment check is skipped for the order " . $payment->get_order_id() . ", because it does not fullfill the time window rules." );
+				_log("Requested payment check is skipped for the order " . $payment->get_order_id() . ", because it's too old or does not fullfill the time window rules." );
 				return;
 			}
 
