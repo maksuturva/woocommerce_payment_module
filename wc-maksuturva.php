@@ -227,7 +227,7 @@ class WC_Maksuturva {
 				$floatPrice = floatval($product->get_price());
 
 				if ($floatPrice && $floatPrice>=50.00) {
-					$widgetHtml = "<script src=\"https://henet.fi/images/partPayment.js\" class=\"svea-pp-widget-part-payment\""
+					$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
 						. " data-sellerid=\"" . $widgetSellerId . "\"" 
 						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
 						. " data-price=\"" . $product->get_price() . "\"></script>";
