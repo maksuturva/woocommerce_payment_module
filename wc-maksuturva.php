@@ -17,7 +17,7 @@
  * Tested up to: 5.9
  * License:      LGPL2.1
  * WC requires at least: 5.0.0
- * WC tested up to: 6.1.1
+ * WC tested up to: 6.2.0
  */
 
 /**
@@ -224,11 +224,12 @@ class WC_Maksuturva {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
 			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
-				$floatPrice = floatval($product->get_price())
+				$floatPrice = floatval($product->get_price());
+
 				if ($floatPrice && $floatPrice>=50.00) {
 					$widgetHtml = "<script src=\"https://henet.fi/images/partPayment.js\" class=\"svea-pp-widget-part-payment\""
 						. " data-sellerid=\"" . $widgetSellerId . "\"" 
-						. " data-locale=\"fi\""
+						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
 						. " data-price=\"" . $product->get_price() . "\"></script>";
 						/*
 						. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
@@ -248,7 +249,7 @@ class WC_Maksuturva {
 	/**
 	 * Add meta box to order page.
 	 *
-	 * Adds the Maksuturva order detail meta box to the order page.
+	 * Adds the Svea Payments order detail meta box to the order page.
 	 *
 	 * @since 2.0.0
 	 */
