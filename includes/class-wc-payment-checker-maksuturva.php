@@ -227,9 +227,6 @@ class WC_Payment_Checker_Maksuturva {
 		if ($this->in_range($create_diff, 0, 2*3600) && $update_diff > 600) {
 			$checkrule = 1;
 		}
-		if ($this->in_range($create_diff, 0, 2*3600) && $update_diff > 600) {
-			$checkrule = 2;
-		} 
 		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2 * 3600) {
 			$checkrule = 3;
 		} 
