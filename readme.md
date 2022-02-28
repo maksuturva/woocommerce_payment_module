@@ -58,7 +58,6 @@ written for Svea Payments Oy
 * Fixed the payment method listing when only one payment method is available
 
 ### 2.1.12
-* Fixed status query check to skip orders more than 7 days old from creation date
 * Changed to skip status query check when in sandbox mode
 
 ### 2.1.11
