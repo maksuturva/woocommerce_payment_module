@@ -178,10 +178,13 @@ class WC_Payment_Checker_Maksuturva {
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
-						// The payment status check failed, update date_update
 						$payment->update();
-						_log("Payment for order " . $payment->get_order_id() . " check failed.");
+						_log("Payment check for order " . $payment->get_order_id() . " failed, because status is not found. ");
+						break;
+
+					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
+						$payment->update();
+						_log("Payment query for order " . $payment->get_order_id() . " failed.");
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
@@ -190,7 +193,7 @@ class WC_Payment_Checker_Maksuturva {
 					default:
 						// The payment is still waiting for confirmation, update date_update
 						$payment->update();
-						_log("Payment for order " . $payment->get_order_id() . " cannot be confirmed yet and is waiting for a payment.");
+						_log("Payment status for order " . $payment->get_order_id() . " cannot be confirmed yet and is waiting for a payment.");
 						break;
 				}
 			}
