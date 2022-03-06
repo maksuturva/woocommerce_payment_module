@@ -42,10 +42,24 @@ class WC_Payment_Checker_Maksuturva {
 	 */
 	const TABLE_NAME = 'maksuturva_status_query_log';
 
-	/**
-	 * The maximum status query retries for the order 
-	 */
-	const MAXIMUM_QUERY_COUNT = 20;
+	if ( ! function_exists( '_log' ) ) {
+		/**
+		 * Log a message.
+		 *
+		 * Uses the error_log to log messages.
+		 *
+		 * @param string $message The message to log.
+		 *
+		 * @since 2.1.18
+		 */
+		function _log( $message ) {
+			if ( is_array( $message ) || is_object( $message ) ) {
+				error_log('[SVEA PAYMENTS] ' . var_export( $message, true ) );
+			} else {
+				error_log('[SVEA PAYMENTS] ' . $message );
+			}
+		}
+	}
 
 	/**
 	 * Installs the status query log db table.

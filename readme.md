@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.18 - 2022-03-06
+* Changed, more counter and time window checks to the status query to avoid unneccessary queries
+
 ### 2.1.17 - 2022-02-13
 * Fixed, recompiled the language localization files
 * Fixed, the part payment widget locale
