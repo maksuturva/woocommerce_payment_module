@@ -151,9 +151,11 @@ class WC_Payment_Checker_Maksuturva {
 				_log("Order for id " . $payment->get_order_id() . " not found anymore! Cancelling it in the check queue.");
 				WC_Payment_Maksuturva::updateToCancelled($payment->get_order_id());
 			} else {
+				_log("DEBUG1");
 				$response = (new WC_Gateway_Implementation_Maksuturva($gateway, $order))->status_query();
+				_log("DEBUG2");
 				$this->log($payment, $response);
-
+				_log("DEBUG3");
 				switch ($response['pmtq_returncode']) {
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID_DELIVERY:
