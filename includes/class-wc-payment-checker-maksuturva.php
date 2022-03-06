@@ -26,6 +26,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+if ( ! function_exists( '_log' ) ) {
+	/**
+	 * Log a message.
+	 *
+	 * Uses the error_log to log messages.
+	 *
+	 * @param string $message The message to log.
+	 *
+	 * @since 2.1.18
+	 */
+	function _log( $message ) {
+		if ( is_array( $message ) || is_object( $message ) ) {
+			error_log('[SVEA PAYMENTS] ' . var_export( $message, true ) );
+		} else {
+			error_log('[SVEA PAYMENTS] ' . $message );
+		}
+	}
+}
+
 /**
  * Class WC_Payment_Checker_Maksuturva.
  *
@@ -102,9 +121,11 @@ class WC_Payment_Checker_Maksuturva {
 	 */
 	public function check_payment( $payment ) {
 		$response = array();
+		$query_count = 0;
 
 		if (!$payment instanceof WC_Payment_Maksuturva) {
             _log("Not a Svea payment method, skipping status check");
+			return;
         }
 
 		try {
@@ -133,7 +154,7 @@ class WC_Payment_Checker_Maksuturva {
 				WC_Payment_Maksuturva::updateToCancelled($payment->get_order_id());
 			} else {
 				$response = (new WC_Gateway_Implementation_Maksuturva($gateway, $order))->status_query();
-				$this->log($payment, $response);
+				$query_count = $this->log($payment, $response);
 
 				switch ($response['pmtq_returncode']) {
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
@@ -144,6 +165,7 @@ class WC_Payment_Checker_Maksuturva {
 						if (!$gateway->is_order_paid($order)) {
 							$order->payment_complete($payment->get_payment_id());
 						}
+						_log("Payment for order " . $payment->get_order_id() . " is updated to as paid.");
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED:
@@ -154,23 +176,42 @@ class WC_Payment_Checker_Maksuturva {
 						// The payment was canceled in Svea
 						$payment->cancel();
 						$order->cancel_order();
+						_log("Payment for order " . $payment->get_order_id() . " is updated to cancelled status.");
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
+						$payment->update();
+						_log("Payment check for order " . $payment->get_order_id() . " failed, because status is not found. ");
+						break;
+
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
+						$payment->update();
+						_log("Payment query for order " . $payment->get_order_id() . " failed.");
+						break;
+
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID_DELIVERY:
 					default:
-						// The payment is still waiting for confirmation, updaate date_update
+						// The payment is still waiting for confirmation, update date_update
 						$payment->update();
+						_log("Payment status for order " . $payment->get_order_id() . " cannot be confirmed yet and is waiting for a payment.");
 						break;
 				}
 			}
 		} catch (WC_Gateway_Maksuturva_Exception $e) {
-			_log((string) $e);
+			_log("Status query failed for order " . $payment->get_order_id() . " because exception occured: " . $e->getMessage());
+			// update database timestamp and query_count
+			$query_count = $this->log($payment, array("error" => $e->getMessage() ));
 		}
 
+		// if query count for the order exeeds safe limit throw an exception
+		if ($query_count > 30) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 20 retries. This should not happen. ' . 
+				'Please contact Svea Payments.'
+			);
+		}
 		return $response;
 	}
 
@@ -309,5 +350,7 @@ class WC_Payment_Checker_Maksuturva {
 				'date_added'  => date( 'Y-m-d H:i:s' ),
 			) ); // Db call ok.
 		}
+
+		return $query_count;
 	}
 }

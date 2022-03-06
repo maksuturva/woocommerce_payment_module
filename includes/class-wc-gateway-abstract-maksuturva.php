@@ -879,7 +879,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * @throws WC_Gateway_Maksuturva_Exception If curl not found, or failure to communicate with Svea.
 	 */
 	public function status_query( $data = array() ) {
-		//error_log("########## Svea Status Query: " . $this->payment_data['pmt_sellerid'] . " " . $this->payment_data['pmt_id']);
 		if ( ! function_exists( 'curl_init' ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'cURL is needed in order to communicate with the maksuturva server. Check your PHP installation.',
@@ -970,6 +969,15 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'The authenticity of the answer could not be verified. Hashes did not match.',
 				self::EXCEPTION_CODE_HASHES_DONT_MATCH
+			);
+		}
+
+		// Check that pmt_orderid exists in the response
+		if ( empty($parsed_response['pmtq_orderid']) ) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Status query response order id does not exist for the order ' . $this->payment_data['pmt_orderid'] . 
+				'. Unable to verify the response.',
+				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
 
