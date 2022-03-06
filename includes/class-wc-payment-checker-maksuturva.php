@@ -139,11 +139,11 @@ class WC_Payment_Checker_Maksuturva {
 			/**
 			 * check time windows for status query
 			 */
-			if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
+		/*	if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
 				_log("Requested payment check is skipped for the order " . $payment->get_order_id() . ", because it's too old or does not fullfill the time window rules." );
 				return;
 			}
-
+*/
 			/**
 			 * if order is not found anymore, skip payment checks and cancel it it Maksuturva status queue (2.12.2019) 
 			 */
