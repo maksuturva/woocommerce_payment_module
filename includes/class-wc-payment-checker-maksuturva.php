@@ -43,6 +43,11 @@ class WC_Payment_Checker_Maksuturva {
 	const TABLE_NAME = 'maksuturva_status_query_log';
 
 	/**
+	 * The maximum status query retries for the order 
+	 */
+	const MAXIMUM_QUERY_COUNT = 20;
+
+	/**
 	 * Installs the status query log db table.
 	 *
 	 * Installs the DB table for the status query log data.
@@ -168,7 +173,9 @@ class WC_Payment_Checker_Maksuturva {
 				}
 			}
 		} catch (WC_Gateway_Maksuturva_Exception $e) {
-			_log((string) $e);
+			_log("Status query failed because execption occured: " . $e->getMessage());
+			// update database timestamp and query_count
+			$this->log($payment, "{\"error\", \"" . $e->getMessage() . "\"}");
 		}
 
 		return $response;
