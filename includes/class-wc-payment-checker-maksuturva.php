@@ -125,6 +125,7 @@ class WC_Payment_Checker_Maksuturva {
 
 		if (!$payment instanceof WC_Payment_Maksuturva) {
             _log("Not a Svea payment method, skipping status check");
+			return;
         }
 
 		try {
@@ -140,11 +141,11 @@ class WC_Payment_Checker_Maksuturva {
 			/**
 			 * check time windows for status query
 			 */
-		/*	if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
+			if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
 				_log("Requested payment check is skipped for the order " . $payment->get_order_id() . ", because it's too old or does not fullfill the time window rules." );
 				return;
 			}
-*/
+
 			/**
 			 * if order is not found anymore, skip payment checks and cancel it it Maksuturva status queue (2.12.2019) 
 			 */
@@ -205,7 +206,7 @@ class WC_Payment_Checker_Maksuturva {
 		}
 
 		// if query count for the order exeeds safe limit throw an exception
-		if ($query_count > 20) {
+		if ($query_count > 30) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 20 retries. This should not happen. ' . 
 				'Please contact Svea Payments.'
