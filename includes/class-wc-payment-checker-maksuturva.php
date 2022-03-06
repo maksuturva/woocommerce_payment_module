@@ -200,7 +200,7 @@ class WC_Payment_Checker_Maksuturva {
 		} catch (WC_Gateway_Maksuturva_Exception $e) {
 			_log("Status query failed for order " . $payment->get_order_id() . " because exception occured: " . $e->getMessage());
 			// update database timestamp and query_count
-			$this->log($payment, array("{\"error\": \"" . $e->getMessage() . "\"}"));
+			$this->log($payment, array("error" => $e->getMessage() ));
 		}
 
 		return $response;
