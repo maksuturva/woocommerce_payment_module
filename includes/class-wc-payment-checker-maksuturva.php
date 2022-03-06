@@ -208,7 +208,7 @@ class WC_Payment_Checker_Maksuturva {
 		if ($query_count > 20) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 20 retries. This should not happen. ' . 
-				'Please contact Svea Payments.', WC_Gateway_Maksuturva_Exception::EXCEPTION_CODE_DATA_MISMATCH
+				'Please contact Svea Payments.'
 			);
 		}
 		return $response;
