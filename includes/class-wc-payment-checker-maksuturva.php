@@ -121,6 +121,7 @@ class WC_Payment_Checker_Maksuturva {
 	 */
 	public function check_payment( $payment ) {
 		$response = array();
+		$query_count = 0;
 
 		if (!$payment instanceof WC_Payment_Maksuturva) {
             _log("Not a Svea payment method, skipping status check");
@@ -152,7 +153,7 @@ class WC_Payment_Checker_Maksuturva {
 				WC_Payment_Maksuturva::updateToCancelled($payment->get_order_id());
 			} else {
 				$response = (new WC_Gateway_Implementation_Maksuturva($gateway, $order))->status_query();
-				$this->log($payment, $response);
+				$query_count = $this->log($payment, $response);
 
 				switch ($response['pmtq_returncode']) {
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
@@ -200,9 +201,16 @@ class WC_Payment_Checker_Maksuturva {
 		} catch (WC_Gateway_Maksuturva_Exception $e) {
 			_log("Status query failed for order " . $payment->get_order_id() . " because exception occured: " . $e->getMessage());
 			// update database timestamp and query_count
-			$this->log($payment, array("error" => $e->getMessage() ));
+			$query_count = $this->log($payment, array("error" => $e->getMessage() ));
 		}
 
+		// if query count for the order exeeds safe limit throw an exception
+		if ($query_count > 20) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 20 retries. This should not happen. ' . 
+				'Please contact Svea Payments.', self::EXCEPTION_CODE_DATA_MISMATCH
+			);
+		}
 		return $response;
 	}
 
@@ -341,5 +349,7 @@ class WC_Payment_Checker_Maksuturva {
 				'date_added'  => date( 'Y-m-d H:i:s' ),
 			) ); // Db call ok.
 		}
+
+		return $query_count;
 	}
 }
