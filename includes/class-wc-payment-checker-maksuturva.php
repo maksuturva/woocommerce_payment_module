@@ -151,11 +151,9 @@ class WC_Payment_Checker_Maksuturva {
 				_log("Order for id " . $payment->get_order_id() . " not found anymore! Cancelling it in the check queue.");
 				WC_Payment_Maksuturva::updateToCancelled($payment->get_order_id());
 			} else {
-				_log("DEBUG1");
 				$response = (new WC_Gateway_Implementation_Maksuturva($gateway, $order))->status_query();
-				_log("DEBUG2");
 				$this->log($payment, $response);
-				_log("DEBUG3");
+
 				switch ($response['pmtq_returncode']) {
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID_DELIVERY:
@@ -165,6 +163,7 @@ class WC_Payment_Checker_Maksuturva {
 						if (!$gateway->is_order_paid($order)) {
 							$order->payment_complete($payment->get_payment_id());
 						}
+						_log("Payment for order " . $payment->get_order_id() . " is updated to as paid.");
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED:
@@ -175,21 +174,28 @@ class WC_Payment_Checker_Maksuturva {
 						// The payment was canceled in Svea
 						$payment->cancel();
 						$order->cancel_order();
+						_log("Payment for order " . $payment->get_order_id() . " is updated to cancelled status.");
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
+						// The payment status check failed, update date_update
+						$payment->update();
+						_log("Payment for order " . $payment->get_order_id() . " check failed.");
+						break;
+
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID_DELIVERY:
 					default:
-						// The payment is still waiting for confirmation, updaate date_update
+						// The payment is still waiting for confirmation, update date_update
 						$payment->update();
+						_log("Payment for order " . $payment->get_order_id() . " cannot be confirmed yet and is waiting for a payment.");
 						break;
 				}
 			}
 		} catch (WC_Gateway_Maksuturva_Exception $e) {
-			_log("Status query failed because execption occured: " . $e->getMessage());
+			_log("Status query failed for order " . $payment->get_order_id() . " because exception occured: " . $e->getMessage());
 			// update database timestamp and query_count
 			$this->log($payment, "{\"error\", \"" . $e->getMessage() . "\"}");
 		}
