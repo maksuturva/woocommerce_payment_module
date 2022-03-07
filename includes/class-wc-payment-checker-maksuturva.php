@@ -265,15 +265,15 @@ class WC_Payment_Checker_Maksuturva {
 		 * Simplified the rules, 7.11.2021
 		 */
 		$checkrule = 0;
-		if ($this->in_range($create_diff, 0, 2*3600) && $update_diff > 600) {
+		if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 10*60) {
 			$checkrule = 1;
 		}
-		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2 * 3600) {
-			$checkrule = 3;
+		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) {
+			$checkrule = 2;
 		} 
 		// 168 hours = 7 days. No older than 7 days allowed.
 		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) {
-			$checkrule = 4;
+			$checkrule = 3;
 		}
 
 		/*
