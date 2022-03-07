@@ -142,7 +142,7 @@ class WC_Payment_Checker_Maksuturva {
 			 * check time windows for status query
 			 */
 			if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
-				_log("Requested payment check is skipped for the order " . $payment->get_order_id() . ", because it's too old or does not fullfill the time window rules." );
+				_log("Skipped the status query for the order " . $payment->get_order_id() . ", because it does not fullfill the check time window rules yet." );
 				return;
 			}
 
@@ -206,11 +206,10 @@ class WC_Payment_Checker_Maksuturva {
 		}
 
 		// if query count for the order exeeds safe limit throw an exception
-		if ($query_count > 30) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 20 retries. This should not happen. ' . 
-				'Please contact Svea Payments.'
-			);
+		if ($query_count > 40) {
+			_log('Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 40 retries. ' . 
+				'Cancelled the order!');
+			$payment->cancel();
 		}
 		return $response;
 	}
@@ -253,33 +252,26 @@ class WC_Payment_Checker_Maksuturva {
 	protected function is_time_to_check($payment_date_added, $payment_date_updated)
 	{
 		$now_time = strtotime(date('Y-m-d H:i:s'));
-
+		
 		$create_diff = $now_time - strtotime($payment_date_added);
 		/* if there is no 'updated date', so do status query if order is created max 7 days ago */
 		if (is_null($payment_date_updated) && $this->in_range($create_diff, 0, 168*3600)) {
-			// _log("DEBUG No 'updated date'. Is_time_to_check " .  $payment_date_added . " is true.");
 			return true;
 		}
 		$update_diff = $now_time - strtotime($payment_date_updated);
-		/***
-		 * Simplified the rules, 7.11.2021
-		 */
+
 		$checkrule = 0;
-		if ($this->in_range($create_diff, 0, 2*3600) && $update_diff > 600) {
+		if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) {
 			$checkrule = 1;
 		}
-		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2 * 3600) {
-			$checkrule = 3;
+		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) {
+			$checkrule = 2;
 		} 
 		// 168 hours = 7 days. No older than 7 days allowed.
 		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) {
-			$checkrule = 4;
+			$checkrule = 3;
 		}
 
-		/*
-		_log("DEBUG Check payment with " . $payment_date_added . ", updated " . $payment_date_updated . 
-			" result rule is " . $checkrule );
-		*/
 		if ($checkrule>0)
 			return true;
 		else
