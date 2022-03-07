@@ -206,8 +206,8 @@ class WC_Payment_Checker_Maksuturva {
 		}
 
 		// if query count for the order exeeds safe limit throw an exception
-		if ($query_count > 30) {
-			_log('Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 30 retries. ' . 
+		if ($query_count > 40) {
+			_log('Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 40 retries. ' . 
 				'Cancelled the order!');
 			$payment->cancel();
 		}
