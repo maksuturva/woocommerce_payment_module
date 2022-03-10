@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 5.9  
-**Stable tag:** 2.1.16   
+**Stable tag:** 2.1.18   
 **WC requires at least:** 5.0  
-**WC tested up to:** 6.2.2  
+**WC tested up to:** 6.3.1  
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -37,7 +37,8 @@ written for Svea Payments Oy
 
 ## Changelog
 
-### 2.1.19
+### 2.1.19 - 2022-03-10
+* Fixed, the admin panel crashed if there was no additional tax classes available
 
 ### 2.1.18 - 2022-03-06
 * Changed, more counter and time window checks to the status query to avoid unneccessary queries
