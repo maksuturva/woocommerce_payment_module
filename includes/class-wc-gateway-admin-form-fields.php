@@ -222,15 +222,14 @@ class WC_Gateway_Admin_Form_Fields {
 	}
 
 	public function get_tax_class_options() {
-
 		foreach (WC_Tax::get_tax_classes() as $tax_class) {
 			$tax_classes[sanitize_title( $tax_class )] = $tax_class;
 		}
-
+		if (!isset($tax_classes) || empty($tax_classes)) {
+			$tax_classes = array(); 
+		}
 		$tax_classes = $tax_classes + ['' => __( 'Standard', 'woocommerce' )];
-
 		asort($tax_classes);
-
 		return $tax_classes;
 	}
 

@@ -37,6 +37,8 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.19
+
 ### 2.1.18 - 2022-03-06
 * Changed, more counter and time window checks to the status query to avoid unneccessary queries
 
