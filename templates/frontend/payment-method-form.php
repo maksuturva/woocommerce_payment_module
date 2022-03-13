@@ -61,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					}
 				}
 				if ($handling_costs_visible) {
-					echo "<br />"
+					echo "<br />";
 				}	
 			?>
 			<input
