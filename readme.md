@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.20 - 2022-03-13
+* Fixed the handling fee display in the checkout payment selection page
+
 ### 2.1.19 - 2022-03-10
 * Fixed, the admin panel crashed if there was no additional tax classes available
 
