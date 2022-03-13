@@ -105,12 +105,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 	#payment .payment_methods li .svea-payment-method-select .handling-cost-amount {
 		font-size: 0.8em;
-		margin-bottom: 0.3em;
-		margin-left: 0.8em;
-		position: absolute;
-		left: 50%;
+		margin-bottom: 0.1em;
+		margin-top: 0.1em;
 		text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
-		bottom: 0;
 	}
 
 	#payment .payment_methods li .svea-payment-method-select img {	

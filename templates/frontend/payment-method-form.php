@@ -42,7 +42,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div>
 	<?php
-		$handling_costs_visible = false; 
 		foreach ( $payment_methods as $payment_method ) { 
 	?>
 		<div class="svea-payment-method-select" style="clear: both;">
@@ -56,13 +55,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 				foreach ( $payment_method_handling_costs as $handling_cost ) {
 					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
 						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . $currency_symbol . "</div>";
-						$handling_costs_visible = true;
 						break;
 					}
 				}
-				if ($handling_costs_visible) {
-					echo "<br />";
-				}	
 			?>
 			<input
 				class="input-radio svea-payment-method-select-radio"
@@ -110,12 +105,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	#payment .payment_methods li .svea-payment-method-select .handling-cost-amount {
 		font-size: 0.8em;
-		margin-bottom: 0.3em;
-		margin-left: 0.8em;
-		position: absolute;
-		left: 50%;
+		margin-bottom: 0.1em;
+		margin-top: 0.1em;
 		text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
-		bottom: 0;
 	}
 
 	#payment .payment_methods li .svea-payment-method-select img {
