@@ -97,7 +97,7 @@ class WC_Payment_Checker_Maksuturva {
 	 *
 	 * @since 2.0.5
 	 */
-	private function truncate_table() {
+	private static function truncate_table() {
 		global $wpdb;
 		$tbl = $wpdb->prefix . self::TABLE_NAME;
 
