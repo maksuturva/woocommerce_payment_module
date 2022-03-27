@@ -38,7 +38,7 @@ written for Svea Payments Oy
 ## Changelog
 
 ### 2.1.21 - 2022-03-27
-* Fixed the database truncate function call (#38) when upgrading from very old version
+* Fixed the database truncate function call (#38) when upgrading from a very old version
 
 ### 2.1.20 - 2022-03-13
 * Fixed the handling fee display in the checkout payment selection page
