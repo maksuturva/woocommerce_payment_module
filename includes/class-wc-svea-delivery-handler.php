@@ -135,7 +135,7 @@ class WC_Svea_Delivery_Handler {
 			"pkg_version" => "0002",
 			"pkg_sellerid" => $this->seller_id,
 			"pkg_id" => $payment->get_payment_id(),
-			"pkg_deliverymethodid" => "UNRDL",
+			"pkg_deliverymethodid" => "ODLVR",
 			"pkg_adddeliveryinfo" => "Capture from WooCommerce",
 			"pkg_allsent" => "Y",
 			"pkg_resptype" => "XML",
