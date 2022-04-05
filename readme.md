@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 5.9  
-**Stable tag:** 2.1.21   
+**Stable tag:** 2.1.22   
 **WC requires at least:** 5.0  
 **WC tested up to:** 6.3.1  
 **License:** LGPL v. 2.1 or later  
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.22 - 2022-04-05
+* Changed Delivery info code from UNRDL -> ODLVR
 
 ### 2.1.21 - 2022-03-27
 * Fixed the database truncate function call (#38) when upgrading from a very old version
