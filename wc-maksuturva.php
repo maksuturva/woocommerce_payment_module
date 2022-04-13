@@ -383,14 +383,18 @@ class WC_Maksuturva {
 		}
 		$file = $template . '.php';
 
-		if ( ! empty( $domain ) ) {
-			$path = $this->plugin_dir . '/templates/' . $domain . '/' . $file;
-		} else {
-			$path = $this->plugin_dir . '/templates/' . $file;
-		}
+		$path = $this->plugin_dir . '/templates/' . (!empty($domain) ? $domain . '/' : '') . $file;
 
 		if ( file_exists( $path ) ) {
 			require_once( $path );
+		}
+
+		/**
+		 * Fetch styles & scripts from separate file
+		 */
+		$additional_file_path = $this->plugin_dir . '/templates/' . (!empty($domain) ? $domain . '/' : '') . 'payment-method-form-additional.php';
+		if ( file_exists( $additional_file_path ) ) {
+			require_once( $additional_file_path );
 		}
 	}
 
