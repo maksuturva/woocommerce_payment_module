@@ -61,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	#payment .payment_methods li .svea-payment-method-select {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
+		justify-content: flex-start;
 		grid-gap: 0;
 	}
 
