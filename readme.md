@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.23 - 2022-04-21
+* Quantities with decimals fixed to use comma as a separator
+
 ### 2.1.22 - 2022-04-05
 * Changed Delivery info code from UNRDL -> ODLVR
 

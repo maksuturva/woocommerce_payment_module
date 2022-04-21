@@ -64,6 +64,17 @@ class WC_Utils_Maksuturva {
 	}
 
 	/**
+	 * Filters a quantity
+	 * 
+	 * If quantity has a decimal delimiter, use comma 
+	 * 
+	 * @since 2.1.23
+	 */
+	public static function filter_quantity( $qty ) {
+		return str_replace( '.', ',', $qty);
+	}
+
+	/**
 	 * Helper function to filter out problematic characters.
 	 *
 	 * So far only quotation marks have been needed to filter out.
