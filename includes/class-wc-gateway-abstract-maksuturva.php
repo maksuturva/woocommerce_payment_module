@@ -374,7 +374,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	private static $row_mandatory_data = array(
 		'pmt_row_name',                  // Alphanumeric  max-length: 40    -.
 		'pmt_row_desc',                  // Alphanumeric  max-length: 1000  min-length: 1.
-		'pmt_row_quantity',              // Numeric       max-length: 8     min-length: 1.
+		'pmt_row_quantity',              // Numeric       max-length: 10     min-length: 1.
 		'pmt_row_deliverydate',          // Alphanumeric  max-length: 10    min-length: 10  dd.MM.yyyy.
 		'pmt_row_price_gross',           // Alphanumeric  max-length: 17    min-length: 4   n,nn.
 		'pmt_row_price_net',             // Alphanumeric  max-length: 17    min-length: 4   n,nn.
@@ -478,7 +478,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		'pmt_rows'                    => array( 1, 4 ),
 		'pmt_row_name'                => array( 1, 40 ),
 		'pmt_row_desc'                => array( 1, 1000 ),
-		'pmt_row_quantity'            => array( 1, 8 ),
+		'pmt_row_quantity'            => array( 1, 10 ),
 		'pmt_row_deliverydate'        => array( 10, 10 ),
 		'pmt_row_price_gross'         => array( 4, 17 ),
 		'pmt_row_price_net'           => array( 4, 17 ),
