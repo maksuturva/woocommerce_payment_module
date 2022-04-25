@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.1.24 - 2002-04-25
+* Fixed the handling fee display in the checkout payment selection page PR#40
+
 ### 2.1.23 - 2022-04-21
 * Quantities with decimals fixed to use comma as a separator
 
