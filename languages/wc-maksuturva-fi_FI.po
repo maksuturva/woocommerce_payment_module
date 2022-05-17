@@ -144,11 +144,11 @@ msgid "Prefix for order identifiers. Can be used to generate unique payment ids 
 msgstr "Maksun etuosa, joka lisätään maksutapahtuman numeroon. Voidaan käyttää yksilöimään maksutapahtumat esimerkiksi Woocommercen uudelleenasennuksen jälkeen, mikäli Svea palauttaa virheitä päällekkäisistä tilausnumeroista."
 
 #: includes/class-wc-gateway-admin-form-fields.php:152
-msgid "Send delivery information on status change to status"
+msgid "Send delivery confirmation on status change to status"
 msgstr "Lähetä toimitustiedot kun maksun tila muuttuu tilaan"
 
 #: includes/class-wc-gateway-admin-form-fields.php:155
-msgid "Send delivery information to Svea when this status is selected."
+msgid "Send delivery confirmation to Svea when this status is selected."
 msgstr "Lähetä toimitustiedot Svealle kun tilauksen tila muuttuu tässä määriteltyyn tilaan."
 
 #: includes/class-wc-gateway-admin-form-fields.php:160

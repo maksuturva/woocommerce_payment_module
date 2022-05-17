@@ -142,7 +142,7 @@ msgid "Prefix for order identifiers. Can be used to generate unique payment ids 
 msgstr ""
 
 #: includes/class-wc-gateway-admin-form-fields.php:152
-msgid "Send delivery information on status change to status"
+msgid "Send delivery confirmation on status change to status"
 msgstr ""
 
 #: includes/class-wc-gateway-admin-form-fields.php:155

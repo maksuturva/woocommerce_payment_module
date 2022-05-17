@@ -148,10 +148,10 @@ class WC_Gateway_Admin_Form_Fields {
 			],
 			'maksuturva_send_delivery_information_status' => [
 				'type'        => 'select',
-				'title'       => __( 'Send delivery information on status change to status', $this->gateway->td ),
+				'title'       => __( 'Send delivery confirmation on status change to status', $this->gateway->td ),
 				'desc_tip'    => true,
 				'default'     => 'none',
-				'description' => __( 'Send delivery information to Svea when this status is selected.', $this->gateway->td ),
+				'description' => __( 'Send delivery confirmation to Svea when this status is selected.', $this->gateway->td ),
 				'options'     => ['' => '-'] + wc_get_order_statuses()
 			],
 			'sandbox' => [
