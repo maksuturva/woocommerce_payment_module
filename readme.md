@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 5.9  
-**Stable tag:** 2.1.22   
+**Stable tag:** 2.1.24   
 **WC requires at least:** 5.0  
-**WC tested up to:** 6.3.1  
+**WC tested up to:** 6.4.1  
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,12 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.1.24 - 2002-04-25
+* Fixed the handling fee display in the checkout payment selection page PR#40
+
+### 2.1.23 - 2022-04-21
+* Quantities with decimals fixed to use comma as a separator
 
 ### 2.1.22 - 2022-04-05
 * Changed Delivery info code from UNRDL -> ODLVR
