@@ -154,6 +154,15 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Send delivery confirmation to Svea when this status is selected.', $this->gateway->td ),
 				'options'     => ['' => '-'] + wc_get_order_statuses()
 			],
+			'maksuturva_send_delivery_for_specific_payments' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Send delivery confirmation only for specific payment methods', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, ' .
+										'the selected delivery confirmation is sent on all orders paid with any payment method. ' .
+										'If the payment method codes are added, the selected delivery confirmation is sent only on ' .
+										'orders paid with specific payment methods.', $this->gateway->td )
+			],
 			'sandbox' => [
 				'type'        => 'checkbox',
 				'title'       => __( 'Sandbox mode', $this->gateway->td ),

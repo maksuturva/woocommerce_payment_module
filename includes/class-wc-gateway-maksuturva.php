@@ -917,6 +917,24 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$sendDeliveryInformationToSveaStatus = preg_replace( '/^wc-/', '', $option );
 
 		if ( $new_status === $sendDeliveryInformationToSveaStatus ) {
+			$selectedPayments = $this->get_option(
+				'maksuturva_send_delivery_for_specific_payments'
+			);
+
+			if (!empty($selectedPayments)) {
+				$selectedPaymentsArray = explode(',', str_ireplace(' ', '', $selectedPayments));
+				$order = wc_get_order($order_id);
+
+				if (!empty($order) && $order->get_payment_method() !== null) {
+					$payment = new WC_Payment_Maksuturva($order->get_id());
+					$paymentMethod = $payment->get_payment_method();
+
+					if (!empty($paymentMethod) && !in_array($paymentMethod, $selectedPaymentsArray)) {
+						return;
+					}
+				}
+			}
+
 			$deliveryHandler = new WC_Svea_Delivery_Handler( $this, $order_id );
 			$deliveryHandler->send_delivery_info();
 		}
