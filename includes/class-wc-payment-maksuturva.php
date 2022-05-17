@@ -120,6 +120,13 @@ class WC_Payment_Maksuturva {
 	protected $payment_id;
 
 	/**
+	 * Payment method.
+	 *
+	 * @var string $payment_method The Svea payment method.
+	 */
+	protected $payment_method;
+
+	/**
 	 * Payment status.
 	 *
 	 * @var string $status The status of the payment.
@@ -186,6 +193,7 @@ class WC_Payment_Maksuturva {
 		$sql = 'CREATE TABLE `' . $tbl . '` (
 		`order_id` int(10) unsigned NOT NULL,
 		`payment_id` varchar(36) NOT NULL,
+		`payment_method` varchar(36) NULL DEFAULT NULL,
 		`status` varchar(36) NULL DEFAULT NULL,
 		`data_sent` LONGBLOB NULL DEFAULT NULL,
 		`data_received` LONGBLOB NULL DEFAULT NULL,
@@ -212,13 +220,14 @@ class WC_Payment_Maksuturva {
 		global $wpdb;
 
 		$result = $wpdb->replace( $wpdb->prefix . self::TABLE_NAME, array(
-			'order_id'      => (int) $data['order_id'],
-			'payment_id'    => $data['payment_id'],
-			'status'        => $data['status'],
-			'data_sent'     => wp_json_encode( $data['data_sent'] ),
-			'data_received' => wp_json_encode( $data['data_received'] ),
-			'date_added'    => date( 'Y-m-d H:i:s' ),
-			'date_updated'  => null,
+			'order_id'     		=> (int) $data['order_id'],
+			'payment_id'    	=> $data['payment_id'],
+			'payment_method'	=> $data['payment_method'],
+			'status'        	=> $data['status'],
+			'data_sent'     	=> wp_json_encode( $data['data_sent'] ),
+			'data_received' 	=> wp_json_encode( $data['data_received'] ),
+			'date_added'    	=> date( 'Y-m-d H:i:s' ),
+			'date_updated'  	=> null,
 		) ); // Db call ok.
 
 		if ( false === $result ) {
@@ -301,6 +310,19 @@ class WC_Payment_Maksuturva {
 	 */
 	public function get_payment_id() {
 		return $this->payment_id;
+	}
+
+	/**
+	 * Get payment method.
+	 *
+	 * Returns the payment method as registered in Svea.
+	 *
+	 * @since 2.0.6
+	 *
+	 * @return string
+	 */
+	public function get_payment_method() {
+		return $this->payment_method;
 	}
 
 	/**
@@ -539,7 +561,7 @@ class WC_Payment_Maksuturva {
 	protected function load( $order_id ) {
 		global $wpdb;
 
-		$query = $wpdb->prepare( 'SELECT order_id, payment_id, status, data_sent, data_received, date_added, date_updated FROM `'
+		$query = $wpdb->prepare( 'SELECT order_id, payment_id, payment_method, status, data_sent, data_received, date_added, date_updated FROM `'
 		. $wpdb->prefix . self::TABLE_NAME . '` WHERE `order_id` = %d LIMIT 1', $order_id );
 
 		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
@@ -548,13 +570,14 @@ class WC_Payment_Maksuturva {
 			throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payment!' );
 		}
 
-		$this->order_id      = (int) $data[0]->order_id;
-		$this->payment_id    = $data[0]->payment_id;
-		$this->status        = $data[0]->status;
-		$this->data_sent     = (array) json_decode( $data[0]->data_sent );
-		$this->data_received = (array) json_decode( $data[0]->data_received );
-		$this->date_added    = $data[0]->date_added;
-		$this->date_updated  = $data[0]->date_updated;
+		$this->order_id      	= (int) $data[0]->order_id;
+		$this->payment_id    	= $data[0]->payment_id;
+		$this->payment_method	= $data[0]->payment_method;
+		$this->status        	= $data[0]->status;
+		$this->data_sent     	= (array) json_decode( $data[0]->data_sent );
+		$this->data_received 	= (array) json_decode( $data[0]->data_received );
+		$this->date_added    	= $data[0]->date_added;
+		$this->date_updated  	= $data[0]->date_updated;
 	}
 
 	/**

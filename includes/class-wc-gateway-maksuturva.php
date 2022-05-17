@@ -641,14 +641,16 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$order_handler       = new WC_Order_Compatibility_Handler( $order );
 		$payment_gateway_url = $gateway->get_payment_url();
 		$data                = $gateway->get_field_array();
+		$payment_method		 = isset($data['pmt_paymentmethod']) ? $data['pmt_paymentmethod'] : '';
 
 		// Create the payment for Svea.
 		WC_Payment_Maksuturva::create( array(
-			'order_id'      => $order_handler->get_id(),
-			'payment_id'    => $data['pmt_id'],
-			'data_sent'     => $data,
-			'data_received' => array(),
-			'status'        => WC_Payment_Maksuturva::STATUS_PENDING,
+			'order_id'      	=> $order_handler->get_id(),
+			'payment_id'    	=> $data['pmt_id'],
+			'payment_method'	=> $payment_method,
+			'data_sent'     	=> $data,
+			'data_received' 	=> array(),
+			'status'        	=> WC_Payment_Maksuturva::STATUS_PENDING,
 		) );
 
 		$this->render( 'maksuturva-form', 'frontend',
