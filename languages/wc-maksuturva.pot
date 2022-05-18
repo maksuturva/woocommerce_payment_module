@@ -149,6 +149,14 @@ msgstr ""
 msgid "Send delivery information to Svea when this status is selected."
 msgstr ""
 
+#: includes/class-wc-gateway-admin-form-fields.php:159
+msgid "Send delivery confirmation only for specific payment methods"
+msgstr ""
+
+#: includes/class-wc-gateway-admin-form-fields.php:161
+msgid "Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, the selected delivery confirmation is sent on all orders paid with any payment method. If the payment method codes are added, the selected delivery confirmation is sent only on orders paid with specific payment methods."
+msgstr ""
+
 #: includes/class-wc-gateway-admin-form-fields.php:160
 msgid "Sandbox mode"
 msgstr ""
