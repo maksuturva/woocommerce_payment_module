@@ -295,4 +295,32 @@ class WC_Gateway_Admin_Form_Fields {
 
 		return [];
 	}
+
+	/**
+	 * Hide fields whose features are not available for outbound payments in wp-admin
+	 * 
+	 * @since 2.2.0
+	 */
+	public function toggle_gateway_admin_settings($is_outbound_payment_enabled) {
+		wc_enqueue_js('
+			(function() {			
+				jQuery(function($) {
+					toggle_non_outbound_settings(' . ($is_outbound_payment_enabled ? 'true' : 'false') . ');
+
+					$("body").on("change", "#woocommerce_WC_Gateway_Maksuturva_outbound_payment", function() {
+						toggle_non_outbound_settings(this.checked);
+					});
+
+					function toggle_non_outbound_settings(is_op_enabled)
+					{
+						$("#payment_method_handling_cost_table").closest("tr")
+							.css("display", is_op_enabled ? "none" : "table-row");
+						$("#woocommerce_WC_Gateway_Maksuturva_payment_method_handling_cost_tax_class").closest("tr")
+							.css("display", is_op_enabled ? "none" : "table-row");
+					}
+				});
+			})();
+		');
+	}
+
 }

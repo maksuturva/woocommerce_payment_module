@@ -211,6 +211,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	public function init_form_fields() {
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
 		$this->form_fields = $gateway_admin_form_fields->as_array();
+		$gateway_admin_form_fields->toggle_gateway_admin_settings($this->is_outbound_payment_enabled());
 	}
 
 	/**
