@@ -337,6 +337,10 @@ msgstr "Peru tilaus"
 msgid "Pay for order"
 msgstr "Maksa tilaus"
 
+#: templates/frontend/payment-method-outbound-form.php:76
+msgid "Pay with Svea"
+msgstr "Siirry maksamaan"
+
 #: wc-maksuturva.php:197
 msgid "Svea order details"
 msgstr "Svean tilauksen tiedot"

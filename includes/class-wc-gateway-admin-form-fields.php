@@ -86,6 +86,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'css'         => 'width: 25em;',
 			],
+			'outbound_payment' => [
+				'type'    		=> 'checkbox',
+				'title'   		=> __( 'Redirect to Svea\'s Payment Method Selection Page', $this->gateway->td ),
+				'label'   		=> __( 'The buyer is redirected to the Svea Payments site where they choose the payment method', $this->gateway->td ),
+				'default' 		=> 'no',
+				'desc_tip'    	=> true,
+				'description'	=> __( 'If enabling this, visitors will see a single Svea Payments-button that sends them to the SVEA payment gateway', $this->gateway->td )
+			],
 			'payment_method_handling_cost_table' => [
 				'add_new_button_text'              => __( 'Add new', $this->gateway->td ),
 				'amount_column_title'              => __( 'Handling cost amount', $this->gateway->td ),
