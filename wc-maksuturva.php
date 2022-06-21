@@ -228,7 +228,7 @@ class WC_Maksuturva {
 
 				if ($floatPrice && $floatPrice>=50.00) {
 					$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
-						. " data-maksuturva-host=\"https://test1.maksuturva.fi\"" 
+						// . " data-maksuturva-host=\"https://test1.maksuturva.fi\"" 
 						. " data-sellerid=\"" . $widgetSellerId . "\"" 
 						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
 						. " data-price=\"" . floatval(wc_get_price_including_tax( $product )) . "\"></script>";
