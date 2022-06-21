@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.1.24  
+ * Version:     2.1.25  
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
  * Text Domain: wc-maksuturva
@@ -17,7 +17,7 @@
  * Tested up to: 6.0
  * License:      LGPL2.1
  * WC requires at least: 5.0.0
- * WC tested up to: 6.5.1
+ * WC tested up to: 6.6.0
  */
 
 /**
@@ -224,13 +224,14 @@ class WC_Maksuturva {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
 			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
-				$floatPrice = floatval($product->get_price());
+				$floatPrice = floatval(wc_get_price_including_tax( $product ));
 
 				if ($floatPrice && $floatPrice>=50.00) {
 					$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
+						. " data-maksuturva-host=\"https://test1.maksuturva.fi\"" 
 						. " data-sellerid=\"" . $widgetSellerId . "\"" 
 						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
-						. " data-price=\"" . $product->get_price() . "\"></script>";
+						. " data-price=\"" . floatval(wc_get_price_including_tax( $product )) . "\"></script>";
 						/*
 						. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
 						. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""

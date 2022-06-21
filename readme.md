@@ -37,7 +37,10 @@ written for Svea Payments Oy
 
 ## Changelog
 
-### 2.1.24 - 2002-04-25
+### 2.1.25 - 2022-06-21
+* Fixed the part payment widget to work with included or excluded tax catalog prices
+
+### 2.1.24 - 2022-04-25
 * Fixed the handling fee display in the checkout payment selection page PR#40
 
 ### 2.1.23 - 2022-04-21
