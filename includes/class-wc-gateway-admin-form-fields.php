@@ -86,6 +86,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'css'         => 'width: 25em;',
 			],
+			'outbound_payment' => [
+				'type'    		=> 'checkbox',
+				'title'   		=> __( 'Redirect to Svea\'s Payment Method Selection Page', $this->gateway->td ),
+				'label'   		=> __( 'The buyer is redirected to the Svea Payments site where they choose the payment method', $this->gateway->td ),
+				'default' 		=> 'no',
+				'desc_tip'    	=> true,
+				'description'	=> __( 'If enabling this, visitors will see a single Svea Payments-button that sends them to the SVEA payment gateway', $this->gateway->td )
+			],
 			'payment_method_handling_cost_table' => [
 				'add_new_button_text'              => __( 'Add new', $this->gateway->td ),
 				'amount_column_title'              => __( 'Handling cost amount', $this->gateway->td ),
@@ -148,11 +156,20 @@ class WC_Gateway_Admin_Form_Fields {
 			],
 			'maksuturva_send_delivery_information_status' => [
 				'type'        => 'select',
-				'title'       => __( 'Send delivery information on status change to status', $this->gateway->td ),
+				'title'       => __( 'Send delivery confirmation on status change to status', $this->gateway->td ),
 				'desc_tip'    => true,
 				'default'     => 'none',
-				'description' => __( 'Send delivery information to Svea when this status is selected.', $this->gateway->td ),
+				'description' => __( 'Send delivery confirmation to Svea when this status is selected.', $this->gateway->td ),
 				'options'     => ['' => '-'] + wc_get_order_statuses()
+			],
+			'maksuturva_send_delivery_for_specific_payments' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Send delivery confirmation only for specific payment methods', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, ' .
+										'the selected delivery confirmation is sent on all orders paid with any payment method. ' .
+										'If the payment method codes are added, the selected delivery confirmation is sent only on ' .
+										'orders paid with specific payment methods.', $this->gateway->td )
 			],
 			'sandbox' => [
 				'type'        => 'checkbox',
@@ -278,4 +295,32 @@ class WC_Gateway_Admin_Form_Fields {
 
 		return [];
 	}
+
+	/**
+	 * Hide fields whose features are not available for outbound payments in wp-admin
+	 * 
+	 * @since 2.2.0
+	 */
+	public function toggle_gateway_admin_settings($is_outbound_payment_enabled) {
+		wc_enqueue_js('
+			(function() {			
+				jQuery(function($) {
+					toggle_non_outbound_settings(' . ($is_outbound_payment_enabled ? 'true' : 'false') . ');
+
+					$("body").on("change", "#woocommerce_WC_Gateway_Maksuturva_outbound_payment", function() {
+						toggle_non_outbound_settings(this.checked);
+					});
+
+					function toggle_non_outbound_settings(is_op_enabled)
+					{
+						$("#payment_method_handling_cost_table").closest("tr")
+							.css("display", is_op_enabled ? "none" : "table-row");
+						$("#woocommerce_WC_Gateway_Maksuturva_payment_method_handling_cost_tax_class").closest("tr")
+							.css("display", is_op_enabled ? "none" : "table-row");
+					}
+				});
+			})();
+		');
+	}
+
 }

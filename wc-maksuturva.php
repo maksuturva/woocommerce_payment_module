@@ -85,7 +85,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string DB_VERSION The plugin DB version.
 	 */
-	const DB_VERSION = '2.0.5';
+	const DB_VERSION = '2.0.6';
 
 	/**
 	 * Plugin DB version option name.
@@ -311,6 +311,11 @@ class WC_Maksuturva {
 
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$methods[] = WC_Gateway_Maksuturva::class;
+
+		$main_settings = get_option( 'woocommerce_' . WC_Gateway_Maksuturva::class . '_settings' );
+		if ( isset( $main_settings['outbound_payment'] ) && $main_settings['outbound_payment'] == 'yes' ) {
+			return $methods;
+		}
 
 		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
 		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;

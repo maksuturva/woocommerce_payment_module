@@ -94,23 +94,28 @@ class WC_Payment_Method_Select {
 	 *
 	 * @since 2.1.3
 	 */
-	public function initialize_payment_method_select( $payment_type, $price ) {
+	public function initialize_payment_method_select( $payment_type, $price, $is_outbound_payment_enabled ) {
 
 		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->gateway );
+
+		$form_params = [
+			'currency_symbol' => get_woocommerce_currency_symbol(),
+			'payment_method_handling_costs' => $payment_handling_costs_handler->get_handling_costs_by_payment_method(),
+			'payment_method_select_id' => self::PAYMENT_METHOD_SELECT_ID,
+		];
+
+		if (!$is_outbound_payment_enabled) {
+			$form_params['payment_methods'] = $this->get_payment_type_payment_methods( $payment_type, $price );
+			$form_params['terms'] = [
+				'text' => $this->get_terms_text( $price ),
+				'url' => $this->get_terms_url( $price )
+			];
+		}
 
 		$this->gateway->render(
 			'payment-method-' . $payment_type . '-form',
 			'frontend',
-			[
-				'currency_symbol' => get_woocommerce_currency_symbol(),
-				'payment_method_handling_costs' => $payment_handling_costs_handler->get_handling_costs_by_payment_method(),
-				'payment_method_select_id' => self::PAYMENT_METHOD_SELECT_ID,
-				'payment_methods' => $this->get_payment_type_payment_methods( $payment_type, $price ),
-				'terms' => [
-					'text' => $this->get_terms_text( $price ),
-					'url' => $this->get_terms_url( $price )
-				]
-			]
+			$form_params
 		);
 	}
 
