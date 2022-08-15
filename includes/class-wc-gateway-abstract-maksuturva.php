@@ -468,7 +468,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		'pmt_buyercity'               => array( 1, 40 ),
 		'pmt_buyercountry'            => array( 1, 2 ),
 		'pmt_buyerphone'              => array( 0, 40 ), // Optional.
-		'pmt_buyeremail'              => array( 0, 40 ), // Optional.
+		'pmt_buyeremail'              => array( 0, 320 ), // Optional.
 		'pmt_deliveryname'            => array( 1, 40 ),
 		'pmt_deliveryaddress'         => array( 1, 40 ),
 		'pmt_deliverypostalcode'      => array( 1, 5 ),
