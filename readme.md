@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 6.0  
-**Stable tag:** 2.1.25   
+**Stable tag:** 2.2.0   
 **WC requires at least:** 5.0  
 **WC tested up to:** 6.6.0  
 **License:** LGPL v. 2.1 or later  
@@ -36,6 +36,19 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.2.0 - 2022-08-16
+* MAK-14 Add option to send delivery confirmation only for specific payment methods (#42)
+* SD2Q-5 Modernized look & feel for payment method radio buttons
+* SD2Q-5 Move style & scripts to separate file to avoid duplicate content
+* SD2Q-5 align payment methods w/o handling fee
+* Update translations
+* S2DQ-8 Add payment method to payment class & db
+* SD2Q-8 Add option to send delivery confirmation only for specific payment methods
+* SD2Q-8 Add translations for specific payment delivery notification
+* SD2Q-6 Add outbound payments feature for Svea gateway
+* SD2Q-6 Hide Svea sub-payment methods if outbound payment is enabled
+* SD2Q-6 Hide handling cost settings if outbound payment is enabled
 
 ### 2.1.25 - 2022-06-21
 * Fixed the part payment widget to work with included or excluded tax catalog prices
