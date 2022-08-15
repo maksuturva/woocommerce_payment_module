@@ -97,6 +97,15 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	protected $payment_method_type;
 
 	/**
+	 * The outbound payment indicator
+	 *
+	 * @since 2.2.0
+	 *
+	 * @var boolean
+	 */
+	protected $outbound_payment;
+
+	/**
 	 * WC_Gateway_Maksuturva constructor.
 	 *
 	 * Initializes the gateway, and adds necessary actions for parsing the
@@ -114,6 +123,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$this->description        = $this->get_option( 'description' );
 		$this->method_title       = __( 'Svea', $this->td );
 		$this->method_description = __( 'Take payments via Svea.', $this->td );
+
+		$this->outbound_payment = $this->get_option( 'outbound_payment' );
 
 		$this->notify_url = WC()->api_request_url( WC_Gateway_Maksuturva::class );
 
@@ -156,7 +167,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	public function payment_gateway_disable_empty( $available_gateways ) {
 
 		if ( $this->id === WC_Gateway_Maksuturva::class ) {
-			unset( $available_gateways[$this->id] );
+			if (!$this->is_outbound_payment_enabled()) {
+				unset( $available_gateways[$this->id] );
+			}
+
 			return $available_gateways;
 		}
 
@@ -197,6 +211,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	public function init_form_fields() {
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
 		$this->form_fields = $gateway_admin_form_fields->as_array();
+		$gateway_admin_form_fields->toggle_gateway_admin_settings($this->is_outbound_payment_enabled());
 	}
 
 	/**
@@ -235,14 +250,16 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @since 2.1.3
 	 */
 	public function payment_fields() {
-
-		$payment_method_type = explode( 'WC_Gateway_Svea_', $this->id )[1];
-		$payment_method_type = strtolower( $payment_method_type );
-		$payment_method_type = str_replace( '_', '-', $payment_method_type );
+		if ($this->is_outbound_payment_enabled()) {
+			$payment_method_type = 'outbound';
+		} else {
+			$payment_method_type = str_replace( '_', '-', strtolower( explode( 'WC_Gateway_Svea_', $this->id )[1] ) );
+		}
 
 		return $this->payment_method_select->initialize_payment_method_select(
 			$payment_method_type,
-			WC_Payment_Gateway::get_order_total()
+			WC_Payment_Gateway::get_order_total(),
+			$this->is_outbound_payment_enabled()
 		);
 	}
 
@@ -252,11 +269,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @since 2.1.3
 	 */
 	public function validate_fields() {
+		if (!$this->is_outbound_payment_enabled()) {
+			$valid = $this->payment_method_select->validate_payment_method_select();
 
-		$valid = $this->payment_method_select->validate_payment_method_select();
-
-		if ( !$valid ) {
-			return false;
+			if ( !$valid ) {
+				return false;
+			}
 		}
 
 		return parent::validate_fields();
@@ -516,6 +534,17 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Checks if outbound payments are enabled.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @return string
+	 */
+	public function is_outbound_payment_enabled() {
+		return $this->outbound_payment == 'yes';
+	}
+
+	/**
 	 * Is sandbox.
 	 *
 	 * Checks if the sandbox mode is on.
@@ -611,8 +640,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$url = add_query_arg( 'key', $order_handler->get_order_key(), $url );
 		$url = add_query_arg( 'order-pay', $order_handler->get_id(), $url );
 
-		$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
-		$url = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+		if (!$this->is_outbound_payment_enabled()) {
+			$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
+			$url = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+		}
 
 		return array(
 			'result'   => 'success',
@@ -641,14 +672,16 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$order_handler       = new WC_Order_Compatibility_Handler( $order );
 		$payment_gateway_url = $gateway->get_payment_url();
 		$data                = $gateway->get_field_array();
+		$payment_method		 = isset($data['pmt_paymentmethod']) ? $data['pmt_paymentmethod'] : '';
 
 		// Create the payment for Svea.
 		WC_Payment_Maksuturva::create( array(
-			'order_id'      => $order_handler->get_id(),
-			'payment_id'    => $data['pmt_id'],
-			'data_sent'     => $data,
-			'data_received' => array(),
-			'status'        => WC_Payment_Maksuturva::STATUS_PENDING,
+			'order_id'      	=> $order_handler->get_id(),
+			'payment_id'    	=> $data['pmt_id'],
+			'payment_method'	=> $payment_method,
+			'data_sent'     	=> $data,
+			'data_received' 	=> array(),
+			'status'        	=> WC_Payment_Maksuturva::STATUS_PENDING,
 		) );
 
 		$this->render( 'maksuturva-form', 'frontend',
@@ -915,6 +948,24 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$sendDeliveryInformationToSveaStatus = preg_replace( '/^wc-/', '', $option );
 
 		if ( $new_status === $sendDeliveryInformationToSveaStatus ) {
+			$selectedPayments = $this->get_option(
+				'maksuturva_send_delivery_for_specific_payments'
+			);
+
+			if (!empty($selectedPayments)) {
+				$selectedPaymentsArray = explode(',', str_ireplace(' ', '', $selectedPayments));
+				$order = wc_get_order($order_id);
+
+				if (!empty($order) && $order->get_payment_method() !== null) {
+					$payment = new WC_Payment_Maksuturva($order->get_id());
+					$paymentMethod = $payment->get_payment_method();
+
+					if (!empty($paymentMethod) && !in_array($paymentMethod, $selectedPaymentsArray)) {
+						return;
+					}
+				}
+			}
+
 			$deliveryHandler = new WC_Svea_Delivery_Handler( $this, $order_id );
 			$deliveryHandler->send_delivery_info();
 		}
