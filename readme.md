@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 5.0   
 **Tested up to:** 6.0  
-**Stable tag:** 2.1.26   
+**Stable tag:** 2.2.0
 **WC requires at least:** 5.0  
 **WC tested up to:** 6.8.0  
 **License:** LGPL v. 2.1 or later  
@@ -49,6 +49,7 @@ written for Svea Payments Oy
 * SD2Q-6 (WIP) Add outbound payments feature for Svea gateway
 * SD2Q-6 (WIP) Hide Svea sub-payment methods if outbound payment is enabled
 * SD2Q-6 (WIP) Hide handling cost settings if outbound payment is enabled
+* Changed pmt_buyeremail field length 40 -> 320
 
 ### 2.1.25 - 2022-06-21
 * Fixed the part payment widget to work with included or excluded tax catalog prices
