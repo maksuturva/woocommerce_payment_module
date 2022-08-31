@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.2.1 - 2022-08-31
+* Changed the locale handling. For payment, use get_user_locale() instead get_locale()
+
 ### 2.2.0 - 2022-08-16
 * MAK-14 Add option to send delivery confirmation only for specific payment methods (#42)
 * SD2Q-5 Modernized look & feel for payment method radio buttons

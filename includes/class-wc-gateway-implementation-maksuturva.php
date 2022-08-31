@@ -489,7 +489,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return string
 	 */
 	private function get_locale() {
-		$locale = get_locale();
+		$locale = get_user_locale(); // 31.8.2022 changed from get_locale();
 		if ( ! in_array( $locale, array( 'fi_FI', 'sv_FI', 'en_FI' ), true ) ) {
 			$sub = substr( $locale, 0, 2 );
 			if ( 'fi' === $sub ) {
