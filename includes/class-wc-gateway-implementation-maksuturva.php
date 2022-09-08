@@ -255,13 +255,11 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 		$payment_row_handling_cost = $this->create_payment_row_handling_cost_data( $payment_method_handling_cost );
 		if ( is_array( $payment_row_handling_cost ) ) {
-			error_log("HENE HANDLING COST LÖYTYI" . print_r( $payment_row_handling_cost, true), 0);
 			$payment_rows[] = $payment_row_handling_cost;
 		}
 
 		$payment_row_fees = $this->create_payment_row_fee_data( $order );
 		if ( is_array( $payment_row_fees ) ) {
-			error_log("HENE PAYMENT FEE LÖYTYI" . print_r($payment_row_fees ,true), 0);
 			$payment_rows = array_merge( $payment_rows, $payment_row_fees );
 		}
 
@@ -359,7 +357,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->wc_gateway );
 		$tax_rate = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
-		error_log("### HENEFEE PHF " . print_r($payment_method_handling_cost, true), 0 );
 
 		return [
 			'pmt_row_name'               => __( 'Payment handling fee', $this->wc_gateway->td ),
@@ -392,18 +389,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
 
-			error_log("HENE FEE NAME: '" . $fee['name'] . "'");
-			error_log("HENE FEE NAME2: '" . WC_Utils_Maksuturva::filter_description( $fee['name'] ) . "'");
-
 			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === "-") {
 				// don't add fee with empty trimmed description (double fee problem)
 				$this->removed_fees += $fee_total;
-				error_log("### HENE SKIP EMPTY FEE");
 				continue;
 			}
 
 			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->wc_gateway->td )) {
-				error_log("### HENEFEE Match Payment handling fee", 0);
 				$this->removed_fees += $fee_total;
 				continue;
 			}
