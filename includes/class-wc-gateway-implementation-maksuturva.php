@@ -397,10 +397,11 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === "-") {
 				// don't add fee with empty trimmed description (double fee problem)
+				$this->removed_fees += $fee_total;
 				error_log("### HENE SKIP EMPTY FEE");
 				continue;
 			}
-			
+
 			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->wc_gateway->td )) {
 				error_log("### HENEFEE Match Payment handling fee", 0);
 				$this->removed_fees += $fee_total;
