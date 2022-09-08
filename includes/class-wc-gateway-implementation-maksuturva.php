@@ -392,7 +392,9 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
 
-			error_log("HENE FEE NAME: " . $fee['name'], 0);
+			error_log("HENE FEE NAME: '" . $fee['name'] . "'");
+			error_log("HENE FEE NAME2: '" . WC_Utils_Maksuturva::filter_description( $fee['name'] ) . "'");
+
 			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->wc_gateway->td )) {
 				error_log("### HENEFEE Match Payment handling fee", 0);
 				$this->removed_fees += $fee_total;
