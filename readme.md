@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.2.2 - 2022-09-08
+* Fixed double fee error when using payment handling fees
+
 ### 2.2.1 - 2022-08-31
 * Changed the locale handling. For payment, use get_user_locale() instead get_locale()
 

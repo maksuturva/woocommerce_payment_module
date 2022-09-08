@@ -357,7 +357,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->wc_gateway );
 		$tax_rate = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
- 
+
 		return [
 			'pmt_row_name'               => __( 'Payment handling fee', $this->wc_gateway->td ),
 			'pmt_row_desc'               => __( 'Payment handling fee', $this->wc_gateway->td ),
@@ -388,6 +388,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		foreach ( $fees as $fee ) {
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
+
+			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === "-") {
+				// don't add fee with empty trimmed description (double fee problem)
+				$this->removed_fees += $fee_total;
+				continue;
+			}
 
 			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->wc_gateway->td )) {
 				$this->removed_fees += $fee_total;
