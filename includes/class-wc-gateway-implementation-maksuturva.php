@@ -255,13 +255,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 		$payment_row_handling_cost = $this->create_payment_row_handling_cost_data( $payment_method_handling_cost );
 		if ( is_array( $payment_row_handling_cost ) ) {
-			error_log("HENE HANDLING COST LÖYTYI", 0);
+			error_log("HENE HANDLING COST LÖYTYI" . print_r( $payment_row_handling_cost, true), 0);
 			$payment_rows[] = $payment_row_handling_cost;
 		}
 
 		$payment_row_fees = $this->create_payment_row_fee_data( $order );
 		if ( is_array( $payment_row_fees ) ) {
-			error_log("HENE PAYMENT FEE LÖYTYI", 0);
+			error_log("HENE PAYMENT FEE LÖYTYI" . print_r($payment_row_fees ,true), 0);
 			$payment_rows = array_merge( $payment_rows, $payment_row_fees );
 		}
 
@@ -424,7 +424,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		}
 
 		if ( count( $fee_rows ) ) {
-			error_log("### HENEFEE Match Payment handling fee " . print_r($fee_rows, true), 0 );
 			return $fee_rows;
 		}
 
