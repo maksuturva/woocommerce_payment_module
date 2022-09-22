@@ -49,6 +49,19 @@ class WC_Utils_Maksuturva {
 	}
 
 	/**
+	 * Filter a string to only have alphanumeric characters.
+	 *
+	 * @param string $string The string to filter.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @return string
+	 */
+	public static function filter_productnames( $string ) {
+		return preg_replace( "/[^\p{L}\p{N}\s]/u", "", $string );
+	}
+
+	/**
 	 * Filters a price.
 	 *
 	 * Applies str_replace and sprintf on the given price.

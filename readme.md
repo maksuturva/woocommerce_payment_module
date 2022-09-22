@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.2.3 - 2022-09-22
+* Fixed, filter problematic product names before hash calculation
+
 ### 2.2.2 - 2022-09-08
 * Fixed double fee error when using payment handling fees
 
