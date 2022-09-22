@@ -49,15 +49,15 @@ class WC_Utils_Maksuturva {
 	}
 
 	/**
-	 * Filter a string to only have alphanumeric characters.
+	 * Filter the product name 
 	 *
 	 * @param string $string The string to filter.
 	 *
-	 * @since 2.1.3
+	 * @since 2.2.3
 	 *
 	 * @return string
 	 */
-	public static function filter_productnames( $string ) {
+	public static function filter_productname( $string ) {
 		return preg_replace( "/[^\p{L}\p{N}\s]/u", "", $string );
 	}
 

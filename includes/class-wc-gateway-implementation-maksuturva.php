@@ -227,7 +227,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$payment_row_product = array();
 
-			$payment_row_product['pmt_row_name']     = WC_Utils_Maksuturva::filter_productnames( $item['name'] );
+			$payment_row_product['pmt_row_name']     = WC_Utils_Maksuturva::filter_productname( $item['name'] );
 			$payment_row_product['pmt_row_desc']     = WC_Utils_Maksuturva::filter_description( $description );
 			$payment_row_product['pmt_row_quantity'] =  WC_Utils_Maksuturva::filter_quantity( $item['qty'] );
 
