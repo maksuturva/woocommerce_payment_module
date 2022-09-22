@@ -94,6 +94,7 @@ class WC_Utils_Maksuturva {
 		return ' ';
 	}
 
+
 	/**
 	 * Filter a description string.
 	 *

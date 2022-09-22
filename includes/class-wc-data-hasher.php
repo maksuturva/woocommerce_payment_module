@@ -114,6 +114,8 @@ class WC_Data_Hasher {
 		foreach ( $hash_data as $key => $data ) {
 			if ( 'pmt_hash' != $key ) {
 				$hash_string .= $data . '&';
+
+				error_log($key . ":::" . $data);
 			}
 		}
 
