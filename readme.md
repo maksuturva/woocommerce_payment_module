@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.2.4 - 2022-10-04
+* Fixed, empty the shopping cart only when the payment was successful
+
 ### 2.2.3 - 2022-09-22
 * Fixed, filter problematic product names before hash calculation
 
