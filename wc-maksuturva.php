@@ -13,17 +13,17 @@
  * Author URI:  http://www.sveapayments.fi
  * Text Domain: wc-maksuturva
  * Domain Path: /languages/
- * Requires at least: 5.0
- * Tested up to: 6.0
+ * Requires at least: 6.0
+ * Tested up to: 7.0
  * License:      LGPL2.1
- * WC requires at least: 5.0.0   
- * WC tested up to: 6.9.4   
+ * WC requires at least: 6.0.0   
+ * WC tested up to: 7.0.0  
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 5.x, 6.x
+ * Svea Payments Gateway Plugin for WooCommerce 6.x, 7.x
  * Plugin developed for Svea Development Oy
- * Last update: 04/10/2022
+ * Last update: 12/10/2022
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
