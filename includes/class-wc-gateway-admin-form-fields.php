@@ -178,13 +178,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			],
-			'partpayment_widget' => [
-				'type'        => 'checkbox',
-				'title'       => __( 'Part Payment widget on Product page', $this->gateway->td ),
-				'default'     => 'no',
-				'description' => __( 'Enable the Part Payment widget on the product page.', $this->gateway->td ),
-				'options'     => [ 'yes' => '1', 'no' => '0' ],
-			],
 			'maksuturva_encoding' => [
 				'type'        => 'radio',
 				'title'       => __( 'Svea encoding', $this->gateway->td ),
@@ -193,11 +186,28 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'The encoding used for Svea.', $this->gateway->td ),
 				'options'     => [ 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ],
 			],
+			'estonia_settings' => [
+				'title' => __( 'Estonia payment method settings', $this->gateway->td ),
+				'type'  => 'title',
+				'id'    => 'estonia_settings',
+			],
 			'estonia_special_delivery' => [
 				'type'        => 'checkbox',
 				'title'       => __( 'Estonia Payment Method EEAC / Enable special delivery functionality', $this->gateway->td ),
 				'default'     => 'no',
 				'description' => __( 'This enables the special functionality for delivery info plugins without checkout addresses.', $this->gateway->td ),
+				'options'     => [ 'yes' => '1', 'no' => '0' ],
+			],
+			'partpayment_widget_settings' => [
+				'title' => __( 'Part payment widget settings', $this->gateway->td ),
+				'type'  => 'title',
+				'id'    => 'partpayment_widget_settings',
+			],
+			'partpayment_widget' => [
+				'type'        => 'checkbox',
+				'title'       => __( 'Part Payment widget on Product page', $this->gateway->td ),
+				'default'     => 'no',
+				'description' => __( 'Enable the Part Payment widget on the product page.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			]
 		];
