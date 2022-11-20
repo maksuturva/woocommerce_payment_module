@@ -225,7 +225,7 @@ class WC_Maksuturva {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
 
-		if ($gateway->get_option( 'partpayment_widget')==="yes") {
+		if ($gateway->get_option('partpayment_widget')==="yes") {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
 			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
@@ -234,9 +234,48 @@ class WC_Maksuturva {
 				if ($floatPrice && $floatPrice>=50.00) {
 					$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
 						// . " data-maksuturva-host=\"https://test1.maksuturva.fi\"" 
-						. " data-sellerid=\"" . $widgetSellerId . "\"" 
+						. " data-sellerid=\"" . esc_html($widgetSellerId) . "\"" 
 						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
-						. " data-price=\"" . floatval(wc_get_price_including_tax( $product )) . "\"></script>";
+						. " data-price=\"" . floatval(wc_get_price_including_tax( $product )) . "\"";
+
+					if(isset($gateway->get_option('maksuturva_ppw_campaign_text_fi'))) {
+						$widgetHtml = $widgetHtml . " data-campaign-text-fi=\"" . esc_html($gateway->get_option('maksuturva_ppw_campaign_text_fi')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_campaign_text_sv'))) {
+						$widgetHtml = $widgetHtml . " data-campaign-text-sv=\"" . esc_html($gateway->get_option('maksuturva_ppw_campaign_text_sv')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_campaign_text_en'))) {
+						$widgetHtml = $widgetHtml . " data-campaign-text-en=\"" . esc_html($gateway->get_option('maksuturva_ppw_campaign_text_en')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_fallback_text_fi'))) {
+						$widgetHtml = $widgetHtml . " data-fallback-text-fi=\"" . esc_html($gateway->get_option('maksuturva_ppw_fallback_text_fi')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_fallback_text_sv'))) {
+						$widgetHtml = $widgetHtml . " data-fallback-text-sv=\"" . esc_html($gateway->get_option('maksuturva_ppw_fallback_text_sv')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_fallback_text_en'))) {
+						$widgetHtml = $widgetHtml . " data-fallback-text-en=\"" . esc_html($gateway->get_option('maksuturva_ppw_fallback_text_en')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_border_color'))) {
+						$widgetHtml = $widgetHtml . " data-border-color=\"" . esc_html($gateway->get_option('maksuturva_ppw_border_color')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_text_color'))) {
+						$widgetHtml = $widgetHtml . " data-text-color=\"" . esc_html($gateway->get_option('maksuturva_ppw_text_color')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_highlight_color'))) {
+						$widgetHtml = $widgetHtml . " data-highlight-color=\"" . esc_html($gateway->get_option('maksuturva_ppw_highlight_color')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_active_color'))) {
+						$widgetHtml = $widgetHtml . " data-active-color=\"" . esc_html($gateway->get_option('maksuturva_ppw_active_color')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_border_radius'))) {
+						$widgetHtml = $widgetHtml . " data-border-radius=\"" . esc_html($gateway->get_option('maksuturva_ppw_border_radius')) . "\"";
+					}
+					if(isset($gateway->get_option('maksuturva_ppw_price_thresholds')) && validate_price_threshold($gateway->get_option('maksuturva_ppw_price_thresholds')) ) {
+
+						$widgetHtml = $widgetHtml . " data-threshold-prices=\"[" . esc_html($gateway->get_option('maksuturva_ppw_price_thresholds')) . "]\"";
+					}
+					$widgetHtml = $widgetHtml . "></script>";
 						/*
 						. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
 						. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
@@ -250,6 +289,20 @@ class WC_Maksuturva {
 		}
 		// otherwise, return the original html price content
 		return $price;
+	}
+
+	/**
+	 * Check price thresholds configuation value
+	 *
+	 *
+	 * @since 2.3.0
+	 */
+	private function validate_price_threshold( $value ) 
+	{
+		if (substr_count( $value, "[") != substr_count( $value, "]") {
+			return false;
+		}
+		return true;
 	}
 
 	/**
