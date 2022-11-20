@@ -299,7 +299,7 @@ class WC_Maksuturva {
 	 */
 	private function validate_price_threshold( $value ) 
 	{
-		if (substr_count( $value, "[") != substr_count( $value, "]") {
+		if (substr_count( $value, "[") != substr_count( $value, "]") ) {
 			return false;
 		}
 		return true;
