@@ -274,7 +274,7 @@ class WC_Maksuturva {
 					if(!empty($gateway->get_option('ppw_border_radius'))) {
 						$widgetHtml = $widgetHtml . " data-border-radius=\"" . esc_html($gateway->get_option('ppw_border_radius')) . "\"";
 					}
-					if(!empty($gateway->get_option('ppw_price_thresholds')) && validate_price_threshold($gateway->get_option('ppw_price_thresholds')) ) {
+					if(!empty($gateway->get_option('ppw_price_thresholds')) && $this->validate_price_threshold($gateway->get_option('ppw_price_thresholds')) ) {
 
 						$widgetHtml = $widgetHtml . " data-threshold-prices=\"[" . esc_html($gateway->get_option('ppw_price_thresholds')) . "]\"";
 					}
@@ -300,7 +300,7 @@ class WC_Maksuturva {
 	 *
 	 * @since 2.3.0
 	 */
-	public function validate_price_threshold( $value ) 
+	private function validate_price_threshold( $value ) 
 	{
 		if (substr_count( $value, "[") != substr_count( $value, "]") ) {
 			return false;
