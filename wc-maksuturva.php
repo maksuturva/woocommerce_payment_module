@@ -271,9 +271,6 @@ class WC_Maksuturva {
 					if(!empty($gateway->get_option('ppw_active_color'))) {
 						$widgetHtml = $widgetHtml . " data-active-color=\"" . esc_html($gateway->get_option('ppw_active_color')) . "\"";
 					}
-					if(!empty($gateway->get_option('ppw_border_radius'))) {
-						$widgetHtml = $widgetHtml . " data-border-radius=\"" . esc_html($gateway->get_option('ppw_border_radius')) . "\"";
-					}
 					if(!empty($gateway->get_option('ppw_price_thresholds')) && $this->validate_price_threshold($gateway->get_option('ppw_price_thresholds')) ) {
 
 						$widgetHtml = $widgetHtml . " data-threshold-prices=\"[" . esc_html($gateway->get_option('ppw_price_thresholds')) . "]\"";

@@ -287,13 +287,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Widget active color', $this->gateway->td ),
 				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
 			],
-			'ppw_border_radius' => [
-				'type'        => 'textfield',
-				'title'       => __( 'Widget border radius', $this->gateway->td ),
-				'desc_tip'    => true,
-				'description' => __( 'Widget border radius', $this->gateway->td ),
-				'default'     => get_option( 'ppw_border_radius', '4' ),
-			],
 			'ppw_price_thresholds' => [
 				'type'        => 'textfield',
 				'title'       => __( 'Price thresholds', $this->gateway->td ),
