@@ -300,7 +300,7 @@ class WC_Maksuturva {
 	 *
 	 * @since 2.3.0
 	 */
-	private function validate_price_threshold( $value ) 
+	public function validate_price_threshold( $value ) 
 	{
 		if (substr_count( $value, "[") != substr_count( $value, "]") ) {
 			return false;
