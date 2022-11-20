@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 3.x, 4.x
+ * Svea Payments Gateway Plugin for WooCommerce 6.x, 7.x
  * Plugin developed for Svea
  * Last update: 30/11/2020
  *
@@ -178,13 +178,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			],
-			'partpayment_widget' => [
-				'type'        => 'checkbox',
-				'title'       => __( 'Part Payment widget on Product page', $this->gateway->td ),
-				'default'     => 'no',
-				'description' => __( 'Enable the Part Payment widget on the product page.', $this->gateway->td ),
-				'options'     => [ 'yes' => '1', 'no' => '0' ],
-			],
 			'maksuturva_encoding' => [
 				'type'        => 'radio',
 				'title'       => __( 'Svea encoding', $this->gateway->td ),
@@ -193,13 +186,117 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'The encoding used for Svea.', $this->gateway->td ),
 				'options'     => [ 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ],
 			],
+			'estonia_settings' => [
+				'title' => __( 'Estonia payment method settings', $this->gateway->td ),
+				'type'  => 'title',
+				'id'    => 'estonia_settings',
+			],
 			'estonia_special_delivery' => [
 				'type'        => 'checkbox',
-				'title'       => __( 'Estonia Payment Method EEAC / Enable special delivery functionality', $this->gateway->td ),
+				'title'       => __( 'Estonia Payment Method EEAC / Enable special delivery information support', $this->gateway->td ),
 				'default'     => 'no',
+				'desc_tip'    => true,
 				'description' => __( 'This enables the special functionality for delivery info plugins without checkout addresses.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
-			]
+			],
+			'partpayment_widget_settings' => [
+				'title' => __( 'Part payment widget settings', $this->gateway->td ),
+				'type'  => 'title',
+				'id'    => 'partpayment_widget_settings',
+			],
+			'partpayment_widget' => [
+				'type'        => 'checkbox',
+				'title'       => __( 'Part Payment widget on Product page', $this->gateway->td ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'description' => __( 'Enable the Part Payment widget on the product page.', $this->gateway->td ),
+				'options'     => [ 'yes' => '1', 'no' => '0' ],
+			],
+			'partpayment_widget_use_test' => [
+				'type'        => 'checkbox',
+				'title'       => __( 'Use test environment for Part Payment widget API calls', $this->gateway->td ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', $this->gateway->td ),
+				'options'     => [ 'yes' => '1', 'no' => '0' ],
+			],
+			'ppw_campaign_text_fi' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Campaign text in Finnish', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Finnish campaign text', $this->gateway->td ),
+				'default'     => get_option( 'ppw_campaign_text_fi', 'Campaign text FI' ),
+			],
+			'ppw_campaign_text_sv' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Campaign text in Swedish', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Swedish campaign text', $this->gateway->td ),
+				'default'     => get_option( 'ppw_campaign_text_sv', 'Campaign text SV' ),
+			],
+			'ppw_campaign_text_en' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Campaign text in English', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'English campaign text', $this->gateway->td ),
+				'default'     => get_option( 'ppw_campaign_text_en', 'Campaign text EN' ),
+			],
+			'ppw_fallback_text_fi' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Fallback text in Finnish', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Finnish fallback text', $this->gateway->td ),
+				'default'     => get_option( 'ppw_fallback_text_fi', 'Fallback text FI' ),
+			],
+			'ppw_fallback_text_sv' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Fallback text in Swedish', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Swedish fallback text', $this->gateway->td ),
+				'default'     => get_option( 'ppw_fallback_text_sv', 'Fallback text SV' ),
+			],
+			'ppw_fallback_text_en' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Fallback text in English', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'English fallback text', $this->gateway->td ),
+				'default'     => get_option( 'ppw_fallback_text_en', 'Fallback text EN' ),
+			],
+			'ppw_border_color' => [
+				'type'        => 'color',
+				'title'       => __( 'Border color', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget border color', $this->gateway->td ),
+				'default'     => get_option( 'ppw_border_color', '#CCEEF5' ),
+			],
+			'ppw_text_color' => [
+				'type'        => 'color',
+				'title'       => __( 'Text color', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget text color', $this->gateway->td ),
+				'default'     => get_option( 'ppw_text_color', '#00325C' ),
+			],
+			'ppw_highlight_color' => [
+				'type'        => 'color',
+				'title'       => __( 'Highlight color', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget highlight color', $this->gateway->td ),
+				'default'     => get_option( 'ppw_highlight_color', '#00325C' ),
+			],
+			'ppw_active_color' => [
+				'type'        => 'color',
+				'title'       => __( 'Active color', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget active color', $this->gateway->td ),
+				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
+			],
+			'ppw_price_thresholds' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Price thresholds', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Set price thresholds in following format [600, 6], [400, 12], [100, 24], [1000, 13] ', $this->gateway->td ),
+				'default'     => get_option( 'ppw_price_thresholds', '[300, 6], [1000, 12]' ),
+			],
 		];
 	}
 
