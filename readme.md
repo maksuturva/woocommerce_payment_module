@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0   
 **Tested up to:** 7.1  
-**Stable tag:** 2.2.4  
+**Stable tag:** 2.3.0  
 **WC requires at least:** 6.0  
 **WC tested up to:** 7.1.0   
 **License:** LGPL v. 2.1 or later  
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.3.0 - 
+* New, Part payment widget configuration
 
 ### 2.2.4 - 2022-10-04
 * Fixed, empty the shopping cart only when the payment was successful
