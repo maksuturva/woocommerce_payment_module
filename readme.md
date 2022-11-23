@@ -37,8 +37,8 @@ written for Svea Payments Oy
 
 ## Changelog
 
-### 2.3.0 - 
-* New, Part payment widget configuration
+### 2.3.0 - 2022-11-21
+* Added configuration fields to the admin panel for the Part Payment Widget
 
 ### 2.2.4 - 2022-10-04
 * Fixed, empty the shopping cart only when the payment was successful
