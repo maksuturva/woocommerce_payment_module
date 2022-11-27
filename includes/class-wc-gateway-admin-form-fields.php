@@ -297,6 +297,18 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Set price thresholds in following format [600, 6], [400, 12], [100, 24], [1000, 13] ', $this->gateway->td ),
 				'default'     => get_option( 'ppw_price_thresholds', '[300, 6], [1000, 12]' ),
 			],
+			'payment_group_customization' => [
+				'title' => __( 'Payment group customization', $this->gateway->td ),
+				'type'  => 'title',
+				'id'    => 'payment_group_customization',
+			],
+			'payment_group_invoice_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Invoice and Part Payment group title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Change the checkout page title for the Invoice and Part Payment payment group. If not set, the default localized title is used.', $this->gateway->td ),
+				'default'     => get_option( 'payment_group_invoice_title', '' ),
+			],
 		];
 	}
 
