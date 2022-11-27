@@ -306,7 +306,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'type'        => 'textfield',
 				'title'       => __( 'Credit card and mobile payments group title', $this->gateway->td ),
 				'desc_tip'    => true,
-				'description' => __( 'Change the checkout page title for the Credit Cards payment group. If not set, the default localized title is used.', $this->gateway->td ),
+				'description' => __( 'Change the checkout page title for the Credit Cards and Mobile payment group. If not set, the default localized title is used.', $this->gateway->td ),
 				'default'     => get_option( 'payment_group_creditcard_title', '' ),
 			],
 			'payment_group_invoice_title' => [
@@ -327,14 +327,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'type'        => 'textfield',
 				'title'       => __( 'Other payments group title', $this->gateway->td ),
 				'desc_tip'    => true,
-				'description' => __( 'Change the checkout page title for Other payment group. If not set, the default localized title is used.', $this->gateway->td ),
+				'description' => __( 'Change the checkout page title for Other payment methods group. If not set, the default localized title is used.', $this->gateway->td ),
 				'default'     => get_option( 'payment_group_other_title', '' ),
 			],
 			'payment_group_estonia_title' => [
 				'type'        => 'textfield',
 				'title'       => __( 'Estonia payment group title', $this->gateway->td ),
 				'desc_tip'    => true,
-				'description' => __( 'Change the checkout page title for the Estonia payment group. If not set, the default localized title is used.', $this->gateway->td ),
+				'description' => __( 'Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', $this->gateway->td ),
 				'default'     => get_option( 'payment_group_estonia_title', '' ),
 			],
 		];
