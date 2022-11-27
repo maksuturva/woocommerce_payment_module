@@ -49,7 +49,13 @@ class WC_Gateway_Svea_Estonia_Payments extends WC_Gateway_Maksuturva {
 		$this->method_description = sprintf( 
 			__('This payment method is for Estonia partners only. General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
 		// this is shown on checkout page
-		$this->title = __( 'Ostukonto - maksa turvaliselt ja paindlikult', $this->td );
+		$custom_title = $this->get_option( 'payment_group_estonia_title' );
+		if (!empty($custom_title)) {
+			$this->title = esc_html($custom_title);
+		} else {
+			$this->title = __( 'Ostukonto - maksa turvaliselt ja paindlikult', $this->td );
+		}
+		
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
 	}
 

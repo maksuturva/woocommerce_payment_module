@@ -304,7 +304,7 @@ class WC_Gateway_Admin_Form_Fields {
 			],
 			'payment_group_creditcard_title' => [
 				'type'        => 'textfield',
-				'title'       => __( 'Credit card group title', $this->gateway->td ),
+				'title'       => __( 'Credit card and mobile payments group title', $this->gateway->td ),
 				'desc_tip'    => true,
 				'description' => __( 'Change the checkout page title for the Credit Cards payment group. If not set, the default localized title is used.', $this->gateway->td ),
 				'default'     => get_option( 'payment_group_creditcard_title', '' ),
