@@ -48,10 +48,10 @@ class WC_Gateway_Svea_Invoice_And_Hire_Purchase extends WC_Gateway_Maksuturva {
 		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
 		$configured_title = $this->get_option( 'payment_group_invoice_title' );
 		error_log("### TITLE: " . print_r($configured_title, true) );
-		if (isset($configured_title)) {
+		if (!empty($configured_title)) {
 			$this->title = "HENE1" . $configured_title;
 		} else {
-			$this->title = "HENE2"; //__( 'Invoice and Part Payment', $this->td );
+			$this->title = __( 'Invoice and Part Payment', $this->td );
 		}
 	}	
 
