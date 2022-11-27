@@ -297,6 +297,46 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Set price thresholds in following format [600, 6], [400, 12], [100, 24], [1000, 13] ', $this->gateway->td ),
 				'default'     => get_option( 'ppw_price_thresholds', '[300, 6], [1000, 12]' ),
 			],
+			'payment_group_customization' => [
+				'title' => __( 'Payment group title customization', $this->gateway->td ),
+				'type'  => 'title',
+				'id'    => 'payment_group_customization',
+			],
+			'payment_group_creditcard_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Credit card and mobile payments group title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Change the checkout page title for the Credit Cards and Mobile payment group. If not set, the default localized title is used.', $this->gateway->td ),
+				'default'     => get_option( 'payment_group_creditcard_title', '' ),
+			],
+			'payment_group_invoice_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Invoice and Part Payment group title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Change the checkout page title for the Invoice and Part Payment payment group. If not set, the default localized title is used.', $this->gateway->td ),
+				'default'     => get_option( 'payment_group_invoice_title', '' ),
+			],
+			'payment_group_onlinebank_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Online bank payments group title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Change the checkout page title for the Online bank payment group. If not set, the default localized title is used.', $this->gateway->td ),
+				'default'     => get_option( 'payment_group_onlinebank_title', '' ),
+			],
+			'payment_group_other_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Other payments group title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Change the checkout page title for Other payment methods group. If not set, the default localized title is used.', $this->gateway->td ),
+				'default'     => get_option( 'payment_group_other_title', '' ),
+			],
+			'payment_group_estonia_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Estonia payment group title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', $this->gateway->td ),
+				'default'     => get_option( 'payment_group_estonia_title', '' ),
+			],
 		];
 	}
 

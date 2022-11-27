@@ -46,8 +46,13 @@ class WC_Gateway_Svea_Invoice_And_Hire_Purchase extends WC_Gateway_Maksuturva {
 		parent::__construct( WC_Gateway_Svea_Invoice_And_Hire_Purchase::class );
 		$this->method_title = 'Svea ' . __( 'Invoice and Part Payment', $this->td );
 		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$this->title = __( 'Invoice and Part Payment', $this->td );
-	}
+		$custom_title = $this->get_option( 'payment_group_invoice_title' );
+		if (!empty($custom_title)) {
+			$this->title = esc_html($custom_title);
+		} else {
+			$this->title = __( 'Invoice and Part Payment', $this->td );
+		}
+	}	
 
 	/**
 	 * @inheritdoc

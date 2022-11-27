@@ -37,6 +37,9 @@ written for Svea Payments Oy
 
 ## Changelog
 
+### 2.3.1 - 2022-11-27
+* New, payment method group titles on the checkout page are customizable on the admin page
+
 ### 2.3.0 - 2022-11-21
 * Added configuration fields to the admin panel for the Part Payment Widget
 
