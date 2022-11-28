@@ -48,8 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         $('body').on('payment_method_selected', function() {
 			if ( ($('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').length==1) &&
 					($('form[name="checkout"] input[name="payment_method"]:checked').val()=="WC_Gateway_Svea_Invoice_And_Hire_Purchase") )  {
-					console.log("..." + $('form[name="checkout"] input[name="payment_method"]:checked').val());
-					console.log("PM_SELECTED" + $('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').length);
+					console.log("Autoselecting the only payment method that is available in this payment group.");
 					$('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').prop("checked", true);
 					document.querySelector( 'body' ).dispatchEvent( new CustomEvent('update_checkout') );
 			}
