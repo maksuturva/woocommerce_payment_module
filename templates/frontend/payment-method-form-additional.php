@@ -89,11 +89,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 
 	#payment .payment_methods li .svea-payment-method-select label:hover {
-   		box-shadow: 0 0 12px 0 rgb(0, 0, 0, 0.25);
+		outline: 1px auto #00aece;
 	}
 
 	#payment .payment_methods li .svea-payment-method-select.checked label {
-        box-shadow: 0 0 15px 0 rgb(0, 174, 206, 0.9);
+        border: 2px solid #00aece;
     }
 
 	#payment .payment_methods li .svea-payment-method-select-radio {
