@@ -37,7 +37,7 @@ written for Svea Payments Oy
 
 ## Changelog
 
-### 2.3.2 - 2022-11-28
+### 2.3.2 - 2022-11-29
 * New, if only one payment method is in the group, select automatically the only one
 
 ### 2.3.1 - 2022-11-27
