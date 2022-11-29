@@ -44,6 +44,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$('.svea-payment-method-select-radio:not(:checked)').parent().removeClass('checked');
         });
 	});
+	jQuery(function($) {
+        $('body').on('payment_method_selected', function() {
+			if ( ($('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').length==1) &&
+					($('form[name="checkout"] input[name="payment_method"]:checked').val()=="WC_Gateway_Svea_Invoice_And_Hire_Purchase") )  {
+					console.log("Autoselecting the only payment method that is available in this payment group.");
+					$('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').prop("checked", true);
+					document.querySelector( 'body' ).dispatchEvent( new CustomEvent('update_checkout') );
+			}
+        });
+    });
 })();
 </script>
 
@@ -79,12 +89,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 
 	#payment .payment_methods li .svea-payment-method-select label:hover {
-   		box-shadow: 0 0 12px 0 rgb(0, 0, 0, 0.25);
+		outline: 1px auto #00aece;
 	}
 
 	#payment .payment_methods li .svea-payment-method-select.checked label {
-   		box-shadow: 0 0 10px 0 rgb(0, 0, 0, 0.4);
-	}
+        border: 2px solid #00aece;
+    }
 
 	#payment .payment_methods li .svea-payment-method-select-radio {
 		display: none;

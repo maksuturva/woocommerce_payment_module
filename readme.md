@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0   
 **Tested up to:** 7.1  
-**Stable tag:** 2.3.1    
+**Stable tag:** 2.3.2      
 **WC requires at least:** 6.0  
 **WC tested up to:** 7.1.0   
 **License:** LGPL v. 2.1 or later  
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.3.2 - 2022-11-29
+* New, if only one payment method is in the group, select automatically the only one
 
 ### 2.3.1 - 2022-11-27
 * New, payment method group titles on the checkout page are customizable on the admin page
