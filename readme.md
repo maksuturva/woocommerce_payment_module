@@ -5,7 +5,7 @@
 **Tested up to:** 7.1  
 **Stable tag:** 2.3.3      
 **WC requires at least:** 6.0  
-**WC tested up to:** 7.1.0   
+**WC tested up to:** 7.1.1   
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -13,7 +13,7 @@ Svea Payments payment module for WooCommerce.
 
 ## Description
 
-Copyright (C) 2016-2022 Svea Development Oy
+Copyright (C) 2016-2023 Svea Development Oy
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later

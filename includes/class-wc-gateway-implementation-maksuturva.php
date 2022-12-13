@@ -545,8 +545,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	private function get_internal_payment_id( WC_Order $order ) {
         $order_handler = new WC_Order_Compatibility_Handler( $order );
 		$pmtid = apply_filters( 'maksuturva/internal_payment_id', $order_handler->get_id() + 100 );
-		if (is_numeric(pmtid) && pmtid>100) {
-			return pmtid;
+		if (is_numeric($pmtid) && $pmtid>100) {
+			return $pmtid;
 		} else {
 			throw new WC_Gateway_Maksuturva_Exception('Generated internal payment id is not valid.', 
 				self::EXCEPTION_CODE_FIELD_ARRAY_GENERATION_ERRORS);
