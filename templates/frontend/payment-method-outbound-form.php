@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <div>
-	<?php echo __( 'Pay with Svea', 'wc-maksuturva' ); ?>
+	<?php /* echo __( 'Pay with Svea', 'wc-maksuturva' ); */ ?>
 	<?php 
 	/*
 		foreach ( $payment_method_handling_costs as $handling_cost ) {

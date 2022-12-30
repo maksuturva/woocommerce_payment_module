@@ -1,11 +1,11 @@
 # Svea Payments for WooCommerce
 **Contributors:** Svea Payments  
 **Tags:** maksuturva, payment gateway, svea, svea payments  
-**Requires at least:** 6.0   
-**Tested up to:** 7.1  
-**Stable tag:** 2.3.3      
+**Requires at least:** 6.0    
+**Tested up to:** 7.1   
+**Stable tag:** 2.3.4        
 **WC requires at least:** 6.0  
-**WC tested up to:** 7.2.2     
+**WC tested up to:** 7.2.2   
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.3.4 - 2022-12-29
+* Cleaned outbound payment method texts on checkout page
 
 ### 2.3.3 - 2022-12-13
 * Added hook support for external payment ids
