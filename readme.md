@@ -37,8 +37,8 @@ written for Svea Payments Oy
 
 ## Changelog
 
-### 2.3.4 - 2022-12-29
-* Cleaned outbound payment method texts on checkout page
+### 2.3.4 - 2022-12-30
+* Cleaned outbound payment method texts on the checkout page
 
 ### 2.3.3 - 2022-12-13
 * Added hook support for external payment ids
