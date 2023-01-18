@@ -3,9 +3,9 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0    
 **Tested up to:** 7.1   
-**Stable tag:** 2.3.4        
+**Stable tag:** 2.3.5        
 **WC requires at least:** 6.0  
-**WC tested up to:** 7.2.2   
+**WC tested up to:** 7.3.0     
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.3.5 - 2023-01-18
+* Fixed Pay for Order payment method selection
 
 ### 2.3.4 - 2022-12-30
 * Cleaned outbound payment method texts on the checkout page

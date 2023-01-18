@@ -6,9 +6,9 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 6.x, 7.x
+ * Svea Payments Gateway Plugin for WooCommerce 7.x
  * Plugin developed for Svea
- * Last update: 30/11/2020
+ * Last update: 18/01/2023
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
