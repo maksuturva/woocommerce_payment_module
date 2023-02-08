@@ -578,6 +578,13 @@ class WC_Payment_Maksuturva {
 		$this->data_received 	= (array) json_decode( $data[0]->data_received );
 		$this->date_added    	= $data[0]->date_added;
 		$this->date_updated  	= $data[0]->date_updated;
+
+		if (
+			empty( $this->payment_method )
+			&& !empty( $this->data_received['pmt_paymentmethod'] )
+		) {
+			$this->payment_method = $this->data_received['pmt_paymentmethod'];
+		}
 	}
 
 	/**
@@ -597,6 +604,14 @@ class WC_Payment_Maksuturva {
 			'data_received' => wp_json_encode( $this->data_received ),
 			'date_updated'  => date( 'Y-m-d H:i:s' ),
 		);
+
+		if (
+			empty( $this->payment_method )
+			&& !empty( $this->data_received['pmt_paymentmethod'] )
+		) {
+			$this->payment_method = $this->data_received['pmt_paymentmethod'];
+			$data['payment_method'] = $this->payment_method;
+		}
 
 		$result = $wpdb->update( $wpdb->prefix . self::TABLE_NAME, $data,
 		array( 'order_id' => $this->order_id, 'payment_id' => $this->payment_id ) ); // Db call ok; No-cache ok.

@@ -153,6 +153,34 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		if (!is_admin()) {
 			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
 		}
+
+		add_filter( 'woocommerce_gateway_title', [$this, 'override_payment_gateway_title'], 25, 2 );
+	}
+
+	public function override_payment_gateway_title( $title, $gateway_id ) {
+		if (
+			!is_admin()
+			|| 'shop_order' != get_post_type()
+			|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
+		) {
+			return $title;
+		}
+
+		global $woocommerce, $post;
+
+		$order = new WC_Order($post->ID);
+		if (!empty($order) && $order->get_payment_method() !== null) {
+			$payment = new WC_Payment_Maksuturva($order->get_id());
+			$paymentMethod = $payment->get_payment_method();
+			if (!empty($paymentMethod)) {
+				$paymentMethodName = $this->payment_method_select->get_payment_method_name( $paymentMethod );
+				if (!empty($paymentMethodName) && !str_contains($title, $paymentMethodName)) {
+					return $title . ': ' . $paymentMethodName;
+				}
+			}
+		}
+
+		return $title;
 	}
 
 	/**

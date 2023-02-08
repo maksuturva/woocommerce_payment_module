@@ -228,6 +228,26 @@ class WC_Payment_Method_Select {
 	}
 
 	/**
+	 * Get display name for payment method
+	 *
+	 * @since 2.3.5
+	 *
+	 * @return string
+	 */
+	public function get_payment_method_name( $payment_method_code ) {
+		$available_payment_methods = $this->get_available_payment_methods( 10 );
+		if (isset($available_payment_methods['paymentmethod'])) {
+			foreach ($available_payment_methods['paymentmethod'] as $method) {
+				if ( $method['code'] == $payment_method_code ) {
+					return $method['displayname'];
+				}
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Allow override payment method logo for Estonia EEAC payment method
 	 * 
 	 * install to plugin path as file EEAC_logo.png
