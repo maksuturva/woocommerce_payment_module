@@ -544,7 +544,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private function get_internal_payment_id( WC_Order $order ) {
         $order_handler = new WC_Order_Compatibility_Handler( $order );
-		return $order_handler->get_id();
+		return $order_handler->get_id()+100;
     }
 
 	/**
