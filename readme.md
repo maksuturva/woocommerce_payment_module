@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0    
 **Tested up to:** 7.1   
-**Stable tag:** 2.3.5        
+**Stable tag:** 2.3.6        
 **WC requires at least:** 6.0  
 **WC tested up to:** 7.3.0     
 **License:** LGPL v. 2.1 or later  
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.3.6 - 2023-02-08
+* SD2Q-10 Display payment method on order page
 
 ### 2.3.5 - 2023-01-18
 * Fixed Pay for Order payment method selection
