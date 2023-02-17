@@ -64,7 +64,6 @@ class WC_Meta_Box_Maksuturva {
 			$order    = wc_get_order( $post );
 			if (!empty($order->get_payment_method())) {
 				$payment  = new WC_Payment_Maksuturva( $order->get_id() );
-				_log("RENDERING");
 				$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );			
 			} else {
 				_log("Not a Svea payment method...");

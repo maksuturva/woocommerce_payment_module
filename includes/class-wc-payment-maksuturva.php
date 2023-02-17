@@ -567,7 +567,7 @@ class WC_Payment_Maksuturva {
 		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
 
 		if ( ! ( is_array( $data ) && count( $data ) === 1 ) ) {
-			return;
+			return; // no order found in Maksuturva queue
 			//throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payment!' );
 		}
 
