@@ -55,8 +55,6 @@ class WC_Meta_Box_Maksuturva {
 	 * @param array   $args Arguments passed to the output function.
 	 */
 	public static function output( $post, $args ) {
-		$is_payment_method_selected = false;
-
 		try {
 			if ( ! isset( $args['args']['gateway'] ) ) {
 				throw new WC_Gateway_Maksuturva_Exception( 'No gateway given to meta-box.' );
@@ -64,21 +62,16 @@ class WC_Meta_Box_Maksuturva {
 			$gateway  = $args['args']['gateway'];
 			self::$td = $gateway->td;
 			$order    = wc_get_order( $post );
-			_log("Not a Svea payment method... '" . $order->get_payment_method() . "'");
 			if (!empty($order->get_payment_method())) {
 				$payment  = new WC_Payment_Maksuturva( $order->get_id() );
-				$is_payment_method_selected = true;
+				_log("RENDERING");
+				$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );			
 			} else {
-				_log("Not a Svea payment method2...");
+				_log("Not a Svea payment method...");
 			}
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			// If the payment was not found, it probably means that the order was not paid with Svea.
 			return;
-		}
-
-		/** @var WC_Gateway_Maksuturva $gateway */
-		if ($is_payment_method_selected) {
-			$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );
 		}
 	}
 
