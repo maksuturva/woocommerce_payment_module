@@ -65,11 +65,12 @@ class WC_Meta_Box_Maksuturva {
 			self::$td = $gateway->td;
 			$order    = wc_get_order( $post );
 
-			if ($order->get_payment_method() !== null) {
+			if (!empty($order->get_payment_method())) {
 				$payment  = new WC_Payment_Maksuturva( $order->get_id() );
 				$is_payment_method_selected = true;
 			}
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
+			_log("Not a Svea payment method...");
 			// If the payment was not found, it probably means that the order was not paid with Svea.
 			return;
 		}

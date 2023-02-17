@@ -984,7 +984,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				$selectedPaymentsArray = explode(',', str_ireplace(' ', '', $selectedPayments));
 				$order = wc_get_order($order_id);
 
-				if (!empty($order) && $order->get_payment_method() !== null) {
+				if (!empty($order) && !empty($order->get_payment_method())) {
 					$payment = new WC_Payment_Maksuturva($order->get_id());
 					$paymentMethod = $payment->get_payment_method();
 
