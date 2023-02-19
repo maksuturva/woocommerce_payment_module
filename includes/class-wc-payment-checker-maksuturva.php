@@ -133,11 +133,13 @@ class WC_Payment_Checker_Maksuturva {
 			$order    = wc_get_order($payment->get_order_id());
 
 			// don't query status in sandbox mode
+			/*
 			if ($gateway->is_sandbox()) {
 				_log("Payment check is disabled for sandbox mode. Skipping status query for order " . $payment->get_order_id() );
 				return;
 			}
-
+			*/
+			
 			/**
 			 * check time windows for status query
 			 */

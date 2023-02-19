@@ -72,7 +72,7 @@ class WC_Data_Hasher {
 	 *
 	 * @var string SANDBOX_SECRET_KEY
 	 */
-	const SANDBOX_SECRET_KEY = '11223344556677889900';
+	//const SANDBOX_SECRET_KEY = '11223344556677889900';
 
 	/**
 	 * Seller secret key.
@@ -91,9 +91,10 @@ class WC_Data_Hasher {
 	 * @since 2.1.3
 	 */
 	public function __construct( WC_Gateway_Maksuturva $gateway ) {
-		$this->secret_key = $gateway->is_sandbox()
-			? self::SANDBOX_SECRET_KEY
-			: $gateway->get_secret_key();
+		$this->secret_key = $gateway->get_secret_key();
+		//$gateway->is_sandbox()
+		//	? self::SANDBOX_SECRET_KEY
+		//	: $gateway->get_secret_key();
 	}
 
 	/**

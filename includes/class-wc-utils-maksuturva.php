@@ -137,7 +137,7 @@ class WC_Utils_Maksuturva {
 
 		try {
 			$user_agent = mb_convert_encoding($user_agent . " (" . php_uname('s') . 
-				" " . php_uname('r') . ") Woocommerce/" . WC_VERSION . " PHP/" . phpversion(), "ASCII");
+				" " . php_uname('r') . ") WooCommerce/" . WC_VERSION . " PHP/" . phpversion(), "ASCII");
 		} catch (Exception $e) {
 			// nop
 		}

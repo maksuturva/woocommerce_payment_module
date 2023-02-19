@@ -171,6 +171,7 @@ class WC_Gateway_Admin_Form_Fields {
 										'If the payment method codes are added, the selected delivery confirmation is sent only on ' .
 										'orders paid with specific payment methods.', $this->gateway->td )
 			],
+			/*
 			'sandbox' => [
 				'type'        => 'checkbox',
 				'title'       => __( 'Sandbox mode', $this->gateway->td ),
@@ -178,6 +179,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			],
+			*/
 			'maksuturva_encoding' => [
 				'type'        => 'radio',
 				'title'       => __( 'Svea encoding', $this->gateway->td ),

@@ -83,6 +83,16 @@ class WC_Svea_Api_Request_Handler {
 	public const SETTINGS_RETURN_CODE_FIELD = 'return_code_field';
 
 	/**
+	 * Basic auth setting field key.
+	 *
+	 * @var string SETTINGS_BASIC_AUTH_FIELD
+	 *
+	 * @since 2.4.0
+	 */
+	public const SETTINGS_BASIC_AUTH_FIELD = 'basic_auth';
+
+
+	/**
 	 * WC_Svea_Api_Request_Handler constructor.
 	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
@@ -124,10 +134,14 @@ class WC_Svea_Api_Request_Handler {
 		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $request, CURLOPT_POST, 1 );
 		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 120 );
+		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 30 );
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $data );
-
+		if ( isset($settings[self::SETTINGS_BASIC_AUTH_FIELD]) ) {
+			curl_setopt( $request, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+			curl_setopt( $request, CURLOPT_USERPWD, $settings[self::SETTINGS_BASIC_AUTH_FIELD] );
+		}
+		
 		$response = curl_exec( $request );
 
 		$this->verify_response_has_value( $response );

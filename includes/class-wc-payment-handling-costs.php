@@ -196,6 +196,15 @@ class WC_Payment_Handling_Costs {
 	 */
 	public function update_payment_handling_cost_fee( $order ) {
 
+		/* FIX 2023-02-19: when using payment redirect without WC payment method selection there was this error on the log
+		Undefined index: svea_payment_method in /var/www/html/wp-content/plugins/woocommerce_payment_module/includes/class-wc-payment-handling-costs.php on line 200
+		
+		wo added this if
+		*/
+		if (!isset($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+			return;
+		}
+
 		$payment_handling_cost_fee = $this->get_payment_method_handling_cost_without_tax(
 			$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
 		);

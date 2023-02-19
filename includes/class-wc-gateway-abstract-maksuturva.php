@@ -975,8 +975,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		// Check that pmt_orderid exists in the response
 		if ( empty($parsed_response['pmtq_orderid']) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query response order id does not exist for the order ' . $this->payment_data['pmt_orderid'] . 
-				'. Unable to verify the response.',
+				'Status query response data order id is empty/missing for the order ' . $this->payment_data['pmt_orderid'] . 
+				'. Check Svea Extranet if this order exists at all.',
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
