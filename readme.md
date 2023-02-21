@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0    
 **Tested up to:** 7.1   
-**Stable tag:** 2.3.7          
+**Stable tag:** 2.3.8          
 **WC requires at least:** 6.0  
 **WC tested up to:** 7.4.0      
 **License:** LGPL v. 2.1 or later  
@@ -36,6 +36,9 @@ written for Svea Payments Oy
 [https://www.sveapayments.fi](https://www.sveapayments.fi/)
 
 ## Changelog
+
+### 2.3.8 - 2023-02-21
+* Fixed Part Payment Widget was not activated corretly for the production environment
 
 ### 2.3.7 - 2023-02-18
 * Fixed error on the admin order pager when the payment method is not Svea payment method

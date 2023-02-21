@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.3.7       
+ * Version:     2.3.8         
  * Author:      Svea Development Oy  
  * Author URI:  http://www.sveapayments.fi  
  * Text Domain: wc-maksuturva  
@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.3.7';
+	const VERSION = '2.3.8';
 
 	/**
 	 * Plugin DB version.
@@ -237,7 +237,7 @@ class WC_Maksuturva {
 						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
 						. " data-price=\"" . floatval(wc_get_price_including_tax( $product )) . "\"";
 
-					if(!empty($gateway->get_option('partpayment_widget_use_test'))) {
+					if(!empty($gateway->get_option('partpayment_widget_use_test')) && $gateway->get_option('partpayment_widget')==="partpayment_widget_use_test") {
 						$widgetHtml = $widgetHtml . " data-maksuturva-host=\"https://test1.maksuturva.fi\"";
 					}
 
