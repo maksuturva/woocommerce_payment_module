@@ -2,7 +2,7 @@
 **Contributors:** Svea Payments  
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0    
-**Tested up to:** 7.1   
+**Tested up to:** 6.1.1     
 **Stable tag:** 2.4.0            
 **WC requires at least:** 6.0  
 **WC tested up to:** 7.4.0      
@@ -37,15 +37,13 @@ written for Svea Payments Oy
 
 ## Changelog
 
-<<<<<<< HEAD
-### 2.3.7 - 2023-02-18
-* Fixed error on the admin order pager when the payment method is not Svea payment method
-=======
-### 2.4.0 - 2023-02-18
+### 2.4.0 - 2023-02-20
+* Payment changed to use Svea Payment S2S API instead of the form parameter submission
+* Removed sandbox mode. For testing, use test environment credentials instead
+* Cleaned the pointless missing handling cost value error message when no handling costs are defined
 
 ### 2.3.7 - 2023-02-18
 * Fixed an error on the admin order pager when the payment method is not Svea payment method
->>>>>>> s2s
 
 ### 2.3.6 - 2023-02-08
 * SD2Q-10 Display payment method on order page

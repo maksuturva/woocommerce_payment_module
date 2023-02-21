@@ -68,13 +68,6 @@ class WC_Data_Hasher {
 	const ALGORITHM_MD5 = 'MD5';
 
 	/**
-	 * Sandbox secret key.
-	 *
-	 * @var string SANDBOX_SECRET_KEY
-	 */
-	//const SANDBOX_SECRET_KEY = '11223344556677889900';
-
-	/**
 	 * Seller secret key.
 	 *
 	 * @since 2.1.3
@@ -92,9 +85,6 @@ class WC_Data_Hasher {
 	 */
 	public function __construct( WC_Gateway_Maksuturva $gateway ) {
 		$this->secret_key = $gateway->get_secret_key();
-		//$gateway->is_sandbox()
-		//	? self::SANDBOX_SECRET_KEY
-		//	: $gateway->get_secret_key();
 	}
 
 	/**

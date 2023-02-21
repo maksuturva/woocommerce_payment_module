@@ -29,11 +29,6 @@ configurations as https://test1.maksuturva.fi. All our test environment services
 unlike our production environment services which are found under the domain https://www.maksuturva.fi. 
 Test environment for Extranet services can be found similarly at https://test1.maksuturva.fi/extranet/ and https://test1.maksuturva.fi/dashboard/.
 
-If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, 
-seller id or secret key. In that case you should first check that they are correct and no extra spaces are added 
-in the beginning or end of the inputs.
-
-
 Svea Payments service APIs and Integration Guidelines
 -------------------------------
 Instructions and manuals for integration can be found at:  

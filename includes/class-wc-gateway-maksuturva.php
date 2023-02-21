@@ -573,21 +573,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Is sandbox.
-	 *
-	 * Checks if the sandbox mode is on.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return bool
-	 */
-	/*
-	 public function is_sandbox() {
-		return ( $this->get_option( 'sandbox' ) === 'yes' );
-	}
-	*/
-	
-	/**
 	 * Is Estonia Special Delivery functionality enabled.
 	 *
 	 * Checks if the Estonia delivery functionality is enabled

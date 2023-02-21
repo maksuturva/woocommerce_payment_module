@@ -14,7 +14,7 @@
  * Text Domain: wc-maksuturva  
  * Domain Path: /languages/  
  * Requires at least: 6.0  
- * Tested up to: 7.1  
+ * Tested up to: 6.1.1   
  * License:      LGPL2.1  
  * WC requires at least: 6.0.0   
  * WC tested up to: 7.4.0   
@@ -23,7 +23,7 @@
 /**
  * Svea Payments Gateway Plugin for WooCommerce 6.x, 7.x
  * Plugin developed for Svea Development Oy
- * Last update: 08/02/2023
+ * Last update: 21/02/2023
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
