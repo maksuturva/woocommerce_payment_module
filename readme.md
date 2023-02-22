@@ -42,6 +42,9 @@ written for Svea Payments Oy
 * Removed sandbox mode. For testing, use test environment credentials instead
 * Cleaned the pointless missing handling cost value error message when no handling costs are defined
 
+### 2.3.8 - 2023-02-21
+* Fixed Part Payment Widget was not activated corretly for the production environment
+
 ### 2.3.7 - 2023-02-18
 * Fixed an error on the admin order pager when the payment method is not Svea payment method
 
