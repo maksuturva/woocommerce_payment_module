@@ -237,7 +237,7 @@ class WC_Maksuturva {
 						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
 						. " data-price=\"" . floatval(wc_get_price_including_tax( $product )) . "\"";
 
-					if(!empty($gateway->get_option('partpayment_widget_use_test')) && $gateway->get_option('partpayment_widget')==="partpayment_widget_use_test") {
+					if(!empty($gateway->get_option('partpayment_widget_use_test')) && $gateway->get_option('partpayment_widget_use_test')==="yes") {
 						$widgetHtml = $widgetHtml . " data-maksuturva-host=\"https://test1.maksuturva.fi\"";
 					}
 
