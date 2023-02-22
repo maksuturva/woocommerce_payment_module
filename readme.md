@@ -38,7 +38,7 @@ written for Svea Payments Oy
 ## Changelog
 
 ### 2.3.8 - 2023-02-21
-* Fixed Part Payment Widget was not activated corretly for the production environment
+* Fixed Part Payment Widget was not activated correctly for the production environment
 
 ### 2.3.7 - 2023-02-18
 * Fixed error on the admin order pager when the payment method is not Svea payment method
