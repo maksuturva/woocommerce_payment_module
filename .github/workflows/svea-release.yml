@@ -12,9 +12,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: master
-          path: payment-module
+          path: woocommerce_payment_module
       - name: Create release package
-        run: cd /home/runner/work/woocommerce_payment_module/woocommerce_payment_module && zip -r ./woocommerce_payment_module.zip ./payment-module
+        run: cd /home/runner/work/woocommerce_payment_module/woocommerce_payment_module && zip -r ./woocommerce_payment_module.zip ./woocommerce_payment_module
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
