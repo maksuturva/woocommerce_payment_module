@@ -1,0 +1,26 @@
+name: Svea Release
+
+on:
+  workflow_dispatch:
+    branches: [ "master" ]
+
+jobs:
+  new-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          path: payment-module
+      - name: Create release package
+        run: cd /home/runner/work/woocommerce_payment_module/woocommerce_payment_module && zip -r ./woocommerce_payment_module.zip ./payment-module
+      - name: Upload release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.SVEA_RELEASE_TOKEN }}
+          file: woocommerce_payment_module.zip
+          asset_name: woocommerce_payment_module.zip
+          tag: 2.3.8.1 # TODO variable, was ${{ github.ref }}
+          overwrite: false
+          file_glob: false
