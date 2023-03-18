@@ -1,9 +1,10 @@
 ## Changelog
 
 ### 2.3.9 - 2023-03-18
+* Modified cart fee filtering to allow more fee types
 * New release scripts
 * Documentation update, for example Delivery confirmation is now documented
-* WooCommerce 7.5.0 tested
+* Tested on WooCommerce 7.5
 
 ### 2.3.8 - 2023-02-21
 * Fixed Part Payment Widget was not activated correctly for the production environment

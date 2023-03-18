@@ -395,10 +395,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 				continue;
 			}
 
-			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->wc_gateway->td )) {
-				$this->removed_fees += $fee_total;
-				continue;
-			}
+			//if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->wc_gateway->td )) {
+			//	$this->removed_fees += $fee_total;
+			//	continue;
+			//}
 
 			$this->total_fees += $fee_total;
 
