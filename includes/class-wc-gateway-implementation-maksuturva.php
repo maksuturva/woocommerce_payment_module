@@ -293,7 +293,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			return array(
 				'pmt_row_name'               => __( 'Shipping cost', $this->td ),
-				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_description( $order->get_shipping_method() ),
+				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $order->get_shipping_method() ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 				'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $this->shipping_cost ),
@@ -326,7 +326,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			return array(
 				'pmt_row_name'               => __( 'Discount', $this->td ),
-				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_description( $description ),
+				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $description ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 				'pmt_row_price_gross'        => '-' . WC_Utils_Maksuturva::filter_price( $amount ), // Negative amount.
@@ -389,16 +389,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
 
-			if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === "-") {
-				// don't add fee with empty trimmed description (double fee problem)
+			if ($fee['name'] === __( 'Payment handling fee', $this->wc_gateway->td )) {
 				$this->removed_fees += $fee_total;
 				continue;
 			}
-
-			//if (WC_Utils_Maksuturva::filter_description( $fee['name'] ) === __( 'Payment handling fee', $this->wc_gateway->td )) {
-			//	$this->removed_fees += $fee_total;
-			//	continue;
-			//}
 
 			$this->total_fees += $fee_total;
 
@@ -414,7 +408,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_rows[] = array(
 				'pmt_row_name'               => __( 'Fee', $this->td ),
-				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_description( $fee['name'] ),
+				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $fee['name'] ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 				'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $fee_total ),
