@@ -407,8 +407,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			}
 
 			$fee_rows[] = array(
-				'pmt_row_name'               => __( 'Fee', $this->td ),
-				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $fee['name'] ),
+				'pmt_row_name'               => substr(WC_Utils_Maksuturva::filter_productname( $fee['name'] ), 0, 40),
+				'pmt_row_desc'               => substr(WC_Utils_Maksuturva::filter_productname( $fee['name'] ), 0, 1000),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 				'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $fee_total ),
