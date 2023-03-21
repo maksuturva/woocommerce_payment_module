@@ -573,19 +573,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Is sandbox.
-	 *
-	 * Checks if the sandbox mode is on.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return bool
-	 */
-	public function is_sandbox() {
-		return ( $this->get_option( 'sandbox' ) === 'yes' );
-	}
-
-	/**
 	 * Is Estonia Special Delivery functionality enabled.
 	 *
 	 * Checks if the Estonia delivery functionality is enabled
@@ -698,10 +685,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		$gateway             = new WC_Gateway_Implementation_Maksuturva( $this, $order );
 		$order_handler       = new WC_Order_Compatibility_Handler( $order );
-		$payment_gateway_url = $gateway->get_payment_url();
 		$data                = $gateway->get_field_array();
 		$payment_method		 = isset($data['pmt_paymentmethod']) ? $data['pmt_paymentmethod'] : '';
-
+	
 		// Create the payment for Svea.
 		WC_Payment_Maksuturva::create( array(
 			'order_id'      	=> $order_handler->get_id(),
@@ -712,9 +698,44 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			'status'        	=> WC_Payment_Maksuturva::STATUS_PENDING,
 		) );
 
-		$this->render( 'maksuturva-form', 'frontend',
-		array( 'order' => $order, 'payment_gateway_url' => $payment_gateway_url, 'data' => $data ) );
+		wc_clear_notices();
+		
+		// S2S payment
+		$payment_response = $this->post_s2s_payment($data);
+
+		if (isset($payment_response['pmt_paymenturl'])) {
+			wp_redirect($payment_response['pmt_paymenturl']);
+			return;
+		} else {
+			error_log("Svea payment failed, reason: " . print_r($payment_response, true) );
+			$this->add_notice( __( 'Svea Payments was unable to process the payment. Please try again later.', $this->td ), 'error' );
+			wp_redirect( wc_get_cart_url() );
+			return;
+		}
 	}
+
+	/**
+     * S2S payment and return redirect url to payment service, if successful
+	 * 
+     * @throws WC_Gateway_Maksuturva_Exception
+     * @since 2.4.0
+     *
+     */
+	public function post_s2s_payment($post_fields) {
+
+		$api = new WC_Svea_Api_Request_Handler( $this );
+		$basic_auth = $this->get_seller_id() . ":" . $this->get_secret_key();
+
+		return $api->post(
+			'/NewPaymentExtended.pmt',
+			$post_fields,
+			[
+				WC_Svea_Api_Request_Handler::SETTINGS_BASIC_AUTH_FIELD => $basic_auth
+			]
+		);
+	}
+
+
 
 	/**
 	 * Check response.

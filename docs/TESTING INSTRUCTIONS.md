@@ -10,15 +10,6 @@ or that it fits the needs of you or your web-store. Your web-store software migh
 payment module does not currently utilize or support. GNU LGPL licence allows everyone to modify the module to 
 suit their own needs and the intended platform.
 
-
-SANDBOX TESTING
----------------
-Most simple way to test the payment module is to switch the Sandbox / Testing mode on. In the sandbox mode after 
-confirming the order, the user is directed to a test page where you can see all the passed information and locate 
-possible errors. In the sandbox page you can also test ok-, error-, cancel- and delayed payment -responses that 
-Maksuturva service might send to your service.
-
-
 TESTING WITH A TEST ACCOUNT
 ---------------------------
 For testing the module with actual internet bank, credit card, invoice or part payment services, you can order a 
@@ -37,11 +28,6 @@ For testing our payment service without using actual money, you need to set comm
 configurations as https://test1.maksuturva.fi. All our test environment services are found under that domain 
 unlike our production environment services which are found under the domain https://www.maksuturva.fi. 
 Test environment for Extranet services can be found similarly at https://test1.maksuturva.fi/extranet/ and https://test1.maksuturva.fi/dashboard/.
-
-If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, 
-seller id or secret key. In that case you should first check that they are correct and no extra spaces are added 
-in the beginning or end of the inputs.
-
 
 Svea Payments service APIs and Integration Guidelines
 -------------------------------
