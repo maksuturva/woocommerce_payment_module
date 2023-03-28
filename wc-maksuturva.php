@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.3.9           
+ * Version:     2.3.10             
  * Author:      Svea Development Oy  
  * Author URI:  http://www.sveapayments.fi  
  * Text Domain: wc-maksuturva  
@@ -17,7 +17,7 @@
  * Tested up to: 7.1  
  * License:      LGPL2.1  
  * WC requires at least: 6.0.0   
- * WC tested up to: 7.5.0    
+ * WC tested up to: 7.5.1      
  */
 
 /**
@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.3.9';
+	const VERSION = '2.3.10';
 
 	/**
 	 * Plugin DB version.
@@ -212,6 +212,7 @@ class WC_Maksuturva {
 			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 
+			//  part payment widget hook on single product page
 			add_action( 'woocommerce_before_add_to_cart_quantity', [$this, 'svea_add_part_payment_widget'] );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
@@ -221,22 +222,23 @@ class WC_Maksuturva {
 	/**
 	 * Svea Part Payment injection next to the price
 	 */ 
-	public function svea_add_part_payment_widget( ) {
+	public function svea_add_part_payment_widget() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
-		$product = wc_get_product();
+
 
 		if ($gateway->get_option('partpayment_widget')==="yes") {
+			$product = wc_get_product();
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
 			if (is_product() && isset($product) && !empty($product->get_price())) {
-				$floatPrice = floatval(wc_get_price_including_tax( $product ));
+				$floatPrice = floatval(wc_get_price_including_tax($product));
 
 				if ($floatPrice && $floatPrice>=50.00) {
 					$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
 						. " data-sellerid=\"" . esc_html($widgetSellerId) . "\"" 
-						. " data-locale=\"" . explode( '_', get_user_locale() )[0] . "\""
-						. " data-price=\"" . floatval(wc_get_price_including_tax( $product )) . "\"";
+						. " data-locale=\"" . explode('_', get_user_locale() )[0] . "\""
+						. " data-price=\"" . floatval(wc_get_price_including_tax($product)) . "\"";
 
 					if(!empty($gateway->get_option('partpayment_widget_use_test')) && $gateway->get_option('partpayment_widget_use_test')==="yes") {
 						$widgetHtml = $widgetHtml . " data-maksuturva-host=\"https://test1.maksuturva.fi\"";
@@ -283,7 +285,6 @@ class WC_Maksuturva {
 						. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
 						. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
 						*/
-					//$priceHtml = $price . "<br />" . $widgetHtml;
 					echo $widgetHtml . "<br />";
 				}
 			}
