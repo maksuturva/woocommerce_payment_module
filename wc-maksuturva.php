@@ -212,7 +212,7 @@ class WC_Maksuturva {
 			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 
-			add_filter( 'woocommerce_get_price_html', [$this, 'svea_add_part_payment_widget'], 99, 2 );
+			add_action( 'woocommerce_before_add_to_cart_quantity', [$this, 'svea_add_part_payment_widget'] );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
@@ -221,14 +221,15 @@ class WC_Maksuturva {
 	/**
 	 * Svea Part Payment injection next to the price
 	 */ 
-	public function svea_add_part_payment_widget( $price, $product ) {
+	public function svea_add_part_payment_widget( ) {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
+		$product = wc_get_product();
 
 		if ($gateway->get_option('partpayment_widget')==="yes") {
 			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
-			if (is_product() && isset($price) && isset($product) && !empty($product->get_price())) {
+			if (is_product() && isset($product) && !empty($product->get_price())) {
 				$floatPrice = floatval(wc_get_price_including_tax( $product ));
 
 				if ($floatPrice && $floatPrice>=50.00) {
@@ -282,13 +283,11 @@ class WC_Maksuturva {
 						. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
 						. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
 						*/
-					$priceHtml = $price . "<br />" . $widgetHtml;
-					return $priceHtml;
+					//$priceHtml = $price . "<br />" . $widgetHtml;
+					echo $widgetHtml . "<br />";
 				}
 			}
 		}
-		// otherwise, return the original html price content
-		return $price;
 	}
 
 	/**
