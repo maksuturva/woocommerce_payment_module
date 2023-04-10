@@ -65,7 +65,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	.payment_box.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase div,
 	.payment_box.payment_method_WC_Gateway_Svea_Online_Bank_Payments div,
 	.payment_box.payment_method_WC_Gateway_Svea_Other_Payments div,
-	.payment_box.payment_method_WC_Gateway_Svea_Estonia_Payments div {
+	.payment_box.payment_method_WC_Gateway_Svea_Estonia_Payments div,
+	.payment_box.payment_method_WC_Gateway_Svea_Collated div {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(100px, 30%));
 		grid-gap: 1rem;

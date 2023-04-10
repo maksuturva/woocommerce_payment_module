@@ -390,6 +390,9 @@ class WC_Maksuturva {
 		$this->load_class( 'WC_Gateway_Svea_Estonia_Payments' );
 		$methods[] = WC_Gateway_Svea_Estonia_Payments::class;
 
+		$this->load_class( 'WC_Gateway_Svea_Collated' );
+		$methods[] = WC_Gateway_Svea_Collated::class;
+
 		return $methods;
 	}
 

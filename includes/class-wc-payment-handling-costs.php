@@ -115,6 +115,7 @@ class WC_Payment_Handling_Costs {
 			WC_Gateway_Svea_Online_Bank_Payments::class,
 			WC_Gateway_Svea_Other_Payments::class,
 			WC_Gateway_Svea_Estonia_Payments::class,
+			WC_Gateway_Svea_Collated::class,
 		];
 
 		$chosen_gateway = WC()->session->get( 'chosen_payment_method' );
