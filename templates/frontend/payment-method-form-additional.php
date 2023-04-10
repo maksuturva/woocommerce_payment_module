@@ -119,4 +119,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	#payment .payment_methods li .svea-payment-method-select img {
 		max-height: 100%;
 	}
+
+	#payment .payment_methods li .svea-payment-collated-title {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		grid-gap: 0;
+	}
+	
 </style>

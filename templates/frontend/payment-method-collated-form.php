@@ -40,8 +40,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <div>
+	<div class="svea-payment-collated-title">
+		<?php echo $method_group1['title']; ?>
+	</div>
 	<?php
-		echo "<br /><b>" . $method_group1['title'] . "</b><br />";
 		foreach ( $method_group1['methods'] as $payment_method ) { 
 	?>
 		<div class="svea-payment-method-select" style="clear: both;">
@@ -69,8 +71,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	<?php } ?>
 
+	<div class="svea-payment-collated-title">
+			<?php echo $method_group2['title']; ?>
+	</div>
 	<?php
-		echo "<br /><b>" . $method_group2['title'] . "</b><br />";
 		foreach ( $method_group2['methods'] as $payment_method ) { 
 	?>
 		<div class="svea-payment-method-select" style="clear: both;">
@@ -98,8 +102,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	<?php } ?>
 
+	<div class="svea-payment-collated-title">
+			<?php echo $method_group3['title']; ?>
+	</div>
 	<?php
-		echo "<br /><b>" . $method_group3['title'] . "</b><br />";
 		foreach ( $method_group3['methods'] as $payment_method ) { 
 	?>
 		<div class="svea-payment-method-select" style="clear: both;">
@@ -127,8 +133,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	<?php } ?>
 
+	<div class="svea-payment-collated-title">
+			<?php echo $method_group4['title']; ?>
+	</div>
 	<?php
-		echo "<br /><b>" . $method_group4['title'] . "</b><br />";
 		foreach ( $method_group4['methods'] as $payment_method ) { 
 	?>
 		<div class="svea-payment-method-select" style="clear: both;">
