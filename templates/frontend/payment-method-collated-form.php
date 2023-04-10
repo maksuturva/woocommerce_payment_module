@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div>
 	<?php	
-	if !empty($method_group1['methods']) 
+	if (!empty($method_group1['methods'])) 
 	{
 	?>
 	<div class="svea-payment-collated-title">
@@ -76,7 +76,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php } 
 	}
 
-	if !empty($method_group2['methods']) 
+	if (!empty($method_group2['methods'])) 
 	{
 	?>
 	<div class="svea-payment-collated-title">
@@ -111,7 +111,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php }
 	}
 
-	if !empty($method_group3['methods']) {
+	if (!empty($method_group3['methods'])) 
+	{
 	?>
 	<div class="svea-payment-collated-title">
 			<?php echo $method_group3['title']; ?>
@@ -145,7 +146,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php } 
 	}
 
-	if !empty($method_group4['methods']) {
+	if (!empty($method_group4['methods'])) 
+	{
 	?>
 	<div class="svea-payment-collated-title">
 			<?php echo $method_group4['title']; ?>
