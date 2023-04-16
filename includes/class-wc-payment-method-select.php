@@ -105,7 +105,45 @@ class WC_Payment_Method_Select {
 		];
 
 		if (!$is_outbound_payment_enabled) {
-			$form_params['payment_methods'] = $this->get_payment_type_payment_methods( $payment_type, $price );
+			if ($payment_type=="collated") 
+			{
+				$group_methods = [];
+				$group_methods['group1'] = [];
+				$group_methods['group2'] = [];
+				$group_methods['group3'] = [];
+				$group_methods['group4'] = [];
+				
+				//$form_params['collated_title'] = $this->gateway->get_option('collated_title', "Svea Payments");
+
+				$collated_payment_methods = $this->get_payment_type_payment_methods( $payment_type, $price );
+				
+				foreach ( $collated_payment_methods as $payment_method ) {
+					if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group1_methods', "") )) ) {
+						$group_methods['group1'][] = $payment_method;
+					} else if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group2_methods', "") )) ) {
+						$group_methods['group2'][] = $payment_method;
+					} else if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group3_methods', "") )) ) {
+						$group_methods['group3'][] = $payment_method;
+					} else if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group4_methods', "") )) ) {
+						$group_methods['group4'][] = $payment_method;
+					} 
+				}
+				$form_params['method_group1'] = [
+					'title' => $this->gateway->get_option('collated_group1_title', ""),
+					'methods' => $group_methods['group1'] ];
+				$form_params['method_group2'] = [
+					'title' => $this->gateway->get_option('collated_group2_title', ""),
+					'methods' => $group_methods['group2'] ];
+				$form_params['method_group3'] = [
+					'title' => $this->gateway->get_option('collated_group3_title', ""),
+					'methods' => $group_methods['group3'] ];
+				$form_params['method_group4'] = [
+					'title' => $this->gateway->get_option('collated_group4_title', ""),
+					'methods' => $group_methods['group4'] ];
+			} else {
+				$form_params['payment_methods'] = $this->get_payment_type_payment_methods( $payment_type, $price );
+			}
+			
 			$form_params['terms'] = [
 				'text' => $this->get_terms_text( $price ),
 				'url' => $this->get_terms_url( $price )
@@ -153,45 +191,53 @@ class WC_Payment_Method_Select {
 			'online-bank-payments' => [],
 			'estonia-payments' => [],
 			'other-payments' => [],
+			'collated' => [],
 		];
 
 		if ( isset( $available_payment_methods['ERROR'] ) ) {
 			return $payment_type_payment_methods;
 		}
 
-		foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
-			if ( in_array( substr( $payment_method['code'], 0, 3 ), ['FI0', 'FI1'] ) ) {
-				$payment_type_payment_methods['online-bank-payments'][] = $payment_method;
+		if ($payment_type=="collated") {
+			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
+				$payment_type_payment_methods['collated'][] = $payment_method;
 				unset( $available_payment_methods['paymentmethod'][$key] );
 			}
-		}
-
-		foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
-			if ( in_array( substr($payment_method['code'], 0, 3 ), ['FI5']) || in_array( substr($payment_method['code'], 0, 4 ), ['PIVO']) 
-				|| in_array( substr($payment_method['code'], 0, 4 ), ['SIIR']) ) {
-				$payment_type_payment_methods['credit-card-and-mobile'][] = $payment_method;
-				unset( $available_payment_methods['paymentmethod'][$key] );
+		} else {
+			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
+				if ( in_array( substr( $payment_method['code'], 0, 3 ), ['FI0', 'FI1'] ) ) {
+					$payment_type_payment_methods['online-bank-payments'][] = $payment_method;
+					unset( $available_payment_methods['paymentmethod'][$key] );
+				}
 			}
-		}
 
-		foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
-			if ( in_array(substr($payment_method['code'], 0, 3), ['FI6', 'FI7']) ) {
-				$payment_type_payment_methods['invoice-and-hire-purchase'][] = $payment_method;
-				unset( $available_payment_methods['paymentmethod'][$key] );
+			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
+				if ( in_array( substr($payment_method['code'], 0, 3 ), ['FI5']) || in_array( substr($payment_method['code'], 0, 4 ), ['PIVO']) 
+					|| in_array( substr($payment_method['code'], 0, 4 ), ['SIIR']) ) {
+					$payment_type_payment_methods['credit-card-and-mobile'][] = $payment_method;
+					unset( $available_payment_methods['paymentmethod'][$key] );
+				}
 			}
-		}
 
-		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
-			if ( $payment_method['code']=="EEAC" ) {
-				/* check if plugin has EAAC_logo.png and if exist, use it as payment method logo */
-				$payment_method['imageurl'] = $this->get_eeac_payment_method_logo_url($payment_method['imageurl']);	
-				$payment_type_payment_methods['estonia-payments'][] = $payment_method;
-				unset( $available_payment_methods['paymentmethod'][$key] );
+			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
+				if ( in_array(substr($payment_method['code'], 0, 3), ['FI6', 'FI7']) ) {
+					$payment_type_payment_methods['invoice-and-hire-purchase'][] = $payment_method;
+					unset( $available_payment_methods['paymentmethod'][$key] );
+				}
 			}
-		}
 
-		foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
-			$payment_type_payment_methods['other-payments'][] = $payment_method;
+			foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
+				if ( $payment_method['code']=="EEAC" ) {
+					/* check if plugin has EAAC_logo.png and if exist, use it as payment method logo */
+					$payment_method['imageurl'] = $this->get_eeac_payment_method_logo_url($payment_method['imageurl']);	
+					$payment_type_payment_methods['estonia-payments'][] = $payment_method;
+					unset( $available_payment_methods['paymentmethod'][$key] );
+				}
+			}
+
+			foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
+				$payment_type_payment_methods['other-payments'][] = $payment_method;
+			}
 		}
 
 		return $payment_type_payment_methods[$payment_type];

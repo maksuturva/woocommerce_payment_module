@@ -178,6 +178,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			],
+			/*
 			'maksuturva_encoding' => [
 				'type'        => 'radio',
 				'title'       => __( 'Svea encoding', $this->gateway->td ),
@@ -186,6 +187,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'The encoding used for Svea.', $this->gateway->td ),
 				'options'     => [ 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ],
 			],
+			*/
 			'estonia_settings' => [
 				'title' => __( 'Estonia payment method settings', $this->gateway->td ),
 				'type'  => 'title',
@@ -336,6 +338,74 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', $this->gateway->td ),
 				'default'     => get_option( 'payment_group_estonia_title', '' ),
+			],
+			'collated_settings' => [
+				'title' => __( 'Collated payment methods', $this->gateway->td ),
+				'type'  => 'title',
+				'id'    => 'collated_settings',
+			],
+			'collated_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Collated payment method title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment method title', $this->gateway->td ),
+				'default'     => get_option( 'collated_title', 'Svea Payments' ),
+			],
+			'collated_group1_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 1 title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 1 title', $this->gateway->td ),
+				'default'     => get_option( 'collated_group1_title', 'Online bank payments' ),
+			],
+			'collated_group1_methods' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 1 methods', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 1 methods', $this->gateway->td ),
+				'default'     => get_option( 'collated_group1_methods', 'FI01,FI02,FI03,FI04,FI05,FI06,FI07,FI08,FI09,FI10,FI11,FI12,FI13,FI14,FI15' ),
+			],
+			'collated_group2_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 2 title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 2 title', $this->gateway->td ),
+				'default'     => get_option( 'collated_group2_title', 'Mobile and Card payments' ),
+			],
+			'collated_group2_methods' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 2 methods', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 2 methods', $this->gateway->td ),
+				'default'     => get_option( 'collated_group2_methods', 'FI50,FI51,FI52,FI53,FI54,PIVO,SIIR' ),
+			],
+			'collated_group3_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 3 title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 3 title', $this->gateway->td ),
+				'default'     => get_option( 'collated_group3_title', 'Pay later' ),
+			],
+			'collated_group3_methods' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 3 methods', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 3 methods', $this->gateway->td ),
+				'default'     => get_option( 'collated_group3_methods', 'FI70,FI71,FI72,FIIN,FIPP,FIBI' ),
+			],
+			'collated_group4_title' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 4 title', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 4 title', $this->gateway->td ),
+				'default'     => get_option( 'collated_group4_title', '' ),
+			],
+			'collated_group4_methods' => [
+				'type'        => 'textfield',
+				'title'       => __( 'Payment group 4 methods', $this->gateway->td ),
+				'desc_tip'    => true,
+				'description' => __( 'Collated payment methods, group 4 methods', $this->gateway->td ),
+				'default'     => get_option( 'collated_group4_methods', '' ),
 			],
 		];
 	}
