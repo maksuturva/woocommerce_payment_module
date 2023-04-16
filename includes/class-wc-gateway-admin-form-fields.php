@@ -391,7 +391,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'title'       => __( 'Payment group 3 methods', $this->gateway->td ),
 				'desc_tip'    => true,
 				'description' => __( 'Collated payment methods, group 3 methods', $this->gateway->td ),
-				'default'     => get_option( 'collated_group3_methods', 'FI70;FI71;FI72;FIIN;FIPP;FIBI' ),
+				'default'     => get_option( 'collated_group3_methods', 'FI70,FI71,FI72,FIIN,FIPP,FIBI' ),
 			],
 			'collated_group4_title' => [
 				'type'        => 'textfield',
