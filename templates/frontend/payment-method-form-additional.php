@@ -124,7 +124,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
-		grid-column: span 2;
+		grid-column: 1/-1;
 		font-weight: 600;
 	}
 	
