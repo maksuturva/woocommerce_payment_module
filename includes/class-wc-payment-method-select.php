@@ -105,13 +105,16 @@ class WC_Payment_Method_Select {
 		];
 
 		if (!$is_outbound_payment_enabled) {
-			if ($payment_type=="collated") {
+			if ($payment_type=="collated") 
+			{
 				$group_methods = [];
 				$group_methods['group1'] = [];
 				$group_methods['group2'] = [];
 				$group_methods['group3'] = [];
 				$group_methods['group4'] = [];
 				
+				//$form_params['collated_title'] = $this->gateway->get_option('collated_title', "Svea Payments");
+
 				$collated_payment_methods = $this->get_payment_type_payment_methods( $payment_type, $price );
 				
 				foreach ( $collated_payment_methods as $payment_method ) {
