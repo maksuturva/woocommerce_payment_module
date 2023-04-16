@@ -194,6 +194,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 */
 	public function payment_gateway_disable_empty( $available_gateways ) {
 
+		if (is_admin()) {
+			return;
+		}
+		
 		if ( $this->id === WC_Gateway_Maksuturva::class ) {
 			if (!$this->is_outbound_payment_enabled()) {
 				unset( $available_gateways[$this->id] );
