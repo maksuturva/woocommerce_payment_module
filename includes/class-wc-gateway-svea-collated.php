@@ -40,7 +40,7 @@ class WC_Gateway_Svea_Collated extends WC_Gateway_Maksuturva {
 	 *
 	 * Sets the values for gateway specific parent class properties
 	 *
-	 * @since 2.3.10
+	 * @since 2.4.0
 	 */
 	public function __construct() {
 		$collated_title = parent::get_option('collated_title', 'Svea Payments');
