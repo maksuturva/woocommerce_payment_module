@@ -3,9 +3,6 @@
 ### 2.4.0 - 2023-04-16
 * New Collated payment methods view
 
-### 2.3.11 - 2023-04-16
-* Fixed WC_Payment_Gateway::get_order_total notice when on admin page
-
 ### 2.3.10 - 2023-03-28
 * Part Payment widget changed to use action html output instead of price filtering
 
