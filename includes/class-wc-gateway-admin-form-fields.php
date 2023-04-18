@@ -171,23 +171,6 @@ class WC_Gateway_Admin_Form_Fields {
 										'If the payment method codes are added, the selected delivery confirmation is sent only on ' .
 										'orders paid with specific payment methods.', $this->gateway->td )
 			],
-			'sandbox' => [
-				'type'        => 'checkbox',
-				'title'       => __( 'Sandbox mode', $this->gateway->td ),
-				'default'     => 'no',
-				'description' => __( 'Svea sandbox can be used to test payments. None of the payments will be real.', $this->gateway->td ),
-				'options'     => [ 'yes' => '1', 'no' => '0' ],
-			],
-			/*
-			'maksuturva_encoding' => [
-				'type'        => 'radio',
-				'title'       => __( 'Svea encoding', $this->gateway->td ),
-				'desc_tip'    => true,
-				'default'     => 'UTF-8',
-				'description' => __( 'The encoding used for Svea.', $this->gateway->td ),
-				'options'     => [ 'UTF-8' => 'UTF-8', 'ISO-8859-1' => 'ISO-8859-1' ],
-			],
-			*/
 			'estonia_settings' => [
 				'title' => __( 'Estonia payment method settings', $this->gateway->td ),
 				'type'  => 'title',

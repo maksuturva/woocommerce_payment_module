@@ -2,6 +2,7 @@
 
 ### 2.4.0 - 2023-04-16
 * New Collated payment methods view
+* Sandbox mode removed, see documentation for testing instructions
 
 ### 2.3.10 - 2023-03-28
 * Part Payment widget changed to use action html output instead of price filtering

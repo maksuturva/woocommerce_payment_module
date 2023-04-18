@@ -159,14 +159,6 @@ msgstr "Välitä toimitustieto vain valituista maksutavoista"
 msgid "Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, the selected delivery confirmation is sent on all orders paid with any payment method. If the payment method codes are added, the selected delivery confirmation is sent only on orders paid with specific payment methods."
 msgstr "Lisää maksutapakoodit (esim. FI70,FI71,FI72). Mikäli tämä kenttä jätetään tyhjäksi, toimitustiedot välitetään kaikista tilauksista riippumatta maksutavasta. Jos maksutapakoodit lisätään, toimitustiedot välitetään ainoastaan tilauksista, jotka on maksettu valituilla maksutavoilla."
 
-#: includes/class-wc-gateway-admin-form-fields.php:160
-msgid "Sandbox mode"
-msgstr "Käytä yleistä testitunnusta"
-
-#: includes/class-wc-gateway-admin-form-fields.php:162
-msgid "Svea sandbox can be used to test payments. None of the payments will be real."
-msgstr "Sandbox-moodia voidaan käyttää testaamiseen. Mitään maksuja ei suoriteta."
-
 #: includes/class-wc-gateway-admin-form-fields.php:167
 msgid "Svea encoding"
 msgstr "Merkistöenkoodaus"

@@ -44,13 +44,6 @@ require_once 'class-wc-utils-maksuturva.php';
 class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturva {
 
 	/**
-	 * Sandbox seller ID.
-	 *
-	 * @var string SANDBOX_SELLER_ID
-	 */
-	const SANDBOX_SELLER_ID = 'testikauppias';
-
-	/**
 	 * Shipping cost.
 	 *
 	 * @since 2.0.0
@@ -98,7 +91,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	public function __construct( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
 		$this->wc_gateway = $gateway;
 		$this->set_base_url( $gateway->get_gateway_url() );
-		$this->seller_id  = ( $gateway->is_sandbox() ? self::SANDBOX_SELLER_ID : $gateway->get_seller_id() );
+		$this->seller_id  = ( $gateway->get_seller_id() );
 		$this->set_encoding( $gateway->get_encoding() );
 		$this->set_payment_id_prefix( $gateway->get_payment_id_prefix() );
 		$this->set_payment_data( $this->create_payment_data( $gateway, $order ) );

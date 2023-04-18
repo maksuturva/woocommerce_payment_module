@@ -192,12 +192,11 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * @return array
 	 */
-	public function payment_gateway_disable_empty( $available_gateways ) {
-		/*
+	public function payment_gateway_disable_empty( $available_gateways ) 
+	{
 		if (empty(WC()->cart)) {
 			return;
 		}
-		*/
 
 		if ( $this->id === WC_Gateway_Maksuturva::class ) {
 			if (!$this->is_outbound_payment_enabled()) {
@@ -212,7 +211,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$payment_method_type = str_replace( '_', '-', $payment_method_type );
 
 		try {
-			//TODO: Collated
 			$payment_methods = $this->payment_method_select->get_payment_type_payment_methods(
 				$payment_method_type,
 				WC_Payment_Gateway::get_order_total()
@@ -588,7 +586,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	public function is_sandbox() {
-		return ( $this->get_option( 'sandbox' ) === 'yes' );
+		return false;
+		//return ( $this->get_option( 'sandbox' ) === 'yes' );
 	}
 
 	/**
