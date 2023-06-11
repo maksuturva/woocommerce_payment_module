@@ -225,7 +225,7 @@ class WC_Maksuturva {
 		$gateway = new WC_Gateway_Maksuturva();
 
 		if ($gateway->get_option('partpayment_widget_location')==1) {
-			svea_add_part_payment_widget();
+			$this->svea_add_part_payment_widget();
 		}
 	}
 
@@ -234,7 +234,7 @@ class WC_Maksuturva {
 		$gateway = new WC_Gateway_Maksuturva();
 
 		if ($gateway->get_option('partpayment_widget_location')==2) {
-			svea_add_part_payment_widget();
+			$this->svea_add_part_payment_widget();
 		}
 	}
 
