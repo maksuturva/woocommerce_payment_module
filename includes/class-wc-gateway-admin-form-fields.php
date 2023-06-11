@@ -205,6 +205,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', $this->gateway->td ),
 				'options'     => [ 'yes' => '1', 'no' => '0' ],
 			],
+			'partpayment_widget_mini' => [
+				'type'        => 'checkbox',
+				'title'       => __( 'Use mini-layout for the widget', $this->gateway->td ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'description' => __( 'Enables mini layout user interface for the part payment widget.', $this->gateway->td ),
+				'options'     => [ 'yes' => '1', 'no' => '0' ],
+			],
 			'ppw_campaign_text_fi' => [
 				'type'        => 'textfield',
 				'title'       => __( 'Campaign text in Finnish', $this->gateway->td ),

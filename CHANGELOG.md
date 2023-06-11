@@ -1,5 +1,8 @@
 ## Changelog
 
+### 2.4.1 - 2023-06-11
+* Mini part payment widget option added
+
 ### 2.4.0 - 2023-04-18
 * New Collated payment methods view
 * Sandbox mode removed, see documentation for testing instructions

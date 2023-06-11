@@ -244,6 +244,10 @@ class WC_Maksuturva {
 						$widgetHtml = $widgetHtml . " data-maksuturva-host=\"https://test1.maksuturva.fi\"";
 					}
 
+					if(!empty($gateway->get_option('partpayment_widget_mini')) && $gateway->get_option('partpayment_widget_mini')==="yes") {
+						$widgetHtml = $widgetHtml . " data-layout=\"mini\"";
+					}
+
 					if(!empty($gateway->get_option('ppw_campaign_text_fi'))) {
 						$widgetHtml = $widgetHtml . " data-campaign-text-fi=\"" . esc_html($gateway->get_option('ppw_campaign_text_fi')) . "\"";
 					}
