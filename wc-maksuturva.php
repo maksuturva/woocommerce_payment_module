@@ -214,19 +214,26 @@ class WC_Maksuturva {
 
 			//  part payment widget hook on single product page
 			add_action( 'woocommerce_before_add_to_cart_quantity', [$this, 'svea_part_payment_widget_before_add_to_cart'] );
+			add_action( 'woocommerce_after_add_to_cart_button', [$this, 'svea_part_payment_widget_after_add_to_cart'] );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
 	}
 
-	/**  
-	 * 
-	*/
 	public function svea_part_payment_widget_before_add_to_cart() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
-		error_log("############## ". $gateway->get_option('partpayment_widget_location'));
-		if ($gateway->get_option('partpayment_widget_location')=="Before add to cart") {
+
+		if ($gateway->get_option('partpayment_widget_location')==1) {
+			svea_add_part_payment_widget();
+		}
+	}
+
+	public function svea_part_payment_widget_after_add_to_cart() {
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
+
+		if ($gateway->get_option('partpayment_widget_location')==2) {
 			svea_add_part_payment_widget();
 		}
 	}
