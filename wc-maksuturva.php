@@ -17,7 +17,7 @@
  * Tested up to: 6.2.2  
  * License:      LGPL2.1  
  * WC requires at least: 6.0.0   
- * WC tested up to: 7.7.1         
+ * WC tested up to: 7.7.2           
  */
 
 /**
@@ -213,84 +213,92 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
 
 			//  part payment widget hook on single product page
-			add_action( 'woocommerce_before_add_to_cart_quantity', [$this, 'svea_add_part_payment_widget'] );
+			add_action( 'woocommerce_before_add_to_cart_quantity', [$this, 'svea_part_payment_widget_before_add_to_cart'] );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
 	}
 
+	/**  
+	 * 
+	*/
+	public function svea_part_payment_widget_before_add_to_cart() {
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
+		if ($gateway->get_option('partpayment_widget_location')==="beforeadd") {
+			svea_add_part_payment_widget();
+		}
+	}
+
 	/**
-	 * Svea Part Payment injection next to the price
+	 * Add Svea Part Payment Widget to the page
 	 */ 
 	public function svea_add_part_payment_widget() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
 
+		$product = wc_get_product();
+		$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
-		if ($gateway->get_option('partpayment_widget')==="yes") {
-			$product = wc_get_product();
-			$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
+		if (is_product() && isset($product) && !empty($product->get_price())) {
+			$floatPrice = floatval(wc_get_price_including_tax($product));
 
-			if (is_product() && isset($product) && !empty($product->get_price())) {
-				$floatPrice = floatval(wc_get_price_including_tax($product));
+			if ($floatPrice && $floatPrice>=50.00) {
+				$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
+					. " data-sellerid=\"" . esc_html($widgetSellerId) . "\"" 
+					. " data-locale=\"" . explode('_', get_user_locale() )[0] . "\""
+					. " data-price=\"" . floatval(wc_get_price_including_tax($product)) . "\"";
 
-				if ($floatPrice && $floatPrice>=50.00) {
-					$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
-						. " data-sellerid=\"" . esc_html($widgetSellerId) . "\"" 
-						. " data-locale=\"" . explode('_', get_user_locale() )[0] . "\""
-						. " data-price=\"" . floatval(wc_get_price_including_tax($product)) . "\"";
-
-					if(!empty($gateway->get_option('partpayment_widget_use_test')) && $gateway->get_option('partpayment_widget_use_test')==="yes") {
-						$widgetHtml = $widgetHtml . " data-maksuturva-host=\"https://test1.maksuturva.fi\"";
-					}
-
-					if(!empty($gateway->get_option('partpayment_widget_mini')) && $gateway->get_option('partpayment_widget_mini')==="yes") {
-						$widgetHtml = $widgetHtml . " data-layout=\"mini\"";
-					}
-
-					if(!empty($gateway->get_option('ppw_campaign_text_fi'))) {
-						$widgetHtml = $widgetHtml . " data-campaign-text-fi=\"" . esc_html($gateway->get_option('ppw_campaign_text_fi')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_campaign_text_sv'))) {
-						$widgetHtml = $widgetHtml . " data-campaign-text-sv=\"" . esc_html($gateway->get_option('ppw_campaign_text_sv')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_campaign_text_en'))) {
-						$widgetHtml = $widgetHtml . " data-campaign-text-en=\"" . esc_html($gateway->get_option('ppw_campaign_text_en')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_fallback_text_fi'))) {
-						$widgetHtml = $widgetHtml . " data-fallback-text-fi=\"" . esc_html($gateway->get_option('ppw_fallback_text_fi')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_fallback_text_sv'))) {
-						$widgetHtml = $widgetHtml . " data-fallback-text-sv=\"" . esc_html($gateway->get_option('ppw_fallback_text_sv')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_fallback_text_en'))) {
-						$widgetHtml = $widgetHtml . " data-fallback-text-en=\"" . esc_html($gateway->get_option('ppw_fallback_text_en')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_border_color'))) {
-						$widgetHtml = $widgetHtml . " data-border-color=\"" . esc_html($gateway->get_option('ppw_border_color')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_text_color'))) {
-						$widgetHtml = $widgetHtml . " data-text-color=\"" . esc_html($gateway->get_option('ppw_text_color')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_highlight_color'))) {
-						$widgetHtml = $widgetHtml . " data-highlight-color=\"" . esc_html($gateway->get_option('ppw_highlight_color')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_active_color'))) {
-						$widgetHtml = $widgetHtml . " data-active-color=\"" . esc_html($gateway->get_option('ppw_active_color')) . "\"";
-					}
-					if(!empty($gateway->get_option('ppw_price_thresholds')) && $this->validate_price_threshold($gateway->get_option('ppw_price_thresholds')) ) {
-
-						$widgetHtml = $widgetHtml . " data-threshold-prices=\"[" . esc_html($gateway->get_option('ppw_price_thresholds')) . "]\"";
-					}
-					$widgetHtml = $widgetHtml . "></script>";
-						/*
-						. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
-						. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
-						. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
-						. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
-						*/
-					echo $widgetHtml . "<br />";
+				if(!empty($gateway->get_option('partpayment_widget_use_test')) && $gateway->get_option('partpayment_widget_use_test')==="yes") {
+					$widgetHtml = $widgetHtml . " data-maksuturva-host=\"https://test1.maksuturva.fi\"";
 				}
+
+				if(!empty($gateway->get_option('partpayment_widget_mini')) && $gateway->get_option('partpayment_widget_mini')==="yes") {
+					$widgetHtml = $widgetHtml . " data-layout=\"mini\"";
+				}
+
+				if(!empty($gateway->get_option('ppw_campaign_text_fi'))) {
+					$widgetHtml = $widgetHtml . " data-campaign-text-fi=\"" . esc_html($gateway->get_option('ppw_campaign_text_fi')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_campaign_text_sv'))) {
+					$widgetHtml = $widgetHtml . " data-campaign-text-sv=\"" . esc_html($gateway->get_option('ppw_campaign_text_sv')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_campaign_text_en'))) {
+					$widgetHtml = $widgetHtml . " data-campaign-text-en=\"" . esc_html($gateway->get_option('ppw_campaign_text_en')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_fallback_text_fi'))) {
+					$widgetHtml = $widgetHtml . " data-fallback-text-fi=\"" . esc_html($gateway->get_option('ppw_fallback_text_fi')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_fallback_text_sv'))) {
+					$widgetHtml = $widgetHtml . " data-fallback-text-sv=\"" . esc_html($gateway->get_option('ppw_fallback_text_sv')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_fallback_text_en'))) {
+					$widgetHtml = $widgetHtml . " data-fallback-text-en=\"" . esc_html($gateway->get_option('ppw_fallback_text_en')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_border_color'))) {
+					$widgetHtml = $widgetHtml . " data-border-color=\"" . esc_html($gateway->get_option('ppw_border_color')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_text_color'))) {
+					$widgetHtml = $widgetHtml . " data-text-color=\"" . esc_html($gateway->get_option('ppw_text_color')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_highlight_color'))) {
+					$widgetHtml = $widgetHtml . " data-highlight-color=\"" . esc_html($gateway->get_option('ppw_highlight_color')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_active_color'))) {
+					$widgetHtml = $widgetHtml . " data-active-color=\"" . esc_html($gateway->get_option('ppw_active_color')) . "\"";
+				}
+				if(!empty($gateway->get_option('ppw_price_thresholds')) && $this->validate_price_threshold($gateway->get_option('ppw_price_thresholds')) ) {
+
+					$widgetHtml = $widgetHtml . " data-threshold-prices=\"[" . esc_html($gateway->get_option('ppw_price_thresholds')) . "]\"";
+				}
+				$widgetHtml = $widgetHtml . "></script>";
+					/*
+					. " data-locale=\"fi\" data-campaign-text-fi=\"Campaign text FI\" data-campaign-text-sv=\"Campaign text SV\""
+					. " data-campaign-text-en=\"Campaign text EN\" data-fallback-text-fi=\"Fallback text suomeksi\""
+					. " data-fallback-text-sv=\"Fallback text på svenska\" data-fallback-text-en=\"Fallback text In english\""
+					. " data-threshold-prices=\"[[600, 6], [400, 12], [100, 24], [1000, 13]]\"></script>";
+					*/
+				echo $widgetHtml . "<br />";
 			}
 		}
 	}

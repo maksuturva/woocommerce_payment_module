@@ -189,13 +189,13 @@ class WC_Gateway_Admin_Form_Fields {
 				'type'  => 'title',
 				'id'    => 'partpayment_widget_settings',
 			],
-			'partpayment_widget' => [
-				'type'        => 'checkbox',
+			'partpayment_widget_location' => [
+				'type'        => 'select',
 				'title'       => __( 'Part Payment widget on Product page', $this->gateway->td ),
-				'default'     => 'no',
 				'desc_tip'    => true,
-				'description' => __( 'Enable the Part Payment widget on the product page.', $this->gateway->td ),
-				'options'     => [ 'yes' => '1', 'no' => '0' ],
+				'default'     => '',
+				'description' => __( 'Select Svea Part Payment Widget location on product page.', $this->gateway->td ),
+				'options'     => $this->get_widget_locations()
 			],
 			'partpayment_widget_use_test' => [
 				'type'        => 'checkbox',
@@ -446,6 +446,18 @@ class WC_Gateway_Admin_Form_Fields {
 		$tax_classes = $tax_classes + ['' => __( 'Standard', 'woocommerce' )];
 		asort($tax_classes);
 		return $tax_classes;
+	}
+
+	/**
+	 * Get list of possible locations for part payment widget
+	 * 
+	 * @since 2.4.1
+	 */
+	public function get_widget_locations() {
+		$widget_locations = array(); 
+		$widget_locations = $widget_locations + ['' => __( 'Disabled', 'disabled' )];
+		$widget_locations = $widget_locations + ['' => __( 'Before add to cart button', 'beforeadd' )];
+		return $widget_locations;
 	}
 
 	/**
