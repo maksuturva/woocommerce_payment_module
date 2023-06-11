@@ -454,9 +454,7 @@ class WC_Gateway_Admin_Form_Fields {
 	 * @since 2.4.1
 	 */
 	public function get_widget_locations() {
-		$widget_locations = array(); 
-		$widget_locations = $widget_locations + ['' => __( 'Disabled', 'disabled' )];
-		$widget_locations = $widget_locations + ['' => __( 'Before add to cart button', 'beforeadd' )];
+		$widget_locations = array("Disabled", "Before add to cart"); 
 		return $widget_locations;
 	}
 

@@ -225,7 +225,8 @@ class WC_Maksuturva {
 	public function svea_part_payment_widget_before_add_to_cart() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
-		if ($gateway->get_option('partpayment_widget_location')==="beforeadd") {
+		error_log("############## ". $gateway->get_option('partpayment_widget_location'));
+		if ($gateway->get_option('partpayment_widget_location')=="Before add to cart") {
 			svea_add_part_payment_widget();
 		}
 	}
