@@ -186,6 +186,8 @@ class WC_Payment_Method_Select {
 		error_log("########## get_payment_type_payment_methods");
 		if (isset($price) && $price=0.00 && is_product()) {
 			error_log("##### SKIPPING PMT");
+		} else {
+			error_log("#### " . print_r($price, true));
 		}
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 
@@ -255,7 +257,6 @@ class WC_Payment_Method_Select {
 	 * @return string
 	 */
 	private function get_terms_text( $price ) {
-		error_log("### TERMS");
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 		if (isset($available_payment_methods['termtext']))
 			return $available_payment_methods['termstext'];
