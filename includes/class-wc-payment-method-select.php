@@ -114,7 +114,7 @@ class WC_Payment_Method_Select {
 				$group_methods['group4'] = [];
 				
 				//$form_params['collated_title'] = $this->gateway->get_option('collated_title', "Svea Payments");
-
+				error_log ("###### COLLATED");
 				$collated_payment_methods = $this->get_payment_type_payment_methods( $payment_type, $price );
 				
 				foreach ( $collated_payment_methods as $payment_method ) {
@@ -141,6 +141,7 @@ class WC_Payment_Method_Select {
 					'title' => $this->gateway->get_option('collated_group4_title', ""),
 					'methods' => $group_methods['group4'] ];
 			} else {
+				error_log ("###### INIT SELECT");
 				$form_params['payment_methods'] = $this->get_payment_type_payment_methods( $payment_type, $price );
 			}
 			
@@ -184,8 +185,8 @@ class WC_Payment_Method_Select {
 	public function get_payment_type_payment_methods( $payment_type, $price ) {
 
 		error_log("########## get_payment_type_payment_methods");
-		if (!isset($price)) {
-			error_log("##### SKIPPING PMT. Price not set.");
+		if (isset($price) && $price=0) {
+			error_log("##### SKIPPING PMT. ");
 			return;
 		}
 

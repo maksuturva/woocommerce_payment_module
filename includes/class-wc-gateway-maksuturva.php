@@ -194,6 +194,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 */
 	public function payment_gateway_disable_empty( $available_gateways ) 
 	{
+		error_log ("###### DISABLE EMPTY");
+		
 		if (empty(WC()->cart)) {
 			return;
 		}
