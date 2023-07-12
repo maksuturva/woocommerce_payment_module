@@ -156,18 +156,14 @@ class WC_Svea_Api_Request_Handler {
 	 * @param array $data Data to post.
 	 * @param array $settings Settings for handling post request creation and result validation.
 	 *
-	 * @since 2.1.2
+	 * @since 2.4.2
 	 *
 	 * @return array
 	 */
 	public function get( $route, $data, $settings = [] ) {
 
 		$payment_api = $this->gateway->get_gateway_url();
-
-		error_log("### DATA " . print_r($data, true) );
 		$request_url = $payment_api . $route . "?" . http_build_query($data);
-		error_log("### REQUEST " . print_r($request_url, true) );
-
 		$request = curl_init( $request_url );
 
 		curl_setopt( $request, CURLOPT_HEADER, 0 );
@@ -178,7 +174,6 @@ class WC_Svea_Api_Request_Handler {
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 
 		$response = curl_exec( $request );
-		error_log("### RESPONSE " . print_r($response, true) );
 
 		curl_close( $request );
 

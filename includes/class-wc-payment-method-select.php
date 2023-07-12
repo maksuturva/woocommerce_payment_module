@@ -183,6 +183,7 @@ class WC_Payment_Method_Select {
 	 */
 	public function get_payment_type_payment_methods( $payment_type, $price ) {
 
+		error_log("########## get_payment_type_payment_methods");
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 
 		$payment_type_payment_methods = [
@@ -251,6 +252,7 @@ class WC_Payment_Method_Select {
 	 * @return string
 	 */
 	private function get_terms_text( $price ) {
+		error_log("### TERMS");
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 		if (isset($available_payment_methods['termtext']))
 			return $available_payment_methods['termstext'];
@@ -266,6 +268,7 @@ class WC_Payment_Method_Select {
 	 * @return string
 	 */
 	private function get_terms_url( $price ) {
+		error_log("### TERMS URL");
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 		if (isset($available_payment_methods['termsurl']))
 			return $available_payment_methods['termsurl'];
@@ -281,6 +284,7 @@ class WC_Payment_Method_Select {
 	 * @return string
 	 */
 	public function get_payment_method_name( $payment_method_code ) {
+		error_log("### PMT NAME");
 		$available_payment_methods = $this->get_available_payment_methods( 10 );
 		if (isset($available_payment_methods['paymentmethod'])) {
 			foreach ($available_payment_methods['paymentmethod'] as $method) {
