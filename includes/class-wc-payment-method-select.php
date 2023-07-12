@@ -334,7 +334,7 @@ class WC_Payment_Method_Select {
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
 
-		$result_methods = $api->post(
+		$result_methods = $api->get(
 			self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,
 			$post_fields
 		);
