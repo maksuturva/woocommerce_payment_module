@@ -58,7 +58,7 @@ class WC_Utils_Maksuturva {
 	 * @return string
 	 */
 	public static function filter_productname( $string ) {
-		return preg_replace( "/[^\p{L}\p{N}\s]/u", "", $string );
+		return preg_replace( "/[^\p{L}\p{N}\s]/u", "_", $string );
 	}
 
 	/**
