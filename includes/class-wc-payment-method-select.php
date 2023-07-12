@@ -184,8 +184,13 @@ class WC_Payment_Method_Select {
 	public function get_payment_type_payment_methods( $payment_type, $price ) {
 
 		error_log("########## get_payment_type_payment_methods");
+		if (!isset($price)) {
+			error_log("##### SKIPPING PMT. Price not set.");
+			return;
+		}
 		if (isset($price) && $price=0.00 && is_product()) {
 			error_log("##### SKIPPING PMT");
+			return;
 		} else {
 			error_log("#### " . print_r($price, true));
 		}
