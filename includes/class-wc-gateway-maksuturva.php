@@ -149,8 +149,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
 		
-		// see Github issue #23, @since 2.1.7
-		if (!is_admin()) {
+		// see Github issue #23, @since 2.1.7, 2.4.2 added is checkout
+		if (!is_admin() && is_checkout()) {
 			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
 		}
 
@@ -195,7 +195,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	public function payment_gateway_disable_empty( $available_gateways ) 
 	{
 		error_log ("###### DISABLE EMPTY");
-		
+
 		if (empty(WC()->cart)) {
 			return;
 		}
