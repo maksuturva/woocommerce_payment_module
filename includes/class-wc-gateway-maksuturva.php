@@ -235,8 +235,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			$this->render( 'not-supported-banner', 'admin' );
 		}
 
+		$svealogo = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
+
 		?>
 		<h2>Moi</h2>
+		<img src="<?php echo $svealogo ?>">
+		<button id="diagnostics">Diagnostics</button>
 		<?php
 
 		parent::admin_options();
