@@ -164,9 +164,9 @@ class WC_Svea_Api_Request_Handler {
 
 		$payment_api = $this->gateway->get_gateway_url();
 
-		error_log("### DATA " . print_r($data, true));
+		error_log("### DATA " . print_r($data, true) );
 		$request_url = $payment_api . $route . "?" . http_build_query($data);
-		error_log("### REQUEST " . print_r($request_url, true));
+		error_log("### REQUEST " . print_r($request_url, true) );
 
 		$request = curl_init( $request_url );
 
@@ -177,6 +177,7 @@ class WC_Svea_Api_Request_Handler {
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 
 		$response = curl_exec( $request );
+		error_log("### RESPONSE " . print_r($response, true) );
 
 		curl_close( $request );
 
