@@ -188,12 +188,10 @@ class WC_Payment_Method_Select {
 			error_log("##### SKIPPING PMT. Price not set.");
 			return;
 		}
-		if (isset($price) && $price=0.00 && is_product()) {
-			error_log("##### SKIPPING PMT");
-			return;
-		} else {
-			error_log("#### " . print_r($price, true));
-		}
+
+		error_log(" #### PMT TYPE ". print_r($payment_type, true) );
+		error_log(" #### PMT PRICE ". print_r($price, true) );
+		
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 
 		$payment_type_payment_methods = [
