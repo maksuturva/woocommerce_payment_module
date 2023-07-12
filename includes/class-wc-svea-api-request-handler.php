@@ -173,6 +173,7 @@ class WC_Svea_Api_Request_Handler {
 		curl_setopt( $request, CURLOPT_HEADER, 0 );
 		curl_setopt( $request, CURLOPT_FOLLOWLOCATION, 1 );
 		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
+		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 20 );
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 
