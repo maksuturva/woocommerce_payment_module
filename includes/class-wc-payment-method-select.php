@@ -114,7 +114,6 @@ class WC_Payment_Method_Select {
 				$group_methods['group4'] = [];
 				
 				//$form_params['collated_title'] = $this->gateway->get_option('collated_title', "Svea Payments");
-
 				$collated_payment_methods = $this->get_payment_type_payment_methods( $payment_type, $price );
 				
 				foreach ( $collated_payment_methods as $payment_method ) {
@@ -334,7 +333,7 @@ class WC_Payment_Method_Select {
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
 
-		$result_methods = $api->post(
+		$result_methods = $api->get(
 			self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,
 			$post_fields
 		);

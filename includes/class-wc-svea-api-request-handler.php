@@ -150,6 +150,39 @@ class WC_Svea_Api_Request_Handler {
 	}
 
 	/**
+	 * Get request to Svea payment api without hashing
+	 * 
+	 * @param string $route Route.
+	 * @param array $data Data to post.
+	 * @param array $settings Settings for handling post request creation and result validation.
+	 *
+	 * @since 2.4.2
+	 *
+	 * @return array
+	 */
+	public function get( $route, $data, $settings = [] ) {
+
+		$payment_api = $this->gateway->get_gateway_url();
+		$request_url = $payment_api . $route . "?" . http_build_query($data);
+		$request = curl_init( $request_url );
+
+		curl_setopt( $request, CURLOPT_HEADER, 0 );
+		curl_setopt( $request, CURLOPT_FOLLOWLOCATION, 1 );
+		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
+		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 20 );
+		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
+
+		$response = curl_exec( $request );
+
+		curl_close( $request );
+
+		$array_response = $this->parse_response( $response );
+
+		return $array_response;
+	}
+
+	/**
 	 * Generates a hash based on data.
 	 * 
 	 * @param array $data Data.

@@ -149,8 +149,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
 		
-		// see Github issue #23, @since 2.1.7
-		if (!is_admin()) {
+		// see Github issue #23, @since 2.1.7, 2.4.2 added is checkout boolean
+		if (!is_admin() && is_checkout()) {
 			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
 		}
 
@@ -234,7 +234,18 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		if ( ! WC_Maksuturva::get_instance()->is_currency_supported() ) {
 			$this->render( 'not-supported-banner', 'admin' );
 		}
+
+		$svealogo = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
+		?>
+		<img src="<?php echo $svealogo ?>" />
+		<?php
 		parent::admin_options();
+		
+		/***
+		 * <p>You may use diagnostics functionality to send additional webstore platform information to Svea Payments
+		 * when contacting Svea Payments technical support. A copy of this information can be found on your log files.</p>
+		 * <button id="diagnostics">Send diagnostics</button>
+		 */
 	}
 
 	/**

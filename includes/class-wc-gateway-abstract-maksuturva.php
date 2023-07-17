@@ -227,6 +227,15 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	protected $base_url_status_query = 'https://www.maksuturva.fi/PaymentStatusQuery.pmt';
 
 	/**
+	 * Status query URL.
+	 *
+	 * @since 2.4.2
+	 *
+	 * @var string $base_url_diagnostics Gateway URL for module diagnostics data.
+	 */
+	protected $base_url_module_diagnostics = 'https://www.maksuturva.fi/ModuleDiagnostics.pmt';
+
+	/**
 	 * The WC_Payment_Gateway extension.
 	 *
 	 * @since 2.1.3
@@ -881,7 +890,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	public function status_query( $data = array() ) {
 		if ( ! function_exists( 'curl_init' ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'cURL is needed in order to communicate with the maksuturva server. Check your PHP installation.',
+				'cURL is needed in order to communicate with the Svea Payments API. Check your PHP installation.',
 				self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED
 			);
 		}
@@ -921,7 +930,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $request, CURLOPT_POST, 1 );
 		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 120 );
+		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 30 );
 		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
 		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
 		$res = curl_exec( $request );
@@ -1015,6 +1024,52 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 
 		// Return the response - verified.
 		return $parsed_response;
+	}
+
+	/**
+	 * 
+	 * @since 2.4.2
+	 */
+	public function diagnostic_request() {
+		if ( ! function_exists( 'curl_init' ) ) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'cURL is needed in order to communicate with the Svea Payments API. Check your PHP installation.',
+				self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED
+			);
+		}
+		ob_start () ;
+		phpinfo (INFO_MODULES) ;
+		$infophp = ob_get_contents () ;
+		ob_end_clean () ;
+		//TODO: Sanitize
+		
+		error_log("Svea Payment module diagnostics data: " . $infophp);
+
+		$diagnostics_data = array(
+			'diag_version'       => '0001',
+			'diag_sellerid'      => $this -> seller_id,
+			'diag_phpinfo'		 => $infophp,
+		);
+
+		// Now the request is made to maksuturva.
+		$request = curl_init( $this->base_url_module_diagnostics );
+		curl_setopt( $request, CURLOPT_HEADER, 0 );
+		curl_setopt( $request, CURLOPT_FRESH_CONNECT, 1 );
+		curl_setopt( $request, CURLOPT_FORBID_REUSE, 1 );
+		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $request, CURLOPT_POST, 1 );
+		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
+		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 30 );
+		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
+		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->diagnostics_data );
+		$res = curl_exec( $request );
+
+		if ( false === $res ) {
+			throw new WC_Gateway_Maksuturva_Exception(
+				'Failed to communicate with Svea Payments API. Please check the network connection.'
+			);
+		}
+		curl_close( $request );
 	}
 
 	/**
