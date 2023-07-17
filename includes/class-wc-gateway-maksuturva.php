@@ -240,11 +240,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		<img src="<?php echo $svealogo ?>" />
 		<?php
 		parent::admin_options();
-		?>
-		<p>You may use diagnostics functionality to send additional webstore platform information to Svea Payments
-		when contacting Svea Payments technical support. A copy of this information can be found on log files.</p>
-		<button id="diagnostics">Diagnostics</button>
-		<?php
+		
+		/***
+		 * <p>You may use diagnostics functionality to send additional webstore platform information to Svea Payments
+		 * when contacting Svea Payments technical support. A copy of this information can be found on your log files.</p>
+		 * <button id="diagnostics">Send diagnostics</button>
+		 */
 	}
 
 	/**
