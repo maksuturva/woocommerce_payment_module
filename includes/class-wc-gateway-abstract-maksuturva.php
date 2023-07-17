@@ -1030,6 +1030,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * 
 	 * @since 2.4.2
 	 */
+
+	 /*
 	public function diagnostic_request() {
 		if ( ! function_exists( 'curl_init' ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
@@ -1071,6 +1073,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		}
 		curl_close( $request );
 	}
+	*/
 
 	/**
 	 * Get fields as an array.
