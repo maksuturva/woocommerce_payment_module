@@ -1,3 +1,3 @@
-### 2.4.1 - 2023-06-11
-* Mini part payment widget option added
-* Optional locations for part payment widget
+### 2.4.2 - 2023-07-17
+* Fixed payment method query not to unintentionally flood requests  
+* Product name sanitation changed to convert special characters to underscore characters
