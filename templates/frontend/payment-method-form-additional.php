@@ -98,8 +98,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	#payment .payment_methods li .svea-payment-method-select.checked label {
         border: 2px solid #00aece;
-		display: flex;
-   		align-items:center;
     }
 
 	#payment .payment_methods li .svea-payment-method-select-radio {
