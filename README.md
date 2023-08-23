@@ -3,7 +3,7 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0    
 **Tested up to:** 6.3       
-**Stable tag:** 2.4.2        
+**Stable tag:** 2.4.3          
 **WC requires at least:** 7.0  
 **WC tested up to:** 8.0.1              
 **License:** LGPL v. 2.1 or later  

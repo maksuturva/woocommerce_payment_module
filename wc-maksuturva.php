@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.4.2';
+	const VERSION = '2.4.3';
 
 	/**
 	 * Plugin DB version.
@@ -395,23 +395,23 @@ class WC_Maksuturva {
 			return $methods;
 		}
 
-		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
-		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
-
-		$this->load_class( 'WC_Gateway_Svea_Credit_Card_And_Mobile' );
-		$methods[] = WC_Gateway_Svea_Credit_Card_And_Mobile::class;
+		$this->load_class( 'WC_Gateway_Svea_Collated' );
+		$methods[] = WC_Gateway_Svea_Collated::class;
 
 		$this->load_class( 'WC_Gateway_Svea_Online_Bank_Payments' );
 		$methods[] = WC_Gateway_Svea_Online_Bank_Payments::class;
 
+		$this->load_class( 'WC_Gateway_Svea_Credit_Card_And_Mobile' );
+		$methods[] = WC_Gateway_Svea_Credit_Card_And_Mobile::class;
+
 		$this->load_class( 'WC_Gateway_Svea_Other_Payments' );
 		$methods[] = WC_Gateway_Svea_Other_Payments::class;
 
+		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
+		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
+
 		$this->load_class( 'WC_Gateway_Svea_Estonia_Payments' );
 		$methods[] = WC_Gateway_Svea_Estonia_Payments::class;
-
-		$this->load_class( 'WC_Gateway_Svea_Collated' );
-		$methods[] = WC_Gateway_Svea_Collated::class;
 
 		return $methods;
 	}
