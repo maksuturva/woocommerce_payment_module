@@ -781,7 +781,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 				} 
 			}
 			if ( array_key_exists( 'pmt_row_desc', $p ) ) {
-				$this->payment_data['pmt_rows_desc'][ $i ]['pmt_row_desc'] = '-';
+				$this->payment_data['pmt_row_desc'][ $i ]['pmt_row_desc'] = '-';
 			}
 
 			foreach ( $p as $k => $value ) {
