@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.4.3 - 2023-08-27
+* Changed default payment method order when initializing the module first time
+* Changed pmt_row_desc to be "-" always
+
 ### 2.4.2 - 2023-07-17
 * Fixed payment method query not to unintentionally flood requests  
 * Product name sanitation changed to convert special characters to underscore characters

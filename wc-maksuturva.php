@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.4.2                
+ * Version:     2.4.3                
  * Author:      Svea Development Oy  
  * Author URI:  http://www.sveapayments.fi  
  * Text Domain: wc-maksuturva  
@@ -17,7 +17,7 @@
  * Tested up to: 6.3    
  * License:      LGPL2.1  
  * WC requires at least: 7.0   
- * WC tested up to: 8.0.1                 
+ * WC tested up to: 8.0.2                   
  */
 
 /**
@@ -76,7 +76,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.4.2';
+	const VERSION = '2.4.3';
 
 	/**
 	 * Plugin DB version.
@@ -395,23 +395,23 @@ class WC_Maksuturva {
 			return $methods;
 		}
 
-		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
-		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
-
-		$this->load_class( 'WC_Gateway_Svea_Credit_Card_And_Mobile' );
-		$methods[] = WC_Gateway_Svea_Credit_Card_And_Mobile::class;
+		$this->load_class( 'WC_Gateway_Svea_Collated' );
+		$methods[] = WC_Gateway_Svea_Collated::class;
 
 		$this->load_class( 'WC_Gateway_Svea_Online_Bank_Payments' );
 		$methods[] = WC_Gateway_Svea_Online_Bank_Payments::class;
 
+		$this->load_class( 'WC_Gateway_Svea_Credit_Card_And_Mobile' );
+		$methods[] = WC_Gateway_Svea_Credit_Card_And_Mobile::class;
+
 		$this->load_class( 'WC_Gateway_Svea_Other_Payments' );
 		$methods[] = WC_Gateway_Svea_Other_Payments::class;
 
+		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
+		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
+
 		$this->load_class( 'WC_Gateway_Svea_Estonia_Payments' );
 		$methods[] = WC_Gateway_Svea_Estonia_Payments::class;
-
-		$this->load_class( 'WC_Gateway_Svea_Collated' );
-		$methods[] = WC_Gateway_Svea_Collated::class;
 
 		return $methods;
 	}

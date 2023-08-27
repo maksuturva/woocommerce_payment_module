@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 7.x
+ * Svea Payments Gateway Plugin for WooCommerce 7.x, 8.x
  * Plugin developed for Svea
  * Last update: 18/01/2023
  *
@@ -117,7 +117,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 
 	#payment .payment_methods li .svea-payment-method-select img {
-		max-height: 100%;
+		max-height: 80%;
+
 	}
 
 	#payment .payment_methods li .svea-payment-collated-title {

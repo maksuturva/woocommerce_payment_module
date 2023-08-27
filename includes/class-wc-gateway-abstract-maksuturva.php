@@ -775,13 +775,13 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		}
 		foreach ( $this->payment_data['pmt_rows_data'] as $i => $p ) {
 			// Putting desc or title to not be blank.
-			if ( array_key_exists( 'pmt_row_name', $p ) && array_key_exists( 'pmt_row_desc', $p ) ) {
+			if ( array_key_exists( 'pmt_row_name', $p ) ) {
 				if ( ! trim( $p['pmt_row_name'] ) ) {
 					$this->payment_data['pmt_rows_data'][ $i ]['pmt_row_name'] = $p['pmt_row_name'] = $p['pmt_row_desc'];
-				} elseif ( ! trim( $p['pmt_row_desc'] ) ) {
-					$this->payment_data['pmt_rows_data'][ $i ]['pmt_row_desc'] = $p['pmt_row_desc'] = $p['pmt_row_name'];
-				}
+				}	
 			}
+			$this->payment_data['pmt_rows_data'][ $i ]['pmt_row_desc'] = $p['pmt_row_desc'] = "-";
+			
 			foreach ( $p as $k => $value ) {
 				if ( ( array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$mandatory_data ) )
 				     || array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$row_mandatory_data )
