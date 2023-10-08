@@ -758,7 +758,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
 			$this->add_notice( __( 'Missing reference number in response.', $this->td ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
-
 			return;
 		}
 
@@ -788,26 +787,27 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				$this->order_fail( $order, $payment );
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+				if (isset( $params['pmt_errortexttouser']) ) {
+					$this->add_notice( __( 'Payment failed: ' . $params['pmt_errortexttouser'], $this->td ), 'error' );
+					wc_add_notice('Correct the checkout information and try again.'); 
+				} else {
 					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
 				}
-				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
+
+				$this->order_fail( $order, $payment );
+				//wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
+				wp_redirect( $woocommerce->cart->get_cart_url() );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 				$this->order_delay( $order, $payment );
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Payment delayed by Svea.', $this->td ), 'notice' );
-				}
+				$this->add_notice( __( 'Payment delayed by Svea.', $this->td ), 'notice' );
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
 				$this->order_cancel( $order, $payment );
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Cancellation from Svea received.', $this->td ), 'notice' );
-				}
+				$this->add_notice( __( 'Cancellation from Svea received.', $this->td ), 'notice' );
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $order->get_cancel_order_url() ) );
 				break;
 
@@ -815,9 +815,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			default:
 				$this->order_complete( $order, $payment );
 				$woocommerce->cart->empty_cart();
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Payment confirmed by Svea.', $this->td ), 'success' );
-				}
+				$this->add_notice( __( 'Payment confirmed by Svea.', $this->td ), 'success' );
 				wp_redirect( $this->get_return_url( $order ) );
 				break;
 		}
