@@ -898,6 +898,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				__( 'Error from Svea received.', $this->td ) );
 		}
 
+		echo ("ORDER FAIL!!!!!!!!!!!!!!!!");
+		error_log("################# ORDER FAIL");
 		if (! $payment->is_error() ) {
 			$this->add_surcharge( $payment, $order );
 			$payment->error();
