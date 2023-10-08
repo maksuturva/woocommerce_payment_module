@@ -787,8 +787,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
-				wc_add_notice('Transaction Failed:'); 
+				if (isset( $params['pmt_errortexttouser']) ) {
+					$this->add_notice( __( 'Payment failed, ' . $params['pmt_errortexttouser'], $this->td ), 'error' );
+					wc_add_notice('Correct the checkout information, and try again.'); 
+				} else {
+					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
+				}
 
 				$this->order_fail( $order, $payment );
 				//wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
