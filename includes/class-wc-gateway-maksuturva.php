@@ -791,10 +791,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				error_log("SVEA ##################### STATUS ERROR");
 				$this->order_fail( $order, $payment );
 				error_log("SVEA ##################### AFTER FAIL");
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
+				//if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
 					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
 					error_log("SVEA ##################### NOTICE ADDED");
-				}
+				//}
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
