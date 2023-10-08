@@ -758,7 +758,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
 			$this->add_notice( __( 'Missing reference number in response.', $this->td ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
-
 			return;
 		}
 
@@ -788,16 +787,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				error_log("SVEA ##################### STATUS ERROR");
-				$this->order_fail( $order, $payment );
-				error_log("SVEA ##################### AFTER FAIL");
-				//if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
-					error_log("SVEA ##################### NOTICE ADDED");
-				//}
+				$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
 				wc_add_notice('Transaction Failed:'); 
-				error_log("SVEA ##################### ERROR ADDED");
-				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
+
+				$this->order_fail( $order, $payment );
+				//wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
+				wp_redirect( $woocommerce->cart->get_cart_url() );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
