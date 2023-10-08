@@ -787,7 +787,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				error_log("[SVEA PAYMENTS] Payment returned error, query parameters: " . $_SERVER['QUERY_STRING']);
 				if (isset( $params['pmt_errortexttouser']) ) {
 					$this->add_notice( __( 'Payment failed: ' . $params['pmt_errortexttouser'], $this->td ), 'error' );
 					wc_add_notice('Correct the checkout information and try again.'); 
