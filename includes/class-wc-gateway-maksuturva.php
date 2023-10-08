@@ -795,6 +795,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
 					error_log("SVEA ##################### NOTICE ADDED");
 				//}
+				$woocommerce->add_error('Transaction Failed:'); 
+				error_log("SVEA ##################### ERROR ADDED");
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
