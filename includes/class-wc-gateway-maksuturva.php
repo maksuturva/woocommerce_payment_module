@@ -788,8 +788,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				if (isset( $params['pmt_errortexttouser']) ) {
-					$this->add_notice( __( 'Payment failed, ' . $params['pmt_errortexttouser'], $this->td ), 'error' );
-					wc_add_notice('Correct the checkout information, and try again.'); 
+					$this->add_notice( __( 'Payment failed: ' . $params['pmt_errortexttouser'], $this->td ), 'error' );
+					wc_add_notice('Correct the checkout information and try again.'); 
 				} else {
 					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
 				}
@@ -801,17 +801,13 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 				$this->order_delay( $order, $payment );
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Payment delayed by Svea.', $this->td ), 'notice' );
-				}
+				$this->add_notice( __( 'Payment delayed by Svea.', $this->td ), 'notice' );
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
 				$this->order_cancel( $order, $payment );
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Cancellation from Svea received.', $this->td ), 'notice' );
-				}
+				$this->add_notice( __( 'Cancellation from Svea received.', $this->td ), 'notice' );
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $order->get_cancel_order_url() ) );
 				break;
 
@@ -819,9 +815,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			default:
 				$this->order_complete( $order, $payment );
 				$woocommerce->cart->empty_cart();
-				if ( version_compare( WC_VERSION, self::NO_NOTICE_VERSION, '<' ) ) {
-					$this->add_notice( __( 'Payment confirmed by Svea.', $this->td ), 'success' );
-				}
+				$this->add_notice( __( 'Payment confirmed by Svea.', $this->td ), 'success' );
 				wp_redirect( $this->get_return_url( $order ) );
 				break;
 		}
