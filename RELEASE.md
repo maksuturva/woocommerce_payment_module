@@ -1,3 +1,2 @@
-### 2.4.3 - 2023-08-27
-* Changed default payment method order when initializing the module first time
-* Changed pmt_row_desc to be "-" always
+### 2.4.4 - 2023-10-10
+* Fixed to show user error text when payment returns error
