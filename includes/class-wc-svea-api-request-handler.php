@@ -37,6 +37,8 @@ require_once 'class-wc-utils-maksuturva.php';
  */
 class WC_Svea_Api_Request_Handler {
 
+	public $gateway;
+	 
 	/**
 	 * OK response type.
 	 *

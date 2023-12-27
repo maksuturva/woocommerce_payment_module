@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.4.4                
+ * Version:     2.5.0                    
  * Author:      Svea Development Oy  
  * Author URI:  http://www.sveapayments.fi  
  * Text Domain: wc-maksuturva  
@@ -17,7 +17,7 @@
  * Tested up to: 6.3    
  * License:      LGPL2.1  
  * WC requires at least: 7.0   
- * WC tested up to: 8.3.1                     
+ * WC tested up to: 8.4.0                       
  */
 
 /**
@@ -36,10 +36,32 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+
+/**
+ * Support for Custom Order Tables aka High-Performance Order Storage
+ *
+ * HPOS recipes 
+ * https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
+ *
+ * use Automattic\WooCommerce\Utilities\OrderUtil;
+ * if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+ *	// HPOS usage is enabled.
+ * } else {
+ * 	// Traditional CPT-based orders are in use.
+ * }
+ * 
+ * @since 2.4.5
+ */
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
 
 if ( ! function_exists( '_log' ) ) {
 	/**
@@ -76,7 +98,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.4.4';
+	const VERSION = '2.5.0';
 
 	/**
 	 * Plugin DB version.
@@ -335,8 +357,12 @@ class WC_Maksuturva {
 	public function add_meta_boxes() {
 		$this->load_class( 'WC_Meta_Box_Maksuturva' );
 		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$screen = wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
+			? wc_get_page_screen_id( 'shop-order' )
+			: 'shop_order';
+
 		add_meta_box( 'maksuturva-order-details', __( 'Details for order in Svea Payments Extranet', 'wc-maksuturva' ),
-		'WC_Meta_Box_Maksuturva::output', 'shop_order', 'side', 'high', array( 'gateway' => new WC_Gateway_Maksuturva() ) );
+			'WC_Meta_Box_Maksuturva::output', $screen, 'side', 'high', array( 'gateway' => new WC_Gateway_Maksuturva() ) );
 	}
 
 	/**
