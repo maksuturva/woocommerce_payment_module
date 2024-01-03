@@ -213,7 +213,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	public function payment_gateway_disable_empty( $available_gateways ) 
 	{
 		if (empty(WC()->cart)) {
-			_log("###RETURN1");
 			return;
 		}
 
@@ -240,7 +239,6 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			unset( $available_gateways[$this->id] );
 		}
 
-		_log("###AVAILABLE: " . var_export($available_gateways, true));
 		return $available_gateways;
 	}
 
