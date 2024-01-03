@@ -21,6 +21,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+use Automattic\WooCommerce\Utilities\OrderUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -643,16 +644,16 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$description     = '';
 		$product_handler = new WC_Product_Compatibility_Handler( $product );
 
-		if ( version_compare( WC_VERSION, 3, '<' ) ) {
-			$description .= $this->get_meta_description_wc2( $order, $order_item_id );
-		}
-
 		if ( 'variable' === $product_handler->get_type() ) {
 			$description .= implode( ',', $product->get_variation_attributes() ) . ' ';
 		}
-		$post         = $product_handler->get_post();
-		$description .= $post->post_excerpt;
 
+		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			$description .= $product->get_short_description();
+		} else {
+			$post         = $product_handler->get_post();
+			$description .= $post->post_excerpt;
+		}
 		return $description;
 	}
 

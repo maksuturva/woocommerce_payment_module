@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class WC_Product_Compatibility_Handler.
  *
  * Handles the difference on how to access order properties between
- * WooCommerce version 2.x and 3.x
+ * WooCommerce with or without HPOS
  *
  * @since 2.0.6
  */
@@ -41,11 +41,6 @@ class WC_Product_Compatibility_Handler {
 	 * @var WC_Product|WC_Product_Variable
 	 */
 	private $product;
-
-	/**
-	 * Access order values through methods instead of properties since version
-	 */
-	const NO_PROPERTIES_VERSION = 3;
 
 	/**
 	 * WC_Product_Compatibility_Handler constructor.
@@ -64,11 +59,7 @@ class WC_Product_Compatibility_Handler {
 	 * @return int
 	 */
 	private function get_id() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
-			return $this->product->id;
-		} else {
-			return $this->product->is_type( 'variation' ) ? $this->product->get_parent_id() : $this->product->get_id();
-		}
+		return $this->product->is_type( 'variation' ) ? $this->product->get_parent_id() : $this->product->get_id();
 	}
 
 	/**
@@ -77,11 +68,7 @@ class WC_Product_Compatibility_Handler {
 	 * @return string
 	 */
 	public function get_type() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
-			return $this->product->product_type;
-		} else {
-			return $this->product->get_type();
-		}
+		return $this->product->get_type();
 	}
 
 	/**
@@ -90,11 +77,6 @@ class WC_Product_Compatibility_Handler {
 	 * @return int
 	 */
 	public function get_post() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
-			return $this->product->post;
-		} else {
-			return get_post( $this->product->get_id() );
-		}
+		return get_post( $this->product->get_id() );
 	}
-
 }

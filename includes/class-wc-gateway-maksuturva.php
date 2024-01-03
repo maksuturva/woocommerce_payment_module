@@ -21,6 +21,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+use Automattic\WooCommerce\Utilities\OrderUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -150,7 +151,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
 		
 		// see Github issue #23, @since 2.1.7, 2.4.2 added is checkout boolean
-		if (!is_admin() && is_checkout()) {
+		//if (!is_admin() && is_checkout()) {
+		if (!is_admin()) { //TODO: ## Restore to old
 			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
 		}
 
@@ -158,17 +160,33 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	}
 
 	public function override_payment_gateway_title( $title, $gateway_id ) {
-		if (
-			!is_admin()
-			|| 'shop_order' != get_post_type()
-			|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
-		) {
+		global $woocommerce, $post;
+		if (!is_admin()) {
 			return $title;
 		}
+		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			if (
+				'wc-orders' != wc_clean($_GET["page"])
+				//(!('shop_order' === OrderUtil::get_order_type( $order_id )) )
+				|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
+			) {
+				return $title;
+			}
 
-		global $woocommerce, $post;
+			$order_id = wc_clean($_GET["id"]);
+			$order = new WC_Order($order_id);
+		} else {
+			// old WC way
+			if (
+				('shop_order' != get_post_type())
+				|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
+			) {
+				return $title;
+			}
 
-		$order = new WC_Order($post->ID);
+			$order = new WC_Order($post->ID);
+		}
+
 		if (!empty($order) && $order->get_payment_method() !== null) {
 			$payment = new WC_Payment_Maksuturva($order->get_id());
 			$paymentMethod = $payment->get_payment_method();
@@ -202,14 +220,12 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			if (!$this->is_outbound_payment_enabled()) {
 				unset( $available_gateways[$this->id] );
 			}
-
 			return $available_gateways;
 		}
 
 		$payment_method_type = explode( 'WC_Gateway_Svea_', $this->id )[1];
 		$payment_method_type = strtolower( $payment_method_type );
 		$payment_method_type = str_replace( '_', '-', $payment_method_type );
-
 		try {
 			$payment_methods = $this->payment_method_select->get_payment_type_payment_methods(
 				$payment_method_type,

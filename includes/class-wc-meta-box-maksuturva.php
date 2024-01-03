@@ -21,6 +21,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+use Automattic\WooCommerce\Utilities\OrderUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -61,15 +62,25 @@ class WC_Meta_Box_Maksuturva {
 			}
 			$gateway  = $args['args']['gateway'];
 			self::$td = $gateway->td;
-			$order    = wc_get_order( $post );
+			if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+				$order_id = wc_clean( $_GET["id"] );
+			} else {
+				// legacy
+				$order_id = $post->ID; 
+			}
+			$order = wc_get_order( $order_id );
+			
 			if (!empty($order->get_payment_method())) {
 				$payment  = new WC_Payment_Maksuturva( $order->get_id() );
-				$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );			
+				if (!empty($payment->get_payment_id())) {
+					$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );
+				}			
 			} else {
 				_log("Not a Svea payment method...");
 			}
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			// If the payment was not found, it probably means that the order was not paid with Svea.
+			_log($e->getMessage());
 			return;
 		}
 	}
