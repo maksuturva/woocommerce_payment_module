@@ -71,7 +71,6 @@ class WC_Meta_Box_Maksuturva {
 			$order = wc_get_order( $order_id );
 			
 			if (!empty($order->get_payment_method())) {
-				_log("ORDER ID:" .  $order->get_id() );
 				$payment  = new WC_Payment_Maksuturva( $order->get_id() );
 				if (!empty($payment->get_payment_id())) {
 					$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );
@@ -144,8 +143,6 @@ class WC_Meta_Box_Maksuturva {
 	 * @return string
 	 */
 	private static function get_extranet_payment_url($payment, $gateway) {
-		_log("GATEWAY" .  $gateway->get_gateway_url());
-		_log("ID" . $payment->get_payment_id());
 		return $gateway->get_gateway_url() . '/dashboard/PaymentEvent.db?pmt_id=' . $payment->get_payment_id();
 	}
 }
