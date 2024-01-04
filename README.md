@@ -11,6 +11,8 @@
 
 Svea Payments payment module for WooCommerce.
 
+For WooCommerce versions >8.3, see Docs for new feature compatibility.
+
 ## Description
 
 Copyright (C) 2016-2024 Svea Development Oy
