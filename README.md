@@ -11,9 +11,6 @@
 
 Svea Payments payment module for WooCommerce.
 
-Note! Version 2.5.0 and below has issues with new WooCommerce >8.3 installations with new upgraded checkout 
-experience. See https://developer.woo.com/2023/11/16/woocommerce-8-3-0-released/  
-
 ## Description
 
 Copyright (C) 2016-2024 Svea Development Oy
