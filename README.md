@@ -3,16 +3,13 @@
 **Tags:** maksuturva, payment gateway, svea, svea payments  
 **Requires at least:** 6.0    
 **Tested up to:** 6.3       
-**Stable tag:** 2.5.0              
+**Stable tag:** 2.5.1              
 **WC requires at least:** 7.0  
 **WC tested up to:** 8.4.0               
 **License:** LGPL v. 2.1 or later  
 **License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
 
 Svea Payments payment module for WooCommerce.
-
-Note! Version 2.5.0 and below has issues with new WooCommerce >8.3 installations with new upgraded checkout 
-experience. See https://developer.woo.com/2023/11/16/woocommerce-8-3-0-released/  
 
 ## Description
 
