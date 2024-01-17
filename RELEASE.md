@@ -1,2 +1,2 @@
-### 2.5.1 - 2024-01-04
-* Added feature flag to describe incompatiblity with new WooCommerce blocks mode checkout page theme.
+### 2.5.2 - 2024-01-17
+* Added "After add to cart form" location option for the Part Payment Widget

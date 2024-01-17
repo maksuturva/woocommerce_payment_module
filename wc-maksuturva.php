@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.5.1                    
+ * Version:     2.5.2                   
  * Author:      Svea Development Oy  
  * Author URI:  http://www.sveapayments.fi  
  * Text Domain: wc-maksuturva  
@@ -17,7 +17,7 @@
  * Tested up to: 6.3    
  * License:      LGPL2.1  
  * WC requires at least: 7.0   
- * WC tested up to: 8.4.0                       
+ * WC tested up to: 8.5.1                       
  */
 
 /**
@@ -240,6 +240,7 @@ class WC_Maksuturva {
 			//  part payment widget hook on single product page
 			add_action( 'woocommerce_before_add_to_cart_quantity', [$this, 'svea_part_payment_widget_before_add_to_cart'] );
 			add_action( 'woocommerce_after_add_to_cart_button', [$this, 'svea_part_payment_widget_after_add_to_cart'] );
+			add_action( 'woocommerce_after_add_to_cart_form', [$this, 'svea_part_payment_widget_after_add_to_cart_form'] );
 		} catch (Exception $e) { 
 			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
@@ -259,6 +260,15 @@ class WC_Maksuturva {
 		$gateway = new WC_Gateway_Maksuturva();
 
 		if ($gateway->get_option('partpayment_widget_location')==2) {
+			$this->svea_add_part_payment_widget();
+		}
+	}
+
+	public function svea_part_payment_widget_after_add_to_cart_form() {
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
+
+		if ($gateway->get_option('partpayment_widget_location')==3) {
 			$this->svea_add_part_payment_widget();
 		}
 	}
