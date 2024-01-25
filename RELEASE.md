@@ -1,2 +1,2 @@
-### 2.5.2 - 2024-01-17
-* Added "After add to cart form" location option for the Part Payment Widget
+### 2.5.3 - 2024-01-25
+* Fixed the meta box on the admin page when creating a new order and HPOS mode enabled

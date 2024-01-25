@@ -63,6 +63,11 @@ class WC_Meta_Box_Maksuturva {
 			$gateway  = $args['args']['gateway'];
 			self::$td = $gateway->td;
 			if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+				// if creating a new order, the id is not yet set and no need to render the meta box
+				if ('wc-orders' != wc_clean($_GET["page"] || 'new' != wc_clean($_GET["action"]) {
+					return;
+				}
+
 				$order_id = wc_clean( $_GET["id"] );
 			} else {
 				// legacy
