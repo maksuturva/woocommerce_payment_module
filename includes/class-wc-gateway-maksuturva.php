@@ -173,6 +173,9 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				return $title;
 			}
 
+			if (empty($_GET["id"])) {
+				return $title;
+			}
 			$order_id = wc_clean($_GET["id"]);
 			$order = new WC_Order($order_id);
 		} else {
