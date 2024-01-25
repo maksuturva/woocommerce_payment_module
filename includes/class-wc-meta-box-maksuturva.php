@@ -81,7 +81,7 @@ class WC_Meta_Box_Maksuturva {
 					$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );
 				}			
 			} else {
-				_log("Not a Svea payment method...");
+				// _log("Not a Svea payment method...");
 			}
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			// If the payment was not found, it probably means that the order was not paid with Svea.
