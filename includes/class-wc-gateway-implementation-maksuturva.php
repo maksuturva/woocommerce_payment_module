@@ -330,6 +330,15 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			);
 		}
 
+		/* Giftcards support */
+		if ( isset($order->get_items( 'gift_card' )) )
+		{
+			$giftcards = $order->get_items( 'gift_card' );
+			foreach($giftcards as $giftcard) {
+				error_log("#### " . $giftcard->code() . " " . $giftcard->amount() );
+			}
+		}
+
 		return null;
 	}
 
