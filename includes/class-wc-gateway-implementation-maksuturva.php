@@ -252,7 +252,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		{
 			$giftcards = $order->get_items( 'gift_card' );
 			foreach($giftcards as $giftcard) {
-				$gctext = __( 'Gift Card', $this->td )
+				$gctext = __( 'Gift Card', $this->td );
 				$payment_rows[] = array(
 					'pmt_row_name'               => $gctext . " " . $giftcard->get_name(),
 					'pmt_row_desc'               => "-",
