@@ -252,10 +252,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		{
 			$giftcards = $order->get_items( 'gift_card' );
 			foreach($giftcards as $giftcard) {
-				error_log("#### " . $giftcard->get_name() . " " . $giftcard->get_amount() );
+				error_log("##123## " . $giftcard->get_name() . " " . $giftcard->get_amount() );
 				$payment_rows[] = array(
-					'pmt_row_name'               => __( 'Gift Card', $this->td ),
-					'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( "Gift Card" ),
+					'pmt_row_name'               => __( 'Gift Card', $this->td ) . " " . $giftcard->get_name(),
+					'pmt_row_desc'               => "-",
 					'pmt_row_quantity'           => 1,
 					'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 					'pmt_row_price_gross'        => '-' . WC_Utils_Maksuturva::filter_price( $giftcard->get_amount() ), 
@@ -276,7 +276,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$payment_rows = array_merge( $payment_rows, $payment_row_fees );
 		}
 
-		error_log("### Payment rows: " . print_r($payment_rows, true) );
 		return $payment_rows;
 	}
 
