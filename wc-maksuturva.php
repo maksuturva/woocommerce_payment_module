@@ -17,7 +17,7 @@
  * Tested up to: 6.3    
  * License:      LGPL2.1  
  * WC requires at least: 7.0   
- * WC tested up to: 8.5.1                       
+ * WC tested up to: 8.5.2                         
  */
 
 /**
