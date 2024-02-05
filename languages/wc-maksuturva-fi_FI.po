@@ -1,11 +1,11 @@
-# Copyright (C) 2016 WooCommerce Svea Payments Gateway
+# Copyright (C) 2024 WooCommerce Svea Payments Gateway
 # This file is distributed under the same license as the WooCommerce Svea Payments Gateway package.
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Svea Payments Gateway\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-01-05 12:50+0200\n"
+"PO-Revision-Date: 2024-01-05 12:50+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -364,3 +364,6 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "http://www.maksuturva.fi"
 msgstr ""
+
+msgid "Gift Card"
+msgstr "Lahjakortti"

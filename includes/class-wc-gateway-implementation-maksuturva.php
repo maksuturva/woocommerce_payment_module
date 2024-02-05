@@ -247,6 +247,25 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$payment_rows[] = $payment_row_discount;
 		}
 
+		/* Giftcards support */
+		if ( null !== $order->get_items( 'gift_card' ) )
+		{
+			$giftcards = $order->get_items( 'gift_card' );
+			foreach($giftcards as $giftcard) {
+				$gctext = __( 'Gift Card', $this->td );
+				$payment_rows[] = array(
+					'pmt_row_name'               => $gctext . " " . $giftcard->get_name(),
+					'pmt_row_desc'               => "-",
+					'pmt_row_quantity'           => 1,
+					'pmt_row_deliverydate'       => date( 'd.m.Y' ),
+					'pmt_row_price_gross'        => '-' . WC_Utils_Maksuturva::filter_price( $giftcard->get_amount() ), 
+					'pmt_row_vat'                => '00,00',
+					'pmt_row_discountpercentage' => '00,00',
+					'pmt_row_type'               => 6,
+				);
+			}
+		}
+
 		$payment_row_handling_cost = $this->create_payment_row_handling_cost_data( $payment_method_handling_cost );
 		if ( is_array( $payment_row_handling_cost ) ) {
 			$payment_rows[] = $payment_row_handling_cost;
