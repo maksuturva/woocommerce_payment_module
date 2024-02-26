@@ -283,6 +283,13 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Widget active color', $this->gateway->td ),
 				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
 			],
+            'ppw_price_threshold_minimum' => [
+                'type'        => 'textfield',
+                'title'       => __( 'Price threshold minimum', $this->gateway->td ),
+                'desc_tip'    => true,
+                'description' => __( 'Enter a custom minimum price threshold only if you want to enable the calculator for more expensive purchases than the default minimum threshold returned by Svea. If empty, the minimum threshold is deduced from the payment plans returned by Svea.', $this->gateway->td ),
+                'default'     => get_option( 'ppw_price_threshold_minimum', '' ),
+            ],
 			'ppw_price_thresholds' => [
 				'type'        => 'textfield',
 				'title'       => __( 'Price thresholds', $this->gateway->td ),

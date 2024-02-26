@@ -273,9 +273,55 @@ class WC_Maksuturva {
 		}
 	}
 
+    /**
+     * Check if price has payment plan available
+     *
+     * @since 2.6.1
+     *
+     * @param float $price
+     * @return bool
+     */
+    public function price_has_payment_plan_available(float $price) {
+	    $gateway = new WC_Gateway_Maksuturva();
+	    $api     = new WC_Svea_Api_Request_Handler( $gateway );
+	    $plans   = $api->get_payment_plan_params();
+
+	    if ( empty( $plans || empty( $plans["campaigns"] ) ) ) {
+		    return false;
+	    }
+
+	    foreach ( $plans['campaigns'] as $plan ) {
+		    if ( $price >= $plan['FromAmount'] && $price <= $plan['ToAmount'] ) {
+			    return true;
+		    }
+	    }
+
+	    return false;
+    }
+
+    /**
+     * Check if part payment calculator should be displayed
+     *
+     * @since 2.6.1
+     *
+     * @param float $price
+     * @param WC_Gateway_Maksuturva $gateway
+     *
+     * @return bool
+     */
+    public function should_display_calculator(float $price, WC_Gateway_Maksuturva $gateway): bool {
+	    $minThreshold = (float) $gateway->get_option( 'ppw_price_threshold_minimum' );
+
+	    if ( ! empty( $minThreshold ) ) {
+		    return $price >= $minThreshold;
+	    }
+
+	    return $this->price_has_payment_plan_available( $price );
+    }
+
 	/**
 	 * Add Svea Part Payment Widget to the page
-	 */ 
+	 */
 	public function svea_add_part_payment_widget() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
@@ -283,10 +329,10 @@ class WC_Maksuturva {
 		$product = wc_get_product();
 		$widgetSellerId = $gateway->get_option( 'maksuturva_sellerid' );
 
-		if (is_product() && isset($product) && !empty($product->get_price())) {
-			$floatPrice = floatval(wc_get_price_including_tax($product));
+		if ( is_product() && isset( $product ) && ! empty( $product->get_price() ) ) {
+			$price = (float) wc_get_price_including_tax( $product );
 
-			if ($floatPrice && $floatPrice>=50.00) {
+			if ( $price && $this->should_display_calculator( $price, $gateway ) ) {
 				$widgetHtml = "<script src=\"https://payments.maksuturva.fi/tools/partpayment/partPayment.js\" class=\"svea-pp-widget-part-payment\""
 					. " data-sellerid=\"" . esc_html($widgetSellerId) . "\"" 
 					. " data-locale=\"" . explode('_', get_user_locale() )[0] . "\""

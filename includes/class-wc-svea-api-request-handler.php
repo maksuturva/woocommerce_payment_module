@@ -267,4 +267,42 @@ class WC_Svea_Api_Request_Handler {
 			throw new WC_Gateway_Maksuturva_Exception($message);
 		}
 	}
+
+    /**
+     * Get payment plan params from Svea
+     *
+     * @since 2.6.1
+     *
+     * @return array
+     */
+    public function get_payment_plan_params() {
+	    $cache_key = 'svea_payment_plan_params';
+	    $cached    = get_transient( $cache_key );
+
+	    if ( $cached ) {
+		    return $cached;
+	    }
+
+	    $route       = 'GetSveaPaymentPlanParams.pmt';
+	    $payment_api = $this->gateway->get_gateway_url();
+
+	    $request_url = add_query_arg(
+		    [ 'gpp_sellerid' => $this->gateway->get_seller_id() ],
+		    trailingslashit( $payment_api ) . $route
+	    );
+
+	    $response = wp_remote_get( $request_url );
+
+	    if ( wp_remote_retrieve_response_code( $response ) === 200 ) {
+		    $body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		    if ( isset( $body["campaigns"] ) ) {
+			    set_transient( $cache_key, $body, MINUTE_IN_SECONDS * 15 );
+
+			    return $body;
+		    }
+	    }
+
+	    return [];
+    }
 }
