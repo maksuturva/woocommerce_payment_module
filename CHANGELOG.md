@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.6.1 - UNRELEASED
+* 259691: Display part payment widget according to the part payment plans fetched from the API.
+* 259691: Add settings field for part payment minimum price.
+
 ### 2.6.0 - 2024-02-05
 * New WooCommerce Gift Cards plugin support
 
