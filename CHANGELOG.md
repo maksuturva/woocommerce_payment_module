@@ -1,6 +1,6 @@
 ## Changelog
 
-### 2.6.1 - UNRELEASED
+### 2.6.1 - 2024-02-27
 * 259691: Display part payment widget according to the part payment plans fetched from the API.
 * 259691: Add settings field for part payment minimum price.
 
