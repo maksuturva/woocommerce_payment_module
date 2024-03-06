@@ -281,11 +281,7 @@ class WC_Maksuturva {
      * @param float $price
      * @return bool
      */
-    public function price_has_payment_plan_available(float $price) {
-	    $gateway = new WC_Gateway_Maksuturva();
-	    $api     = new WC_Svea_Api_Request_Handler( $gateway );
-	    $plans   = $api->get_payment_plan_params();
-
+    public function price_has_payment_plan_available(float $price, $plans) {
 	    if ( empty( $plans || empty( $plans["campaigns"] ) ) ) {
 		    return false;
 	    }
@@ -311,12 +307,27 @@ class WC_Maksuturva {
      */
     public function should_display_calculator(float $price, WC_Gateway_Maksuturva $gateway): bool {
 	    $minThreshold = (float) $gateway->get_option( 'ppw_price_threshold_minimum' );
+	    $gateway      = new WC_Gateway_Maksuturva();
+	    $api          = new WC_Svea_Api_Request_Handler( $gateway );
+	    $plans        = $api->get_payment_plan_params();
 
-	    if ( ! empty( $minThreshold ) ) {
-		    return $price >= $minThreshold;
+	    if ( empty( $minThreshold ) ) {
+		    return $this->price_has_payment_plan_available( $price, $plans );
 	    }
 
-	    return $this->price_has_payment_plan_available( $price );
+	    if ( $price < $minThreshold ) {
+		    return false;
+	    }
+
+	    if ( ! empty( $plans ) ) {
+		    foreach ( $plans['campaigns'] as $plan ) {
+			    if ( $price <= $plan['ToAmount'] ) {
+				    return true;
+			    }
+		    }
+	    }
+
+	    return false;
     }
 
 	/**
