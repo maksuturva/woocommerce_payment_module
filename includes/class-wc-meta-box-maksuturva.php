@@ -41,15 +41,6 @@ require_once 'class-wc-utils-maksuturva.php';
 class WC_Meta_Box_Maksuturva {
 
 	/**
-	 * The text domain.
-	 *
-	 * @since 2.0.2
-	 *
-	 * @var string the text domain string.
-	 */
-	private static $td;
-
-	/**
 	 * Output the meta box.
 	 *
 	 * @param WP_Post $post The post.
@@ -61,7 +52,7 @@ class WC_Meta_Box_Maksuturva {
 				throw new WC_Gateway_Maksuturva_Exception( 'No gateway given to meta-box.' );
 			}
 			$gateway  = $args['args']['gateway'];
-			self::$td = $gateway->td;
+
 			if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
 				// if creating a new order, the id is not yet set and no need to render the meta box
 				if ('new' == wc_clean($_GET["action"]) ) {
@@ -116,21 +107,21 @@ class WC_Meta_Box_Maksuturva {
 
 		switch ( $payment->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_COMPLETED:
-				$msg = __( 'The payment is confirmed by Svea Payments', self::$td );
+				$msg = __( 'The payment is confirmed by Svea Payments', 'wc-maksuturva' );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
-				$msg = __( 'The payment is canceled by Svea Payments', self::$td );
+				$msg = __( 'The payment is canceled by Svea Payments', 'wc-maksuturva' );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				$msg = __( 'The payment could not be confirmed by Svea Payments, please check manually', self::$td );
+				$msg = __( 'The payment could not be confirmed by Svea Payments, please check manually', 'wc-maksuturva' );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 			case WC_Payment_Maksuturva::STATUS_PENDING:
 			default:
-				$msg = __( 'The payment is still waiting for confirmation by Svea Payments', self::$td );
+				$msg = __( 'The payment is still waiting for confirmation by Svea Payments', 'wc-maksuturva' );
 				break;
 		}
 

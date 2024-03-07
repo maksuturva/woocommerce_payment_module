@@ -37,6 +37,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="inline error">
 	<p>
 		<?php echo esc_attr( __( 'Svea does not support your store currency. Only EUR is supported.',
-		$this->td ) ); ?>
+		'wc-maksuturva' ) ); ?>
 	</p>
 </div>

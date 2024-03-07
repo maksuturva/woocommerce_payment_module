@@ -44,13 +44,13 @@ class WC_Gateway_Svea_Other_Payments extends WC_Gateway_Maksuturva {
 	 */
 	public function __construct() {
 		parent::__construct( WC_Gateway_Svea_Other_Payments::class );
-		$this->method_title = 'Svea ' . __( 'Other Payments', $this->td );
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$this->method_title = 'Svea ' . __( 'Other Payments', 'wc-maksuturva' );
+		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'wc-maksuturva'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
 		$custom_title = $this->get_option( 'payment_group_other_title' );
 		if (!empty($custom_title)) {
 			$this->title = esc_html($custom_title);
 		} else {
-			$this->title = __( 'Other Payments', $this->td );
+			$this->title = __( 'Other Payments', 'wc-maksuturva' );
 		}
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
 	}

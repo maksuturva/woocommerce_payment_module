@@ -158,15 +158,6 @@ class WC_Maksuturva {
 	protected $plugin_name = '';
 
 	/**
-	 * The text domain to use for translations.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var string $td The text domain.
-	 */
-	public $td = 'wc-maksuturva';
-
-	/**
 	 * Get the plugin instance.
 	 *
 	 * Gets the singleton of the plugin.
@@ -449,7 +440,7 @@ class WC_Maksuturva {
 	public function register_cron_schedules( $schedules ) {
 		$schedules['five_minutes'] = array(
 			'interval' => 5 * 60,
-			'display'  => __( 'Once every 5 minutes', $this->td )
+			'display'  => __( 'Once every 5 minutes', 'wc-maksuturva' )
 		);
 
 		return $schedules;

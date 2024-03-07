@@ -1,6 +1,7 @@
 ## Changelog
 
 ### 2.6.2 - UNRELEASED
+* 260781: Replace text domains with static strings
 * 260350: Combine user settings with part payments plans fetched from the API.
 
 ### 2.6.1 - 2024-02-27

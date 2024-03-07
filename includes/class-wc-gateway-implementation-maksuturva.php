@@ -71,15 +71,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private $removed_fees = 0.00;
 
-	/**
-	 * The text domain to use for translations.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var string $td The text domain.
-	 */
-	public $td;
-
     /**
      * WC_Gateway_Implementation_Maksuturva constructor.
      *
@@ -96,8 +87,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$this->set_encoding( $gateway->get_encoding() );
 		$this->set_payment_id_prefix( $gateway->get_payment_id_prefix() );
 		$this->set_payment_data( $this->create_payment_data( $gateway, $order ) );
-		
-		$this->td = $gateway->td;
 	}
 
 	/**
@@ -252,7 +241,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		{
 			$giftcards = $order->get_items( 'gift_card' );
 			foreach($giftcards as $giftcard) {
-				$gctext = __( 'Gift Card', $this->td );
+				$gctext = __( 'Gift Card', 'wc-maksuturva' );
 				$payment_rows[] = array(
 					'pmt_row_name'               => $gctext . " " . $giftcard->get_name(),
 					'pmt_row_desc'               => "-",
@@ -305,7 +294,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			}
 
 			return array(
-				'pmt_row_name'               => __( 'Shipping cost', $this->td ),
+				'pmt_row_name'               => __( 'Shipping cost', 'wc-maksuturva' ),
 				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $order->get_shipping_method() ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
@@ -338,7 +327,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$description = implode( ',', $order->get_used_coupons() );
 
 			return array(
-				'pmt_row_name'               => __( 'Discount', $this->td ),
+				'pmt_row_name'               => __( 'Discount', 'wc-maksuturva' ),
 				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $description ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
@@ -372,8 +361,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$tax_rate = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
 
 		return [
-			'pmt_row_name'               => __( 'Payment handling fee', $this->wc_gateway->td ),
-			'pmt_row_desc'               => __( 'Payment handling fee', $this->wc_gateway->td ),
+			'pmt_row_name'               => __( 'Payment handling fee',  'wc-maksuturva' ),
+			'pmt_row_desc'               => __( 'Payment handling fee',  'wc-maksuturva' ),
 			'pmt_row_quantity'           => 1,
 			'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 			'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $payment_method_handling_cost ),
@@ -402,7 +391,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
 
-			if ($fee['name'] === __( 'Payment handling fee', $this->wc_gateway->td )) {
+			if ($fee['name'] === __( 'Payment handling fee', 'wc-maksuturva')) {
 				$this->removed_fees += $fee_total;
 				continue;
 			}
