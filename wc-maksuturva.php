@@ -66,7 +66,7 @@ add_action( 'before_woocommerce_init', function() {
 	}
 } );
 
-if ( ! function_exists( '_log' ) ) {
+if ( ! function_exists( 'wc_maksuturva_log' ) ) {
 	/**
 	 * Log a message.
 	 *
@@ -76,7 +76,7 @@ if ( ! function_exists( '_log' ) ) {
 	 *
 	 * @since 1.0.0
 	 */
-	function _log( $message ) {
+	function wc_maksuturva_log( $message ) {
 		if ( is_array( $message ) || is_object( $message ) ) {
 			error_log('[SVEA PAYMENTS] ' . var_export( $message, true ) );
 		} else {
@@ -230,7 +230,7 @@ class WC_Maksuturva {
 			remove_filter('get_header', 'wc_clear_cart_after_payment');
 
 			if (!wp_next_scheduled('maksuturva_check_pending_payments')) {
-				_log("Adding new payment status event loop.");
+				wc_maksuturva_log("Adding new payment status event loop.");
 				wp_schedule_event(time(), 'five_minutes', 'maksuturva_check_pending_payments');
 			}
 
@@ -242,7 +242,7 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_after_add_to_cart_button', [$this, 'svea_part_payment_widget_after_add_to_cart'] );
 			add_action( 'woocommerce_after_add_to_cart_form', [$this, 'svea_part_payment_widget_after_add_to_cart_form'] );
 		} catch (Exception $e) { 
-			_log("Error in Svea Payments module inititalization: " . $e->getMessage());
+			wc_maksuturva_log( "Error in Svea Payments module inititalization: " . $e->getMessage());
 		}
 	}
 

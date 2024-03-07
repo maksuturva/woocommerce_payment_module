@@ -235,7 +235,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				WC_Payment_Gateway::get_order_total()
 			);
 		} catch (Exception $e) {
-			_log("Couldn't get available payment gateways, reason: " . $e->getMessage());
+			wc_maksuturva_log( "Couldn't get available payment gateways, reason: " . $e->getMessage());
 		}
 
 		if ( !isset($payment_methods) || count( $payment_methods ) === 0 ) {
@@ -784,7 +784,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		try {
 			$payment = new WC_Payment_Maksuturva( $order_handler->get_id() );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
-			_log( (string) $e );
+			wc_maksuturva_log( (string) $e );
 			$this->add_notice( __( 'Could not process order.', $this->td ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 

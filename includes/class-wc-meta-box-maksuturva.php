@@ -85,7 +85,7 @@ class WC_Meta_Box_Maksuturva {
 			}
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			// If the payment was not found, it probably means that the order was not paid with Svea.
-			_log($e->getMessage());
+			wc_maksuturva_log($e->getMessage());
 			return;
 		}
 	}
@@ -103,14 +103,14 @@ class WC_Meta_Box_Maksuturva {
 	 */
 	private static function get_messages( $payment ) {
 		if (!$payment instanceof WC_Payment_Maksuturva) {
-			_log("Not a Svea payment method, skipping status check");
+			wc_maksuturva_log("Not a Svea payment method, skipping status check");
 		}
 
 		/**
 		 * query current status from Svea Payments if payment is not yet completed
 		 */
 		if ($payment->is_delayed() || $payment->is_pending()) {
-			_log("Manual pending payment check for order " . $payment->get_order_id());
+			wc_maksuturva_log( "Manual pending payment check for order " . $payment->get_order_id());
 			( new WC_Payment_Checker_Maksuturva() )->check_payment( $payment );
 		}
 

@@ -261,7 +261,7 @@ class WC_Payment_Maksuturva {
 				try {
 					$payments[] = new WC_Payment_Maksuturva( $item->order_id );
 				} catch ( WC_Gateway_Maksuturva_Exception $e ) {
-					_log( (string) $e );
+					wc_maksuturva_log( (string) $e );
 				}
 			}
 		}
@@ -280,10 +280,10 @@ class WC_Payment_Maksuturva {
 				"' WHERE (order_id = '" . $order_id . "');";
 			$result = $wpdb->query($sql);
 			if ($result === false) {
-				_log('Could not cancel order ' .  $order_id . ' in thr queue.');
+				wc_maksuturva_log( 'Could not cancel order ' . $order_id . ' in thr queue.');
 			}
 		} catch (Exception $e) {
-			_log("Order cancel in thr queue failed: " . $e->getMessage());
+			wc_maksuturva_log( "Order cancel in thr queue failed: " . $e->getMessage());
 		}
 	}
 	/**
