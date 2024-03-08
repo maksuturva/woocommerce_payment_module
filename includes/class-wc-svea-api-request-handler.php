@@ -22,6 +22,8 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -220,8 +222,8 @@ class WC_Svea_Api_Request_Handler {
 	private function parse_response( $response ) {
 
 		try {
-			$xml_response = new SimpleXMLElement( $response );
-		} catch ( Exception $e ) {
+			$xml_response = new \SimpleXMLElement( $response );
+		} catch ( \Exception $e ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Not able to parse response XML.'
 			);

@@ -21,6 +21,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+
+namespace SveaPaymentGateway\includes;
+
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -84,12 +87,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
      * WC_Gateway_Implementation_Maksuturva constructor.
      *
      * @param WC_Gateway_Maksuturva $gateway The gateway object.
-     * @param WC_Order $order The order.
+     * @param \WC_Order $order The order.
      *
      * @throws WC_Gateway_Maksuturva_Exception
      * @since 2.0.0
      */
-	public function __construct( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
+	public function __construct( WC_Gateway_Maksuturva $gateway, \WC_Order $order ) {
 		$this->wc_gateway = $gateway;
 		$this->set_base_url( $gateway->get_gateway_url() );
 		$this->seller_id  = ( $gateway->get_seller_id() );
@@ -106,13 +109,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * Creates the payment data to be used for the Svea payments gateway.
 	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
-	 * @param WC_Order              $order   The order.
+	 * @param \WC_Order              $order   The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	private function create_payment_data( WC_Gateway_Maksuturva $gateway, WC_Order $order ) {
+	private function create_payment_data( WC_Gateway_Maksuturva $gateway, \WC_Order $order ) {
 
 		$selected_payment_method = $this->get_selected_payment_method();
 		$payment_method_handling_cost = $this->get_payment_method_handling_cost( $selected_payment_method );
@@ -203,18 +206,18 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Creates the payment row data for each item in the order.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 * @param int|null $payment_method_handling_cost The payment method fee.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	private function create_payment_row_data( WC_Order $order, $payment_method_handling_cost ) {
+	private function create_payment_row_data( \WC_Order $order, $payment_method_handling_cost ) {
 
 		$payment_rows = array();
 		foreach ( $order->get_items() as $order_item_id => $item ) {
-			/* @var WC_Product $product */
+			/* @var \WC_Product $product */
 			$product = $item->get_product();
 			
 			$description = $this->get_product_description( $product, $order, $order_item_id );
@@ -284,13 +287,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Returns the shipping data for the order.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array|null
 	 */
-	private function create_payment_row_shipping_data( WC_Order $order ) {
+	private function create_payment_row_shipping_data( \WC_Order $order ) {
 		$this->shipping_cost = floatval( $order->get_total_shipping() ) + floatval( $order->get_shipping_tax() );
 
 		if ( $this->shipping_cost > 0 ) {
@@ -324,13 +327,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * If the order has any discounts, or a coupon is used, data is added.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array|null
 	 */
-	private function create_payment_row_discount_data( WC_Order $order ) {
+	private function create_payment_row_discount_data( \WC_Order $order ) {
 		// Force type to be float. Some plugins might change this value as string
 		// that won't validate correctly as true or false.
 		if ( floatval( $order->get_total_discount( false ) ) ) {
@@ -388,13 +391,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * If the order has any fees, data is added.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.4
 	 *
 	 * @return array|null
 	 */
-	private function create_payment_row_fee_data( WC_Order $order ) {
+	private function create_payment_row_fee_data( \WC_Order $order ) {
 		$fees     = $order->get_fees();
 		$fee_rows = array();
 
@@ -443,13 +446,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Returns the buyer information.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	private function create_buyer_data( WC_Order $order ) {
+	private function create_buyer_data( \WC_Order $order ) {
 		$order_handler = new WC_Order_Compatibility_Handler( $order );
 		$email         = $order_handler->get_billing_email();
 		if ( ! empty( $order_handler->get_customer_id() ) ) {
@@ -475,13 +478,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Returns the delivery information.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	private function create_delivery_data( WC_Order $order ) {
+	private function create_delivery_data( \WC_Order $order ) {
 		$order_handler = new WC_Order_Compatibility_Handler( $order );
 		return array(
 			'name'        => trim( $order_handler->get_shipping_first_name() . ' ' . $order_handler->get_shipping_last_name() ),
@@ -522,13 +525,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Returns the payment id for Svea.
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
-	private function get_payment_id( WC_Order $order ) {
+	private function get_payment_id( \WC_Order $order ) {
 		$pmt_id = '';
 		if ( strlen( $this->pmt_id_prefix ) ) {
 			$pmt_id .= $this->pmt_id_prefix;
@@ -542,14 +545,14 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Returns the internal payment id. 
 	 *
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return int
      *@throws WC_Gateway_Maksuturva_Exception If reference number is invalid.
 	 */
-	private function get_internal_payment_id( WC_Order $order ) {
+	private function get_internal_payment_id( \WC_Order $order ) {
         $order_handler = new WC_Order_Compatibility_Handler( $order );
 		return $order_handler->get_id()+100;
     }
@@ -629,14 +632,14 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Returns the calculated tax rate for the given product.
 	 *
-	 * @param WC_Product $product The product.
+	 * @param \WC_Product $product The product.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return int
 	 */
 	private function calc_tax_rate( $product ) {
-		$tax_rates = WC_Tax::get_rates( $product->get_tax_class() );
+		$tax_rates = \WC_Tax::get_rates( $product->get_tax_class() );
 
 		$rate = 0;
 		foreach ( $tax_rates as $tax_rate ) {
@@ -651,8 +654,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Returns the description for the given product.
 	 *
-	 * @param WC_Product|WC_Product_Variable $product       The product.
-	 * @param WC_Order                       $order         The order.
+	 * @param \WC_Product|\WC_Product_Variable $product       The product.
+	 * @param \WC_Order                       $order         The order.
 	 * @param int                            $order_item_id The order item id.
 	 *
 	 * @since 2.0.0
@@ -680,7 +683,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * Get the product description from the order meta data e.g. colors, sizes,
 	 * and such, according to WooCommerce 2.* way
 	 *
-	 * @param WC_Order $order         The order.
+	 * @param \WC_Order $order         The order.
 	 * @param int      $order_item_id The order item id.
 	 *
 	 * @since 2.0.8
@@ -690,7 +693,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	private function get_meta_description_wc2( $order, $order_item_id ) {
 		$description   = '';
 		$order_handler = new WC_Order_Compatibility_Handler( $order );
-		$item_meta     = new WC_Order_Item_Meta( $order_handler->get_item_meta( $order_item_id ) );
+		$item_meta     = new \WC_Order_Item_Meta( $order_handler->get_item_meta( $order_item_id ) );
 		$formatted     = $item_meta->get_formatted();
 		if ( $formatted ) {
 			foreach ( $formatted as $attr ) {

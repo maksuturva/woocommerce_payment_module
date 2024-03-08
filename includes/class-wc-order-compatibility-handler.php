@@ -22,6 +22,8 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -38,7 +40,7 @@ class WC_Order_Compatibility_Handler {
 
 	/**
 	 *
-	 * @var WC_Order
+	 * @var \WC_Order
 	 */
 	private $order;
 
@@ -50,11 +52,11 @@ class WC_Order_Compatibility_Handler {
 	/**
 	 * WC_Order_Compatibility_Handler constructor.
 	 *
-	 * @param WC_Order $order Order to handle
+	 * @param \WC_Order $order Order to handle
 	 *
 	 * @since 2.0.6
 	 */
-	public function __construct( WC_Order $order ) {
+	public function __construct( \WC_Order $order ) {
 		$this->order = $order;
 	}
 

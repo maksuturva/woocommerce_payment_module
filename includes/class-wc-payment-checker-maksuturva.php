@@ -22,6 +22,11 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
+use SveaPaymentGateway\WC_Maksuturva;
+use function SveaPaymentGateway\wc_maksuturva_log;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -237,8 +242,8 @@ class WC_Payment_Checker_Maksuturva {
 						$responses[$payment->get_payment_id()] = $sqresponse;
 				}
 			}
-		} catch (Exception $e) {
-			wc_maksuturva_log( "Payment check exception: " . $e->getMessage());
+		} catch ( \Exception $e ) {
+			wc_maksuturva_log( "Payment check exception: " . $e->getMessage() );
 		}
 		return $responses;
 	}

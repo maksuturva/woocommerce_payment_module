@@ -21,7 +21,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+
+namespace SveaPaymentGateway\includes;
+
 use Automattic\WooCommerce\Utilities\OrderUtil;
+use function SveaPaymentGateway\wc_maksuturva_log;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -52,7 +56,7 @@ class WC_Meta_Box_Maksuturva {
 	/**
 	 * Output the meta box.
 	 *
-	 * @param WP_Post $post The post.
+	 * @param \WP_Post $post The post.
 	 * @param array   $args Arguments passed to the output function.
 	 */
 	public static function output( $post, $args ) {
