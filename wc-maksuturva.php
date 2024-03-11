@@ -17,7 +17,7 @@
  * Tested up to: 6.3    
  * License:      LGPL2.1  
  * WC requires at least: 7.0   
- * WC tested up to: 8.6.0                           
+ * WC tested up to: 8.6.1                     
  */
 
 /**
@@ -101,7 +101,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.5.1';
+	const VERSION = '2.6.2';
 
 	/**
 	 * Plugin DB version.
