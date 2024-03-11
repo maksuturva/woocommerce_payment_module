@@ -1,6 +1,7 @@
 ## Changelog
 
 ### [Unreleased]
+* 260782: Load part payment calculator script with WP functions.
 * 260784: Add namespace to avoid conflicts with other plugins.
 
 ### 2.6.2 - 2024-03-07
