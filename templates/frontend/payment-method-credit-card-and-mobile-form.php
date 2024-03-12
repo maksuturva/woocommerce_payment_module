@@ -40,4 +40,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<?php include( 'payment-method-form.php' ); ?>
+<?php
+require 'payment-method-form.php';
