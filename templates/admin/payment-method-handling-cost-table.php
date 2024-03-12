@@ -39,40 +39,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 <tr valign="top">
 	<th scope="row" class="titledesc">
 		<label for="payment_method_handling_cost_table">
-			<?php echo $field['title']; ?>
-			<?php if ( isset ( $field['description'] ) && isset ( $field['desc_tip'] ) && $field['desc_tip'] ) { ?>
-				<span class="woocommerce-help-tip" data-tip="<?php echo $field['description']; ?>"></span>
-			<?php } ?>
+			<?php echo esc_html( $field['title'] ); ?>
+			<?php if ( isset( $field['description'] ) && isset( $field['desc_tip'] ) && $field['desc_tip'] ) : ?>
+				<span class="woocommerce-help-tip" data-tip="<?php echo esc_html( $field['description'] ); ?>"></span>
+			<?php endif; ?>
 		</label>
 	</th>
 	<td class="forminp" id="payment_method_handling_cost_table">
 		<table class="wc_input_table widefat" cellspacing="0">
 			<thead>
 				<tr>
-					<th><?php echo $field['code_column_title'] ?></th>
-					<th><?php echo $field['amount_column_title'] ?></th>
+					<th><?php echo esc_html( $field['code_column_title'] ); ?></th>
+					<th><?php echo esc_html( $field['amount_column_title'] ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach( $payment_method_handling_costs as $key => $handling_cost ) { ?>
+				<?php foreach ( $payment_method_handling_costs as $key => $handling_cost ) : ?>
 				<tr>
 					<td>
-						<input type="text" name="payment_method_type[<?php echo $key; ?>]" value="<?php echo $handling_cost['payment_method_type']; ?>"/>
+						<input type="text" name="payment_method_type[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_html( $handling_cost['payment_method_type'] ); ?>"/>
 					</td>
 					<td>
-						<input type="text" name="handling_cost_amount[<?php echo $key; ?>]" value="<?php echo $handling_cost['handling_cost_amount']; ?>"/>
+						<input type="text" name="handling_cost_amount[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_html( $handling_cost['handling_cost_amount'] ); ?>"/>
 					</td>
 				</tr>
-				<?php } ?>
+				<?php endforeach; ?>
 			</tbody>
 			<tfoot>
 				<tr>
 					<th colspan="7">
 						<a href="#" class="add button">
-							<?php echo $field['add_new_button_text'] ?>
+							<?php echo esc_html( $field['add_new_button_text'] ); ?>
 						</a>
 						<a href="#" class="remove_rows button">
-							<?php echo $field['remove_selected_rows_button_text'] ?>
+							<?php echo esc_html( $field['remove_selected_rows_button_text'] ); ?>
 						</a>
 					</th>
 				</tr>

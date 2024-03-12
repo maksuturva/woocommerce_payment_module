@@ -38,6 +38,5 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 2.1.3
  */
 
-?>
 
-<?php include( 'payment-method-form.php' ); ?>
+require 'payment-method-form.php';

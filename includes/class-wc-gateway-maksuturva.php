@@ -387,7 +387,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		<tr valign="top">
 			<th scope="row" class="titledesc">
 				<label for="<?php echo esc_attr( $field ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
-				<?php echo $this->get_tooltip_html( $data ); ?>
+				<?php echo wp_kses_post( $this->get_tooltip_html( $data ) ); ?>
 			</th>
 			<td class="forminp">
 				<fieldset>
@@ -407,7 +407,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 							<?php echo wp_kses_post( $label ); ?>
 						</label><br/>
 					<?php endforeach; ?>
-					<?php echo $this->get_description_html( $data ); ?>
+					<?php echo wp_kses_post( $this->get_description_html( $data ) ); ?>
 				</fieldset>
 			</td>
 		</tr>

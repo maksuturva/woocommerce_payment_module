@@ -37,45 +37,48 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.1.5
  */
-
 ?>
 
 <div>
-	<?php foreach ( $payment_methods as $payment_method ) {
-		// only EEAC is accepted in this section
-		if ($payment_method['code']=="EEAC") { ?>
+	<?php
+	foreach ( $payment_methods as $payment_method ) :
+		// only EEAC is accepted in this section.
+		if ( 'EEAC' === $payment_method['code'] ) :
+			?>
 		<div class="svea-payment-method-select" style="clear: both;">
 			<input
 				class="input-radio svea-payment-method-select-radio"
-				id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
-				name="<?php echo $payment_method_select_id; ?>"
+				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
+				name="<?php echo esc_attr( $payment_method_select_id ); ?>"
 				type="radio"
-				value="<?php echo $payment_method['code']; ?>"
+				value="<?php echo esc_attr( $payment_method['code'] ); ?>"
 			/>
-			<label class="label-eeac" for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
+			<label class="label-eeac" for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_url( $payment_method['code'] ); ?>">
 				<img
-					alt="<?php echo $payment_method['displayname']; ?>"
-					src="<?php echo $payment_method['imageurl']; ?>"
+					alt="<?php echo esc_attr( $payment_method['displayname'] ); ?>"
+					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
 				/>
 			</label>
-			<?php 
-				foreach ( $payment_method_handling_costs as $handling_cost ) {
-					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . $currency_symbol . "</div>";
-						break;
-					}
+			<?php
+			foreach ( $payment_method_handling_costs as $handling_cost ) {
+				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
+					echo wp_kses_post( '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['hattrandling_cost_amount'] ) . $currency_symbol . '</div>' );
+					break;
 				}
+			}
 			?>
-
 		</div>
-	<?php
-		} 
-	} 
+			<?php
+		endif;
+	endforeach;
 	?>
 </div>
 
-<p><?php if (!empty($terms['text']) ) { echo $terms['text']; ?>  
-(<a href="<?php echo $terms['url']; ?>" target="_blank">PDF</a>)</p>
+<?php
+if ( ! empty( $terms['text'] ) ) {
+	echo esc_html( $terms['text'] );
+	?>
+(<p><a href="<?php echo esc_url( $terms['url'] ); ?>" target="_blank">PDF</a>)</p>
 <?php } ?>
 
 <div style="clear: both;"></div>
@@ -110,7 +113,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
 	}
 
-	#payment .payment_methods li .svea-payment-method-select img {	
+	#payment .payment_methods li .svea-payment-method-select img {    
 		float: none;
 		max-height: 12em;
 	}
