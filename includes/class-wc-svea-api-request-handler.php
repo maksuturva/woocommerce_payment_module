@@ -97,7 +97,7 @@ class WC_Svea_Api_Request_Handler {
 
 	/**
 	 * Posts data to Svea payment api and checks that the return value is valid XML.
-	 * 
+	 *
 	 * @param string $route Route.
 	 * @param array $data Data to post.
 	 * @param array $settings Settings for handling post request creation and result validation.
@@ -107,10 +107,6 @@ class WC_Svea_Api_Request_Handler {
 	 * @return array
 	 */
 	public function post( $route, $data, $settings = [] ) {
-
-		$payment_api = $this->gateway->get_gateway_url();
-		$request = curl_init( $payment_api . $route );
-
 		if ( isset( $settings[self::SETTINGS_HASH_FIELD] ) ) {
 			$hash_field = $settings[self::SETTINGS_HASH_FIELD];
 			$data[$hash_field] = $this->get_hash(
@@ -119,22 +115,13 @@ class WC_Svea_Api_Request_Handler {
 			);
 		}
 
-		curl_setopt( $request, CURLOPT_HEADER, 0 );
-		curl_setopt( $request, CURLOPT_FRESH_CONNECT, 1 );
-		curl_setopt( $request, CURLOPT_FOLLOWLOCATION, 1 );
-		curl_setopt( $request, CURLOPT_FORBID_REUSE, 1 );
-		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $request, CURLOPT_POST, 1 );
-		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 120 );
-		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
-		curl_setopt( $request, CURLOPT_POSTFIELDS, $data );
-
-		$response = curl_exec( $request );
+		$response = wp_remote_post( trailingslashit( $this->gateway->get_gateway_url() ) . $route, [
+			'body' => $data,
+			'timeout' => 120,
+			'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+		] );
 
 		$this->verify_response_has_value( $response );
-
-		curl_close( $request );
 
 		$array_response = $this->parse_response( $response );
 
@@ -153,7 +140,7 @@ class WC_Svea_Api_Request_Handler {
 
 	/**
 	 * Get request to Svea payment api without hashing
-	 * 
+	 *
 	 * @param string $route Route.
 	 * @param array $data Data to post.
 	 * @param array $settings Settings for handling post request creation and result validation.
@@ -163,25 +150,19 @@ class WC_Svea_Api_Request_Handler {
 	 * @return array
 	 */
 	public function get( $route, $data, $settings = [] ) {
+		$request_url = add_query_arg(
+			$data,
+			trailingslashit( $this->gateway->get_gateway_url() ) . $route
+		);
 
-		$payment_api = $this->gateway->get_gateway_url();
-		$request_url = $payment_api . $route . "?" . http_build_query($data);
-		$request = curl_init( $request_url );
+		$response = wp_remote_get( $request_url, [
+			'timeout' => 120,
+			'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+		] );
 
-		curl_setopt( $request, CURLOPT_HEADER, 0 );
-		curl_setopt( $request, CURLOPT_FOLLOWLOCATION, 1 );
-		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 20 );
-		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
+		$this->verify_response_has_value( $response );
 
-		$response = curl_exec( $request );
-
-		curl_close( $request );
-
-		$array_response = $this->parse_response( $response );
-
-		return $array_response;
+		return $this->parse_response( $response );
 	}
 
 	/**
@@ -210,7 +191,7 @@ class WC_Svea_Api_Request_Handler {
 
 	/**
 	 * Parse raw XML to array format
-	 * 
+	 *
 	 * @param string $response Response data.
 	 *
 	 * @since 2.1.2
@@ -218,9 +199,10 @@ class WC_Svea_Api_Request_Handler {
 	 * @return array
 	 */
 	private function parse_response( $response ) {
+		$body = wp_remote_retrieve_body( $response );
 
 		try {
-			$xml_response = new SimpleXMLElement( $response );
+			$xml_response = new SimpleXMLElement( $body );
 		} catch ( Exception $e ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Not able to parse response XML.'
@@ -238,7 +220,7 @@ class WC_Svea_Api_Request_Handler {
 	 * @since 2.1.2
 	 */
 	private function verify_response_has_value( $response ) {
-		if ( $response === false ) {
+		if ( wp_remote_retrieve_response_code( $response ) !== WP_Http::OK ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Failed to communicate with Svea. Please check the network connection.'
 			);

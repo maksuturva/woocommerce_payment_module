@@ -888,12 +888,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * @throws WC_Gateway_Maksuturva_Exception If curl not found, or failure to communicate with Svea.
 	 */
 	public function status_query( $data = array() ) {
-		if ( ! function_exists( 'curl_init' ) ) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'cURL is needed in order to communicate with the Svea Payments API. Check your PHP installation.',
-				self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED
-			);
-		}
 		$default_fields = array(
 			'pmtq_action'        => 'PAYMENT_STATUS_QUERY',
 			'pmtq_version'       => '0005',
@@ -902,8 +896,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_resptype'      => 'XML',
 			'pmtq_return'        => '',
 			'pmtq_hashversion'   => $this->payment_data['pmt_hashversion'],
-			'pmtq_keygeneration' => $this->payment_data['pmt_keygeneration'], 
-			"req_ts_ms"          => \DateTime::createFromFormat('U.u', microtime(TRUE))->format('Y-m-d H:i:s:u')
+			'pmtq_keygeneration' => $this->payment_data['pmt_keygeneration'],
+			"req_ts_ms"          => \DateTime::createFromFormat('U.u', microtime(true))->format('Y-m-d H:i:s:u')
 		);
 		// Overrides with user-defined fields.
 		$this->status_query_data = array_merge( $default_fields, $data );
@@ -922,25 +916,21 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
 		$this->status_query_data['pmtq_hash'] = $data_hasher->create_hash( $hash_data );
 
-		// Now the request is made to maksuturva.
-		$request = curl_init( $this->base_url_status_query );
-		curl_setopt( $request, CURLOPT_HEADER, 0 );
-		curl_setopt( $request, CURLOPT_FRESH_CONNECT, 1 );
-		curl_setopt( $request, CURLOPT_FORBID_REUSE, 1 );
-		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $request, CURLOPT_POST, 1 );
-		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 30 );
-		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
-		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->status_query_data );
-		$res = curl_exec( $request );
+		$res = wp_remote_post(
+			$this->base_url_status_query,
+			[
+				'body' => $this->status_query_data,
+				'timeout' => 30,
+				'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+			]
+		);
 
-		if ( false === $res ) {
+		if ( wp_remote_retrieve_response_code( $res ) !== WP_Http::OK ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Failed to communicate with Svea Payments API. Please check the network connection.'
 			);
 		}
-		curl_close( $request );
+
 		// We will not rely on xml parsing - instead,
 		// the fields are going to be collected by means of regular expression.
 		$parsed_response = array();
