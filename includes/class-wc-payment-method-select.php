@@ -166,7 +166,7 @@ class WC_Payment_Method_Select {
 	public function validate_payment_method_select() {
 
 		if ( !isset( $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
-			wc_add_notice( __( 'Payment method not selected', 'wc-maksuturva' ), 'error' );
+			wc_add_notice( __( 'Payment method not selected', $this->gateway->td ), 'error' );
 			return false;
 		}
 

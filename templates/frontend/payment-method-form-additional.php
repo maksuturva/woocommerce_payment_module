@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <script>
 (function() {
 	jQuery(function($) {
-		$(document).ready( function() {
+        $(document).ready( function() {
 			var radioButtons = document.querySelectorAll( '.svea-payment-method-select-radio' );
 			for( var i = 0; i < radioButtons.length; ++i ) {
 			radioButtons[i].addEventListener('click', function() {
@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				}
 			});
 		});
-	});
+    });
 })();
 </script>
 
@@ -97,8 +97,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 
 	#payment .payment_methods li .svea-payment-method-select.checked label {
-		border: 2px solid #00aece;
-	}
+        border: 2px solid #00aece;
+    }
 
 	#payment .payment_methods li .svea-payment-method-select-radio {
 		display: none;
