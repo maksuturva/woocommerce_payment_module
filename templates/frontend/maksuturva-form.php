@@ -39,29 +39,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <?php
-$msg = __( 'Thank you for your order. You will now be redirected to Svea to complete the payment.', 'wc-maksuturva' );
-wc_enqueue_js(
-	'$.blockUI({
-             message: "' . esc_js( $msg ) . '",
-             baseZ: 99999,
-             overlayCSS: {
-                  background: "#fff",
-                  opacity: 0.6
-             },
-             css: {
-                  padding:        "20px",
-                  zindex:         "9999999",
-                  textAlign:      "center",
-                  color:          "#555",
-                  border:         "3px solid #aaa",
-                  backgroundColor:"#fff",
-                  cursor:         "wait",
-                  lineHeight:     "24px",
-             }
-        });
-    jQuery("#maksuturva_payment_form .payment_buttons").hide();
-    jQuery("#maksuturva_payment_form").submit();'
-);
+$msg = __( 'Thank you for your order. You will now be redirected to Svea to complete the payment.', $this->td );
+wc_enqueue_js( '
+		$.blockUI({
+				message: "' . esc_js( $msg ) . '",
+				baseZ: 99999,
+				overlayCSS: {
+					background: "#fff",
+					opacity: 0.6
+				},
+				css: {
+					padding:        "20px",
+					zindex:         "9999999",
+					textAlign:      "center",
+					color:          "#555",
+					border:         "3px solid #aaa",
+					backgroundColor:"#fff",
+					cursor:         "wait",
+					lineHeight:     "24px",
+				}
+			});
+		jQuery("#maksuturva_payment_form .payment_buttons").hide();
+		jQuery("#maksuturva_payment_form").submit();
+	' );
 ?>
 
 <form action="<?php echo esc_url( $payment_gateway_url ); ?>" method="post" id="maksuturva_payment_form" target="_top">
@@ -71,8 +71,8 @@ wc_enqueue_js(
 	<!-- Button Fallback -->
 	<div class="payment_buttons">
 		<a class="button cancel" href="<?php echo esc_url( $order->get_cancel_order_url() ); ?>">
-			<?php echo esc_attr( __( 'Cancel order', 'wc-maksuturva' ) ); ?></a>
+			<?php echo esc_attr( __( 'Cancel order', $this->td ) ); ?></a>
 		<input type="submit" class="button alt" id="submit_maksuturva_payment_form"
-			value="<?php echo esc_attr( __( 'Pay for order', 'wc-maksuturva' ) ); ?>"/>
+			   value="<?php echo esc_attr( __( 'Pay for order', $this->td ) ); ?>"/>
 	</div>
 </form>

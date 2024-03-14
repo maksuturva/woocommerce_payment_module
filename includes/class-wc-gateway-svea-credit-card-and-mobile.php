@@ -44,14 +44,14 @@ class WC_Gateway_Svea_Credit_Card_And_Mobile extends WC_Gateway_Maksuturva {
 	 */
 	public function __construct() {
 		parent::__construct( WC_Gateway_Svea_Credit_Card_And_Mobile::class );
-		$this->method_title = 'Svea ' . __( 'Credit Card and Mobile', 'wc-maksuturva' );
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'wc-maksuturva'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$this->method_title = 'Svea ' . __( 'Credit Card and Mobile', $this->td );
+		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
 
 		$custom_title = $this->get_option( 'payment_group_creditcard_title' );
 		if (!empty($custom_title)) {
 			$this->title = esc_html($custom_title);
 		} else {
-			$this->title = __( 'Credit Card and Mobile', 'wc-maksuturva' );
+			$this->title = __( 'Credit Card and Mobile', $this->td );
 		}
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
 	}

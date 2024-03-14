@@ -40,145 +40,151 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <div>
-	<?php if ( ! empty( $method_group1['methods'] ) ) : ?>
+	<?php	
+	if (!empty($method_group1['methods'])) 
+	{
+	?>
 	<div class="svea-payment-collated-title">
-		<?php echo esc_html( $method_group1['title'] ); ?>
+		<?php echo $method_group1['title']; ?>
 	</div>
-		<?php foreach ( $method_group1['methods'] as $payment_method ) : ?>
+	<?php
+		foreach ( $method_group1['methods'] as $payment_method ) { 
+	?>
 		<div class="svea-payment-method-select" style="clear: both;">
-			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
+			<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
 				<img
-					alt="<?php echo esc_attr( $payment_method['displayname'] ); ?>"
-					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
+					alt="<?php echo $payment_method['displayname']; ?>"
+					src="<?php echo $payment_method['imageurl']; ?>"
 				/>
 			</label>
-			<?php
-			foreach ( $payment_method_handling_costs as $handling_cost ) {
-				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-					echo wp_kses_post( '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>' );
-					break;
+			<?php 
+				foreach ( $payment_method_handling_costs as $handling_cost ) {
+					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
+						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>';
+						break;
+					}
 				}
-			}
 			?>
 			<input
 				class="input-radio svea-payment-method-select-radio"
-				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
-				name="<?php echo esc_attr( $payment_method_select_id ); ?>"
+				id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
+				name="<?php echo $payment_method_select_id; ?>"
 				type="radio"
-				value="<?php echo esc_attr( $payment_method['code'] ); ?>"
+				value="<?php echo $payment_method['code']; ?>"
 			/>
 		</div>
-			<?php
-		endforeach;
-	endif;
+	<?php } 
+	}
 
-	if ( ! empty( $method_group2['methods'] ) ) :
-		?>
+	if (!empty($method_group2['methods'])) 
+	{
+	?>
 	<div class="svea-payment-collated-title">
-			<?php echo esc_html( $method_group2['title'] ); ?>
+			<?php echo $method_group2['title']; ?>
 	</div>
-		<?php foreach ( $method_group2['methods'] as $payment_method ) : ?>
+	<?php
+		foreach ( $method_group2['methods'] as $payment_method ) { 
+	?>
 		<div class="svea-payment-method-select" style="clear: both;">
-			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
+			<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
 				<img
-					alt="<?php echo esc_attr( $payment_method['displayname'] ); ?>"
-					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
+					alt="<?php echo $payment_method['displayname']; ?>"
+					src="<?php echo $payment_method['imageurl']; ?>"
 				/>
 			</label>
-			<?php
-			foreach ( $payment_method_handling_costs as $handling_cost ) {
-				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-					echo wp_kses_post( '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>' );
-					break;
+			<?php 
+				foreach ( $payment_method_handling_costs as $handling_cost ) {
+					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
+						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>';
+						break;
+					}
 				}
-			}
 			?>
 			<input
 				class="input-radio svea-payment-method-select-radio"
-				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
-				name="<?php echo esc_attr( $payment_method_select_id ); ?>"
+				id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
+				name="<?php echo $payment_method_select_id; ?>"
 				type="radio"
-				value="<?php echo esc_attr( $payment_method['code'] ); ?>"
+				value="<?php echo $payment_method['code']; ?>"
 			/>
 		</div>
-			<?php
-		endforeach;
-	endif;
+	<?php }
+	}
 
-	if ( ! empty( $method_group3['methods'] ) ) :
-		?>
+	if (!empty($method_group3['methods'])) 
+	{
+	?>
 	<div class="svea-payment-collated-title">
-			<?php echo esc_html( $method_group3['title'] ); ?>
+			<?php echo $method_group3['title']; ?>
 	</div>
-		<?php foreach ( $method_group3['methods'] as $payment_method ) : ?>
+	<?php
+		foreach ( $method_group3['methods'] as $payment_method ) { 
+	?>
 		<div class="svea-payment-method-select" style="clear: both;">
-			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
+			<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
 				<img
-					alt="<?php echo esc_attr( $payment_method['displayname'] ); ?>"
-					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
+					alt="<?php echo $payment_method['displayname']; ?>"
+					src="<?php echo $payment_method['imageurl']; ?>"
 				/>
 			</label>
-			<?php
-			foreach ( $payment_method_handling_costs as $handling_cost ) {
-				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-					echo wp_kses_post( '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>' );
-					break;
+			<?php 
+				foreach ( $payment_method_handling_costs as $handling_cost ) {
+					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
+						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>';
+						break;
+					}
 				}
-			}
 			?>
 			<input
 				class="input-radio svea-payment-method-select-radio"
-				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
-				name="<?php echo esc_attr( $payment_method_select_id ); ?>"
+				id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
+				name="<?php echo $payment_method_select_id; ?>"
 				type="radio"
-				value="<?php echo esc_attr( $payment_method['code'] ); ?>"
+				value="<?php echo $payment_method['code']; ?>"
 			/>
 		</div>
-			<?php
-		endforeach;
-	endif;
+	<?php } 
+	}
 
-	if ( ! empty( $method_group4['methods'] ) ) :
-		?>
+	if (!empty($method_group4['methods'])) 
+	{
+	?>
 	<div class="svea-payment-collated-title">
-		<?php echo esc_html( $method_group4['title'] ); ?>
+			<?php echo $method_group4['title']; ?>
 	</div>
-		<?php foreach ( $method_group4['methods'] as $payment_method ) : ?>
+	<?php
+		foreach ( $method_group4['methods'] as $payment_method ) { 
+	?>
 		<div class="svea-payment-method-select" style="clear: both;">
-			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
+			<label for="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>">
 				<img
-					alt="<?php echo esc_html( $payment_method['displayname'] ); ?>"
-					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
+					alt="<?php echo $payment_method['displayname']; ?>"
+					src="<?php echo $payment_method['imageurl']; ?>"
 				/>
 			</label>
-			<?php
-			foreach ( $payment_method_handling_costs as $handling_cost ) {
-				if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-					echo wp_kses_post( '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>' );
-					break;
+			<?php 
+				foreach ( $payment_method_handling_costs as $handling_cost ) {
+					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
+						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>';
+						break;
+					}
 				}
-			}
 			?>
 			<input
 				class="input-radio svea-payment-method-select-radio"
-				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
-				name="<?php echo esc_attr( $payment_method_select_id ); ?>"
+				id="<?php echo $payment_method_select_id; ?>-<?php echo $payment_method['code']; ?>"
+				name="<?php echo $payment_method_select_id; ?>"
 				type="radio"
-				value="<?php echo esc_attr( $payment_method['code'] ); ?>"
+				value="<?php echo $payment_method['code']; ?>"
 			/>
 		</div>
-			<?php
-		endforeach;
-	endif;
+	<?php } 
+	}
 	?>
 </div>
 
-<p>
-<?php
-if ( ! empty( $terms['text'] ) ) {
-	echo esc_html( $terms['text'] );
-	?>
-	(<a href="<?php echo esc_url( $terms['url'] ); ?>" target="_blank">PDF</a>)
+<p><?php if (!empty($terms['text']) ) { echo $terms['text']; ?>  
+(<a href="<?php echo $terms['url']; ?>" target="_blank">PDF</a>)</p>
 <?php } ?>
-</p>
+
 <div style="clear: both;"></div>
