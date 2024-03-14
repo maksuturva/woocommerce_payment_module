@@ -302,9 +302,10 @@ class WC_Payment_Method_Select {
 	 * @return string
 	 */
 	private function get_eeac_payment_method_logo_url( $original_url ) {
-		$logo_path = WP_PLUGIN_DIR . '/woocommerce_payment_module/EEAC_logo.png';
+		$logo_path     = trailingslashit( WC_Maksuturva::get_instance()->get_plugin_dir() ) . 'EEAC_logo.png';
 		$override_logo = file_exists( $logo_path );
-		if ($override_logo) {
+
+		if ( $override_logo ) {
 			return WC_Maksuturva::get_instance()->get_plugin_url() . 'EEAC_logo.png';
 		} else {
 			return $original_url;
