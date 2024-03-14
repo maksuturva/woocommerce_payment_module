@@ -2,6 +2,8 @@
 
 ### [Unreleased]
 * 260784: Add namespace to avoid conflicts with other plugins.
+* 260781: Replace text domains with static strings
+* 260779: Replace Curl with WordPress HTTP API.
 
 ### 2.6.2 - 2024-03-07
 * 260350: Combine user settings with part payments plans fetched from the API.

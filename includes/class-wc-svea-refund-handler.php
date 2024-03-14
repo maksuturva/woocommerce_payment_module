@@ -224,7 +224,7 @@ class WC_Svea_Refund_Handler {
 
 			$this->create_comment(
 				sprintf(
-					__( 'Made a refund of %s € through Svea', $this->gateway->td ),
+					__( 'Made a refund of %s € through Svea', 'wc-maksuturva' ),
 					$this->format_amount( $amount )
 				)
 			);
@@ -376,11 +376,11 @@ class WC_Svea_Refund_Handler {
 			. '/dashboard/PaymentEvent.db'
 			. '?pmt_id=' . $this->payment->get_payment_id();
 
-		return __( 'Creating a refund failed', $this->gateway->td )
+		return __( 'Creating a refund failed', 'wc-maksuturva' )
 			. '. '
-			. __( 'Make a refund directly', $this->gateway->td )
+			. __( 'Make a refund directly', 'wc-maksuturva' )
 			. ' <a href="' . $extranet_payment_url . '" target="_blank">'
-			. __( 'in Svea Extranet', $this->gateway->td )
+			. __( 'in Svea Extranet', 'wc-maksuturva' )
 			. '</a>.';
 	}
 
@@ -397,11 +397,11 @@ class WC_Svea_Refund_Handler {
 		return implode(
 			'<br />',
 			[
-				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', $this->gateway->td ),
-				__( 'Recipient', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_recipientname'],
-				__( 'IBAN', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_iban'],
-				__( 'Reference', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_reference'],
-				__( 'Amount', $this->gateway->td ) . ': ' . $response['pmtc_pay_with_amount'] . ' €'
+				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', 'wc-maksuturva' ),
+				__( 'Recipient', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_recipientname'],
+				__( 'IBAN', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_iban'],
+				__( 'Reference', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_reference'],
+				__( 'Amount', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_amount'] . ' €'
 			]
 		);
 	}

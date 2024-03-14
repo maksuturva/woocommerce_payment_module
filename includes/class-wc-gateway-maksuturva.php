@@ -58,15 +58,6 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	const NO_NOTICE_VERSION = 3;
 
 	/**
-	 * The text domain to use for translations.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var string $td The text domain.
-	 */
-	public $td;
-
-	/**
 	 * The notification URL for the payment gateway.
 	 *
 	 * @since 2.0.0
@@ -123,12 +114,11 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		global $wpdb;
 
 		$this->id = isset($id) ? $id : WC_Gateway_Maksuturva::class;
-		$this->td = 'wc-maksuturva';
 
 		$this->title              = $this->get_option( 'title' );
 		$this->description        = $this->get_option( 'description' );
-		$this->method_title       = __( 'Svea', $this->td );
-		$this->method_description = __( 'Take payments via Svea.', $this->td );
+		$this->method_title       = __( 'Svea', 'wc-maksuturva' );
+		$this->method_description = __( 'Take payments via Svea.', 'wc-maksuturva' );
 
 		$this->outbound_payment = $this->get_option( 'outbound_payment' );
 
@@ -782,7 +772,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		wc_clear_notices();
 
 		if ( ! WC_Maksuturva::get_instance()->is_currency_supported() ) {
-			$this->add_notice( __( 'Payment gateway not available.', $this->td ), 'error' );
+			$this->add_notice( __( 'Payment gateway not available.', 'wc-maksuturva' ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 
 			return;
@@ -791,7 +781,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		$params = $_GET;
 		// Make sure the payment id is found in the return parameters, and that it actually exists.
 		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
-			$this->add_notice( __( 'Missing reference number in response.', $this->td ), 'error' );
+			$this->add_notice( __( 'Missing reference number in response.', 'wc-maksuturva' ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 			return;
 		}
@@ -801,7 +791,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			$payment = new WC_Payment_Maksuturva( $order_handler->get_id() );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			wc_maksuturva_log( (string) $e );
-			$this->add_notice( __( 'Could not process order.', $this->td ), 'error' );
+			$this->add_notice( __( 'Could not process order.', 'wc-maksuturva' ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 
 			return;
@@ -823,10 +813,10 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				if (isset( $params['pmt_errortexttouser']) ) {
-					$this->add_notice( __( 'Payment failed: ' . $params['pmt_errortexttouser'], $this->td ), 'error' );
+					$this->add_notice( __( 'Payment failed: ' . $params['pmt_errortexttouser'], 'wc-maksuturva' ), 'error' );
 					wc_add_notice('Correct the checkout information and try again.'); 
 				} else {
-					$this->add_notice( __( 'Error from Svea received.', $this->td ), 'error' );
+					$this->add_notice( __( 'Error from Svea received.', 'wc-maksuturva' ), 'error' );
 				}
 
 				$this->order_fail( $order, $payment );
@@ -836,13 +826,13 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 				$this->order_delay( $order, $payment );
-				$this->add_notice( __( 'Payment delayed by Svea.', $this->td ), 'notice' );
+				$this->add_notice( __( 'Payment delayed by Svea.', 'wc-maksuturva' ), 'notice' );
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
 				$this->order_cancel( $order, $payment );
-				$this->add_notice( __( 'Cancellation from Svea received.', $this->td ), 'notice' );
+				$this->add_notice( __( 'Cancellation from Svea received.', 'wc-maksuturva' ), 'notice' );
 				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $order->get_cancel_order_url() ) );
 				break;
 
@@ -850,7 +840,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			default:
 				$this->order_complete( $order, $payment );
 				$woocommerce->cart->empty_cart();
-				$this->add_notice( __( 'Payment confirmed by Svea.', $this->td ), 'success' );
+				$this->add_notice( __( 'Payment confirmed by Svea.', 'wc-maksuturva' ), 'success' );
 				wp_redirect( $this->get_return_url( $order ) );
 				break;
 		}
@@ -890,7 +880,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	protected function add_surcharge( $payment, $order ) {
 		if ( ! $payment->is_cancelled() && $payment->includes_surcharge() ) {
 			$fee          = new \stdClass();
-			$fee->name    = __( 'Surcharge from Payment Gateway', $this->td );
+			$fee->name    = __( 'Surcharge from Payment Gateway', 'wc-maksuturva' );
 			$fee->amount  = $payment->get_surcharge();
 			$fee->taxable = false;
 			$order->add_fee( $fee );
@@ -928,7 +918,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	protected function order_fail( $order, $payment ) {
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_FAILED ) ) {
 			$order->update_status( WC_Payment_Maksuturva::STATUS_FAILED,
-				__( 'Error from Svea received.', $this->td ) );
+				__( 'Error from Svea received.', 'wc-maksuturva' ) );
 		}
 
 		if (! $payment->is_error() ) {
@@ -950,7 +940,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
      */
 	protected function order_cancel( $order, $payment ) {
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_CANCELLED ) ) {
-			$order->cancel_order( __( 'Cancellation from Svea received.', $this->td ) );
+			$order->cancel_order( __( 'Cancellation from Svea received.', 'wc-maksuturva' ) );
 		}
 
 		if ( ! $payment->is_cancelled() ) {
