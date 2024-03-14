@@ -45,9 +45,9 @@ class WC_Gateway_Svea_Collated extends WC_Gateway_Maksuturva {
 	public function __construct() {
 		$collated_title = parent::get_option('collated_title', 'Svea Payments');
 		parent::__construct( WC_Gateway_Svea_Collated::class );
-		$this->method_title = 'Svea ' . __( 'Collated Payments', $this->td );
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', $this->td), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$this->title = __( $collated_title, $this->td );
+		$this->method_title = 'Svea ' . __( 'Collated Payments', 'wc-maksuturva' );
+		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'wc-maksuturva'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$this->title = __( $collated_title, 'wc-maksuturva' );
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
 	}
 
