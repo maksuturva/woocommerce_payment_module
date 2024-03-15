@@ -17,7 +17,7 @@
  * Tested up to: 6.3    
  * License:      LGPL2.1  
  * WC requires at least: 7.0   
- * WC tested up to: 8.6.0                           
+ * WC tested up to: 8.6.1                     
  */
 
 /**
@@ -102,7 +102,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.5.1';
+	const VERSION = '2.6.2';
 
 	/**
 	 * Plugin DB version.
@@ -157,15 +157,6 @@ class WC_Maksuturva {
 	 * @var string $plugin_name The name of the plugin.
 	 */
 	protected $plugin_name = '';
-
-	/**
-	 * The text domain to use for translations.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var string $td The text domain.
-	 */
-	public $td = 'wc-maksuturva';
 
 	/**
 	 * Get the plugin instance.
@@ -321,7 +312,7 @@ class WC_Maksuturva {
 	public function register_cron_schedules( $schedules ) {
 		$schedules['five_minutes'] = array(
 			'interval' => 5 * 60,
-			'display'  => __( 'Once every 5 minutes', $this->td )
+			'display'  => __( 'Once every 5 minutes', 'wc-maksuturva' )
 		);
 
 		return $schedules;
