@@ -260,6 +260,63 @@ class WC_Maksuturva {
 		}
 	}
 
+    /**
+     * Check if price has payment plan available
+     *
+     * @since 2.6.1
+     *
+     * @param float $price
+     * @return bool
+     */
+    public function price_has_payment_plan_available(float $price, $plans) {
+	    if ( empty( $plans || empty( $plans["campaigns"] ) ) ) {
+		    return false;
+	    }
+
+	    foreach ( $plans['campaigns'] as $plan ) {
+		    if ( $price >= $plan['FromAmount'] && $price <= $plan['ToAmount'] ) {
+			    return true;
+		    }
+	    }
+
+	    return false;
+    }
+
+    /**
+     * Check if part payment calculator should be displayed
+     *
+     * @since 2.6.1
+     *
+     * @param float $price
+     * @param includes\WC_Gateway_Maksuturva $gateway
+     *
+     * @return bool
+     */
+    public function should_display_calculator(float $price, includes\WC_Gateway_Maksuturva $gateway): bool {
+	    $minThreshold = (float) $gateway->get_option( 'ppw_price_threshold_minimum' );
+	    $gateway      = new includes\WC_Gateway_Maksuturva();
+	    $api          = new includes\WC_Svea_Api_Request_Handler( $gateway );
+	    $plans        = $api->get_payment_plan_params();
+
+	    if ( empty( $minThreshold ) ) {
+		    return $this->price_has_payment_plan_available( $price, $plans );
+	    }
+
+	    if ( $price < $minThreshold ) {
+		    return false;
+	    }
+
+	    if ( ! empty( $plans ) ) {
+		    foreach ( $plans['campaigns'] as $plan ) {
+			    if ( $price <= $plan['ToAmount'] ) {
+				    return true;
+			    }
+		    }
+	    }
+
+	    return false;
+    }
+
 	/**
 	 * Add Svea Part Payment Widget to the page
 	 */
