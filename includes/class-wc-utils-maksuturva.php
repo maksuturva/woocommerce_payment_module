@@ -21,6 +21,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+
+namespace SveaPaymentGateway\includes;
+
+use SveaPaymentGateway\WC_Maksuturva;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -137,7 +142,7 @@ class WC_Utils_Maksuturva {
 		try {
 			$user_agent = mb_convert_encoding($user_agent . " (" . php_uname('s') . 
 				" " . php_uname('r') . ") Woocommerce/" . WC_VERSION . " PHP/" . phpversion(), "ASCII");
-		} catch (Exception $e) {
+		} catch ( \Exception $e ) {
 			// nop
 		}
 		return $user_agent;

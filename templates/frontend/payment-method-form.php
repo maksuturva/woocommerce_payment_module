@@ -54,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php 
 				foreach ( $payment_method_handling_costs as $handling_cost ) {
 					if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-						echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>';
+						echo '<div class="handling-cost-amount">+' . SveaPaymentGateway\includes\WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>';
 						break;
 					}
 				}

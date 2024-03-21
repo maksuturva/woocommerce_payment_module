@@ -22,6 +22,8 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -444,7 +446,7 @@ class WC_Gateway_Admin_Form_Fields {
 	}
 
 	public function get_tax_class_options() {
-		foreach (WC_Tax::get_tax_classes() as $tax_class) {
+		foreach (\WC_Tax::get_tax_classes() as $tax_class) {
 			$tax_classes[sanitize_title( $tax_class )] = $tax_class;
 		}
 		if (!isset($tax_classes) || empty($tax_classes)) {

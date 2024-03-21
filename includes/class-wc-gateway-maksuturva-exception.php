@@ -22,6 +22,8 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -33,6 +35,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.0.0
  */
-class WC_Gateway_Maksuturva_Exception extends Exception {
+class WC_Gateway_Maksuturva_Exception extends \Exception {
 
 }

@@ -22,6 +22,8 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -95,11 +97,11 @@ class WC_Payment_Handling_Costs {
 	/**
 	 * Set handling cost in checkout page
 	 *
-	 * @param WC_Cart $cart The cart.
+	 * @param \WC_Cart $cart The cart.
 	 *
 	 * @since 2.1.3
 	 */
-	public function set_handling_cost( WC_Cart $cart ) {
+	public function set_handling_cost( \WC_Cart $cart ) {
 		if ( ! $_POST || ( is_admin() && ! is_ajax() ) ) {
 			return;
 		}
@@ -181,7 +183,7 @@ class WC_Payment_Handling_Costs {
 
 		$rate = 0;
 
-		foreach ( WC_Tax::get_rates($tax_class) as $tax_rate ) {
+		foreach ( \WC_Tax::get_rates($tax_class) as $tax_rate ) {
 			$rate += $tax_rate['rate'];
 		}
 
@@ -191,7 +193,7 @@ class WC_Payment_Handling_Costs {
 	/**
 	 * Update payment handling fee
 	 * 
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 * 
 	 * @since 2.1.3
 	 */
@@ -225,7 +227,7 @@ class WC_Payment_Handling_Costs {
 		}
 
 		if ( !$fee_already_exists ) {
-			$fee          = new stdClass();
+			$fee          = new \stdClass();
 			$fee->name    = __( 'Payment handling fee', 'wc-maksuturva' );
 			$fee->amount  = $payment_handling_cost_fee;
 			$fee->taxable = true;

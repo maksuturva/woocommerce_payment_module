@@ -29,14 +29,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Variables defined.
  *
- * @var WC_Gateway_Maksuturva $this The context from where this template was called from.
+ * @var SveaPaymentGateway\includes\WC_Gateway_Maksuturva $this The context from where this template was called from.
  *
  * @since 2.0.0
  */
 ?>
 <div class="inline error">
 	<p>
-		<?php echo esc_attr( __( 'Svea does not support your store currency. Only EUR is supported.',
-		'wc-maksuturva' ) ); ?>
+		<?php echo esc_attr( __( 'Svea does not support your store currency. Only EUR is supported.', 'wc-maksuturva' ) ); ?>
 	</p>
 </div>

@@ -22,6 +22,8 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -38,14 +40,14 @@ class WC_Product_Compatibility_Handler {
 
 	/**
 	 *
-	 * @var WC_Product|WC_Product_Variable
+	 * @var \WC_Product|\WC_Product_Variable
 	 */
 	private $product;
 
 	/**
 	 * WC_Product_Compatibility_Handler constructor.
 	 *
-	 * @param WC_Product|WC_Product_Variable $product Product to handle
+	 * @param \WC_Product|\WC_Product_Variable $product Product to handle
 	 *
 	 * @since 2.0.6
 	 */

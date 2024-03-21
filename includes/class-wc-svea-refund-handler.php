@@ -22,6 +22,8 @@
  * Lesser General Public License for more details.
  */
 
+namespace SveaPaymentGateway\includes;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }

@@ -21,7 +21,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
+
+namespace SveaPaymentGateway\includes;
+
 use Automattic\WooCommerce\Utilities\OrderUtil;
+use SveaPaymentGateway\WC_Maksuturva;
+use function SveaPaymentGateway\wc_maksuturva_log;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -45,7 +50,7 @@ require_once 'class-wc-utils-maksuturva.php';
  *
  * @since 2.0.0
  */
-class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
+class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 	/**
 	 * Major WooCommerce version no longer supporting notices on cancellation, thank you etc
@@ -167,7 +172,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				return $title;
 			}
 			$order_id = wc_clean($_GET["id"]);
-			$order = new WC_Order($order_id);
+			$order = new \WC_Order($order_id);
 		} else {
 			// old WC way
 			if (
@@ -177,7 +182,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 				return $title;
 			}
 
-			$order = new WC_Order($post->ID);
+			$order = new \WC_Order($post->ID);
 		}
 
 		if (!empty($order) && $order->get_payment_method() !== null) {
@@ -222,10 +227,10 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		try {
 			$payment_methods = $this->payment_method_select->get_payment_type_payment_methods(
 				$payment_method_type,
-				WC_Payment_Gateway::get_order_total()
+				\WC_Payment_Gateway::get_order_total()
 			);
-		} catch (Exception $e) {
-			_log("Couldn't get available payment gateways, reason: " . $e->getMessage());
+		} catch (\Exception $e) {
+			wc_maksuturva_log( "Couldn't get available payment gateways, reason: " . $e->getMessage() );
 		}
 
 		if ( !isset($payment_methods) || count( $payment_methods ) === 0 ) {
@@ -286,7 +291,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
 		$errors = $gateway_admin_form_fields->save_payment_method_handling_costs();
 
-		$settings = new WC_Admin_Settings();
+		$settings = new \WC_Admin_Settings();
 
 		if (isset($errors)) {
 			foreach ($errors as $error) {
@@ -310,7 +315,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		return $this->payment_method_select->initialize_payment_method_select(
 			$payment_method_type,
-			WC_Payment_Gateway::get_order_total(),
+			\WC_Payment_Gateway::get_order_total(),
 			$this->is_outbound_payment_enabled()
 		);
 	}
@@ -499,9 +504,20 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			return parent::get_option( $key, $empty_value );
 		}
 
-		$main_settings = get_option( 'woocommerce_' . WC_Gateway_Maksuturva::class . '_settings' );
+		$option_name   = 'woocommerce_' . WC_Gateway_Maksuturva::class . '_settings';
+		$main_settings = get_option( $option_name );
+
 		if ( isset( $main_settings[$key] ) ) {
 			return $main_settings[$key];
+		}
+
+        // Fetch the previous namespace settings if the current namespace settings are not found
+		$previous_namespace = str_replace( __NAMESPACE__, '', $option_name );
+		$previous_namespace = str_replace( "\\", '', $previous_namespace );
+		$fallback_settings  = get_option( $previous_namespace );
+
+		if ( isset( $fallback_settings[$key] ) ) {
+			return $fallback_settings[$key];
 		}
 
 		return parent::get_option( $key, $empty_value );
@@ -632,7 +648,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @return WC_Order
+	 * @return \WC_Order
 	 */
 	protected function load_order_by_pmt_id( $pmt_id ) {
 		$pmt_id_prefix = $this->get_option( 'maksuturva_orderid_prefix' );
@@ -774,7 +790,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		try {
 			$payment = new WC_Payment_Maksuturva( $order_handler->get_id() );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
-			_log( (string) $e );
+			wc_maksuturva_log( (string) $e );
 			$this->add_notice( __( 'Could not process order.', 'wc-maksuturva' ), 'error' );
 			wp_redirect( $woocommerce->cart->get_cart_url() );
 
@@ -835,13 +851,13 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 *
 	 * Returns if the order has already been paid.
 	 *
-	 * @param WC_Order $order the order
+	 * @param \WC_Order $order the order
 	 *
 	 * @since 2.0.2
 	 *
 	 * @return bool
 	 */
-	public function is_order_paid( WC_Order $order ) {
+	public function is_order_paid( \WC_Order $order ) {
 		if ( method_exists( $order, 'is_paid' ) ) {
 			return $order->is_paid();
 		} else {
@@ -857,13 +873,13 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 	 * Adds a surcharge fee to the order.
 	 *
 	 * @param WC_Payment_Maksuturva $payment The payment.
-	 * @param WC_Order $order The order.
+	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 */
 	protected function add_surcharge( $payment, $order ) {
 		if ( ! $payment->is_cancelled() && $payment->includes_surcharge() ) {
-			$fee          = new stdClass();
+			$fee          = new \stdClass();
 			$fee->name    = __( 'Surcharge from Payment Gateway', 'wc-maksuturva' );
 			$fee->amount  = $payment->get_surcharge();
 			$fee->taxable = false;
@@ -893,7 +909,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
      *
      * Fails the order and payment if not already failed.
      *
-     * @param WC_Order $order The order.
+     * @param \WC_Order $order The order.
      * @param WC_Payment_Maksuturva $payment The payment.
      *
      * @throws WC_Gateway_Maksuturva_Exception
@@ -916,7 +932,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
      *
      * Cancels the order and payment if not already cancelled.
      *
-     * @param WC_Order $order The order.
+     * @param \WC_Order $order The order.
      * @param WC_Payment_Maksuturva $payment The payment.
      *
      * @throws WC_Gateway_Maksuturva_Exception
@@ -937,7 +953,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
      *
      * Delay the order and payment if not already delayed.
      *
-     * @param WC_Order $order The order.
+     * @param \WC_Order $order The order.
      * @param WC_Payment_Maksuturva $payment The payment.
      *
      * @throws WC_Gateway_Maksuturva_Exception
@@ -955,7 +971,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
      *
      * Completes the order and payment if not already completed.
      *
-     * @param WC_Order $order The order.
+     * @param \WC_Order $order The order.
      * @param WC_Payment_Maksuturva $payment The payment.
      *
      * @throws WC_Gateway_Maksuturva_Exception
