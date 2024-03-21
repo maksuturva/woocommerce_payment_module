@@ -269,7 +269,7 @@ class WC_Maksuturva {
      * @return bool
      */
     public function price_has_payment_plan_available(float $price, $plans) {
-	    if ( empty( $plans || empty( $plans["campaigns"] ) ) ) {
+	    if ( empty( $plans ) || !isset( $plans["campaigns"] ) || empty( $plans["campaigns"] ) ) {
 		    return false;
 	    }
 
