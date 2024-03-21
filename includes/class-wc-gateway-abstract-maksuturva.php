@@ -927,7 +927,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			]
 		);
 
-		if ( wp_remote_retrieve_response_code( $res ) !== WP_Http::OK ) {
+		if ( wp_remote_retrieve_response_code( $res ) !== \WP_Http::OK ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Failed to communicate with Svea Payments API. Please check the network connection.'
 			);

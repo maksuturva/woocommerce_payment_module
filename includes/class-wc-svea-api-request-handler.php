@@ -222,7 +222,7 @@ class WC_Svea_Api_Request_Handler {
 	 * @since 2.1.2
 	 */
 	private function verify_response_has_value( $response ) {
-		if ( wp_remote_retrieve_response_code( $response ) !== WP_Http::OK ) {
+		if ( wp_remote_retrieve_response_code( $response ) !== \WP_Http::OK ) {
 			throw new WC_Gateway_Maksuturva_Exception(
 				'Failed to communicate with Svea. Please check the network connection.'
 			);

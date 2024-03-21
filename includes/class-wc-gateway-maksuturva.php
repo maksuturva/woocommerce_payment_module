@@ -251,7 +251,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 		$svealogo = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 		?>
-		<img src="<?php echo $svealogo ?>" />
+		<img src="<?php echo esc_url( $svealogo ); ?>" />
 		<?php
 		parent::admin_options();
 		
