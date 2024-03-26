@@ -22,11 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 use Automattic\WooCommerce\Utilities\OrderUtil;
-use SveaPaymentGateway\WC_Maksuturva;
-use function SveaPaymentGateway\wc_maksuturva_log;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -113,7 +109,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	public function __construct( $id = null ) {
 		global $wpdb;
 
-		$this->id = isset($id) ? $id : WC_Gateway_Maksuturva::class;
+		$this->id = isset( $id ) ? $id : self::class;
 
 		$this->title              = $this->get_option( 'title' );
 		$this->description        = $this->get_option( 'description' );
@@ -122,7 +118,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 		$this->outbound_payment = $this->get_option( 'outbound_payment' );
 
-		$this->notify_url = WC()->api_request_url( WC_Gateway_Maksuturva::class );
+		$this->notify_url = WC()->api_request_url( self::class );
 
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 
@@ -138,59 +134,59 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		$this->init_settings();
 
 		// Save the settings.
-		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options'] );
+		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
-		add_action( 'woocommerce_api_wc_gateway_maksuturva', [$this, 'check_response'] );
-		add_action( 'woocommerce_receipt_' . $this->id, [$this, 'receipt_page'] );
+		add_action( 'woocommerce_api_wc_gateway_maksuturva', array( $this, 'check_response' ) );
+		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
 
-		add_action( 'woocommerce_order_status_changed', [$this, 'order_status_changed_event'], 10, 3 );
-		
+		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_changed_event' ), 10, 3 );
+
 		// see Github issue #23, @since 2.1.7, 2.4.2 added is checkout boolean
-		//if (!is_admin() && is_checkout()) {
-		if (!is_admin()) { //TODO: ## Restore to old
-			add_filter( 'woocommerce_available_payment_gateways', [$this, 'payment_gateway_disable_empty'] );
+		// if (!is_admin() && is_checkout()) {
+		if ( ! is_admin() ) { // TODO: ## Restore to old
+			add_filter( 'woocommerce_available_payment_gateways', array( $this, 'payment_gateway_disable_empty' ) );
 		}
 
-		add_filter( 'woocommerce_gateway_title', [$this, 'override_payment_gateway_title'], 25, 2 );
+		add_filter( 'woocommerce_gateway_title', array( $this, 'override_payment_gateway_title' ), 25, 2 );
 	}
 
 	public function override_payment_gateway_title( $title, $gateway_id ) {
 		global $woocommerce, $post;
-		if (!is_admin()) {
+		if ( ! is_admin() ) {
 			return $title;
 		}
 		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
 			if (
-				'wc-orders' != wc_clean($_GET["page"])
-				//(!('shop_order' === OrderUtil::get_order_type( $order_id )) )
-				|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
+				'wc-orders' != wc_clean( $_GET['page'] )
+				// (!('shop_order' === OrderUtil::get_order_type( $order_id )) )
+				|| ( ! str_contains( $gateway_id, 'Maksuturva' ) && ! str_contains( $gateway_id, 'Svea' ) )
 			) {
 				return $title;
 			}
 
-			if (empty($_GET["id"])) {
+			if ( empty( $_GET['id'] ) ) {
 				return $title;
 			}
-			$order_id = wc_clean($_GET["id"]);
-			$order = new \WC_Order($order_id);
+			$order_id = wc_clean( $_GET['id'] );
+			$order    = new \WC_Order( $order_id );
 		} else {
 			// old WC way
 			if (
-				('shop_order' != get_post_type())
-				|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
+				( 'shop_order' != get_post_type() )
+				|| ( ! str_contains( $gateway_id, 'Maksuturva' ) && ! str_contains( $gateway_id, 'Svea' ) )
 			) {
 				return $title;
 			}
 
-			$order = new \WC_Order($post->ID);
+			$order = new \WC_Order( $post->ID );
 		}
 
-		if (!empty($order) && $order->get_payment_method() !== null) {
-			$payment = new WC_Payment_Maksuturva($order->get_id());
+		if ( ! empty( $order ) && $order->get_payment_method() !== null ) {
+			$payment       = new WC_Payment_Maksuturva( $order->get_id() );
 			$paymentMethod = $payment->get_payment_method();
-			if (!empty($paymentMethod)) {
+			if ( ! empty( $paymentMethod ) ) {
 				$paymentMethodName = $this->payment_method_select->get_payment_method_name( $paymentMethod );
-				if (!empty($paymentMethodName) && !str_contains($title, $paymentMethodName)) {
+				if ( ! empty( $paymentMethodName ) && ! str_contains( $title, $paymentMethodName ) ) {
 					return $title . ': ' . $paymentMethodName;
 				}
 			}
@@ -208,15 +204,14 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 *
 	 * @return array
 	 */
-	public function payment_gateway_disable_empty( $available_gateways ) 
-	{
-		if (empty(WC()->cart)) {
+	public function payment_gateway_disable_empty( $available_gateways ) {
+		if ( empty( WC()->cart ) ) {
 			return;
 		}
 
-		if ( $this->id === WC_Gateway_Maksuturva::class ) {
-			if (!$this->is_outbound_payment_enabled()) {
-				unset( $available_gateways[$this->id] );
+		if ( $this->id === self::class ) {
+			if ( ! $this->is_outbound_payment_enabled() ) {
+				unset( $available_gateways[ $this->id ] );
 			}
 			return $available_gateways;
 		}
@@ -229,12 +224,12 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 				$payment_method_type,
 				\WC_Payment_Gateway::get_order_total()
 			);
-		} catch (\Exception $e) {
+		} catch ( \Exception $e ) {
 			wc_maksuturva_log( "Couldn't get available payment gateways, reason: " . $e->getMessage() );
 		}
 
-		if ( !isset($payment_methods) || count( $payment_methods ) === 0 ) {
-			unset( $available_gateways[$this->id] );
+		if ( ! isset( $payment_methods ) || count( $payment_methods ) === 0 ) {
+			unset( $available_gateways[ $this->id ] );
 		}
 
 		return $available_gateways;
@@ -254,7 +249,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		<img src="<?php echo esc_url( $svealogo ); ?>" />
 		<?php
 		parent::admin_options();
-		
+
 		/***
 		 * <p>You may use diagnostics functionality to send additional webstore platform information to Svea Payments
 		 * when contacting Svea Payments technical support. A copy of this information can be found on your log files.</p>
@@ -267,8 +262,8 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 */
 	public function init_form_fields() {
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
-		$this->form_fields = $gateway_admin_form_fields->as_array();
-		$gateway_admin_form_fields->toggle_gateway_admin_settings($this->is_outbound_payment_enabled());
+		$this->form_fields         = $gateway_admin_form_fields->as_array();
+		$gateway_admin_form_fields->toggle_gateway_admin_settings( $this->is_outbound_payment_enabled() );
 	}
 
 	/**
@@ -289,12 +284,12 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	public function process_admin_options() {
 
 		$gateway_admin_form_fields = new WC_Gateway_Admin_Form_Fields( $this );
-		$errors = $gateway_admin_form_fields->save_payment_method_handling_costs();
+		$errors                    = $gateway_admin_form_fields->save_payment_method_handling_costs();
 
 		$settings = new \WC_Admin_Settings();
 
-		if (isset($errors)) {
-			foreach ($errors as $error) {
+		if ( isset( $errors ) ) {
+			foreach ( $errors as $error ) {
 				$settings->add_error( $error );
 			}
 		}
@@ -307,7 +302,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 * @since 2.1.3
 	 */
 	public function payment_fields() {
-		if ($this->is_outbound_payment_enabled()) {
+		if ( $this->is_outbound_payment_enabled() ) {
 			$payment_method_type = 'outbound';
 		} else {
 			$payment_method_type = str_replace( '_', '-', strtolower( explode( 'WC_Gateway_Svea_', $this->id )[1] ) );
@@ -326,10 +321,10 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 * @since 2.1.3
 	 */
 	public function validate_fields() {
-		if (!$this->is_outbound_payment_enabled()) {
+		if ( ! $this->is_outbound_payment_enabled() ) {
 			$valid = $this->payment_method_select->validate_payment_method_select();
 
-			if ( !$valid ) {
+			if ( ! $valid ) {
 				return false;
 			}
 		}
@@ -342,14 +337,14 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 *
 	 * More documentation: https://docs.woocommerce.com/wc-apidocs/class-WC_Payment_Gateway.html#_process_refund
 	 *
-	 * @param int $order_id The order id.
-	 * @param int $amount The amount.
+	 * @param int    $order_id The order id.
+	 * @param int    $amount The amount.
 	 * @param string $reason The reason.
 	 *
 	 * @since 2.1.2
 	 */
-	public function process_refund( $order_id, $amount = null, $reason = "" ) {
-		$payment = new WC_Payment_Maksuturva( $order_id );
+	public function process_refund( $order_id, $amount = null, $reason = '' ) {
+		$payment             = new WC_Payment_Maksuturva( $order_id );
 		$svea_refund_handler = new WC_Svea_Refund_Handler( $order_id, $payment, $this );
 		return $svea_refund_handler->process_refund( $amount, $reason );
 	}
@@ -406,7 +401,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 							name="<?php echo esc_attr( $field ); ?>"
 							id="<?php echo esc_attr( $field . '_' . $value ); ?>"
 							style="<?php echo esc_attr( $data['css'] ); ?>"
-							value="<?php echo esc_attr($value); ?>"
+							value="<?php echo esc_attr( $value ); ?>"
 							<?php checked( $this->get_option( $key, $data['default'] ), $value ); ?>
 							<?php echo $this->get_custom_attribute_html( $data ); ?> />
 							<?php echo wp_kses_post( $label ); ?>
@@ -504,20 +499,20 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			return parent::get_option( $key, $empty_value );
 		}
 
-		$option_name   = 'woocommerce_' . WC_Gateway_Maksuturva::class . '_settings';
+		$option_name   = 'woocommerce_' . self::class . '_settings';
 		$main_settings = get_option( $option_name );
 
-		if ( isset( $main_settings[$key] ) ) {
-			return $main_settings[$key];
+		if ( isset( $main_settings[ $key ] ) ) {
+			return $main_settings[ $key ];
 		}
 
-        // Fetch the previous namespace settings if the current namespace settings are not found
+		// Fetch the previous namespace settings if the current namespace settings are not found
 		$previous_namespace = str_replace( __NAMESPACE__, '', $option_name );
-		$previous_namespace = str_replace( "\\", '', $previous_namespace );
+		$previous_namespace = str_replace( '\\', '', $previous_namespace );
 		$fallback_settings  = get_option( $previous_namespace );
 
-		if ( isset( $fallback_settings[$key] ) ) {
-			return $fallback_settings[$key];
+		if ( isset( $fallback_settings[ $key ] ) ) {
+			return $fallback_settings[ $key ];
 		}
 
 		return parent::get_option( $key, $empty_value );
@@ -623,7 +618,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 */
 	public function is_sandbox() {
 		return false;
-		//return ( $this->get_option( 'sandbox' ) === 'yes' );
+		// return ( $this->get_option( 'sandbox' ) === 'yes' );
 	}
 
 	/**
@@ -670,38 +665,38 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 		/**
 		 * special functionality for Estonia EEAC payment method, needs to be activated in the admin panel
+		 *
 		 * @since 2.1.5
 		 */
-		if ($this->is_estonia_special_delivery() && $order->get_payment_method() == "WC_Gateway_Svea_Estonia_Payments")
-		{ 
-			if (trim($order->get_shipping_postcode())=='') {
-				$order->set_shipping_postcode("00000");
+		if ( $this->is_estonia_special_delivery() && $order->get_payment_method() == 'WC_Gateway_Svea_Estonia_Payments' ) {
+			if ( trim( $order->get_shipping_postcode() ) == '' ) {
+				$order->set_shipping_postcode( '00000' );
 			}
-			if (trim($order->get_shipping_city())=='') {
-				$order->set_shipping_city("none");
-			}
-
-			if (trim($order->get_billing_first_name())=='') {
-				$order->set_billing_first_name("none");
-			}
-			if (trim($order->get_billing_last_name())=='') {
-				$order->set_billing_last_name("none");
-			}
-			if (trim($order->get_billing_address_1())=='') {
-				$order->set_billing_address_1("none");
-			}
-			if (trim($order->get_billing_postcode())=='') {
-				$order->set_billing_postcode("00000");
-			}
-			if (trim($order->get_billing_city())=='') {
-				$order->set_billing_city("none");
-			}
-			if (trim($order->get_billing_country())=='') {
-				$order->set_billing_country("EE");
+			if ( trim( $order->get_shipping_city() ) == '' ) {
+				$order->set_shipping_city( 'none' );
 			}
 
-			if (trim($order->get_billing_country())=='') {
-				$order->set_billing_country("EE");
+			if ( trim( $order->get_billing_first_name() ) == '' ) {
+				$order->set_billing_first_name( 'none' );
+			}
+			if ( trim( $order->get_billing_last_name() ) == '' ) {
+				$order->set_billing_last_name( 'none' );
+			}
+			if ( trim( $order->get_billing_address_1() ) == '' ) {
+				$order->set_billing_address_1( 'none' );
+			}
+			if ( trim( $order->get_billing_postcode() ) == '' ) {
+				$order->set_billing_postcode( '00000' );
+			}
+			if ( trim( $order->get_billing_city() ) == '' ) {
+				$order->set_billing_city( 'none' );
+			}
+			if ( trim( $order->get_billing_country() ) == '' ) {
+				$order->set_billing_country( 'EE' );
+			}
+
+			if ( trim( $order->get_billing_country() ) == '' ) {
+				$order->set_billing_country( 'EE' );
 			}
 			$order->save();
 		}
@@ -709,9 +704,9 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		$url = add_query_arg( 'key', $order_handler->get_order_key(), $url );
 		$url = add_query_arg( 'order-pay', $order_handler->get_id(), $url );
 
-		if (!$this->is_outbound_payment_enabled()) {
+		if ( ! $this->is_outbound_payment_enabled() ) {
 			$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
-			$url = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+			$url            = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
 		}
 
 		return array(
@@ -720,16 +715,15 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		);
 	}
 
-    /**
-     * Print receipt page.
-     *
-     * Shows the receipt page and redirects the user to the payment gateway.
-     *
-     * @param int $order_id The order id.
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.0
-     *
-     */
+	/**
+	 * Print receipt page.
+	 *
+	 * Shows the receipt page and redirects the user to the payment gateway.
+	 *
+	 * @param int $order_id The order id.
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.0
+	 */
 	public function receipt_page( $order_id ) {
 
 		$order = wc_get_order( $order_id );
@@ -741,20 +735,29 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		$order_handler       = new WC_Order_Compatibility_Handler( $order );
 		$payment_gateway_url = $gateway->get_payment_url();
 		$data                = $gateway->get_field_array();
-		$payment_method		 = isset($data['pmt_paymentmethod']) ? $data['pmt_paymentmethod'] : '';
+		$payment_method      = isset( $data['pmt_paymentmethod'] ) ? $data['pmt_paymentmethod'] : '';
 
 		// Create the payment for Svea.
-		WC_Payment_Maksuturva::create( array(
-			'order_id'      	=> $order_handler->get_id(),
-			'payment_id'    	=> $data['pmt_id'],
-			'payment_method'	=> $payment_method,
-			'data_sent'     	=> $data,
-			'data_received' 	=> array(),
-			'status'        	=> WC_Payment_Maksuturva::STATUS_PENDING,
-		) );
+		WC_Payment_Maksuturva::create(
+			array(
+				'order_id'       => $order_handler->get_id(),
+				'payment_id'     => $data['pmt_id'],
+				'payment_method' => $payment_method,
+				'data_sent'      => $data,
+				'data_received'  => array(),
+				'status'         => WC_Payment_Maksuturva::STATUS_PENDING,
+			)
+		);
 
-		$this->render( 'maksuturva-form', 'frontend',
-		array( 'order' => $order, 'payment_gateway_url' => $payment_gateway_url, 'data' => $data ) );
+		$this->render(
+			'maksuturva-form',
+			'frontend',
+			array(
+				'order'               => $order,
+				'payment_gateway_url' => $payment_gateway_url,
+				'data'                => $data,
+			)
+		);
 	}
 
 	/**
@@ -812,15 +815,15 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				if (isset( $params['pmt_errortexttouser']) ) {
+				if ( isset( $params['pmt_errortexttouser'] ) ) {
 					$this->add_notice( __( 'Payment failed: ' . $params['pmt_errortexttouser'], 'wc-maksuturva' ), 'error' );
-					wc_add_notice('Correct the checkout information and try again.'); 
+					wc_add_notice( 'Correct the checkout information and try again.' );
 				} else {
 					$this->add_notice( __( 'Error from Svea received.', 'wc-maksuturva' ), 'error' );
 				}
 
 				$this->order_fail( $order, $payment );
-				//wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
+				// wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 				wp_redirect( $woocommerce->cart->get_cart_url() );
 				break;
 
@@ -873,7 +876,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 * Adds a surcharge fee to the order.
 	 *
 	 * @param WC_Payment_Maksuturva $payment The payment.
-	 * @param \WC_Order $order The order.
+	 * @param \WC_Order             $order The order.
 	 *
 	 * @since 2.0.0
 	 */
@@ -904,40 +907,42 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		}
 	}
 
-    /**
-     * Fails order.
-     *
-     * Fails the order and payment if not already failed.
-     *
-     * @param \WC_Order $order The order.
-     * @param WC_Payment_Maksuturva $payment The payment.
-     *
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.2
-     */
+	/**
+	 * Fails order.
+	 *
+	 * Fails the order and payment if not already failed.
+	 *
+	 * @param \WC_Order             $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.2
+	 */
 	protected function order_fail( $order, $payment ) {
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_FAILED ) ) {
-			$order->update_status( WC_Payment_Maksuturva::STATUS_FAILED,
-				__( 'Error from Svea received.', 'wc-maksuturva' ) );
+			$order->update_status(
+				WC_Payment_Maksuturva::STATUS_FAILED,
+				__( 'Error from Svea received.', 'wc-maksuturva' )
+			);
 		}
 
-		if (! $payment->is_error() ) {
+		if ( ! $payment->is_error() ) {
 			$this->add_surcharge( $payment, $order );
 			$payment->error();
 		}
 	}
 
-    /**
-     * Cancel order.
-     *
-     * Cancels the order and payment if not already cancelled.
-     *
-     * @param \WC_Order $order The order.
-     * @param WC_Payment_Maksuturva $payment The payment.
-     *
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.2
-     */
+	/**
+	 * Cancel order.
+	 *
+	 * Cancels the order and payment if not already cancelled.
+	 *
+	 * @param \WC_Order             $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.2
+	 */
 	protected function order_cancel( $order, $payment ) {
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_CANCELLED ) ) {
 			$order->cancel_order( __( 'Cancellation from Svea received.', 'wc-maksuturva' ) );
@@ -948,17 +953,17 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		}
 	}
 
-    /**
-     * Delay order.
-     *
-     * Delay the order and payment if not already delayed.
-     *
-     * @param \WC_Order $order The order.
-     * @param WC_Payment_Maksuturva $payment The payment.
-     *
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.2
-     */
+	/**
+	 * Delay order.
+	 *
+	 * Delay the order and payment if not already delayed.
+	 *
+	 * @param \WC_Order             $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.2
+	 */
 	protected function order_delay( $order, $payment ) {
 		if ( ! $payment->is_delayed() ) {
 			$this->add_surcharge( $payment, $order );
@@ -966,17 +971,17 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		}
 	}
 
-    /**
-     * Complete order.
-     *
-     * Completes the order and payment if not already completed.
-     *
-     * @param \WC_Order $order The order.
-     * @param WC_Payment_Maksuturva $payment The payment.
-     *
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.2
-     */
+	/**
+	 * Complete order.
+	 *
+	 * Completes the order and payment if not already completed.
+	 *
+	 * @param \WC_Order             $order The order.
+	 * @param WC_Payment_Maksuturva $payment The payment.
+	 *
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.2
+	 */
 	protected function order_complete( $order, $payment ) {
 		if ( ! $this->is_order_paid( $order ) ) {
 			$order->payment_complete( $payment->get_payment_id() );
@@ -992,9 +997,9 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	/**
 	 * Handles the order status change event
 	 *
-	 * @param int $order_id The order id.
+	 * @param int    $order_id The order id.
 	 * @param string $old_status The old status.
-	 * @param array $new_status The new status.
+	 * @param array  $new_status The new status.
 	 *
 	 * @since 2.1.2
 	 */
@@ -1019,15 +1024,15 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 				'maksuturva_send_delivery_for_specific_payments'
 			);
 
-			if (!empty($selectedPayments)) {
-				$selectedPaymentsArray = explode(',', str_ireplace(' ', '', $selectedPayments));
-				$order = wc_get_order($order_id);
+			if ( ! empty( $selectedPayments ) ) {
+				$selectedPaymentsArray = explode( ',', str_ireplace( ' ', '', $selectedPayments ) );
+				$order                 = wc_get_order( $order_id );
 
-				if (!empty($order) && !empty($order->get_payment_method())) {
-					$payment = new WC_Payment_Maksuturva($order->get_id());
+				if ( ! empty( $order ) && ! empty( $order->get_payment_method() ) ) {
+					$payment       = new WC_Payment_Maksuturva( $order->get_id() );
 					$paymentMethod = $payment->get_payment_method();
 
-					if (!empty($paymentMethod) && !in_array($paymentMethod, $selectedPaymentsArray)) {
+					if ( ! empty( $paymentMethod ) && ! in_array( $paymentMethod, $selectedPaymentsArray ) ) {
 						return;
 					}
 				}

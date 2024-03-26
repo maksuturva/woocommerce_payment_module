@@ -22,8 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 /**
  * Class WC_Svea_Part_Payment_Calculator
  *
@@ -78,7 +76,7 @@ class WC_Svea_Part_Payment_Calculator {
 	/**
 	 * Include part payment calculator script
 	 *
-	 * @param string $seller_id Seller id.
+	 * @param string      $seller_id Seller id.
 	 * @param \WC_Product $product Product instance.
 	 *
 	 * @return void
@@ -87,7 +85,7 @@ class WC_Svea_Part_Payment_Calculator {
 	protected function include_script( $seller_id, $product ) {
 		$price_thresholds = $this->gateway->get_option( 'ppw_price_thresholds' );
 
-		$params = [
+		$params = array(
 			'src'              => esc_url( 'https://payments.maksuturva.fi/tools/partpayment/partPayment.js' ),
 			'class'            => 'svea-pp-widget-part-payment',
 			'sellerid'         => $seller_id,
@@ -106,9 +104,9 @@ class WC_Svea_Part_Payment_Calculator {
 			'highlight-color'  => $this->get_script_attr( 'ppw_highlight_color' ),
 			'active-color'     => $this->get_script_attr( 'ppw_active_color' ),
 			'threshold-prices' => ! empty( $price_thresholds ) && $this->validate_price_threshold( $price_thresholds ) ? '[' . $price_thresholds . ']' : '',
-		];
+		);
 
-		$attrs = [];
+		$attrs = array();
 
 		foreach ( $params as $key => $value ) {
 			if ( empty( $value ) ) {
@@ -119,7 +117,7 @@ class WC_Svea_Part_Payment_Calculator {
 				$key = 'data-' . $key;
 			}
 
-			 $attrs[ $key ] = $value;
+			$attrs[ $key ] = $value;
 		}
 
 		wp_print_script_tag( $attrs );
@@ -128,7 +126,7 @@ class WC_Svea_Part_Payment_Calculator {
 	/**
 	 * Get script attribute
 	 *
-	 * @param string $option Option name.
+	 * @param string      $option Option name.
 	 * @param string|bool $compare Compare value. Comparison is skipped if value is not provided
 	 *
 	 * @return array|bool|int|string
@@ -200,7 +198,7 @@ class WC_Svea_Part_Payment_Calculator {
 	 * @since 2.6.1
 	 */
 	protected function price_has_payment_plan_available( float $price, $plans ) {
-		if ( empty( $plans || empty( $plans["campaigns"] ) ) ) {
+		if ( empty( $plans || empty( $plans['campaigns'] ) ) ) {
 			return false;
 		}
 
@@ -219,6 +217,6 @@ class WC_Svea_Part_Payment_Calculator {
 	 * @since 2.3.0
 	 */
 	private function validate_price_threshold( $value ) {
-		return substr_count( $value, "[" ) === substr_count( $value, "]" );
+		return substr_count( $value, '[' ) === substr_count( $value, ']' );
 	}
 }

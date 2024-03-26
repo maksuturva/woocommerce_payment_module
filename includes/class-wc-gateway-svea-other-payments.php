@@ -18,13 +18,9 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-
-namespace SveaPaymentGateway\includes;
-
-use SveaPaymentGateway\WC_Maksuturva;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -47,12 +43,14 @@ class WC_Gateway_Svea_Other_Payments extends WC_Gateway_Maksuturva {
 	 * @since 2.1.3
 	 */
 	public function __construct() {
-		parent::__construct( WC_Gateway_Svea_Other_Payments::class );
+		parent::__construct( self::class );
 		$this->method_title = 'Svea ' . __( 'Other Payments', 'wc-maksuturva' );
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'wc-maksuturva'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$custom_title = $this->get_option( 'payment_group_other_title' );
-		if (!empty($custom_title)) {
-			$this->title = esc_html($custom_title);
+
+		/* translators: %s: URL */
+		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'wc-maksuturva' ), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$custom_title             = $this->get_option( 'payment_group_other_title' );
+		if ( ! empty( $custom_title ) ) {
+			$this->title = esc_html( $custom_title );
 		} else {
 			$this->title = __( 'Other Payments', 'wc-maksuturva' );
 		}
@@ -60,9 +58,9 @@ class WC_Gateway_Svea_Other_Payments extends WC_Gateway_Maksuturva {
 	}
 
 	/**
-	 * @inheritdoc
+	 * Initialize the form fields
 	 */
 	public function init_form_fields() {
-    $this->form_fields = [];
-  }
+		$this->form_fields = array();
+	}
 }

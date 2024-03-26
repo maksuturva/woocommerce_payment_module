@@ -18,11 +18,9 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-
-namespace SveaPaymentGateway\includes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -116,12 +114,12 @@ class WC_Svea_Refund_Handler {
 	 * Fields that should be used for hashing request data.
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
-	 * 
+	 *
 	 * @var array $request_hash_fields Request hash fields.
 	 *
 	 * @since 2.1.2
 	 */
-	private static $request_hash_fields = [
+	private static $request_hash_fields = array(
 		'pmtc_action',
 		'pmtc_version',
 		'pmtc_sellerid',
@@ -130,26 +128,26 @@ class WC_Svea_Refund_Handler {
 		'pmtc_currency',
 		'pmtc_canceltype',
 		'pmtc_cancelamount',
-		'pmtc_payeribanrefund'
-	];
+		'pmtc_payeribanrefund',
+	);
 
 	/**
 	 * Fields that should be used for hashing response data.
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
-	 * 
+	 *
 	 * @var array $response_hash_fields Response hash fields.
 	 *
 	 * @since 2.1.2
 	 */
-	private static $response_hash_fields = [
+	private static $response_hash_fields = array(
 		'pmtc_action',
 		'pmtc_version',
 		'pmtc_sellerid',
 		'pmtc_id',
 		'pmtc_returntext',
-		'pmtc_returncode'
-	];
+		'pmtc_returncode',
+	);
 
 	/**
 	 * The Svea gateway.
@@ -178,9 +176,9 @@ class WC_Svea_Refund_Handler {
 	 */
 	private $payment;
 
-	/*
+	/**
 	 * WC_Svea_Refund_Handler constructor.
-	 * 
+	 *
 	 * @param int $order_id Order id.
 	 * @param WC_Payment_Maksuturva $payment Payment.
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
@@ -188,7 +186,7 @@ class WC_Svea_Refund_Handler {
 	 * @since 2.1.2
 	 */
 	public function __construct( $order_id, $payment, $gateway ) {
-		$this->order = wc_get_order( $order_id );
+		$this->order   = wc_get_order( $order_id );
 		$this->payment = $payment;
 		$this->gateway = $gateway;
 	}
@@ -196,8 +194,8 @@ class WC_Svea_Refund_Handler {
 	/**
 	 * Attempts a payment cancellation. If the payment is already settled,
 	 * attempts a refund after settlement.
-	 * 
-	 * @param int $amount Amount.
+	 *
+	 * @param int    $amount Amount.
 	 * @param string $reason Reason.
 	 *
 	 * @since 2.1.2
@@ -223,6 +221,7 @@ class WC_Svea_Refund_Handler {
 		if ( $return_code === WC_Svea_Api_Request_Handler::RESPONSE_TYPE_OK ) {
 
 			$this->create_comment(
+				/* translators: %s: amount */
 				sprintf(
 					__( 'Made a refund of %s € through Svea', 'wc-maksuturva' ),
 					$this->format_amount( $amount )
@@ -277,7 +276,7 @@ class WC_Svea_Refund_Handler {
 
 	/**
 	 * Formats an int into comma separated numeric string
-	 * 
+	 *
 	 * @param int $amount Amount.
 	 *
 	 * @since 2.1.2
@@ -285,15 +284,15 @@ class WC_Svea_Refund_Handler {
 	 * @return string
 	 */
 	private function format_amount( $amount ) {
-		$string_amount = strval( $amount );
+		$string_amount       = strval( $amount );
 		$string_amount_parts = explode( '.', $string_amount );
 		return implode( ',', $string_amount_parts );
 	}
 
 	/**
 	 * Posts data to Svea payment api.
-	 * 
-	 * @param int $amount Amount.
+	 *
+	 * @param int    $amount Amount.
 	 * @param string $reason Reason.
 	 * @param string $action Action.
 	 * @param string $cancel_type Cancel type.
@@ -305,22 +304,22 @@ class WC_Svea_Refund_Handler {
 	private function post_to_svea( $amount, $reason, $action, $cancel_type ) {
 
 		$gateway_implementation = new WC_Gateway_Implementation_Maksuturva( $this->gateway, $this->order );
-		$gateway_data = $gateway_implementation->get_field_array();
+		$gateway_data           = $gateway_implementation->get_field_array();
 
-		$post_fields = [
-			'pmtc_action' => $action,
-			'pmtc_amount' => $this->format_amount( $this->order->get_total() ),
-			'pmtc_cancelamount' => $this->format_amount( $amount ),
+		$post_fields = array(
+			'pmtc_action'            => $action,
+			'pmtc_amount'            => $this->format_amount( $this->order->get_total() ),
+			'pmtc_cancelamount'      => $this->format_amount( $amount ),
 			'pmtc_canceldescription' => $reason,
-			'pmtc_canceltype' => $cancel_type,
-			'pmtc_currency' => 'EUR',
-			'pmtc_hashversion' => $gateway_data['pmt_hashversion'],
-			'pmtc_id' => $this->payment->get_payment_id(),
-			'pmtc_keygeneration' => $this->gateway->get_secret_key_version(),
-			'pmtc_resptype' => 'XML',
-			'pmtc_sellerid' => $this->gateway->get_seller_id(),
-			'pmtc_version' => '0005'
-		];
+			'pmtc_canceltype'        => $cancel_type,
+			'pmtc_currency'          => 'EUR',
+			'pmtc_hashversion'       => $gateway_data['pmt_hashversion'],
+			'pmtc_id'                => $this->payment->get_payment_id(),
+			'pmtc_keygeneration'     => $this->gateway->get_secret_key_version(),
+			'pmtc_resptype'          => 'XML',
+			'pmtc_sellerid'          => $this->gateway->get_seller_id(),
+			'pmtc_version'           => '0005',
+		);
 
 		if ( $cancel_type === self::CANCEL_TYPE_FULL_REFUND ) {
 			unset( $post_fields['pmtc_cancelamount'] );
@@ -334,18 +333,18 @@ class WC_Svea_Refund_Handler {
 		return $api->post(
 			self::ROUTE_CANCEL_PAYMENT,
 			$post_fields,
-			[
+			array(
 				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH => self::$request_hash_fields,
 				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH => self::$response_hash_fields,
 				WC_Svea_Api_Request_Handler::SETTINGS_HASH_FIELD => 'pmtc_hash',
-				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pmtc_returncode'
-			]
+				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pmtc_returncode',
+			)
 		);
 	}
 
 	/**
 	 * Returns a comment data array with content
-	 * 
+	 *
 	 * @param string $content Content.
 	 *
 	 * @since 2.1.2
@@ -354,12 +353,12 @@ class WC_Svea_Refund_Handler {
 	 */
 	private function create_comment( $content ) {
 		wp_insert_comment(
-			[
-				'comment_author' => 'Svea Payments plugin',
+			array(
+				'comment_author'  => 'Svea Payments plugin',
 				'comment_content' => $content,
 				'comment_post_ID' => $this->order->get_id(),
-				'comment_type' => 'order_note'
-			]
+				'comment_type'    => 'order_note',
+			)
 		);
 	}
 
@@ -386,7 +385,7 @@ class WC_Svea_Refund_Handler {
 
 	/**
 	 * Returns a refund payment required message
-	 * 
+	 *
 	 * @param array $response Response.
 	 *
 	 * @since 2.1.2
@@ -396,19 +395,19 @@ class WC_Svea_Refund_Handler {
 	private function get_refund_payment_required_message( $response ) {
 		return implode(
 			'<br />',
-			[
+			array(
 				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', 'wc-maksuturva' ),
 				__( 'Recipient', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_recipientname'],
 				__( 'IBAN', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_iban'],
 				__( 'Reference', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_reference'],
-				__( 'Amount', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_amount'] . ' €'
-			]
+				__( 'Amount', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_amount'] . ' €',
+			)
 		);
 	}
 
 	/**
 	 * Verifies that the amount is not null.
-	 * 
+	 *
 	 * @param int $amount Amount.
 	 *
 	 * @since 2.1.2

@@ -22,8 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -79,20 +77,22 @@ class WC_Payment_Method_Select {
 
 	/**
 	 * WC_Payment_Method_Select constructor.
-	 * 
+	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
-	 * 
+	 *
 	 * @since 2.1.3
 	 */
 	public function __construct( WC_Gateway_Maksuturva $gateway ) {
-		$this->gateway = $gateway;
+		$this->gateway   = $gateway;
 		$this->seller_id = $gateway->get_seller_id();
 	}
 
 	/**
 	 * Initialize payment method select box content
 	 *
-	 * @param int $price The price
+	 * @param string $payment_type Payment type.
+	 * @param int $price The price.
+	 * @param bool $is_outbound_payment_enabled Is outbound payment enabled.
 	 *
 	 * @since 2.1.3
 	 */
@@ -100,55 +100,58 @@ class WC_Payment_Method_Select {
 
 		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->gateway );
 
-		$form_params = [
-			'currency_symbol' => get_woocommerce_currency_symbol(),
+		$form_params = array(
+			'currency_symbol'               => get_woocommerce_currency_symbol(),
 			'payment_method_handling_costs' => $payment_handling_costs_handler->get_handling_costs_by_payment_method(),
-			'payment_method_select_id' => self::PAYMENT_METHOD_SELECT_ID,
-		];
+			'payment_method_select_id'      => self::PAYMENT_METHOD_SELECT_ID,
+		);
 
-		if (!$is_outbound_payment_enabled) {
-			if ($payment_type=="collated") 
-			{
-				$group_methods = [];
-				$group_methods['group1'] = [];
-				$group_methods['group2'] = [];
-				$group_methods['group3'] = [];
-				$group_methods['group4'] = [];
-				
-				//$form_params['collated_title'] = $this->gateway->get_option('collated_title', "Svea Payments");
+		if ( ! $is_outbound_payment_enabled ) {
+			if ( $payment_type == 'collated' ) {
+				$group_methods           = array();
+				$group_methods['group1'] = array();
+				$group_methods['group2'] = array();
+				$group_methods['group3'] = array();
+				$group_methods['group4'] = array();
+
+				// $form_params['collated_title'] = $this->gateway->get_option('collated_title', "Svea Payments");
 				$collated_payment_methods = $this->get_payment_type_payment_methods( $payment_type, $price );
-				
+
 				foreach ( $collated_payment_methods as $payment_method ) {
-					if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group1_methods', "") )) ) {
+					if ( in_array( $payment_method['code'], explode( ',', $this->gateway->get_option( 'collated_group1_methods', '' ) ) ) ) {
 						$group_methods['group1'][] = $payment_method;
-					} else if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group2_methods', "") )) ) {
+					} elseif ( in_array( $payment_method['code'], explode( ',', $this->gateway->get_option( 'collated_group2_methods', '' ) ) ) ) {
 						$group_methods['group2'][] = $payment_method;
-					} else if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group3_methods', "") )) ) {
+					} elseif ( in_array( $payment_method['code'], explode( ',', $this->gateway->get_option( 'collated_group3_methods', '' ) ) ) ) {
 						$group_methods['group3'][] = $payment_method;
-					} else if ( in_array( $payment_method['code'], explode(",", $this->gateway->get_option('collated_group4_methods', "") )) ) {
+					} elseif ( in_array( $payment_method['code'], explode( ',', $this->gateway->get_option( 'collated_group4_methods', '' ) ) ) ) {
 						$group_methods['group4'][] = $payment_method;
-					} 
+					}
 				}
-				$form_params['method_group1'] = [
-					'title' => $this->gateway->get_option('collated_group1_title', ""),
-					'methods' => $group_methods['group1'] ];
-				$form_params['method_group2'] = [
-					'title' => $this->gateway->get_option('collated_group2_title', ""),
-					'methods' => $group_methods['group2'] ];
-				$form_params['method_group3'] = [
-					'title' => $this->gateway->get_option('collated_group3_title', ""),
-					'methods' => $group_methods['group3'] ];
-				$form_params['method_group4'] = [
-					'title' => $this->gateway->get_option('collated_group4_title', ""),
-					'methods' => $group_methods['group4'] ];
+				$form_params['method_group1'] = array(
+					'title'   => $this->gateway->get_option( 'collated_group1_title', '' ),
+					'methods' => $group_methods['group1'],
+				);
+				$form_params['method_group2'] = array(
+					'title'   => $this->gateway->get_option( 'collated_group2_title', '' ),
+					'methods' => $group_methods['group2'],
+				);
+				$form_params['method_group3'] = array(
+					'title'   => $this->gateway->get_option( 'collated_group3_title', '' ),
+					'methods' => $group_methods['group3'],
+				);
+				$form_params['method_group4'] = array(
+					'title'   => $this->gateway->get_option( 'collated_group4_title', '' ),
+					'methods' => $group_methods['group4'],
+				);
 			} else {
 				$form_params['payment_methods'] = $this->get_payment_type_payment_methods( $payment_type, $price );
 			}
-			
-			$form_params['terms'] = [
+
+			$form_params['terms'] = array(
 				'text' => $this->get_terms_text( $price ),
-				'url' => $this->get_terms_url( $price )
-			];
+				'url'  => $this->get_terms_url( $price ),
+			);
 		}
 
 		$this->gateway->render(
@@ -167,7 +170,7 @@ class WC_Payment_Method_Select {
 	 */
 	public function validate_payment_method_select() {
 
-		if ( !isset( $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
+		if ( ! isset( $_POST[ self::PAYMENT_METHOD_SELECT_ID ] ) ) {
 			wc_add_notice( __( 'Payment method not selected', 'wc-maksuturva' ), 'error' );
 			return false;
 		}
@@ -186,53 +189,53 @@ class WC_Payment_Method_Select {
 
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 
-		$payment_type_payment_methods = [
-			'credit-card-and-mobile' => [],
-			'invoice-and-hire-purchase' => [],
-			'online-bank-payments' => [],
-			'estonia-payments' => [],
-			'other-payments' => [],
-			'collated' => [],
-		];
+		$payment_type_payment_methods = array(
+			'credit-card-and-mobile'    => array(),
+			'invoice-and-hire-purchase' => array(),
+			'online-bank-payments'      => array(),
+			'estonia-payments'          => array(),
+			'other-payments'            => array(),
+			'collated'                  => array(),
+		);
 
 		if ( isset( $available_payment_methods['ERROR'] ) ) {
 			return $payment_type_payment_methods;
 		}
 
-		if ($payment_type=="collated") {
+		if ( $payment_type == 'collated' ) {
 			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
 				$payment_type_payment_methods['collated'][] = $payment_method;
-				unset( $available_payment_methods['paymentmethod'][$key] );
+				unset( $available_payment_methods['paymentmethod'][ $key ] );
 			}
 		} else {
 			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
-				if ( in_array( substr( $payment_method['code'], 0, 3 ), ['FI0', 'FI1'] ) ) {
+				if ( in_array( substr( $payment_method['code'], 0, 3 ), array( 'FI0', 'FI1' ) ) ) {
 					$payment_type_payment_methods['online-bank-payments'][] = $payment_method;
-					unset( $available_payment_methods['paymentmethod'][$key] );
+					unset( $available_payment_methods['paymentmethod'][ $key ] );
 				}
 			}
 
 			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
-				if ( in_array( substr($payment_method['code'], 0, 3 ), ['FI5']) || in_array( substr($payment_method['code'], 0, 4 ), ['PIVO']) 
-					|| in_array( substr($payment_method['code'], 0, 4 ), ['SIIR']) ) {
+				if ( in_array( substr( $payment_method['code'], 0, 3 ), array( 'FI5' ) ) || in_array( substr( $payment_method['code'], 0, 4 ), array( 'PIVO' ) )
+					|| in_array( substr( $payment_method['code'], 0, 4 ), array( 'SIIR' ) ) ) {
 					$payment_type_payment_methods['credit-card-and-mobile'][] = $payment_method;
-					unset( $available_payment_methods['paymentmethod'][$key] );
+					unset( $available_payment_methods['paymentmethod'][ $key ] );
 				}
 			}
 
 			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
-				if ( in_array(substr($payment_method['code'], 0, 3), ['FI6', 'FI7']) ) {
+				if ( in_array( substr( $payment_method['code'], 0, 3 ), array( 'FI6', 'FI7' ) ) ) {
 					$payment_type_payment_methods['invoice-and-hire-purchase'][] = $payment_method;
-					unset( $available_payment_methods['paymentmethod'][$key] );
+					unset( $available_payment_methods['paymentmethod'][ $key ] );
 				}
 			}
 
 			foreach ( $available_payment_methods['paymentmethod'] as $payment_method ) {
-				if ( $payment_method['code']=="EEAC" ) {
+				if ( $payment_method['code'] == 'EEAC' ) {
 					/* check if plugin has EAAC_logo.png and if exist, use it as payment method logo */
-					$payment_method['imageurl'] = $this->get_eeac_payment_method_logo_url($payment_method['imageurl']);	
+					$payment_method['imageurl']                         = $this->get_eeac_payment_method_logo_url( $payment_method['imageurl'] );
 					$payment_type_payment_methods['estonia-payments'][] = $payment_method;
-					unset( $available_payment_methods['paymentmethod'][$key] );
+					unset( $available_payment_methods['paymentmethod'][ $key ] );
 				}
 			}
 
@@ -241,7 +244,7 @@ class WC_Payment_Method_Select {
 			}
 		}
 
-		return $payment_type_payment_methods[$payment_type];
+		return $payment_type_payment_methods[ $payment_type ];
 	}
 
 	/**
@@ -253,10 +256,11 @@ class WC_Payment_Method_Select {
 	 */
 	private function get_terms_text( $price ) {
 		$available_payment_methods = $this->get_available_payment_methods( $price );
-		if (isset($available_payment_methods['termtext']))
+		if ( isset( $available_payment_methods['termtext'] ) ) {
 			return $available_payment_methods['termstext'];
-		else
-			return "";
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -268,10 +272,11 @@ class WC_Payment_Method_Select {
 	 */
 	private function get_terms_url( $price ) {
 		$available_payment_methods = $this->get_available_payment_methods( $price );
-		if (isset($available_payment_methods['termsurl']))
+		if ( isset( $available_payment_methods['termsurl'] ) ) {
 			return $available_payment_methods['termsurl'];
-		else
-			return "";
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -283,8 +288,8 @@ class WC_Payment_Method_Select {
 	 */
 	public function get_payment_method_name( $payment_method_code ) {
 		$available_payment_methods = $this->get_available_payment_methods( 10 );
-		if (isset($available_payment_methods['paymentmethod'])) {
-			foreach ($available_payment_methods['paymentmethod'] as $method) {
+		if ( isset( $available_payment_methods['paymentmethod'] ) ) {
+			foreach ( $available_payment_methods['paymentmethod'] as $method ) {
 				if ( $method['code'] == $payment_method_code ) {
 					return $method['displayname'];
 				}
@@ -296,7 +301,7 @@ class WC_Payment_Method_Select {
 
 	/**
 	 * Allow override payment method logo for Estonia EEAC payment method
-	 * 
+	 *
 	 * install to plugin path as file EEAC_logo.png
 	 *
 	 * @since 2.1.4
@@ -315,7 +320,7 @@ class WC_Payment_Method_Select {
 	}
 
 	/**
-	 *	Fetches payment type payment methods from Svea api.
+	 *  Fetches payment type payment methods from Svea api.
 	 *
 	 * @since 2.1.3
 	 *
@@ -328,11 +333,11 @@ class WC_Payment_Method_Select {
 			return self::$available_payment_methods;
 		}
 
-		$post_fields = [
+		$post_fields = array(
 			'request_locale' => explode( '_', get_user_locale() )[0],
-			'sellerid' => $this->seller_id,
-			'totalamount' => WC_Utils_Maksuturva::filter_price( $price )
-		];
+			'sellerid'       => $this->seller_id,
+			'totalamount'    => WC_Utils_Maksuturva::filter_price( $price ),
+		);
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
 
@@ -347,11 +352,11 @@ class WC_Payment_Method_Select {
 		 *
 		 * at this point, we will check this and fix the variable type
 		 */
-		if ( array_key_exists('paymentmethod', $result_methods) && is_array($result_methods['paymentmethod'])) {
-			if ( !array_key_exists("0", $result_methods['paymentmethod']) ) {
-				$result_methods['paymentmethod'] = array ($result_methods['paymentmethod'] );
+		if ( array_key_exists( 'paymentmethod', $result_methods ) && is_array( $result_methods['paymentmethod'] ) ) {
+			if ( ! array_key_exists( '0', $result_methods['paymentmethod'] ) ) {
+				$result_methods['paymentmethod'] = array( $result_methods['paymentmethod'] );
 			}
-		}	
+		}
 		self::$available_payment_methods = $result_methods;
 		return self::$available_payment_methods;
 	}

@@ -22,10 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
-use SveaPaymentGateway\WC_Maksuturva;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -42,27 +38,27 @@ class WC_Utils_Maksuturva {
 	/**
 	 * Filter a string to only have alphanumeric characters.
 	 *
-	 * @param string $string The string to filter.
+	 * @param string $str The string to filter.
 	 *
 	 * @since 2.1.3
 	 *
 	 * @return string
 	 */
-	public static function filter_alphanumeric( $string ) {
-		return preg_replace( "/[^a-zA-Z0-9]+/", "", $string );
+	public static function filter_alphanumeric( $str ) {
+		return preg_replace( '/[^a-zA-Z0-9]+/', '', $str );
 	}
 
 	/**
-	 * Filter the product name 
+	 * Filter the product name
 	 *
-	 * @param string $string The string to filter.
+	 * @param string $str The string to filter.
 	 *
 	 * @since 2.2.3
 	 *
 	 * @return string
 	 */
-	public static function filter_productname( $string ) {
-		return preg_replace( "/[^\p{L}\p{N}\s]/u", "_", $string );
+	public static function filter_productname( $str ) {
+		return preg_replace( '/[^\p{L}\p{N}\s]/u', '_', $str );
 	}
 
 	/**
@@ -82,13 +78,13 @@ class WC_Utils_Maksuturva {
 
 	/**
 	 * Filters a quantity
-	 * 
-	 * If quantity has a decimal delimiter, use comma 
-	 * 
+	 *
+	 * If quantity has a decimal delimiter, use comma
+	 *
 	 * @since 2.1.23
 	 */
 	public static function filter_quantity( $qty ) {
-		return str_replace( '.', ',', $qty);
+		return str_replace( '.', ',', $qty );
 	}
 
 	/**
@@ -102,8 +98,8 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public static function filter_characters( $string ) {
-		$new_string = str_replace( '"', '', $string );
+	public static function filter_characters( $str ) {
+		$new_string = str_replace( '"', '', $str );
 		if ( ! is_null( $new_string ) && mb_strlen( $new_string ) > 0 ) {
 			return $new_string;
 		}
@@ -125,23 +121,25 @@ class WC_Utils_Maksuturva {
 	 */
 	public static function filter_description( $description ) {
 		/* 2.1.5 item description is not necessary for payment backend, replace with dash if not empty */
-		if (trim($description)!='') {
-			$description="-";
+		if ( trim( $description ) != '' ) {
+			$description = '-';
 		}
 		return $description;
-		//return self::filter_characters( html_entity_decode( strip_tags( $description ) ) );
+		// return self::filter_characters( html_entity_decode( strip_tags( $description ) ) );
 	}
 
 	/***
 	 * Generate S2S User-Agent
 	 */
-	public static function get_user_agent()
-	{
-		$user_agent = "Svea Payments for WC/" . WC_Maksuturva::VERSION;
+	public static function get_user_agent() {
+		$user_agent = 'Svea Payments for WC/' . WC_Maksuturva::VERSION;
 
 		try {
-			$user_agent = mb_convert_encoding($user_agent . " (" . php_uname('s') . 
-				" " . php_uname('r') . ") Woocommerce/" . WC_VERSION . " PHP/" . phpversion(), "ASCII");
+			$user_agent = mb_convert_encoding(
+				$user_agent . ' (' . php_uname( 's' ) .
+				' ' . php_uname( 'r' ) . ') Woocommerce/' . WC_VERSION . ' PHP/' . phpversion(),
+				'ASCII'
+			);
 		} catch ( \Exception $e ) {
 			// nop
 		}

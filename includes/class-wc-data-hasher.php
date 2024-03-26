@@ -22,7 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -68,7 +67,7 @@ class WC_Data_Hasher {
 	 * @var string ALGORITHM_MD5
 	 */
 	const ALGORITHM_MD5 = 'MD5';
-	
+
 	/**
 	 * Seller secret key.
 	 *
@@ -133,12 +132,12 @@ class WC_Data_Hasher {
 
 		$hashing_algorithms = hash_algos();
 
-		$allowed_hash_algorithms_in_priority_order = [
+		$allowed_hash_algorithms_in_priority_order = array(
 			self::ALGORITHM_SHA_512,
 			self::ALGORITHM_SHA_256,
 			self::ALGORITHM_SHA_1,
-			self::ALGORITHM_MD5
-		];
+			self::ALGORITHM_MD5,
+		);
 
 		foreach ( $allowed_hash_algorithms_in_priority_order as $allowed_hash_algorithm ) {
 

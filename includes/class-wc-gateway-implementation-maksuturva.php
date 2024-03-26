@@ -21,8 +21,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -73,19 +71,19 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private $removed_fees = 0.00;
 
-    /**
-     * WC_Gateway_Implementation_Maksuturva constructor.
-     *
-     * @param WC_Gateway_Maksuturva $gateway The gateway object.
-     * @param \WC_Order $order The order.
-     *
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.0
-     */
+	/**
+	 * WC_Gateway_Implementation_Maksuturva constructor.
+	 *
+	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
+	 * @param \WC_Order             $order The order.
+	 *
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.0
+	 */
 	public function __construct( WC_Gateway_Maksuturva $gateway, \WC_Order $order ) {
 		$this->wc_gateway = $gateway;
 		$this->set_base_url( $gateway->get_gateway_url() );
-		$this->seller_id  = ( $gateway->get_seller_id() );
+		$this->seller_id = ( $gateway->get_seller_id() );
 		$this->set_encoding( $gateway->get_encoding() );
 		$this->set_payment_id_prefix( $gateway->get_payment_id_prefix() );
 		$this->set_payment_data( $this->create_payment_data( $gateway, $order ) );
@@ -97,7 +95,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * Creates the payment data to be used for the Svea payments gateway.
 	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
-	 * @param \WC_Order              $order   The order.
+	 * @param \WC_Order             $order   The order.
 	 *
 	 * @since 2.0.0
 	 *
@@ -105,7 +103,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private function create_payment_data( WC_Gateway_Maksuturva $gateway, \WC_Order $order ) {
 
-		$selected_payment_method = $this->get_selected_payment_method();
+		$selected_payment_method      = $this->get_selected_payment_method();
 		$payment_method_handling_cost = $this->get_payment_method_handling_cost( $selected_payment_method );
 
 		$payment_row_data = $this->create_payment_row_data( $order, $payment_method_handling_cost );
@@ -114,7 +112,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$payment_id       = $this->get_payment_id( $order );
 		$order_handler    = new WC_Order_Compatibility_Handler( $order );
 
-		$data = [
+		$data = array(
 			'pmt_keygeneration'      => $gateway->get_secret_key_version(),
 			'pmt_id'                 => $payment_id,
 			'pmt_orderid'            => $order_handler->get_id(),
@@ -143,9 +141,9 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_sellercosts'        => WC_Utils_Maksuturva::filter_price( $this->shipping_cost + $this->total_fees + $payment_method_handling_cost ),
 			'pmt_rows'               => count( $payment_row_data ),
 			'pmt_rows_data'          => $payment_row_data,
-		];
+		);
 
-		if ( isset ( $selected_payment_method ) ) {
+		if ( isset( $selected_payment_method ) ) {
 			$data['pmt_paymentmethod'] = $selected_payment_method;
 		}
 
@@ -162,7 +160,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return int|null
 	 */
 	private function get_payment_method_handling_cost( $selected_payment_method ) {
-		if ( !isset ( $selected_payment_method ) ) {
+		if ( ! isset( $selected_payment_method ) ) {
 			return null;
 		}
 
@@ -178,14 +176,15 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
 	 *
 	 * @since 2.1.3
-	 * 
+	 *
 	 * @return string|null
 	 */
 	private function get_selected_payment_method() {
-		if ( isset($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]) && !empty($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] )) {
-			$spm = $_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
-			if ($spm)
-				return WC_Utils_Maksuturva::filter_alphanumeric($spm);
+		if ( isset( $_GET[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) && ! empty( $_GET[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
+			$spm = $_GET[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ];
+			if ( $spm ) {
+				return WC_Utils_Maksuturva::filter_alphanumeric( $spm );
+			}
 		}
 	}
 
@@ -195,7 +194,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * Creates the payment row data for each item in the order.
 	 *
 	 * @param \WC_Order $order The order.
-	 * @param int|null $payment_method_handling_cost The payment method fee.
+	 * @param int|null  $payment_method_handling_cost The payment method fee.
 	 *
 	 * @since 2.0.0
 	 *
@@ -207,14 +206,14 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		foreach ( $order->get_items() as $order_item_id => $item ) {
 			/* @var \WC_Product $product */
 			$product = $item->get_product();
-			
+
 			$description = $this->get_product_description( $product, $order, $order_item_id );
 
 			$payment_row_product = array();
 
 			$payment_row_product['pmt_row_name']     = WC_Utils_Maksuturva::filter_productname( $item['name'] );
 			$payment_row_product['pmt_row_desc']     = WC_Utils_Maksuturva::filter_description( $description );
-			$payment_row_product['pmt_row_quantity'] =  WC_Utils_Maksuturva::filter_quantity( $item['qty'] );
+			$payment_row_product['pmt_row_quantity'] = WC_Utils_Maksuturva::filter_quantity( $item['qty'] );
 
 			$payment_row_product['pmt_row_articlenr'] = $product->get_sku() ?: '-';
 
@@ -239,17 +238,16 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		}
 
 		/* Giftcards support */
-		if ( null !== $order->get_items( 'gift_card' ) )
-		{
+		if ( null !== $order->get_items( 'gift_card' ) ) {
 			$giftcards = $order->get_items( 'gift_card' );
-			foreach($giftcards as $giftcard) {
-				$gctext = __( 'Gift Card', 'wc-maksuturva' );
+			foreach ( $giftcards as $giftcard ) {
+				$gctext         = __( 'Gift Card', 'wc-maksuturva' );
 				$payment_rows[] = array(
-					'pmt_row_name'               => $gctext . " " . $giftcard->get_name(),
-					'pmt_row_desc'               => "-",
+					'pmt_row_name'               => $gctext . ' ' . $giftcard->get_name(),
+					'pmt_row_desc'               => '-',
 					'pmt_row_quantity'           => 1,
 					'pmt_row_deliverydate'       => date( 'd.m.Y' ),
-					'pmt_row_price_gross'        => '-' . WC_Utils_Maksuturva::filter_price( $giftcard->get_amount() ), 
+					'pmt_row_price_gross'        => '-' . WC_Utils_Maksuturva::filter_price( $giftcard->get_amount() ),
 					'pmt_row_vat'                => '00,00',
 					'pmt_row_discountpercentage' => '00,00',
 					'pmt_row_type'               => 6,
@@ -288,9 +286,9 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			if ( floatval( $order->get_total_shipping() ) > 0 ) {
 				$shipping_tax = 100 * ( floatval( $order->get_shipping_tax() ) / floatval( $order->get_total_shipping() ) );
 				/***
-			 	* Round shipping tax to nearest 0.5
-			 	*/
-				$shipping_tax = round($shipping_tax*2)/2;
+				* Round shipping tax to nearest 0.5
+				*/
+				$shipping_tax = round( $shipping_tax * 2 ) / 2;
 			} else {
 				$shipping_tax = 0;
 			}
@@ -355,23 +353,23 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @return array|null
 	 */
 	private function create_payment_row_handling_cost_data( $payment_method_handling_cost ) {
-		if ( !isset ( $payment_method_handling_cost ) ) {
+		if ( ! isset( $payment_method_handling_cost ) ) {
 			return null;
 		}
 
 		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->wc_gateway );
-		$tax_rate = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
+		$tax_rate                       = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
 
-		return [
-			'pmt_row_name'               => __( 'Payment handling fee',  'wc-maksuturva' ),
-			'pmt_row_desc'               => __( 'Payment handling fee',  'wc-maksuturva' ),
+		return array(
+			'pmt_row_name'               => __( 'Payment handling fee', 'wc-maksuturva' ),
+			'pmt_row_desc'               => __( 'Payment handling fee', 'wc-maksuturva' ),
 			'pmt_row_quantity'           => 1,
 			'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 			'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $payment_method_handling_cost ),
 			'pmt_row_vat'                => WC_Utils_Maksuturva::filter_price( $tax_rate ),
 			'pmt_row_discountpercentage' => '00,00',
 			'pmt_row_type'               => 3,
-		];
+		);
 	}
 
 	/**
@@ -393,7 +391,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
 
-			if ($fee['name'] === __( 'Payment handling fee', 'wc-maksuturva')) {
+			if ( $fee['name'] === __( 'Payment handling fee', 'wc-maksuturva' ) ) {
 				$this->removed_fees += $fee_total;
 				continue;
 			}
@@ -401,18 +399,18 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$this->total_fees += $fee_total;
 
 			if ( $fee_total > 0 ) {
-				$fee_tax = 100 * ($fee['line_tax'] / $fee['line_total']);
+				$fee_tax = 100 * ( $fee['line_tax'] / $fee['line_total'] );
 				/***
-			 	* Round fee tax to nearest 0.5
-			 	*/
-				$fee_tax = round($fee_tax*2)/2;
+				* Round fee tax to nearest 0.5
+				*/
+				$fee_tax = round( $fee_tax * 2 ) / 2;
 			} else {
 				$fee_tax = 0;
 			}
 
 			$fee_rows[] = array(
-				'pmt_row_name'               => substr(WC_Utils_Maksuturva::filter_productname( $fee['name'] ), 0, 40),
-				'pmt_row_desc'               => substr(WC_Utils_Maksuturva::filter_productname( $fee['name'] ), 0, 1000),
+				'pmt_row_name'               => substr( WC_Utils_Maksuturva::filter_productname( $fee['name'] ), 0, 40 ),
+				'pmt_row_desc'               => substr( WC_Utils_Maksuturva::filter_productname( $fee['name'] ), 0, 1000 ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 				'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $fee_total ),
@@ -531,19 +529,19 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	/**
 	 * Get the internal payment id.
 	 *
-	 * Returns the internal payment id. 
+	 * Returns the internal payment id.
 	 *
 	 * @param \WC_Order $order The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return int
-     *@throws WC_Gateway_Maksuturva_Exception If reference number is invalid.
+	 * @throws WC_Gateway_Maksuturva_Exception If reference number is invalid.
 	 */
 	private function get_internal_payment_id( \WC_Order $order ) {
-        $order_handler = new WC_Order_Compatibility_Handler( $order );
-		return $order_handler->get_id()+100;
-    }
+		$order_handler = new WC_Order_Compatibility_Handler( $order );
+		return $order_handler->get_id() + 100;
+	}
 
 	/**
 	 * Check for payment reference number.
@@ -589,7 +587,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	public function check_payment_id( $pmt_id ) {
 		if ( strlen( $this->pmt_id_prefix )
-		     && substr( $pmt_id, 0, strlen( $this->pmt_id_prefix ) ) === $this->pmt_id_prefix
+			&& substr( $pmt_id, 0, strlen( $this->pmt_id_prefix ) ) === $this->pmt_id_prefix
 		) {
 			$pmt_id = substr( $pmt_id, strlen( $this->pmt_id_prefix ) );
 		}
@@ -597,18 +595,17 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		return ( ( (int) $pmt_id - 100 ) == $this->pmt_orderid );
 	}
 
-    /**
-     * Validate a payment.
-     *
-     * Runs the Svea Payment Validator on the given params.
-     *
-     * @param array $params The parameters to validate.
-     *
-     * @return WC_Payment_Validator_Maksuturva
-     * @throws WC_Gateway_Maksuturva_Exception
-     * @since 2.0.0
-     *
-     */
+	/**
+	 * Validate a payment.
+	 *
+	 * Runs the Svea Payment Validator on the given params.
+	 *
+	 * @param array $params The parameters to validate.
+	 *
+	 * @return WC_Payment_Validator_Maksuturva
+	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @since 2.0.0
+	 */
 	public function validate_payment( array $params ) {
 		$validator = new WC_Payment_Validator_Maksuturva( $this );
 
@@ -643,8 +640,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * Returns the description for the given product.
 	 *
 	 * @param \WC_Product|\WC_Product_Variable $product       The product.
-	 * @param \WC_Order                       $order         The order.
-	 * @param int                            $order_item_id The order item id.
+	 * @param \WC_Order                        $order         The order.
+	 * @param int                              $order_item_id The order item id.
 	 *
 	 * @since 2.0.0
 	 *
@@ -672,7 +669,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * and such, according to WooCommerce 2.* way
 	 *
 	 * @param \WC_Order $order         The order.
-	 * @param int      $order_item_id The order item id.
+	 * @param int       $order_item_id The order item id.
 	 *
 	 * @since 2.0.8
 	 *

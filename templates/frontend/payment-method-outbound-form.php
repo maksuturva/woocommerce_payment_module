@@ -40,22 +40,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<div>
-	<?php /* echo __( 'Pay with Svea', 'wc-maksuturva' ); */ ?>
-	<?php 
-	/*
-		foreach ( $payment_method_handling_costs as $handling_cost ) {
-			if ( $handling_cost['payment_method_type'] === 'outbound' ) {
-				echo '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>';
-				break;
-			}
-		}
-		*/
+<p>
+<?php
+if ( ! empty( $terms['text'] ) ) {
+	echo esc_html( $terms['text'] );
 	?>
-</div>
-
-<p><?php if (!empty($terms['text']) ) { echo $terms['text']; ?>  
-(<a href="<?php echo $terms['url']; ?>" target="_blank">PDF</a>)</p>
+	(<a href="<?php echo esc_url( $terms['url'] ); ?>" target="_blank">PDF</a>)
 <?php } ?>
+</p>
 
 <div style="clear: both;"></div>

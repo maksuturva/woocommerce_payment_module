@@ -9,15 +9,15 @@
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
  * Version:     2.6.3
- * Author:      Svea Development Oy  
- * Author URI:  http://www.sveapayments.fi  
- * Text Domain: wc-maksuturva  
- * Domain Path: /languages/  
- * Requires at least: 6.0  
- * Tested up to: 6.3    
- * License:      LGPL2.1  
- * WC requires at least: 7.0   
- * WC tested up to: 8.7.0      
+ * Author:      Svea Development Oy
+ * Author URI:  http://www.sveapayments.fi
+ * Text Domain: wc-maksuturva
+ * Domain Path: /languages/
+ * Requires at least: 6.0
+ * Tested up to: 6.3
+ * License:      LGPL2.1
+ * WC requires at least: 7.0
+ * WC tested up to: 8.7.0
  */
 
 /**
@@ -37,8 +37,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway;
-
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -47,27 +45,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * WooCommerce feature compatibility handlers
- * 
+ *
  * Support for Custom Order Tables aka High-Performance Order Storage
  *
- * HPOS recipes 
+ * HPOS recipes
  * https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
  *
  * use Automattic\WooCommerce\Utilities\OrderUtil;
  * if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
- *	// HPOS usage is enabled.
+ *  // HPOS usage is enabled.
  * } else {
- * 	// Traditional CPT-based orders are in use.
+ *  // Traditional CPT-based orders are in use.
  * }
- * 
+ *
  * @since 2.4.5
  */
-add_action( 'before_woocommerce_init', function() {
-	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+add_action(
+	'before_woocommerce_init',
+	function () {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+		}
 	}
-} );
+);
 
 /**
  * Log a message.
@@ -80,9 +81,9 @@ add_action( 'before_woocommerce_init', function() {
  */
 function wc_maksuturva_log( $message ) {
 	if ( is_array( $message ) || is_object( $message ) ) {
-		error_log('[SVEA PAYMENTS] ' . var_export( $message, true ) );
+		error_log( '[SVEA PAYMENTS] ' . var_export( $message, true ) );
 	} else {
-		error_log('[SVEA PAYMENTS] ' . $message );
+		error_log( '[SVEA PAYMENTS] ' . $message );
 	}
 }
 
@@ -203,38 +204,37 @@ class WC_Maksuturva {
 	 * @since 2.0.2 Add cron schedules, and action to check pending payments.
 	 * @since 2.0.0
 	 */
-	public function init()
-	{
+	public function init() {
 		try {
 			$this->update_db_check();
 
-			load_plugin_textdomain('wc-maksuturva', false, basename(dirname(__FILE__)) . '/languages');
+			load_plugin_textdomain( 'wc-maksuturva', false, basename( __DIR__ ) . '/languages' );
 
-			add_filter( 'woocommerce_payment_gateways', [ $this, 'add_maksuturva_gateway' ] );
-			add_filter( 'plugin_action_links_' . $this->plugin_name, [ __CLASS__, 'maksuturva_action_links' ] );
-			add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
-			add_filter( 'cron_schedules', [ $this, 'register_cron_schedules' ] );
+			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_maksuturva_gateway' ) );
+			add_filter( 'plugin_action_links_' . $this->plugin_name, array( __CLASS__, 'maksuturva_action_links' ) );
+			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+			add_filter( 'cron_schedules', array( $this, 'register_cron_schedules' ) );
 
 			// woocommerce changed hook for the wc_clear_cart_after_payment function
 			// https://github.com/woocommerce/woocommerce/commit/1be5e81860df97ea0d2efb9aed919480de7ac288
-			remove_filter('template_redirect', 'wc_clear_cart_after_payment', 20);
+			remove_filter( 'template_redirect', 'wc_clear_cart_after_payment', 20 );
 			// leaving the old removal, in case they revert
-			remove_filter('get_header', 'wc_clear_cart_after_payment');
+			remove_filter( 'get_header', 'wc_clear_cart_after_payment' );
 
-			if (!wp_next_scheduled('maksuturva_check_pending_payments')) {
-				wc_maksuturva_log("Adding new payment status event loop.");
-				wp_schedule_event(time(), 'five_minutes', 'maksuturva_check_pending_payments');
+			if ( ! wp_next_scheduled( 'maksuturva_check_pending_payments' ) ) {
+				wc_maksuturva_log( 'Adding new payment status event loop.' );
+				wp_schedule_event( time(), 'five_minutes', 'maksuturva_check_pending_payments' );
 			}
 
-			add_action( 'maksuturva_check_pending_payments', [$this, 'check_pending_payments'] );
-			add_action( 'woocommerce_cart_calculate_fees', [$this, 'set_handling_cost'] );
+			add_action( 'maksuturva_check_pending_payments', array( $this, 'check_pending_payments' ) );
+			add_action( 'woocommerce_cart_calculate_fees', array( $this, 'set_handling_cost' ) );
 
-			//  part payment widget hook on single product page
-			add_action( 'woocommerce_before_add_to_cart_quantity', [$this, 'svea_part_payment_widget_before_add_to_cart'] );
-			add_action( 'woocommerce_after_add_to_cart_button', [$this, 'svea_part_payment_widget_after_add_to_cart'] );
-			add_action( 'woocommerce_after_add_to_cart_form', [$this, 'svea_part_payment_widget_after_add_to_cart_form'] );
+			// part payment widget hook on single product page
+			add_action( 'woocommerce_before_add_to_cart_quantity', array( $this, 'svea_part_payment_widget_before_add_to_cart' ) );
+			add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'svea_part_payment_widget_after_add_to_cart' ) );
+			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'svea_part_payment_widget_after_add_to_cart_form' ) );
 		} catch ( \Exception $e ) {
-			wc_maksuturva_log( "Error in Svea Payments module inititalization: " . $e->getMessage() );
+			wc_maksuturva_log( 'Error in Svea Payments module inititalization: ' . $e->getMessage() );
 		}
 	}
 
@@ -253,69 +253,69 @@ class WC_Maksuturva {
 	protected function part_payment_widget_callback( $current_location ) {
 		$this->load_class( 'wc_gateway_maksuturva' );
 
-		$gateway = new includes\wc_gateway_maksuturva();
+		$gateway = new wc_gateway_maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === $current_location ) {
 			$this->svea_add_part_payment_widget();
 		}
 	}
 
-    /**
-     * Check if price has payment plan available
-     *
-     * @since 2.6.1
-     *
-     * @param float $price
-     * @return bool
-     */
-    public function price_has_payment_plan_available(float $price, $plans) {
-	    if ( empty( $plans ) || !isset( $plans["campaigns"] ) || empty( $plans["campaigns"] ) ) {
-		    return false;
-	    }
+	/**
+	 * Check if price has payment plan available
+	 *
+	 * @since 2.6.1
+	 *
+	 * @param float $price
+	 * @return bool
+	 */
+	public function price_has_payment_plan_available( float $price, $plans ) {
+		if ( empty( $plans ) || ! isset( $plans['campaigns'] ) || empty( $plans['campaigns'] ) ) {
+			return false;
+		}
 
-	    foreach ( $plans['campaigns'] as $plan ) {
-		    if ( $price >= $plan['FromAmount'] && $price <= $plan['ToAmount'] ) {
-			    return true;
-		    }
-	    }
+		foreach ( $plans['campaigns'] as $plan ) {
+			if ( $price >= $plan['FromAmount'] && $price <= $plan['ToAmount'] ) {
+				return true;
+			}
+		}
 
-	    return false;
-    }
+		return false;
+	}
 
-    /**
-     * Check if part payment calculator should be displayed
-     *
-     * @since 2.6.1
-     *
-     * @param float $price
-     * @param includes\WC_Gateway_Maksuturva $gateway
-     *
-     * @return bool
-     */
-    public function should_display_calculator(float $price, includes\WC_Gateway_Maksuturva $gateway): bool {
-	    $minThreshold = (float) $gateway->get_option( 'ppw_price_threshold_minimum' );
-	    $gateway      = new includes\WC_Gateway_Maksuturva();
-	    $api          = new includes\WC_Svea_Api_Request_Handler( $gateway );
-	    $plans        = $api->get_payment_plan_params();
+	/**
+	 * Check if part payment calculator should be displayed
+	 *
+	 * @since 2.6.1
+	 *
+	 * @param float                          $price
+	 * @param WC_Gateway_Maksuturva $gateway
+	 *
+	 * @return bool
+	 */
+	public function should_display_calculator( float $price, WC_Gateway_Maksuturva $gateway ): bool {
+		$minThreshold = (float) $gateway->get_option( 'ppw_price_threshold_minimum' );
+		$gateway      = new WC_Gateway_Maksuturva();
+		$api          = new WC_Svea_Api_Request_Handler( $gateway );
+		$plans        = $api->get_payment_plan_params();
 
-	    if ( empty( $minThreshold ) ) {
-		    return $this->price_has_payment_plan_available( $price, $plans );
-	    }
+		if ( empty( $minThreshold ) ) {
+			return $this->price_has_payment_plan_available( $price, $plans );
+		}
 
-	    if ( $price < $minThreshold ) {
-		    return false;
-	    }
+		if ( $price < $minThreshold ) {
+			return false;
+		}
 
-	    if ( ! empty( $plans ) ) {
-		    foreach ( $plans['campaigns'] as $plan ) {
-			    if ( $price <= $plan['ToAmount'] ) {
-				    return true;
-			    }
-		    }
-	    }
+		if ( ! empty( $plans ) ) {
+			foreach ( $plans['campaigns'] as $plan ) {
+				if ( $price <= $plan['ToAmount'] ) {
+					return true;
+				}
+			}
+		}
 
-	    return false;
-    }
+		return false;
+	}
 
 	/**
 	 * Add Svea Part Payment Widget to the page
@@ -324,8 +324,8 @@ class WC_Maksuturva {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$this->load_class( 'WC_Svea_Part_Payment_Calculator' );
 
-		$gateway = new includes\WC_Gateway_Maksuturva();
-		$calculator = new includes\WC_Svea_Part_Payment_Calculator( $gateway );
+		$gateway    = new WC_Gateway_Maksuturva();
+		$calculator = new WC_Svea_Part_Payment_Calculator( $gateway );
 
 		$calculator->load( wc_get_product() );
 	}
@@ -347,11 +347,11 @@ class WC_Maksuturva {
 		add_meta_box(
 			'maksuturva-order-details',
 			__( 'Details for order in Svea Payments Extranet', 'wc-maksuturva' ),
-			'SveaPaymentGateway\includes\WC_Meta_Box_Maksuturva::output',
+			'WC_Meta_Box_Maksuturva::output',
 			$screen,
 			'side',
 			'high',
-			[ 'gateway' => new includes\WC_Gateway_Maksuturva() ]
+			array( 'gateway' => new WC_Gateway_Maksuturva() )
 		);
 	}
 
@@ -369,7 +369,7 @@ class WC_Maksuturva {
 	public function register_cron_schedules( $schedules ) {
 		$schedules['five_minutes'] = array(
 			'interval' => 5 * 60,
-			'display'  => __( 'Once every 5 minutes', 'wc-maksuturva' )
+			'display'  => __( 'Once every 5 minutes', 'wc-maksuturva' ),
 		);
 
 		return $schedules;
@@ -385,11 +385,11 @@ class WC_Maksuturva {
 	public function check_pending_payments() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$this->load_class( 'WC_Payment_Checker_Maksuturva' );
-	
-		$payments = includes\WC_Payment_Maksuturva::findPending();
+
+		$payments = WC_Payment_Maksuturva::findPending();
 		if ( ! empty( $payments ) ) {
-			( new includes\WC_Payment_Checker_Maksuturva() )->check_payments( $payments );
-		} 
+			( new WC_Payment_Checker_Maksuturva() )->check_payments( $payments );
+		}
 	}
 
 	/**
@@ -404,30 +404,30 @@ class WC_Maksuturva {
 	public function add_maksuturva_gateway( $methods ) {
 
 		$this->load_class( 'WC_Gateway_Maksuturva' );
-		$methods[] = includes\WC_Gateway_Maksuturva::class;
+		$methods[] = WC_Gateway_Maksuturva::class;
 
-		$main_settings = get_option( 'woocommerce_' . includes\WC_Gateway_Maksuturva::class . '_settings' );
+		$main_settings = get_option( 'woocommerce_' . WC_Gateway_Maksuturva::class . '_settings' );
 		if ( isset( $main_settings['outbound_payment'] ) && $main_settings['outbound_payment'] == 'yes' ) {
 			return $methods;
 		}
 
 		$this->load_class( 'WC_Gateway_Svea_Collated' );
-		$methods[] = includes\WC_Gateway_Svea_Collated::class;
+		$methods[] = WC_Gateway_Svea_Collated::class;
 
 		$this->load_class( 'WC_Gateway_Svea_Online_Bank_Payments' );
-		$methods[] = includes\WC_Gateway_Svea_Online_Bank_Payments::class;
+		$methods[] = WC_Gateway_Svea_Online_Bank_Payments::class;
 
 		$this->load_class( 'WC_Gateway_Svea_Credit_Card_And_Mobile' );
-		$methods[] = includes\WC_Gateway_Svea_Credit_Card_And_Mobile::class;
+		$methods[] = WC_Gateway_Svea_Credit_Card_And_Mobile::class;
 
 		$this->load_class( 'WC_Gateway_Svea_Other_Payments' );
-		$methods[] = includes\WC_Gateway_Svea_Other_Payments::class;
+		$methods[] = WC_Gateway_Svea_Other_Payments::class;
 
 		$this->load_class( 'WC_Gateway_Svea_Invoice_And_Hire_Purchase' );
-		$methods[] = includes\WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
+		$methods[] = WC_Gateway_Svea_Invoice_And_Hire_Purchase::class;
 
 		$this->load_class( 'WC_Gateway_Svea_Estonia_Payments' );
-		$methods[] = includes\WC_Gateway_Svea_Estonia_Payments::class;
+		$methods[] = WC_Gateway_Svea_Estonia_Payments::class;
 
 		return $methods;
 	}
@@ -442,12 +442,12 @@ class WC_Maksuturva {
 	 * @return array The links.
 	 */
 	public static function maksuturva_action_links( $links ) {
-		$url     = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$url          = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
 		$action_links = array(
 			'settings' => '<a href="' . esc_attr( $url ) . '">' . esc_html__( 'Settings' ) . '</a>',
 		);
 
-		return array_merge($action_links, $links);
+		return array_merge( $action_links, $links );
 	}
 
 	/**
@@ -486,18 +486,18 @@ class WC_Maksuturva {
 		}
 		$file = $template . '.php';
 
-		$path = $this->plugin_dir . '/templates/' . (!empty($domain) ? $domain . '/' : '') . $file;
+		$path = $this->plugin_dir . '/templates/' . ( ! empty( $domain ) ? $domain . '/' : '' ) . $file;
 
 		if ( file_exists( $path ) ) {
-			require_once( $path );
+			require_once $path;
 		}
 
 		/**
 		 * Fetch styles & scripts from separate file
 		 */
-		$additional_file_path = $this->plugin_dir . '/templates/' . (!empty($domain) ? $domain . '/' : '') . 'payment-method-form-additional.php';
+		$additional_file_path = $this->plugin_dir . '/templates/' . ( ! empty( $domain ) ? $domain . '/' : '' ) . 'payment-method-form-additional.php';
 		if ( file_exists( $additional_file_path ) ) {
-			require_once( $additional_file_path );
+			require_once $additional_file_path;
 		}
 	}
 
@@ -513,7 +513,7 @@ class WC_Maksuturva {
 	protected function load_class( $class_name = '' ) {
 		$file = 'class-' . strtolower( str_replace( '_', '-', $class_name ) ) . '.php';
 		if ( file_exists( $this->plugin_dir . '/includes/' . $file ) ) {
-			require_once( $this->plugin_dir . '/includes/' . $file );
+			require_once $this->plugin_dir . '/includes/' . $file;
 		}
 	}
 
@@ -625,13 +625,13 @@ class WC_Maksuturva {
 	 */
 	private function install_db() {
 		// See: https://codex.wordpress.org/Creating_Tables_with_Plugins.
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		$this->load_class( 'WC_Payment_Maksuturva' );
 		$this->load_class( 'WC_Payment_Checker_Maksuturva' );
 
-		includes\WC_Payment_Maksuturva::install_db();
-		includes\WC_Payment_Checker_Maksuturva::install_db();
+		WC_Payment_Maksuturva::install_db();
+		WC_Payment_Checker_Maksuturva::install_db();
 
 		$this->set_option( self::OPTION_DB_VERSION, self::DB_VERSION );
 	}
@@ -646,12 +646,12 @@ class WC_Maksuturva {
 	public function set_handling_cost( \WC_Cart $cart ) {
 
 		$this->load_class( 'WC_Gateway_Maksuturva' );
-		$gateway = new includes\WC_Gateway_Maksuturva();
+		$gateway = new WC_Gateway_Maksuturva();
 
 		$this->load_class( 'WC_Payment_Handling_Costs' );
-		$handling_costs_handler = new includes\WC_Payment_Handling_Costs( $gateway );
+		$handling_costs_handler = new WC_Payment_Handling_Costs( $gateway );
 		$handling_costs_handler->set_handling_cost( $cart );
 	}
 }
 
-add_action( 'init', [ WC_Maksuturva::get_instance(), 'init' ] );
+add_action( 'init', array( WC_Maksuturva::get_instance(), 'init' ) );

@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <script>
 (function() {
 	jQuery(function($) {
-        $(document).ready( function() {
+		$(document).ready( function() {
 			var radioButtons = document.querySelectorAll( '.svea-payment-method-select-radio' );
 			for( var i = 0; i < radioButtons.length; ++i ) {
 			radioButtons[i].addEventListener('click', function() {
@@ -48,15 +48,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 			
 
 			$('body').on('payment_method_selected', function() {
-				if ( ($('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').length==1) &&
-						($('form[name="checkout"] input[name="payment_method"]:checked').val()=="WC_Gateway_Svea_Invoice_And_Hire_Purchase") )  {
+				if ( ($('div.payment_method_WC_Gateway_Svea_Credit_Card_And_Mobile > div > div > input').length==1) &&
+						($('form[name="checkout"] input[name="payment_method"]:checked').val()=="WC_Gateway_Svea_Credit_Card_And_Mobile") )  {
 						console.log("Autoselecting the only payment method that is available in this payment group.");
 						$('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').prop("checked", true);
 						document.querySelector( 'body' ).dispatchEvent( new CustomEvent('update_checkout') );
 				}
 			});
 		});
-    });
+	});
 })();
 </script>
 
@@ -97,8 +97,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 
 	#payment .payment_methods li .svea-payment-method-select.checked label {
-        border: 2px solid #00aece;
-    }
+		border: 2px solid #00aece;
+	}
 
 	#payment .payment_methods li .svea-payment-method-select-radio {
 		display: none;
