@@ -339,12 +339,19 @@ class WC_Payment_Method_Select {
 			'totalamount'    => WC_Utils_Maksuturva::filter_price( $price ),
 		);
 
-		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
+		$cache_key      = sanitize_title( 'svea-payment-methods-' . implode( '-', $post_fields ) );
+		$result_methods = get_transient( $cache_key );
 
-		$result_methods = $api->get(
-			self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,
-			$post_fields
-		);
+		if ( ! $result_methods ) {
+			$api = new WC_Svea_Api_Request_Handler( $this->gateway );
+
+			$result_methods = $api->get(
+				self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,
+				$post_fields
+			);
+
+			set_transient( $cache_key, $result_methods, HOUR_IN_SECONDS * 4 );
+		}
 
 		/**
 		 * bugfix: if there is only one payment method, the request handler will not return
