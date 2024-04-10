@@ -22,8 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -39,6 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Order_Compatibility_Handler {
 
 	/**
+	 * Order to handle
 	 *
 	 * @var \WC_Order
 	 */
@@ -52,7 +51,7 @@ class WC_Order_Compatibility_Handler {
 	/**
 	 * WC_Order_Compatibility_Handler constructor.
 	 *
-	 * @param \WC_Order $order Order to handle
+	 * @param \WC_Order $order Order to handle.
 	 *
 	 * @since 2.0.6
 	 */
@@ -310,9 +309,10 @@ class WC_Order_Compatibility_Handler {
 	/**
 	 * Get order item meta.
 	 *
-	 * @param mixed $order_item_id
-	 * @param string $key (default: '')
-	 * @param bool $single (default: false)
+	 * @param mixed  $order_item_id Order item ID.
+	 * @param string $key Item key (default: '').
+	 * @param bool   $single Fetch single value (default: false).
+	 *
 	 * @return array|string
 	 */
 	public function get_item_meta( $order_item_id, $key = '', $single = false ) {
@@ -322,5 +322,4 @@ class WC_Order_Compatibility_Handler {
 			return get_metadata( 'order_item', $order_item_id, $key, $single );
 		}
 	}
-
 }

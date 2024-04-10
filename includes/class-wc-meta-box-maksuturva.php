@@ -22,10 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 use Automattic\WooCommerce\Utilities\OrderUtil;
-use function SveaPaymentGateway\wc_maksuturva_log;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -48,39 +45,47 @@ class WC_Meta_Box_Maksuturva {
 	 * Output the meta box.
 	 *
 	 * @param \WP_Post $post The post.
-	 * @param array   $args Arguments passed to the output function.
+	 * @param array    $args Arguments passed to the output function.
 	 */
 	public static function output( $post, $args ) {
 		try {
 			if ( ! isset( $args['args']['gateway'] ) ) {
 				throw new WC_Gateway_Maksuturva_Exception( 'No gateway given to meta-box.' );
 			}
-			$gateway  = $args['args']['gateway'];
+			$gateway = $args['args']['gateway'];
 
 			if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
 				// if creating a new order, the id is not yet set and no need to render the meta box
-				if ('new' == wc_clean($_GET["action"]) ) {
+				if ( 'new' == wc_clean( $_GET['action'] ) ) {
 					return;
 				}
 
-				$order_id = wc_clean( $_GET["id"] );
+				$order_id = wc_clean( $_GET['id'] );
 			} else {
 				// legacy
-				$order_id = $post->ID; 
+				$order_id = $post->ID;
 			}
 			$order = wc_get_order( $order_id );
-			
-			if (!empty($order->get_payment_method())) {
-				$payment  = new WC_Payment_Maksuturva( $order->get_id() );
-				if (!empty($payment->get_payment_id())) {
-					$gateway->render( 'meta-box', 'admin', array( 'message' => self::get_messages( $payment ), 'extranet_payment_url' => self::get_extranet_payment_url($payment, $gateway), 'payment_id' => $payment->get_payment_id() ) );
-				}			
+
+			if ( ! empty( $order->get_payment_method() ) ) {
+				$payment = new WC_Payment_Maksuturva( $order->get_id() );
+				if ( ! empty( $payment->get_payment_id() ) ) {
+					$gateway->render(
+						'meta-box',
+						'admin',
+						array(
+							'message'              => self::get_messages( $payment ),
+							'extranet_payment_url' => self::get_extranet_payment_url( $payment, $gateway ),
+							'payment_id'           => $payment->get_payment_id(),
+						)
+					);
+				}
 			} else {
 				// _log("Not a Svea payment method...");
 			}
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			// If the payment was not found, it probably means that the order was not paid with Svea.
-			wc_maksuturva_log($e->getMessage());
+			wc_maksuturva_log( $e->getMessage() );
 			return;
 		}
 	}
@@ -97,15 +102,15 @@ class WC_Meta_Box_Maksuturva {
 	 * @return string
 	 */
 	private static function get_messages( $payment ) {
-		if (!$payment instanceof WC_Payment_Maksuturva) {
-			wc_maksuturva_log("Not a Svea payment method, skipping status check");
+		if ( ! $payment instanceof WC_Payment_Maksuturva ) {
+			wc_maksuturva_log( 'Not a Svea payment method, skipping status check' );
 		}
 
 		/**
 		 * query current status from Svea Payments if payment is not yet completed
 		 */
-		if ($payment->is_delayed() || $payment->is_pending()) {
-			wc_maksuturva_log( "Manual pending payment check for order " . $payment->get_order_id());
+		if ( $payment->is_delayed() || $payment->is_pending() ) {
+			wc_maksuturva_log( 'Manual pending payment check for order ' . $payment->get_order_id() );
 			( new WC_Payment_Checker_Maksuturva() )->check_payment( $payment );
 		}
 
@@ -142,7 +147,7 @@ class WC_Meta_Box_Maksuturva {
 	 *
 	 * @return string
 	 */
-	private static function get_extranet_payment_url($payment, $gateway) {
+	private static function get_extranet_payment_url( $payment, $gateway ) {
 		return $gateway->get_gateway_url() . '/dashboard/PaymentEvent.db?pmt_id=' . $payment->get_payment_id();
 	}
 }

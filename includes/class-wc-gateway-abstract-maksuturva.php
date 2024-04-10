@@ -22,8 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -241,7 +239,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * The WC_Payment_Gateway extension.
 	 *
 	 * @since 2.1.3
-	 * 
+	 *
 	 * @var WC_Gateway_Maksuturva $wc_gateway The WC_Payment_Gateway extension.
 	 */
 	public $wc_gateway;
@@ -522,7 +520,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 
 		foreach ( $delivery_fields as $k => $v ) {
 			if ( ( ! isset( $this->payment_data[ $k ] ) ) || mb_strlen( trim( $this->payment_data[ $k ] ) ) == 0
-			     || is_null( $this->payment_data[ $k ] )
+				|| is_null( $this->payment_data[ $k ] )
 			) {
 				$this->payment_data[ $k ] = $this->payment_data[ $v ];
 			}
@@ -549,7 +547,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		if ( array_key_exists( 'pmt_rows_data', $this->payment_data ) ) {
 			foreach ( $this->payment_data['pmt_rows_data'] as $row_data ) {
 				$this->validate_payment_data_item( $row_data, $count_rows );
-				$count_rows ++;
+				++$count_rows;
 			}
 		}
 
@@ -583,11 +581,13 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		foreach ( self::$row_mandatory_data as $field ) {
 			if ( array_key_exists( $field, $data ) ) {
 				if ( 'pmt_row_price_gross' === $field && array_key_exists( 'pmt_row_price_net', $data ) ) {
-					throw new WC_Gateway_Maksuturva_Exception( sprintf(
-						'pmt_row_price_net%d and pmt_row_price_gross%d are both supplied, only one of them should be',
-						$count_rows,
-						$count_rows
-					) );
+					throw new WC_Gateway_Maksuturva_Exception(
+						sprintf(
+							'pmt_row_price_net%d and pmt_row_price_gross%d are both supplied, only one of them should be',
+							$count_rows,
+							$count_rows
+						)
+					);
 				}
 			} else {
 				if ( 'pmt_row_price_gross' === $field && array_key_exists( 'pmt_row_price_net', $data ) ) {
@@ -660,9 +660,9 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		$str       = (string) $number;
 		$sum       = 0;
 		$j         = 0;
-		for ( $i = mb_strlen( $str ) - 1; $i >= 0; $i -- ) {
+		for ( $i = mb_strlen( $str ) - 1; $i >= 0; $i-- ) {
 			$sum += (int) mb_substr( $str, $i, 1 ) * (int) ( $multiples[ $j % 3 ] );
-			$j ++;
+			++$j;
 		}
 		$next_ten = ceil( (int) $sum / 10 ) * 10;
 
@@ -682,28 +682,27 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 */
 	private function verify_status_query_response( $data ) {
 		$hash_fields = array(
-				'pmtq_action',
-				'pmtq_version',
-				'pmtq_sellerid',
-				'pmtq_id',
-				'pmtq_amount',
-				'pmtq_returncode',
-				'pmtq_returntext',
-				'pmtq_sellercosts',
-				'pmtq_paymentmethod',
-				'pmtq_escrow',
-				'pmtq_certification',
-				'pmtq_paymentdate'
+			'pmtq_action',
+			'pmtq_version',
+			'pmtq_sellerid',
+			'pmtq_id',
+			'pmtq_amount',
+			'pmtq_returncode',
+			'pmtq_returntext',
+			'pmtq_sellercosts',
+			'pmtq_paymentmethod',
+			'pmtq_escrow',
+			'pmtq_certification',
+			'pmtq_paymentdate',
 		);
 
 		$optional_hash_fields = array(
-				'pmtq_sellercosts',
-				'pmtq_paymentmethod',
-				'pmtq_escrow',
-				'pmtq_certification',
-				'pmtq_paymentdate'
+			'pmtq_sellercosts',
+			'pmtq_paymentmethod',
+			'pmtq_escrow',
+			'pmtq_certification',
+			'pmtq_paymentdate',
 		);
-
 
 		$hash_data = array();
 		foreach ( $hash_fields as $field ) {
@@ -714,7 +713,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			}
 			// Test the validity of data as well, when the field exists.
 			if ( isset( $this->status_query_data[ $field ] ) &&
-			     ( $data[ $field ] != $this->status_query_data[ $field ] )
+				( $data[ $field ] != $this->status_query_data[ $field ] )
 			) {
 				return false;
 			}
@@ -742,12 +741,15 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	private function filter_fields() {
 		foreach ( $this->payment_data as $k => $value ) {
 			if ( ( array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$mandatory_data ) )
-			     || array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$row_mandatory_data )
+				|| array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$row_mandatory_data )
 			) {
 				if ( mb_strlen( $value ) < self::$field_filters[ $k ][0] ) {
 					throw new WC_Gateway_Maksuturva_Exception(
-						sprintf( 'Field "%s" should be at least %d characters long.', $k,
-						self::$field_filters[ $k ][0] )
+						sprintf(
+							'Field "%s" should be at least %d characters long.',
+							$k,
+							self::$field_filters[ $k ][0]
+						)
 					);
 				}
 				if ( mb_strlen( $value ) > self::$field_filters[ $k ][1] ) {
@@ -757,14 +759,17 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 				}
 				continue;
 			} elseif ( ( array_key_exists( $k, self::$field_filters )
-			             && in_array( $k, self::$optional_data ) && mb_strlen( $value ) )
-			           || ( array_key_exists( $k, self::$field_filters )
-			                && in_array( $k, self::$row_optional_data ) && mb_strlen( $value ) )
+						&& in_array( $k, self::$optional_data ) && mb_strlen( $value ) )
+						|| ( array_key_exists( $k, self::$field_filters )
+							&& in_array( $k, self::$row_optional_data ) && mb_strlen( $value ) )
 			) {
 				if ( mb_strlen( $value ) < self::$field_filters[ $k ][0] ) {
 					throw new WC_Gateway_Maksuturva_Exception(
-						sprintf( 'Field "%s" should be at least %d characters long.', $k,
-						self::$field_filters[ $k ][0] )
+						sprintf(
+							'Field "%s" should be at least %d characters long.',
+							$k,
+							self::$field_filters[ $k ][0]
+						)
 					);
 				}
 				if ( mb_strlen( $value ) > self::$field_filters[ $k ][1] ) {
@@ -780,20 +785,22 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			if ( array_key_exists( 'pmt_row_name', $p ) ) {
 				if ( ! trim( $p['pmt_row_name'] ) ) {
 					$this->payment_data['pmt_rows_data'][ $i ]['pmt_row_name'] = $p['pmt_row_name'] = $p['pmt_row_desc'];
-				}	
+				}
 			}
-			$this->payment_data['pmt_rows_data'][ $i ]['pmt_row_desc'] = $p['pmt_row_desc'] = "-";
-			
+			$this->payment_data['pmt_rows_data'][ $i ]['pmt_row_desc'] = $p['pmt_row_desc'] = '-';
+
 			foreach ( $p as $k => $value ) {
 				if ( ( array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$mandatory_data ) )
-				     || array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$row_mandatory_data )
+					|| array_key_exists( $k, self::$field_filters ) && in_array( $k, self::$row_mandatory_data )
 				) {
 					if ( mb_strlen( $value ) < self::$field_filters[ $k ][0] ) {
-						throw new WC_Gateway_Maksuturva_Exception( sprintf(
-							'Field "%s" should be at least %d characters long.',
-							$k,
-							self::$field_filters[ $k ][0]
-						) );
+						throw new WC_Gateway_Maksuturva_Exception(
+							sprintf(
+								'Field "%s" should be at least %d characters long.',
+								$k,
+								self::$field_filters[ $k ][0]
+							)
+						);
 					}
 					if ( mb_strlen( $value ) > self::$field_filters[ $k ][1] ) {
 						// Auto trim.
@@ -808,16 +815,18 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 					}
 					continue;
 				} elseif ( ( array_key_exists( $k, self::$field_filters )
-				             && in_array( $k, self::$optional_data ) && mb_strlen( $value ) )
-				           || ( array_key_exists( $k, self::$field_filters )
-				                && in_array( $k, self::$row_optional_data ) && mb_strlen( $value ) )
+							&& in_array( $k, self::$optional_data ) && mb_strlen( $value ) )
+							|| ( array_key_exists( $k, self::$field_filters )
+								&& in_array( $k, self::$row_optional_data ) && mb_strlen( $value ) )
 				) {
 					if ( mb_strlen( $value ) < self::$field_filters[ $k ][0] ) {
-						throw new WC_Gateway_Maksuturva_Exception( sprintf(
-							'Field "%s" should be at least %d characters long.',
-							$k,
-							self::$field_filters[ $k ][0]
-						) );
+						throw new WC_Gateway_Maksuturva_Exception(
+							sprintf(
+								'Field "%s" should be at least %d characters long.',
+								$k,
+								self::$field_filters[ $k ][0]
+							)
+						);
 					}
 					if ( mb_strlen( $value ) > self::$field_filters[ $k ][1] ) {
 						// Auto trim.
@@ -849,7 +858,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 */
 	public function __get( $name ) {
 		if ( in_array( $name, self::$mandatory_data, true )
-		     || in_array( $name, self::$optional_data, true ) || 'pmt_rows_data' === $name
+			|| in_array( $name, self::$optional_data, true ) || 'pmt_rows_data' === $name
 		) {
 			return $this->payment_data[ $name ];
 		}
@@ -899,7 +908,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_return'        => '',
 			'pmtq_hashversion'   => $this->payment_data['pmt_hashversion'],
 			'pmtq_keygeneration' => $this->payment_data['pmt_keygeneration'],
-			"req_ts_ms"          => \DateTime::createFromFormat('U.u', microtime(true))->format('Y-m-d H:i:s:u')
+			'req_ts_ms'          => \DateTime::createFromFormat( 'U.u', microtime( true ) )->format( 'Y-m-d H:i:s:u' ),
 		);
 		// Overrides with user-defined fields.
 		$this->status_query_data = array_merge( $default_fields, $data );
@@ -915,16 +924,16 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			$hash_data[ $field ] = $this->status_query_data[ $field ];
 		}
 
-		$data_hasher = new WC_Data_Hasher( $this->wc_gateway );
+		$data_hasher                          = new WC_Data_Hasher( $this->wc_gateway );
 		$this->status_query_data['pmtq_hash'] = $data_hasher->create_hash( $hash_data );
 
 		$res = wp_remote_post(
 			$this->base_url_status_query,
-			[
-				'body' => $this->status_query_data,
-				'timeout' => 30,
+			array(
+				'body'       => $this->status_query_data,
+				'timeout'    => 30,
 				'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
-			]
+			)
 		);
 
 		if ( wp_remote_retrieve_response_code( $res ) !== \WP_Http::OK ) {
@@ -974,41 +983,42 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		}
 
 		// Check that pmt_orderid exists in the response
-		if ( empty($parsed_response['pmtq_orderid']) ) {
+		if ( empty( $parsed_response['pmtq_orderid'] ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query response order id does not exist for the order ' . $this->payment_data['pmt_orderid'] . 
+				'Status query response order id does not exist for the order ' . $this->payment_data['pmt_orderid'] .
 				'. Unable to verify the response.',
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
 
 		// Validate order to match payment data
-		if ( !($this->payment_data['pmt_orderid'] === $parsed_response['pmtq_orderid']) ) {
+		if ( ! ( $this->payment_data['pmt_orderid'] === $parsed_response['pmtq_orderid'] ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query response order id does not match the requested payment order id. ' . 
+				'Status query response order id does not match the requested payment order id. ' .
 				$this->payment_data['pmt_orderid'] . ' vs response ' . $parsed_response['pmtq_orderid'],
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
 
 		// Check payment total and seller costs
-		$pmtq_amount = floatval(str_replace(',', '.', $parsed_response["pmtq_amount"]) );
-		if ( empty($parsed_response["pmtq_sellercosts"]) )
-			$pmtq_sellercosts = floatval(str_replace(',', '.', "0,00") );
-		else
-			$pmtq_sellercosts = floatval(str_replace(',', '.', $parsed_response["pmtq_sellercosts"]) );
+		$pmtq_amount = floatval( str_replace( ',', '.', $parsed_response['pmtq_amount'] ) );
+		if ( empty( $parsed_response['pmtq_sellercosts'] ) ) {
+			$pmtq_sellercosts = floatval( str_replace( ',', '.', '0,00' ) );
+		} else {
+			$pmtq_sellercosts = floatval( str_replace( ',', '.', $parsed_response['pmtq_sellercosts'] ) );
+		}
 
-		if ( abs(floatval(str_replace(',', '.', $this->payment_data['pmt_sellercosts'])) - $pmtq_sellercosts) > 1.00 ) {
+		if ( abs( floatval( str_replace( ',', '.', $this->payment_data['pmt_sellercosts'] ) ) - $pmtq_sellercosts ) > 1.00 ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query response seller costs does not match the requested payment seller costs. ' . 
+				'Status query response seller costs does not match the requested payment seller costs. ' .
 				$this->payment_data['pmt_sellercosts'] . ' vs response ' . $parsed_response['pmtq_sellercosts'],
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
 		}
 
-		if ( abs(floatval(str_replace(',', '.', $this->payment_data['pmt_amount'])) - $pmtq_amount) > 5.00 ) {
+		if ( abs( floatval( str_replace( ',', '.', $this->payment_data['pmt_amount'] ) ) - $pmtq_amount ) > 5.00 ) {
 			throw new WC_Gateway_Maksuturva_Exception(
-				'Status query response amount does not match the requested payment amount. Amount ' . 
+				'Status query response amount does not match the requested payment amount. Amount ' .
 				$this->payment_data['pmt_amount'] . ' vs response ' . $parsed_response['pmtq_amount'],
 				self::EXCEPTION_CODE_DATA_MISMATCH
 			);
@@ -1019,11 +1029,11 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	}
 
 	/**
-	 * 
+	 *
 	 * @since 2.4.2
 	 */
 
-	 /*
+	/*
 	public function diagnostic_request() {
 		if ( ! function_exists( 'curl_init' ) ) {
 			throw new WC_Gateway_Maksuturva_Exception(
@@ -1036,13 +1046,13 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		$infophp = ob_get_contents () ;
 		ob_end_clean () ;
 		//TODO: Sanitize
-		
+
 		error_log("Svea Payment module diagnostics data: " . $infophp);
 
 		$diagnostics_data = array(
 			'diag_version'       => '0001',
 			'diag_sellerid'      => $this -> seller_id,
-			'diag_phpinfo'		 => $infophp,
+			'diag_phpinfo'       => $infophp,
 		);
 
 		// Now the request is made to maksuturva.
@@ -1088,14 +1098,16 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 					foreach ( $row as $k => $v ) {
 						$return_array[ $this->http_encode( $k . $row_count ) ] = $this->http_encode( $v );
 					}
-					$row_count ++;
+					++$row_count;
 				}
 			} else {
 				$return_array[ $this->http_encode( $key ) ] = $this->http_encode( $data );
 			}
 		}
-		$return_array[ $this->http_encode( 'pmt_hash' ) ] = $this->encode( $this->create_payment_hash(),
-		$this->charset );
+		$return_array[ $this->http_encode( 'pmt_hash' ) ] = $this->encode(
+			$this->create_payment_hash(),
+			$this->charset
+		);
 
 		return $return_array;
 	}
@@ -1230,8 +1242,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			}
 		}
 
-		$this->payment_data['server_info'] = WC_Utils_Maksuturva::get_user_agent();
-		$this->payment_data['req_ts_ms'] = \DateTime::createFromFormat('U.u', microtime(TRUE))->format('Y-m-d H:i:s:u');
+		$this->payment_data['server_info']     = WC_Utils_Maksuturva::get_user_agent();
+		$this->payment_data['req_ts_ms']       = \DateTime::createFromFormat( 'U.u', microtime( true ) )->format( 'Y-m-d H:i:s:u' );
 		$this->payment_data['pmt_hashversion'] = WC_Data_Hasher::get_hash_algorithm();
 	}
 }

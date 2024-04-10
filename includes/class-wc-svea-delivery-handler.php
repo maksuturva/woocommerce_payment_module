@@ -18,11 +18,9 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-
-namespace SveaPaymentGateway\includes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -70,31 +68,31 @@ class WC_Svea_Delivery_Handler {
 	 * Fields that should be used for hashing request data.
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
-	 * 
+	 *
 	 * @var array $request_hash_fields Request hash fields.
 	 *
 	 * @since 2.1.2
 	 */
-	private static $request_hash_fields = [
-		"pkg_id",
-		"pkg_deliverymethodid",
-		"pkg_allsent",
-	];
+	private static $request_hash_fields = array(
+		'pkg_id',
+		'pkg_deliverymethodid',
+		'pkg_allsent',
+	);
 
 	/**
 	 * Fields that should be used for hashing response data.
 	 * The order of fields in this array is important, do not change it
 	 * if you are not sure that you know what you are doing.
-	 * 
+	 *
 	 * @var array $response_hash_fields Response hash fields.
 	 *
 	 * @since 2.1.2
 	 */
-	private static $response_hash_fields = [
+	private static $response_hash_fields = array(
 		'pkg_sellerid',
 		'pkg_id',
-		'pkg_resultcode'
-	];
+		'pkg_resultcode',
+	);
 
 	/**
 	 * Seller id.
@@ -107,20 +105,20 @@ class WC_Svea_Delivery_Handler {
 
 	/**
 	 * WC_Svea_Delivery_Handler constructor.
-	 * 
+	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
-	 * @param int $order_id The order.
-	 * 
+	 * @param int                   $order_id The order.
+	 *
 	 * @since 2.1.2
 	 */
 	public function __construct( $gateway, $order_id ) {
-		$this->gateway = $gateway;
-		$this->order_id = $order_id;
+		$this->gateway   = $gateway;
+		$this->order_id  = $order_id;
 		$this->seller_id = $gateway->get_seller_id();
 	}
 
 	/**
-	 *	Sends delivery info to Svea API
+	 *  Sends delivery info to Svea API
 	 *
 	 * @since 2.1.2
 	 *
@@ -131,30 +129,30 @@ class WC_Svea_Delivery_Handler {
 		$payment = new WC_Payment_Maksuturva( $this->order_id );
 
 		$gateway_implementation = new WC_Gateway_Implementation_Maksuturva( $this->gateway, wc_get_order( $this->order_id ) );
-		$gateway_data = $gateway_implementation->get_field_array();
+		$gateway_data           = $gateway_implementation->get_field_array();
 
-		$post_fields = [
-			"pkg_version" => "0002",
-			"pkg_sellerid" => $this->seller_id,
-			"pkg_id" => $payment->get_payment_id(),
-			"pkg_deliverymethodid" => "ODLVR",
-			"pkg_adddeliveryinfo" => "Capture from WooCommerce",
-			"pkg_allsent" => "Y",
-			"pkg_resptype" => "XML",
-			"pkg_hashversion" => $gateway_data['pmt_hashversion'],
-			"pkg_keygeneration" => $this->gateway->get_secret_key_version()
-		];
+		$post_fields = array(
+			'pkg_version'          => '0002',
+			'pkg_sellerid'         => $this->seller_id,
+			'pkg_id'               => $payment->get_payment_id(),
+			'pkg_deliverymethodid' => 'ODLVR',
+			'pkg_adddeliveryinfo'  => 'Capture from WooCommerce',
+			'pkg_allsent'          => 'Y',
+			'pkg_resptype'         => 'XML',
+			'pkg_hashversion'      => $gateway_data['pmt_hashversion'],
+			'pkg_keygeneration'    => $this->gateway->get_secret_key_version(),
+		);
 
 		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
 		return $api->post(
 			self::ROUTE_ADD_DELIVERY_INFO,
 			$post_fields,
-			[
+			array(
 				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH => self::$request_hash_fields,
 				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH => self::$response_hash_fields,
 				WC_Svea_Api_Request_Handler::SETTINGS_HASH_FIELD => 'pkg_hash',
-				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pkg_resultcode'
-			]
+				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pkg_resultcode',
+			)
 		);
 	}
 }

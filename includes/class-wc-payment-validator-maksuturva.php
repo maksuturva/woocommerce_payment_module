@@ -22,8 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -184,7 +182,6 @@ class WC_Payment_Validator_Maksuturva {
 	 * @return WC_Payment_Validator_Maksuturva
 	 * @throws WC_Gateway_Maksuturva_Exception
 	 * @since 2.0.0
-	 *
 	 */
 	public function validate( array $params ) {
 		switch ( $this->get_action( $params ) ) {
@@ -276,8 +273,11 @@ class WC_Payment_Validator_Maksuturva {
 	 */
 	protected function get_action( array $params = array() ) {
 		$action = self::ACTION_ERROR;
-		if ( isset( $params['pmt_act'] ) && in_array( $params['pmt_act'],
-		array( self::ACTION_CANCEL, self::ACTION_DELAYED, self::ACTION_ERROR, self::ACTION_OK ), true ) ) {
+		if ( isset( $params['pmt_act'] ) && in_array(
+			$params['pmt_act'],
+			array( self::ACTION_CANCEL, self::ACTION_DELAYED, self::ACTION_ERROR, self::ACTION_OK ),
+			true
+		) ) {
 			$action = $params['pmt_act'];
 		}
 
@@ -307,10 +307,12 @@ class WC_Payment_Validator_Maksuturva {
 			}
 		}
 		if ( count( $missing_fields ) > 0 ) {
-			$this->error( sprintf(
-				__( 'Missing payment field(s) in response: "%s"', 'wc-maksuturva' ),
-				implode( '", "', $missing_fields )
-			) );
+			$this->error(
+				sprintf(
+					__( 'Missing payment field(s) in response: "%s"', 'wc-maksuturva' ),
+					implode( '", "', $missing_fields )
+				)
+			);
 		}
 
 		return $values;
@@ -359,7 +361,7 @@ class WC_Payment_Validator_Maksuturva {
 	 */
 	protected function validate_reference_number( array $values ) {
 		if ( ! isset( $values['pmt_reference'] )
-		     || ! $this->gateway->check_payment_reference_number( $values['pmt_reference'] )
+			|| ! $this->gateway->check_payment_reference_number( $values['pmt_reference'] )
 		) {
 			$this->error( __( 'Payment reference number could not be verified', 'wc-maksuturva' ) );
 		}
@@ -383,7 +385,7 @@ class WC_Payment_Validator_Maksuturva {
 			}
 			if ( isset( $this->gateway->{$key} ) && $this->gateway->{$key} !== $value ) {
 				$not_matching_fields[] = sprintf(
-					__( '%s (obtained %s, expected %s)', 'wc-maksuturva' ),
+					__( '%1$s (obtained %2$s, expected %3$s)', 'wc-maksuturva' ),
 					$key,
 					$value,
 					$this->gateway->{$key}
@@ -391,10 +393,12 @@ class WC_Payment_Validator_Maksuturva {
 			}
 		}
 		if ( count( $not_matching_fields ) > 0 ) {
-			$this->error( sprintf(
-				__( 'The following field(s) differs from order: %s', 'wc-maksuturva' ),
-				implode( ', ', $not_matching_fields )
-			) );
+			$this->error(
+				sprintf(
+					__( 'The following field(s) differs from order: %s', 'wc-maksuturva' ),
+					implode( ', ', $not_matching_fields )
+				)
+			);
 		}
 	}
 
@@ -413,11 +417,13 @@ class WC_Payment_Validator_Maksuturva {
 			$sent_seller_cost     = str_replace( ',', '.', $this->gateway->{'pmt_sellercosts'} );
 			$received_seller_cost = str_replace( ',', '.', $values['pmt_sellercosts'] );
 			if ( $sent_seller_cost > $received_seller_cost ) {
-				$this->error( sprintf(
-					__( 'Invalid payment amount (obtained %s, expected %s)', 'wc-maksuturva' ),
-					$values['pmt_sellercosts'],
-					$this->gateway->{'pmt_sellercosts'}
-				) );
+				$this->error(
+					sprintf(
+						__( 'Invalid payment amount (obtained %1$s, expected %2$s)', 'wc-maksuturva' ),
+						$values['pmt_sellercosts'],
+						$this->gateway->{'pmt_sellercosts'}
+					)
+				);
 			}
 		}
 	}

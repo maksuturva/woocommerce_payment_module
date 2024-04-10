@@ -22,11 +22,6 @@
  * Lesser General Public License for more details.
  */
 
-namespace SveaPaymentGateway\includes;
-
-use SveaPaymentGateway\WC_Maksuturva;
-use function SveaPaymentGateway\wc_maksuturva_log;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -43,9 +38,9 @@ if ( ! function_exists( '_log' ) ) {
 	 */
 	function _log( $message ) {
 		if ( is_array( $message ) || is_object( $message ) ) {
-			error_log('[SVEA PAYMENTS] ' . var_export( $message, true ) );
+			error_log( '[SVEA PAYMENTS] ' . var_export( $message, true ) );
 		} else {
-			error_log('[SVEA PAYMENTS] ' . $message );
+			error_log( '[SVEA PAYMENTS] ' . $message );
 		}
 	}
 }
@@ -125,52 +120,52 @@ class WC_Payment_Checker_Maksuturva {
 	 * @return array
 	 */
 	public function check_payment( $payment ) {
-		$response = array();
+		$response    = array();
 		$query_count = 0;
 
-		if (!$payment instanceof WC_Payment_Maksuturva) {
-            wc_maksuturva_log("Not a Svea payment method, skipping status check");
+		if ( ! $payment instanceof WC_Payment_Maksuturva ) {
+			wc_maksuturva_log( 'Not a Svea payment method, skipping status check' );
 			return;
-        }
+		}
 
 		try {
-			$gateway  = new WC_Gateway_Maksuturva();			
-			$order    = wc_get_order($payment->get_order_id());
+			$gateway = new WC_Gateway_Maksuturva();
+			$order   = wc_get_order( $payment->get_order_id() );
 
 			// don't query status in sandbox mode
-			if ($gateway->is_sandbox()) {
-				wc_maksuturva_log( "Payment check is disabled for sandbox mode. Skipping status query for order " . $payment->get_order_id() );
+			if ( $gateway->is_sandbox() ) {
+				wc_maksuturva_log( 'Payment check is disabled for sandbox mode. Skipping status query for order ' . $payment->get_order_id() );
 				return;
 			}
 
 			/**
 			 * check time windows for status query
 			 */
-			if ( !($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated())) ) {
-				wc_maksuturva_log( "Skipped the status query for the order " . $payment->get_order_id() . ", because it does not fullfill the check time window rules yet." );
+			if ( ! ( $this->is_time_to_check( $payment->get_date_added(), $payment->get_date_updated() ) ) ) {
+				wc_maksuturva_log( 'Skipped the status query for the order ' . $payment->get_order_id() . ', because it does not fullfill the check time window rules yet.' );
 				return;
 			}
 
 			/**
-			 * if order is not found anymore, skip payment checks and cancel it it Maksuturva status queue (2.12.2019) 
+			 * if order is not found anymore, skip payment checks and cancel it it Maksuturva status queue (2.12.2019)
 			 */
-			if ($order == NULL) {
-				wc_maksuturva_log( "Order for id " . $payment->get_order_id() . " not found anymore! Cancelling it in the check queue.");
-				WC_Payment_Maksuturva::updateToCancelled($payment->get_order_id());
+			if ( $order == null ) {
+				wc_maksuturva_log( 'Order for id ' . $payment->get_order_id() . ' not found anymore! Cancelling it in the check queue.' );
+				WC_Payment_Maksuturva::updateToCancelled( $payment->get_order_id() );
 			} else {
-				$response = (new WC_Gateway_Implementation_Maksuturva($gateway, $order))->status_query();
-				$query_count = $this->log($payment, $response);
+				$response    = ( new WC_Gateway_Implementation_Maksuturva( $gateway, $order ) )->status_query();
+				$query_count = $this->log( $payment, $response );
 
-				switch ($response['pmtq_returncode']) {
+				switch ( $response['pmtq_returncode'] ) {
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID_DELIVERY:
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_COMPENSATED:
 						// The payment confirmation was received - payment accepted
 						$payment->complete();
-						if (!$gateway->is_order_paid($order)) {
-							$order->payment_complete($payment->get_payment_id());
+						if ( ! $gateway->is_order_paid( $order ) ) {
+							$order->payment_complete( $payment->get_payment_id() );
 						}
-						wc_maksuturva_log( "Payment for order " . $payment->get_order_id() . " is updated to as paid.");
+						wc_maksuturva_log( 'Payment for order ' . $payment->get_order_id() . ' is updated to as paid.' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED:
@@ -181,17 +176,17 @@ class WC_Payment_Checker_Maksuturva {
 						// The payment was canceled in Svea
 						$payment->cancel();
 						$order->cancel_order();
-						wc_maksuturva_log( "Payment for order " . $payment->get_order_id() . " is updated to cancelled status.");
+						wc_maksuturva_log( 'Payment for order ' . $payment->get_order_id() . ' is updated to cancelled status.' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
 						$payment->update();
-						wc_maksuturva_log( "Payment check for order " . $payment->get_order_id() . " failed, because status is not found. ");
+						wc_maksuturva_log( 'Payment check for order ' . $payment->get_order_id() . ' failed, because status is not found. ' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
 						$payment->update();
-						wc_maksuturva_log( "Payment query for order " . $payment->get_order_id() . " failed.");
+						wc_maksuturva_log( 'Payment query for order ' . $payment->get_order_id() . ' failed.' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
@@ -200,20 +195,22 @@ class WC_Payment_Checker_Maksuturva {
 					default:
 						// The payment is still waiting for confirmation, update date_update
 						$payment->update();
-						wc_maksuturva_log( "Payment status for order " . $payment->get_order_id() . " cannot be confirmed yet and is waiting for a payment.");
+						wc_maksuturva_log( 'Payment status for order ' . $payment->get_order_id() . ' cannot be confirmed yet and is waiting for a payment.' );
 						break;
 				}
 			}
-		} catch (WC_Gateway_Maksuturva_Exception $e) {
-			wc_maksuturva_log( "Status query failed for order " . $payment->get_order_id() . " because exception occured: " . $e->getMessage());
+		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
+			wc_maksuturva_log( 'Status query failed for order ' . $payment->get_order_id() . ' because exception occured: ' . $e->getMessage() );
 			// update database timestamp and query_count
-			$query_count = $this->log($payment, array("error" => $e->getMessage() ));
+			$query_count = $this->log( $payment, array( 'error' => $e->getMessage() ) );
 		}
 
 		// if query count for the order exeeds safe limit throw an exception
-		if ($query_count > 40) {
-			wc_maksuturva_log( 'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 40 retries. ' .
-			                   'Cancelled the order!');
+		if ( $query_count > 40 ) {
+			wc_maksuturva_log(
+				'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 40 retries. ' .
+								'Cancelled the order!'
+			);
 			$payment->cancel();
 		}
 		return $response;
@@ -230,79 +227,78 @@ class WC_Payment_Checker_Maksuturva {
 	 *
 	 * @return array
 	 */
-	public function check_payments(array $payments)
-	{
+	public function check_payments( array $payments ) {
 		$responses = array();
 		try {
-			foreach ($payments as $payment) {
-				$check_me = $this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated());
-				if ($check_me) {
-					$sqresponse = $this->check_payment($payment);
-					if (!empty($sqresponse))
-						$responses[$payment->get_payment_id()] = $sqresponse;
+			foreach ( $payments as $payment ) {
+				$check_me = $this->is_time_to_check( $payment->get_date_added(), $payment->get_date_updated() );
+				if ( $check_me ) {
+					$sqresponse = $this->check_payment( $payment );
+					if ( ! empty( $sqresponse ) ) {
+						$responses[ $payment->get_payment_id() ] = $sqresponse;
+					}
 				}
 			}
 		} catch ( \Exception $e ) {
-			wc_maksuturva_log( "Payment check exception: " . $e->getMessage() );
+			wc_maksuturva_log( 'Payment check exception: ' . $e->getMessage() );
 		}
 		return $responses;
 	}
 
 	/**
-	 * 
+	 *
 	 * Dynamic payment status check interval function
-	 * 
-	 * @since 2.1.1 
+	 *
+	 * @since 2.1.1
 	 */
-	protected function is_time_to_check($payment_date_added, $payment_date_updated)
-	{
-		$now_time = strtotime(date('Y-m-d H:i:s'));
-		
-		$create_diff = $now_time - strtotime($payment_date_added);
+	protected function is_time_to_check( $payment_date_added, $payment_date_updated ) {
+		$now_time = strtotime( date( 'Y-m-d H:i:s' ) );
+
+		$create_diff = $now_time - strtotime( $payment_date_added );
 		/* if there is no 'updated date', so do status query if order is created max 7 days ago */
-		if (is_null($payment_date_updated) && $this->in_range($create_diff, 0, 168*3600)) {
+		if ( is_null( $payment_date_updated ) && $this->in_range( $create_diff, 0, 168 * 3600 ) ) {
 			return true;
 		}
-		$update_diff = $now_time - strtotime($payment_date_updated);
+		$update_diff = $now_time - strtotime( $payment_date_updated );
 
 		$checkrule = 0;
-		if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) {
+		if ( $this->in_range( $create_diff, 5 * 60, 2 * 3600 ) && $update_diff > 20 * 60 ) {
 			$checkrule = 1;
 		}
-		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) {
+		if ( $this->in_range( $create_diff, 2 * 3600, 24 * 3600 ) && $update_diff > 2 * 3600 ) {
 			$checkrule = 2;
-		} 
+		}
 		// 168 hours = 7 days. No older than 7 days allowed.
-		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) {
+		if ( $create_diff < 168 * 3600 && $update_diff > 12 * 3600 ) {
 			$checkrule = 3;
 		}
 
-		if ($checkrule>0)
+		if ( $checkrule > 0 ) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	/**
 	 * Determines if $number is between $min and $max
 	 *
-	 * @param  integer  $number     The number to test
-	 * @param  integer  $min        The minimum value in the range
-	 * @param  integer  $max        The maximum value in the range
-	 * @param  boolean  $inclusive  Whether the range should be inclusive or not
+	 * @param  integer $number     The number to test
+	 * @param  integer $min        The minimum value in the range
+	 * @param  integer $max        The maximum value in the range
+	 * @param  boolean $inclusive  Whether the range should be inclusive or not
 	 * @return boolean              Whether the number was in the range
 	 */
-	protected function in_range($number, $min, $max, $inclusive = FALSE)
-	{
-		$number = intval($number);
-		$min = intval($min);
-		$max = intval($max);
+	protected function in_range( $number, $min, $max, $inclusive = false ) {
+		$number = intval( $number );
+		$min    = intval( $min );
+		$max    = intval( $max );
 
 		return $inclusive
-			? ($number >= $min && $number <= $max)
-			: ($number > $min && $number < $max);
+			? ( $number >= $min && $number <= $max )
+			: ( $number > $min && $number < $max );
 	}
-	 
+
 	/**
 	 * Inserts status query log.
 	 *
@@ -320,8 +316,12 @@ class WC_Payment_Checker_Maksuturva {
 		$payment_id = $payment->get_payment_id();
 
 		// First get the results for the payment.
-		$results = $wpdb->get_results( $wpdb->prepare(
-			'SELECT payment_id, date_added, query_count FROM `' . $tbl . '` WHERE payment_id = %s', $payment_id ) );
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT payment_id, date_added, query_count FROM `' . $tbl . '` WHERE payment_id = %s',
+				$payment_id
+			)
+		);
 
 		// By default we set query count to 1. Loop through any found results and increment the query_count.
 		$query_count = 1;
@@ -331,21 +331,27 @@ class WC_Payment_Checker_Maksuturva {
 
 		// If we found anything, e.g. query_count is over 1, update the record and increase the query_count by one.
 		if ( $query_count > 1 ) {
-			$wpdb->update( $tbl, array(
-				'response'    => wp_json_encode( $response ),
-				'query_count' => $query_count,
-			), array(
+			$wpdb->update(
+				$tbl,
+				array(
+					'response'    => wp_json_encode( $response ),
+					'query_count' => $query_count,
+				),
+				array(
 					'payment_id' => $payment_id,
 				)
 			); // Db call ok.
 		} else {
 			// No results found, insert new record.
-			$wpdb->insert( $tbl, array(
-				'payment_id'  => $payment_id,
-				'response'    => wp_json_encode( $response ),
-				'query_count' => $query_count,
-				'date_added'  => date( 'Y-m-d H:i:s' ),
-			) ); // Db call ok.
+			$wpdb->insert(
+				$tbl,
+				array(
+					'payment_id'  => $payment_id,
+					'response'    => wp_json_encode( $response ),
+					'query_count' => $query_count,
+					'date_added'  => date( 'Y-m-d H:i:s' ),
+				)
+			); // Db call ok.
 		}
 
 		return $query_count;

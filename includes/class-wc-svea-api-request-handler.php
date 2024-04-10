@@ -18,11 +18,9 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-
-namespace SveaPaymentGateway\includes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -40,7 +38,7 @@ require_once 'class-wc-utils-maksuturva.php';
 class WC_Svea_Api_Request_Handler {
 
 	public $gateway;
-	 
+
 	/**
 	 * OK response type.
 	 *
@@ -101,38 +99,41 @@ class WC_Svea_Api_Request_Handler {
 	 * Posts data to Svea payment api and checks that the return value is valid XML.
 	 *
 	 * @param string $route Route.
-	 * @param array $data Data to post.
-	 * @param array $settings Settings for handling post request creation and result validation.
+	 * @param array  $data Data to post.
+	 * @param array  $settings Settings for handling post request creation and result validation.
 	 *
 	 * @since 2.1.2
 	 *
 	 * @return array
 	 */
-	public function post( $route, $data, $settings = [] ) {
-		if ( isset( $settings[self::SETTINGS_HASH_FIELD] ) ) {
-			$hash_field = $settings[self::SETTINGS_HASH_FIELD];
-			$data[$hash_field] = $this->get_hash(
+	public function post( $route, $data, $settings = array() ) {
+		if ( isset( $settings[ self::SETTINGS_HASH_FIELD ] ) ) {
+			$hash_field          = $settings[ self::SETTINGS_HASH_FIELD ];
+			$data[ $hash_field ] = $this->get_hash(
 				$data,
-				$settings[self::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH]
+				$settings[ self::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH ]
 			);
 		}
 
-		$response = wp_remote_post( trailingslashit( $this->gateway->get_gateway_url() ) . $route, [
-			'body' => $data,
-			'timeout' => 120,
-			'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
-		] );
+		$response = wp_remote_post(
+			trailingslashit( $this->gateway->get_gateway_url() ) . $route,
+			array(
+				'body'       => $data,
+				'timeout'    => 120,
+				'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+			)
+		);
 
 		$this->verify_response_has_value( $response );
 
 		$array_response = $this->parse_response( $response );
 
-		if ( isset( $settings[self::SETTINGS_HASH_FIELD] ) ) {
-			if ( $array_response[$settings[self::SETTINGS_RETURN_CODE_FIELD]] === self::RESPONSE_TYPE_OK ) {
+		if ( isset( $settings[ self::SETTINGS_HASH_FIELD ] ) ) {
+			if ( $array_response[ $settings[ self::SETTINGS_RETURN_CODE_FIELD ] ] === self::RESPONSE_TYPE_OK ) {
 				$this->verify_response_hash(
 					$array_response,
-					$settings[self::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH],
-					$settings[self::SETTINGS_HASH_FIELD]
+					$settings[ self::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH ],
+					$settings[ self::SETTINGS_HASH_FIELD ]
 				);
 			}
 		}
@@ -144,23 +145,26 @@ class WC_Svea_Api_Request_Handler {
 	 * Get request to Svea payment api without hashing
 	 *
 	 * @param string $route Route.
-	 * @param array $data Data to post.
-	 * @param array $settings Settings for handling post request creation and result validation.
+	 * @param array  $data Data to post.
+	 * @param array  $settings Settings for handling post request creation and result validation.
 	 *
 	 * @since 2.4.2
 	 *
 	 * @return array
 	 */
-	public function get( $route, $data, $settings = [] ) {
+	public function get( $route, $data, $settings = array() ) {
 		$request_url = add_query_arg(
 			$data,
 			trailingslashit( $this->gateway->get_gateway_url() ) . $route
 		);
 
-		$response = wp_remote_get( $request_url, [
-			'timeout' => 120,
-			'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
-		] );
+		$response = wp_remote_get(
+			$request_url,
+			array(
+				'timeout'    => 120,
+				'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+			)
+		);
 
 		$this->verify_response_has_value( $response );
 
@@ -169,7 +173,7 @@ class WC_Svea_Api_Request_Handler {
 
 	/**
 	 * Generates a hash based on data.
-	 * 
+	 *
 	 * @param array $data Data.
 	 * @param array $hash_fields Fields to use to generate hash.
 	 *
@@ -179,11 +183,11 @@ class WC_Svea_Api_Request_Handler {
 	 */
 	private function get_hash( $data, $hash_fields ) {
 
-		$hash_data = [];
+		$hash_data = array();
 
 		foreach ( $hash_fields as $field ) {
-			if ( isset( $data[$field] ) ) {
-				$hash_data[$field] = $data[$field];
+			if ( isset( $data[ $field ] ) ) {
+				$hash_data[ $field ] = $data[ $field ];
 			}
 		}
 
@@ -231,7 +235,7 @@ class WC_Svea_Api_Request_Handler {
 
 	/**
 	 * Verifies that the response's hash is valid.
-	 * 
+	 *
 	 * @param array $response Response.
 	 *
 	 * @since 2.1.2
@@ -243,50 +247,50 @@ class WC_Svea_Api_Request_Handler {
 			$fields_included_in_hash
 		);
 
-		if ( $hash_of_response !== $response[$hash_field] ) {
+		if ( $hash_of_response !== $response[ $hash_field ] ) {
 
 			$message = 'The authenticity of the answer could not be verified. '
 				. 'Hashes did not match.';
 
-			throw new WC_Gateway_Maksuturva_Exception($message);
+			throw new WC_Gateway_Maksuturva_Exception( $message );
 		}
 	}
 
-    /**
-     * Get payment plan params from Svea
-     *
-     * @since 2.6.1
-     *
-     * @return array
-     */
-    public function get_payment_plan_params() {
-	    $cache_key = 'svea_payment_plan_params';
-	    $cached    = get_transient( $cache_key );
+	/**
+	 * Get payment plan params from Svea
+	 *
+	 * @since 2.6.1
+	 *
+	 * @return array
+	 */
+	public function get_payment_plan_params() {
+		$cache_key = 'svea_payment_plan_params';
+		$cached    = get_transient( $cache_key );
 
-	    if ( $cached ) {
-		    return $cached;
-	    }
+		if ( $cached ) {
+			return $cached;
+		}
 
-	    $route       = 'GetSveaPaymentPlanParams.pmt';
-	    $payment_api = $this->gateway->get_gateway_url();
+		$route       = 'GetSveaPaymentPlanParams.pmt';
+		$payment_api = $this->gateway->get_gateway_url();
 
-	    $request_url = add_query_arg(
-		    [ 'gpp_sellerid' => $this->gateway->get_seller_id() ],
-		    trailingslashit( $payment_api ) . $route
-	    );
+		$request_url = add_query_arg(
+			array( 'gpp_sellerid' => $this->gateway->get_seller_id() ),
+			trailingslashit( $payment_api ) . $route
+		);
 
-	    $response = wp_remote_get( $request_url );
+		$response = wp_remote_get( $request_url );
 
-	    if ( wp_remote_retrieve_response_code( $response ) === 200 ) {
-		    $body = json_decode( wp_remote_retrieve_body( $response ), true );
+		if ( wp_remote_retrieve_response_code( $response ) === 200 ) {
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		    if ( isset( $body["campaigns"] ) ) {
-			    set_transient( $cache_key, $body, MINUTE_IN_SECONDS * 15 );
+			if ( isset( $body['campaigns'] ) ) {
+				set_transient( $cache_key, $body, MINUTE_IN_SECONDS * 15 );
 
-			    return $body;
-		    }
-	    }
+				return $body;
+			}
+		}
 
-	    return [];
-    }
+		return array();
+	}
 }

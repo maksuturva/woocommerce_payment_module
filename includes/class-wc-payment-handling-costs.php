@@ -18,11 +18,9 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-
-namespace SveaPaymentGateway\includes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -49,9 +47,9 @@ class WC_Payment_Handling_Costs {
 
 	/**
 	 * WC_Payment_Handling_Costs constructor.
-	 * 
+	 *
 	 * @param WC_Gateway_Maksuturva $gateway The gateway.
-	 * 
+	 *
 	 * @since 2.1.3
 	 */
 	public function __construct( $gateway ) {
@@ -60,30 +58,30 @@ class WC_Payment_Handling_Costs {
 
 	/**
 	 * Get handling costs by payment method
-	 * 
+	 *
 	 * @return array
-	 * 
+	 *
 	 * @since 2.1.3
 	 */
 	public function get_handling_costs_by_payment_method() {
 		return get_option(
 			'payment_method_handling_costs',
-			[
-				[
+			array(
+				array(
 					'payment_method_type'  => $this->gateway->get_option( 'payment_method_type' ),
-					'handling_cost_amount' => $this->gateway->get_option( 'handling_cost_amount' )
-				]
-			]
+					'handling_cost_amount' => $this->gateway->get_option( 'handling_cost_amount' ),
+				),
+			)
 		);
 	}
 
 	/**
 	 * Get payment method handling cost
-	 * 
+	 *
 	 * @param string $payment_method_type The payment method type.
 	 *
 	 * @return int
-	 * 
+	 *
 	 * @since 2.1.3
 	 */
 	public function get_payment_method_handling_cost( $payment_method_type ) {
@@ -111,17 +109,17 @@ class WC_Payment_Handling_Costs {
 			return;
 		}
 
-		$gateways_with_handling_costs = [
+		$gateways_with_handling_costs = array(
 			WC_Gateway_Svea_Credit_Card_And_Mobile::class,
 			WC_Gateway_Svea_Invoice_And_Hire_Purchase::class,
 			WC_Gateway_Svea_Online_Bank_Payments::class,
 			WC_Gateway_Svea_Other_Payments::class,
 			WC_Gateway_Svea_Estonia_Payments::class,
 			WC_Gateway_Svea_Collated::class,
-		];
+		);
 
 		$chosen_gateway = WC()->session->get( 'chosen_payment_method' );
-		if ( !in_array( $chosen_gateway, $gateways_with_handling_costs ) ) {
+		if ( ! in_array( $chosen_gateway, $gateways_with_handling_costs ) ) {
 			return;
 		}
 
@@ -141,11 +139,11 @@ class WC_Payment_Handling_Costs {
 
 	/**
 	 * Get payment method base cost
-	 * 
+	 *
 	 * @param string $payment_method_type The payment method type.
 	 *
 	 * @return int
-	 * 
+	 *
 	 * @since 2.1.3
 	 */
 	public function get_payment_method_handling_base_cost( $payment_method_type ) {
@@ -183,7 +181,7 @@ class WC_Payment_Handling_Costs {
 
 		$rate = 0;
 
-		foreach ( \WC_Tax::get_rates($tax_class) as $tax_rate ) {
+		foreach ( \WC_Tax::get_rates( $tax_class ) as $tax_rate ) {
 			$rate += $tax_rate['rate'];
 		}
 
@@ -192,20 +190,19 @@ class WC_Payment_Handling_Costs {
 
 	/**
 	 * Update payment handling fee
-	 * 
+	 *
 	 * @param \WC_Order $order The order.
-	 * 
+	 *
 	 * @since 2.1.3
 	 */
 	public function update_payment_handling_cost_fee( $order ) {
 
 		$payment_handling_cost_fee = $this->get_payment_method_handling_cost_without_tax(
-			$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
+			$_GET[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ]
 		);
 
 		if ( $payment_handling_cost_fee === null ) {
-			foreach ( $order->get_fees() as $fee )
-			{
+			foreach ( $order->get_fees() as $fee ) {
 				if ( $fee['name'] === __( 'Payment handling fee', 'wc-maksuturva' ) ) {
 					$fee['total'] = 0;
 					$order->calculate_totals();
@@ -218,15 +215,14 @@ class WC_Payment_Handling_Costs {
 
 		$fee_already_exists = false;
 
-		foreach ( $order->get_fees() as $fee )
-		{
+		foreach ( $order->get_fees() as $fee ) {
 			if ( $fee['name'] === __( 'Payment handling fee', 'wc-maksuturva' ) ) {
-				$fee['total'] = $payment_handling_cost_fee;
+				$fee['total']       = $payment_handling_cost_fee;
 				$fee_already_exists = true;
 			}
 		}
 
-		if ( !$fee_already_exists ) {
+		if ( ! $fee_already_exists ) {
 			$fee          = new \stdClass();
 			$fee->name    = __( 'Payment handling fee', 'wc-maksuturva' );
 			$fee->amount  = $payment_handling_cost_fee;
@@ -239,11 +235,11 @@ class WC_Payment_Handling_Costs {
 
 	/**
 	 * Get payment method handling cost without tax
-	 * 
+	 *
 	 * @param string $payment_method_type The payment method type.
 	 *
 	 * @return int
-	 * 
+	 *
 	 * @since 2.1.3
 	 */
 	private function get_payment_method_handling_cost_without_tax( $payment_method_type ) {
@@ -269,19 +265,19 @@ class WC_Payment_Handling_Costs {
 	 */
 	private function get_payment_method_select_id() {
 
-		if ( isset( $_POST['post_data']) ) {
+		if ( isset( $_POST['post_data'] ) ) {
 
-			$post_data_array = [];
+			$post_data_array  = array();
 			$post_data_string = $_POST['post_data'];
 			parse_str( $post_data_string, $post_data_array );
 
-			if ( isset( $post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
-				return $post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+			if ( isset( $post_data_array[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
+				return $post_data_array[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ];
 			}
 		}
 
-		if ( isset ( $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID] ) ) {
-			return $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+		if ( isset( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
+			return $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ];
 		}
 
 		return null;

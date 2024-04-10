@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Variables defined.
  *
- * @var SveaPaymentGateway\includes\WC_Gateway_Maksuturva $this The context from where this template was called from.
+ * @var WC_Gateway_Maksuturva $this The context from where this template was called from.
  *
  * @since 2.0.0
  */
