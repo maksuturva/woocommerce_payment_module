@@ -1,5 +1,8 @@
 ## Changelog
 
+### 2.6.4 - [Unreleased]
+* 264592: Remove double slash from request URL
+
 ### 2.6.3 - 2024-04-15
 * 263599: Reduce payment method API calls
 * 262608: Apply PHPCBF fixes
