@@ -52,7 +52,7 @@ class WC_Payment_Method_Select {
 	 *
 	 * @var string ROUTE_ADD_DELIVERY_INFO
 	 */
-	private const ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS = '/GetPaymentMethods.pmt';
+	private const ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS = 'GetPaymentMethods.pmt';
 
 	/**
 	 * Gateway.
