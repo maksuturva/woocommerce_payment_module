@@ -942,6 +942,8 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			);
 		}
 
+		$res_body = wp_remote_retrieve_body( $res );
+
 		// We will not rely on xml parsing - instead,
 		// the fields are going to be collected by means of regular expression.
 		$parsed_response = array();
@@ -969,7 +971,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_hash',
 		);
 		foreach ( $response_fields as $field ) {
-			preg_match( "/<$field>(.*)?<\/$field>/i", $res, $matches );
+			preg_match( "/<$field>(.*)?<\/$field>/i", $res_body, $matches );
 			if ( 2 === count( $matches ) ) {
 				$parsed_response[ $field ] = $matches[1];
 			}
