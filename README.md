@@ -1,38 +1,26 @@
-# Svea Payments for WooCommerce
-**Contributors:** Svea Payments  
-**Tags:** maksuturva, payment gateway, svea, svea payments  
-**Requires at least:** 6.0    
-**Tested up to:** 6.3       
-**Stable tag:** 2.6.5                    
-**WC requires at least:** 7.0  
-**WC tested up to:** 8.8.2                   
-**License:** LGPL v. 2.1 or later  
-**License URI:** https://www.gnu.org/licenses/lgpl-2.1.html  
+# Payment Module for WooCommerce
 
-Svea Payments payment module for WooCommerce.
+Contributors: Svea Payments Oy and Svea Bank AB, filial i Finland  
+Tags: svea, payment gateway, finland  
 
-For WooCommerce versions >8.3, see Docs for new feature compatibility.
+# System requirements
 
-## Description
+* Requires at least: 6.0    
+* Tested up to: 6.3       
+* Stable tag: 2.6.5                    
+* WC requires at least: 7.0  
+* WC tested up to: 8.8.2                   
 
-Copyright (C) 2016-2024 Svea Development Oy
+  There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
 
-This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later
-version. [GNU LGPL v. 2.1 @gnu.org] (https://www.gnu.org/licenses/lgpl-2.1.html)
+  For WooCommerce versions >8.3, see Docs for new feature compatibility.
 
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
-more details.
+# Documentation
 
-> Contact information:
-Svea Payments Oy
-Mechelininkatu 1a
-00180 Helsinki
-Finland
-e-mail: info.payments@svea.fi
+* Changelog: [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/master/CHANGELOG.md)
+* Installation and administration guide: [docs/Svea_Payment_Gateway_Manual.pdf](https://github.com/maksuturva/woocommerce_payment_module/blob/master/docs/Svea_Payment_Gateway_Manual.pdf)
 
-Svea Development Oy, hereby disclaims all copyright interest in the library 'maksuturva-for-woocommerce'
-written for Svea Payments Oy
+# Support
 
-[https://www.sveapayments.fi](https://www.sveapayments.fi/)
+For General support, please contant info.payments@svea.fi    
+For Technical support, please contact support.payments@svea.fi
