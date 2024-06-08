@@ -206,13 +206,15 @@ class WC_Svea_Refund_Handler {
 
 		$this->verify_amount_has_value( $amount );
 
+		$refund_type = $this->order->get_total() == $this->order->get_total_refunded()
+			? self::CANCEL_TYPE_FULL_REFUND
+			: self::CANCEL_TYPE_PARTIAL_REFUND;
+
 		$cancel_response = $this->post_to_svea(
 			$amount,
 			$reason,
 			self::ACTION_CANCEL,
-			$amount === $this->order->get_total()
-				? self::CANCEL_TYPE_FULL_REFUND
-				: self::CANCEL_TYPE_PARTIAL_REFUND
+			$refund_type
 		);
 
 		$return_code = $cancel_response['pmtc_returncode'];
