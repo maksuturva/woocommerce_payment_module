@@ -1,6 +1,7 @@
 ## Changelog
 
 ### 2.6.5 -
+* Fixed strtime warning in status query
 
 
 ### 2.6.4 - 2024-04-21
