@@ -206,6 +206,7 @@ class WC_Svea_Refund_Handler {
 
 		$this->verify_amount_has_value( $amount );
 
+		error_log("##### REFUND " . print_r($amount, true). ", " . print_r($this->order->get_total(), true));
 		$cancel_response = $this->post_to_svea(
 			$amount,
 			$reason,
