@@ -1,8 +1,8 @@
 ## Changelog
 
-### 2.6.5 -
-* Fixed strtime warning in status query
-
+### 2.6.5 - 2024-06-08
+* Fixed a strtime warning in the status query
+* Fixed logic for checking amount if the refund is full or partial refund
 
 ### 2.6.4 - 2024-04-21
 * 256062: Fetch response body before parsing.

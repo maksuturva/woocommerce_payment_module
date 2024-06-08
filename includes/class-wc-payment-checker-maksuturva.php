@@ -255,10 +255,15 @@ class WC_Payment_Checker_Maksuturva {
 		$now_time = strtotime( date( 'Y-m-d H:i:s' ) );
 
 		$create_diff = $now_time - strtotime( $payment_date_added );
-		/* if there is no 'updated date', so do status query if order is created max 7 days ago */
-		if ( !empty( $payment_date_updated ) && $this->in_range( $create_diff, 0, 168 * 3600 ) ) {
-			return true;
+		/* if there is no 'updated date' set already, then do status query if order is created max 7 days ago */
+		if ( empty( $payment_date_updated )) {
+			if ( $this->in_range( $create_diff, 0, 168 * 3600 ) ) {
+				return true;
+			} else {
+				return false;
+			}
 		}
+		// payment date updated is set, so continue rule check
 		$update_diff = $now_time - strtotime( $payment_date_updated );
 
 		$checkrule = 0;

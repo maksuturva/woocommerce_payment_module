@@ -1,3 +1,3 @@
-### 2.6.4 - 2024-04-21
-* 256062: Fetch response body before parsing.
-* 264592: Remove double slash from request URL
+### 2.6.5 - 2024-06-08
+* Fixed a strtime warning in the status query
+* Fixed logic for checking amount if the refund is full or partial refund
