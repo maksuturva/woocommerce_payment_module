@@ -219,7 +219,7 @@ class WC_Svea_Refund_Handler {
 			);
 		} catch(Exception $e) {
 			wc_maksuturva_log( "Refund action failed. " . $e->getMessage() );
-			throw new WC_Gateway_Maksuturva_Exception("Communication error. Refund action to Svea Payments failed.");
+			throw new WC_Gateway_Maksuturva_Exception("The refund action to Svea Payments failed due communication error.");
 		}
 
 		$return_code = $cancel_response['pmtc_returncode'];
