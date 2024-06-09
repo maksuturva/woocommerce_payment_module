@@ -210,12 +210,17 @@ class WC_Svea_Refund_Handler {
 			? self::CANCEL_TYPE_FULL_REFUND
 			: self::CANCEL_TYPE_PARTIAL_REFUND;
 
-		$cancel_response = $this->post_to_svea(
-			$amount,
-			$reason,
-			self::ACTION_CANCEL,
-			$refund_type
-		);
+		try {
+			$cancel_response = $this->post_to_svea(
+				$amount,
+				$reason,
+				self::ACTION_CANCEL,
+				$refund_type
+			);
+		} catch(Exception $e) {
+			wc_maksuturva_log( "Unable to proceed with the refund action. A technical problem with API call: " . $e->getMessage() );
+			throw new WC_Gateway_Maksuturva_Exception("API request to Svea Payments failed.");
+		}
 
 		$return_code = $cancel_response['pmtc_returncode'];
 		$return_text = $cancel_response['pmtc_returntext'];
