@@ -218,8 +218,8 @@ class WC_Svea_Refund_Handler {
 				$refund_type
 			);
 		} catch(Exception $e) {
-			wc_maksuturva_log( "Unable to proceed with the refund action. A technical problem with API call: " . $e->getMessage() );
-			throw new WC_Gateway_Maksuturva_Exception("API request to Svea Payments failed.");
+			wc_maksuturva_log( "Refund action failed. " . $e->getMessage() );
+			throw new WC_Gateway_Maksuturva_Exception("Communication error. Refund action to Svea Payments failed.");
 		}
 
 		$return_code = $cancel_response['pmtc_returncode'];
