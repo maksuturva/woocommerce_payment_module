@@ -1,5 +1,8 @@
 ## Changelog
 
+### 2.6.6 - 
+* Fixed the refund not to be completed when there is communication problems with Svea API
+
 ### 2.6.5 - 2024-06-08
 * Fixed a strtime warning in the status query
 * Fixed logic for checking amount if the refund is full or partial refund
