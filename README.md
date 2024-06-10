@@ -15,6 +15,14 @@ Tags: svea, payment gateway, finland
 
   For WooCommerce versions >8.3, see Docs for new feature compatibility.
 
+# Features
+
+* All Finnish payment methods: bank payments, cards, mobile payments, Svea Invoice, Svea Part Payment and Svea B2B Invoice
+* Customizable layout at checkout
+* Refunds
+* Svea's part payment calculator
+* Delayed capture
+  
 # Documentation
 
 * Changelog: [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/master/CHANGELOG.md)
