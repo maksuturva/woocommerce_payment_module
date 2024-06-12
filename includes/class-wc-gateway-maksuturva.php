@@ -945,7 +945,10 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 */
 	protected function order_cancel( $order, $payment ) {
 		if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_CANCELLED ) ) {
-			$order->cancel_order( __( 'Cancellation from Svea received.', 'wc-maksuturva' ) );
+			$order->update_status(
+				WC_Payment_Maksuturva::STATUS_CANCELLED,
+				__( 'Cancellation from Svea received.', 'wc-maksuturva' )
+			);
 		}
 
 		if ( ! $payment->is_cancelled() ) {
