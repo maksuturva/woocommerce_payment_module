@@ -1012,6 +1012,13 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			return;
 		}
 
+		$order   = wc_get_order( $order_id );
+		$payment = new WC_Payment_Maksuturva( $order->get_id() );
+
+		if ( empty( $payment->get_payment_id() ) ) {
+			return;
+		}
+
 		$option = $this->get_option(
 			'maksuturva_send_delivery_information_status'
 		);
@@ -1029,10 +1036,8 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 			if ( ! empty( $selectedPayments ) ) {
 				$selectedPaymentsArray = explode( ',', str_ireplace( ' ', '', $selectedPayments ) );
-				$order                 = wc_get_order( $order_id );
 
 				if ( ! empty( $order ) && ! empty( $order->get_payment_method() ) ) {
-					$payment       = new WC_Payment_Maksuturva( $order->get_id() );
 					$paymentMethod = $payment->get_payment_method();
 
 					if ( ! empty( $paymentMethod ) && ! in_array( $paymentMethod, $selectedPaymentsArray ) ) {
