@@ -4,6 +4,7 @@
 * 269041: Prevent redundant delivery info requests
 * 264329: Replace deprecated cancel_order method
 * Fixed the refund not to be completed when there is communication problems with Svea API
+* Fixed addDeliveryInfo event to fire only once per status change
 
 ### 2.6.5 - 2024-06-08
 * Fixed a strtime warning in the status query

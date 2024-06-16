@@ -1018,12 +1018,21 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		if ( empty( $payment->get_payment_id() ) ) {
 			return;
 		}
+	
+		if ( did_action( 'woocommerce_order_status_changed' ) > 1 ) {
+			return;
+		}
 
 		$option = $this->get_option(
 			'maksuturva_send_delivery_information_status'
 		);
 
 		if ( ! is_string( $option ) ) {
+			return;
+		}
+
+		// addDelivery info already triggered, skip backend call
+		if ( $order->get_meta( '_svea_add_deliveryinfo_triggered' ) ) {
 			return;
 		}
 
@@ -1045,6 +1054,10 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 					}
 				}
 			}
+
+			// use meta info to trigger this function only once per status change
+			$order->update_meta_data( '_svea_add_deliveryinfo_triggered', 'yes' );
+			$order->save();
 
 			$deliveryHandler = new WC_Svea_Delivery_Handler( $this, $order_id );
 			$deliveryHandler->send_delivery_info();
