@@ -6,9 +6,9 @@ Tags: svea, payment gateway, finland
 # System requirements
 
 * Requires at least: 6.0    
-* Tested up to: 6.3       
-* Stable tag: 2.6.6                    
-* WC requires at least: 7.0  
+* Tested up to: 6.5.4         
+* Stable tag: 2.6.7                      
+* WC requires at least: 8.0  
 * WC tested up to: 8.9.2                   
 
   There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
@@ -20,6 +20,7 @@ Tags: svea, payment gateway, finland
 * All Finnish payment methods: bank payments, cards, mobile payments, Svea Invoice, Svea Part Payment and Svea B2B Invoice
 * Customizable layout at checkout
 * Refunds
+* Send delivery info
 * Svea's part payment calculator
 * Delayed capture
   

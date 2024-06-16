@@ -1,5 +1,8 @@
 ## Changelog
 
+### 2.6.7 - 
+
+
 ### 2.6.6 - 2024-06-16
 * 269041: Prevent redundant delivery info requests
 * 264329: Replace deprecated cancel_order method
