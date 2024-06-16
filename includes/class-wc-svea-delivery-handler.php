@@ -44,7 +44,7 @@ class WC_Svea_Delivery_Handler {
 	 *
 	 * @since 2.1.2
 	 */
-	private const ROUTE_ADD_DELIVERY_INFO = '/addDeliveryInfo.pmt';
+	private const ROUTE_ADD_DELIVERY_INFO = 'addDeliveryInfo.pmt';
 
 	/**
 	 * Gateway.
