@@ -174,13 +174,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	const EXCEPTION_CODE_INVALID_ITEM = '05';
 
 	/**
-	 * Curl not installed.
-	 *
-	 * @var string EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED
-	 */
-	const EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED = '06';
-
-	/**
 	 * Hash don't match.
 	 *
 	 * @var string EXCEPTION_CODE_HASHES_DONT_MATCH
@@ -896,7 +889,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 * @since 2.0.0
 	 *
 	 * @return array|bool
-	 * @throws WC_Gateway_Maksuturva_Exception If curl not found, or failure to communicate with Svea.
+	 * @throws WC_Gateway_Maksuturva_Exception If failure to communicate with Svea.
 	 */
 	public function status_query( $data = array() ) {
 		$default_fields = array(
@@ -1029,55 +1022,6 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		// Return the response - verified.
 		return $parsed_response;
 	}
-
-	/**
-	 *
-	 * @since 2.4.2
-	 */
-
-	/*
-	public function diagnostic_request() {
-		if ( ! function_exists( 'curl_init' ) ) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'cURL is needed in order to communicate with the Svea Payments API. Check your PHP installation.',
-				self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED
-			);
-		}
-		ob_start () ;
-		phpinfo (INFO_MODULES) ;
-		$infophp = ob_get_contents () ;
-		ob_end_clean () ;
-		//TODO: Sanitize
-
-		error_log("Svea Payment module diagnostics data: " . $infophp);
-
-		$diagnostics_data = array(
-			'diag_version'       => '0001',
-			'diag_sellerid'      => $this -> seller_id,
-			'diag_phpinfo'       => $infophp,
-		);
-
-		// Now the request is made to maksuturva.
-		$request = curl_init( $this->base_url_module_diagnostics );
-		curl_setopt( $request, CURLOPT_HEADER, 0 );
-		curl_setopt( $request, CURLOPT_FRESH_CONNECT, 1 );
-		curl_setopt( $request, CURLOPT_FORBID_REUSE, 1 );
-		curl_setopt( $request, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $request, CURLOPT_POST, 1 );
-		curl_setopt( $request, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $request, CURLOPT_CONNECTTIMEOUT, 30 );
-		curl_setopt( $request, CURLOPT_USERAGENT, WC_Utils_Maksuturva::get_user_agent() );
-		curl_setopt( $request, CURLOPT_POSTFIELDS, $this->diagnostics_data );
-		$res = curl_exec( $request );
-
-		if ( false === $res ) {
-			throw new WC_Gateway_Maksuturva_Exception(
-				'Failed to communicate with Svea Payments API. Please check the network connection.'
-			);
-		}
-		curl_close( $request );
-	}
-	*/
 
 	/**
 	 * Get fields as an array.
