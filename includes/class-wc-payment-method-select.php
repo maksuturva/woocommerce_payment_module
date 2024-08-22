@@ -99,6 +99,7 @@ class WC_Payment_Method_Select {
 	public function initialize_payment_method_select( $payment_type, $price, $is_outbound_payment_enabled ) {
 
 		$payment_handling_costs_handler = new WC_Payment_Handling_Costs( $this->gateway );
+		$paymentMethodsFetchedSuccessfully = true;
 
 		$form_params = array(
 			'currency_symbol'               => get_woocommerce_currency_symbol(),
@@ -118,6 +119,12 @@ class WC_Payment_Method_Select {
 				$collated_payment_methods = $this->get_payment_type_payment_methods( $payment_type, $price );
 
 				foreach ( $collated_payment_methods as $payment_method ) {
+					if (empty($payment_method['code'])) {
+						$paymentMethodsFetchedSuccessfully = false;
+
+						continue;
+					}
+
 					if ( in_array( $payment_method['code'], explode( ',', $this->gateway->get_option( 'collated_group1_methods', '' ) ) ) ) {
 						$group_methods['group1'][] = $payment_method;
 					} elseif ( in_array( $payment_method['code'], explode( ',', $this->gateway->get_option( 'collated_group2_methods', '' ) ) ) ) {
@@ -145,7 +152,22 @@ class WC_Payment_Method_Select {
 					'methods' => $group_methods['group4'],
 				);
 			} else {
-				$form_params['payment_methods'] = $this->get_payment_type_payment_methods( $payment_type, $price );
+				$methods = $this->get_payment_type_payment_methods( $payment_type, $price );
+
+				if ( empty( $methods ) || isset( $methods['ERROR'] ) ) {
+					$paymentMethodsFetchedSuccessfully = false;
+				}
+
+				$form_params['payment_methods'] = $methods;
+			}
+
+			if ( ! $paymentMethodsFetchedSuccessfully ) {
+				$form_params['payment_methods'] = [];
+
+				$this->gateway->render(
+					'payment-method-error-form',
+					'frontend',
+				);
 			}
 
 			$form_params['terms'] = array(
@@ -189,6 +211,10 @@ class WC_Payment_Method_Select {
 
 		$available_payment_methods = $this->get_available_payment_methods( $price );
 
+		if ( isset( $available_payment_methods['ERROR'] ) ) {
+			return $available_payment_methods;
+		}
+
 		$payment_type_payment_methods = array(
 			'credit-card-and-mobile'    => array(),
 			'invoice-and-hire-purchase' => array(),
@@ -197,10 +223,6 @@ class WC_Payment_Method_Select {
 			'other-payments'            => array(),
 			'collated'                  => array(),
 		);
-
-		if ( isset( $available_payment_methods['ERROR'] ) ) {
-			return $payment_type_payment_methods;
-		}
 
 		if ( $payment_type == 'collated' ) {
 			foreach ( $available_payment_methods['paymentmethod'] as $key => $payment_method ) {
@@ -350,7 +372,9 @@ class WC_Payment_Method_Select {
 				$post_fields
 			);
 
-			set_transient( $cache_key, $result_methods, HOUR_IN_SECONDS * 4 );
+			if ( ! isset( $result_methods['ERROR'] ) ) {
+				set_transient( $cache_key, $result_methods, HOUR_IN_SECONDS * 4 );
+			}
 		}
 
 		/**

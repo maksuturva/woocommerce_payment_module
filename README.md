@@ -29,6 +29,10 @@ Tags: svea, payment gateway, finland
 * Changelog: [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/master/CHANGELOG.md)
 * Installation and administration guide: [docs/Svea_Payment_Gateway_Manual.pdf](https://github.com/maksuturva/woocommerce_payment_module/blob/master/docs/Svea_Payment_Gateway_Manual.pdf)
 
+## Filters
+
+* `svea_payment_gateway_payment_method_error_message` - Filter for changing the error message when payment method is not available.
+
 # Support
 
 For General support, please contant info.payments@svea.fi    
