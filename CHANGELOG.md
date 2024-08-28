@@ -1,7 +1,8 @@
 ## Changelog
 
-### 2.6.8 - 
+### 2.6.8 - 2024-08-28
 * 274258: Add instructions link to settings
+* 274259: Display error message when payment methods are not available
 
 ### 2.6.7 - 2024-06-25
 * 270005: Polylang for WooCommerce 1.9.5 compatibility

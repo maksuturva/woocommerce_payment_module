@@ -9,7 +9,7 @@ Tags: svea, payment gateway, finland
 * Tested up to: 6.6.1           
 * Stable tag: 2.6.8                        
 * WC requires at least: 8.0  
-* WC tested up to: 9.1.4                    
+* WC tested up to: 9.2.3                   
 
   There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
 
@@ -28,6 +28,10 @@ Tags: svea, payment gateway, finland
 
 * Changelog: [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/master/CHANGELOG.md)
 * Installation and administration guide: [docs/Svea_Payment_Gateway_Manual.pdf](https://github.com/maksuturva/woocommerce_payment_module/blob/master/docs/Svea_Payment_Gateway_Manual.pdf)
+
+## Filters
+
+* `svea_payment_gateway_payment_method_error_message` - Filter for changing the error message when payment method is not available.
 
 # Support
 
