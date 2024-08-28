@@ -99,6 +99,9 @@ msgstr "Svea Payments maksu"
 msgid "Account settings"
 msgstr "Tiliasetukset"
 
+msgid "Testing instructions"
+msgstr "Testausohjeet"
+
 #: includes/class-wc-gateway-admin-form-fields.php:114
 msgid "Seller Id"
 msgstr "Kauppiastunnus"

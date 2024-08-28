@@ -114,7 +114,15 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		$this->title              = $this->get_option( 'title' );
 		$this->description        = $this->get_option( 'description' );
 		$this->method_title       = __( 'Svea', 'wc-maksuturva' );
-		$this->method_description = __( 'Take payments via Svea.', 'wc-maksuturva' );
+		$this->method_description = sprintf(
+                '%s %s',
+                __( 'Take payments via Svea.', 'wc-maksuturva' ),
+                sprintf(
+                        '<a href="%s" target="_blank">%s</a>',
+                        'https://sveapayments.atlassian.net/wiki/spaces/DOCS/pages/1657014153/TESTING',
+                        __( 'Testing instructions', 'wc-maksuturva' )
+                )
+        );
 
 		$this->outbound_payment = $this->get_option( 'outbound_payment' );
 
