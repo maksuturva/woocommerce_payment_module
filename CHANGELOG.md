@@ -1,6 +1,6 @@
 ## Changelog
 
-### 2.6.8 - 
+### 2.6.8 - 2024-08-28
 * 274259: Display error message when payment methods are not available
 
 ### 2.6.7 - 2024-06-25
