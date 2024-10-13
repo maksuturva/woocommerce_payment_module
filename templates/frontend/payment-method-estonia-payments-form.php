@@ -40,13 +40,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<div>
+<div style="width: auto; display: block;">
 	<?php
 	foreach ( $payment_methods as $payment_method ) {
 		// only EEAC is accepted in this section.
 		if ( 'EEAC' === $payment_method['code'] ) {
 			?>
-		<div class="svea-payment-method-select" style="clear: both;">
+		<div class="svea-payment-method-select" style="clear: both; width: auto; display: block;">
 			<input
 				class="input-radio svea-payment-method-select-radio"
 				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
