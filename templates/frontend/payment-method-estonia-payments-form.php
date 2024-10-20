@@ -48,6 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 		<div class="svea-payment-method-select" style="clear: both; width: auto; display: block;">
 			<input
+				checked="checked" // This is the default payment method
 				class="input-radio svea-payment-method-select-radio"
 				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
 				name="<?php echo esc_attr( $payment_method_select_id ); ?>"
