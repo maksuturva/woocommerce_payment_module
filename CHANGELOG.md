@@ -2,6 +2,7 @@
 
 ### 2.6.10 - 2024-12-08
 * 285035: Add variable product support for part payment widget
+* 285126: Fix rare PHP error for formatting time when microseconds are all zero
 
 ### 2.6.9 - 2024-10-13
 * Estonian payment method list layout updated

@@ -901,7 +901,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 			'pmtq_return'        => '',
 			'pmtq_hashversion'   => $this->payment_data['pmt_hashversion'],
 			'pmtq_keygeneration' => $this->payment_data['pmt_keygeneration'],
-			'req_ts_ms'          => \DateTime::createFromFormat( 'U.u', microtime( true ) )->format( 'Y-m-d H:i:s:u' ),
+			'req_ts_ms'          => $this->build_req_ts_ms(),
 		);
 		// Overrides with user-defined fields.
 		$this->status_query_data = array_merge( $default_fields, $data );
@@ -1189,7 +1189,23 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 		}
 
 		$this->payment_data['server_info']     = WC_Utils_Maksuturva::get_user_agent();
-		$this->payment_data['req_ts_ms']       = \DateTime::createFromFormat( 'U.u', microtime( true ) )->format( 'Y-m-d H:i:s:u' );
+		$this->payment_data['req_ts_ms']       = $this->build_req_ts_ms();
 		$this->payment_data['pmt_hashversion'] = WC_Data_Hasher::get_hash_algorithm();
+	}
+
+	/***
+	 * Get request timestamp in milliseconds.
+	 * 
+	 * This is a fix for some PHP versions not handling zero milliseconds correctly.
+	 */
+	public function build_req_ts_ms() {
+		$now = \DateTime::createFromFormat( 'U.u', microtime( true ) );
+		if (!is_bool($now)) { // retry to get the time if the first attempt failed
+			$t = microtime(true);
+			$now = DateTime::createFromFormat('U.u', $t);
+		}
+
+		// we are optimistic that the above will work, so we can use the result
+		return $now->format( 'Y-m-d H:i:s:u' );
 	}
 }
