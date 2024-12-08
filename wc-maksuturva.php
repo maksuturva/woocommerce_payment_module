@@ -246,6 +246,7 @@ class WC_Maksuturva {
 	 * @since 2.6.10
 	 */
 	public function enqueue_scripts() {
+		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === 0 ) {
@@ -284,7 +285,6 @@ class WC_Maksuturva {
 
 	protected function part_payment_widget_callback( $current_location ) {
 		$this->load_class( 'wc_gateway_maksuturva' );
-
 		$gateway = new wc_gateway_maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === $current_location ) {
