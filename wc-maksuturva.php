@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.6.9       
+ * Version:     2.6.10       
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
  * Text Domain: wc-maksuturva
@@ -103,7 +103,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.6.9';
+	const VERSION = '2.6.10';
 
 	/**
 	 * Plugin DB version.
@@ -214,6 +214,7 @@ class WC_Maksuturva {
 			add_filter( 'plugin_action_links_' . $this->plugin_name, array( __CLASS__, 'maksuturva_action_links' ) );
 			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 			add_filter( 'cron_schedules', array( $this, 'register_cron_schedules' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 			// woocommerce changed hook for the wc_clear_cart_after_payment function
 			// https://github.com/woocommerce/woocommerce/commit/1be5e81860df97ea0d2efb9aed919480de7ac288
@@ -238,6 +239,38 @@ class WC_Maksuturva {
 		}
 	}
 
+	/**
+	 * Enqueue scripts.
+	 *
+	 * @return void
+	 * @since 2.6.10
+	 */
+	public function enqueue_scripts() {
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
+
+		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === 0 ) {
+			return;
+		}
+
+		if ( ! is_product() ) {
+			return;
+		}
+
+		global $post;
+
+		$product = wc_get_product($post->ID);
+		if ( $product && $product->is_type( 'variable' ) ) {
+			wp_enqueue_script(
+				'svea-part-payment-calculator-variable-product',
+				plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
+				array('jquery'),
+				time(),
+				true
+			);
+		}
+	}
+
 	public function svea_part_payment_widget_before_add_to_cart() {
 		$this->part_payment_widget_callback( 1 );
 	}
@@ -252,7 +285,6 @@ class WC_Maksuturva {
 
 	protected function part_payment_widget_callback( $current_location ) {
 		$this->load_class( 'wc_gateway_maksuturva' );
-
 		$gateway = new wc_gateway_maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === $current_location ) {

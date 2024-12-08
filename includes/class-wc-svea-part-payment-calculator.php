@@ -66,6 +66,11 @@ class WC_Svea_Part_Payment_Calculator {
 
 		$price = (float) wc_get_price_including_tax( $product );
 
+		if ( $product->is_type( 'variable' ) ) {
+			$variation_prices = $product->get_variation_prices( true );
+			$price = (float) max( $variation_prices['price'] );
+		}
+
 		if ( ! $price || ! $this->should_display_calculator( $price ) ) {
 			return;
 		}
@@ -85,12 +90,19 @@ class WC_Svea_Part_Payment_Calculator {
 	protected function include_script( $seller_id, $product ) {
 		$price_thresholds = $this->gateway->get_option( 'ppw_price_thresholds' );
 
+		if ( $product->is_type( 'variable' ) ) {
+			$variation_prices = $product->get_variation_prices( true );
+			$price            = (float) max( $variation_prices['price'] );
+		} else {
+			$price = floatval( wc_get_price_including_tax( $product ) );
+		}
+
 		$params = array(
 			'src'              => esc_url( 'https://payments.maksuturva.fi/tools/partpayment/partPayment.js' ),
 			'class'            => 'svea-pp-widget-part-payment',
 			'sellerid'         => $seller_id,
 			'locale'           => explode( '_', get_user_locale() )[0],
-			'price'            => floatval( wc_get_price_including_tax( $product ) ),
+			'price'            => $price,
 			'maksuturva-host'  => $this->get_script_attr( 'partpayment_widget_use_test', 'yes' ) ? 'https://test1.maksuturva.fi' : '',
 			'layout'           => $this->get_script_attr( 'partpayment_widget_mini', 'yes' ) ? 'mini' : '',
 			'campaign-text-fi' => $this->get_script_attr( 'ppw_campaign_text_fi' ),
@@ -169,6 +181,30 @@ class WC_Svea_Part_Payment_Calculator {
 		$gateway      = new WC_Gateway_Maksuturva();
 		$api          = new WC_Svea_Api_Request_Handler( $gateway );
 		$plans        = $api->get_payment_plan_params();
+
+		if (!empty($plans) && !empty($plans['campaigns'])) {
+			$min = $plans['campaigns'][0]['FromAmount'];
+			$max = $plans['campaigns'][0]['ToAmount'];
+
+			foreach ($plans['campaigns'] as $plan) {
+				if ($plan['FromAmount'] < $min) {
+					$min = $plan['FromAmount'];
+				}
+				if ($plan['ToAmount'] > $max) {
+					$max = $plan['ToAmount'];
+				}
+			}
+		}
+
+		wp_localize_script(
+			'svea-part-payment-calculator-variable-product',
+			'svea_ppc_vp_params',
+			[
+				'minThreshold' => empty($minThreshold) ? null : $minThreshold,
+				'plansMin' => empty($min) ? null : (float)$min,
+				'plansMax' => empty($max) ? null : (float)$max,
+			]
+		);
 
 		if ( empty( $minThreshold ) ) {
 			return $this->price_has_payment_plan_available( $price, $plans );
