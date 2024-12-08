@@ -214,7 +214,6 @@ class WC_Maksuturva {
 			add_filter( 'plugin_action_links_' . $this->plugin_name, array( __CLASS__, 'maksuturva_action_links' ) );
 			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 			add_filter( 'cron_schedules', array( $this, 'register_cron_schedules' ) );
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 			// woocommerce changed hook for the wc_clear_cart_after_payment function
 			// https://github.com/woocommerce/woocommerce/commit/1be5e81860df97ea0d2efb9aed919480de7ac288
@@ -236,37 +235,6 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'svea_part_payment_widget_after_add_to_cart_form' ) );
 		} catch ( \Exception $e ) {
 			wc_maksuturva_log( 'Error in Svea Payments module inititalization: ' . $e->getMessage() );
-		}
-	}
-
-	/**
-	 * Enqueue scripts.
-	 *
-	 * @return void
-	 * @since 2.6.10
-	 */
-	public function enqueue_scripts() {
-		$gateway = new wc_gateway_maksuturva();
-
-		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === 0 ) {
-			return;
-		}
-
-		if ( ! is_product() ) {
-			return;
-		}
-
-		global $post;
-
-		$product = wc_get_product($post->ID);
-		if ( $product && $product->is_type( 'variable' ) ) {
-			wp_enqueue_script(
-				'svea-part-payment-calculator-variable-product',
-				plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
-				array('jquery'),
-				time(),
-				true
-			);
 		}
 	}
 
