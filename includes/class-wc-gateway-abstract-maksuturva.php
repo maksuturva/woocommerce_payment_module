@@ -1200,7 +1200,7 @@ abstract class WC_Gateway_Abstract_Maksuturva {
 	 */
 	public function build_req_ts_ms() {
 		$now = \DateTime::createFromFormat( 'U.u', microtime( true ) );
-		if (!is_bool($now)) { // retry to get the time if the first attempt failed
+		if (is_bool($now)) { // retry to get the time if the first attempt failed
 			$t = microtime(true);
 			$now = DateTime::createFromFormat('U.u', $t);
 		}
