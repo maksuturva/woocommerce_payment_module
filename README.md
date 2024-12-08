@@ -7,7 +7,7 @@ Tags: svea, payment gateway, finland
 
 * Requires at least: 6.0    
 * Tested up to: 6.7.1               
-* Stable tag: 2.6.9                         
+* Stable tag: 2.6.10                           
 * WC requires at least: 8.0  
 * WC tested up to: 9.4.2                     
 
