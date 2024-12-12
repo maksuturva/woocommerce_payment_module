@@ -832,7 +832,19 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 				$this->order_fail( $order, $payment );
 				// wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
-				wp_redirect( $woocommerce->cart->get_cart_url() );
+
+				/**
+				 * Redirect URL for payment error.
+				 *
+				 * If the payment is returned with an error status, the default behavior is to
+				 * redirect the customer to the checkout page.
+				 *
+				 * @param string $error_url The URL to redirect the customer to.
+				 *
+				 * @since 2.6.11
+				 */
+				$error_url = apply_filters( 'svea_payment_gateway_payment_error_return_url', wc_get_checkout_url() );
+				wp_redirect( $error_url );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:

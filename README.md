@@ -32,6 +32,7 @@ Tags: svea, payment gateway, finland
 ## Filters
 
 * `svea_payment_gateway_payment_method_error_message` - Filter for changing the error message when payment method is not available.
+* `svea_payment_gateway_payment_error_return_url` - Filter for changing the return URL when payment is returned with error state.
 
 # Support
 
