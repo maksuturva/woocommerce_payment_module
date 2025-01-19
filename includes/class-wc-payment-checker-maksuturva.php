@@ -165,7 +165,7 @@ class WC_Payment_Checker_Maksuturva {
 						if ( ! $gateway->is_order_paid( $order ) ) {
 							$order->payment_complete( $payment->get_payment_id() );
 						}
-						wc_maksuturva_log( 'Payment for order ' . $payment->get_order_id() . ' is updated to as paid.' );
+						wc_maksuturva_log( 'Payment for order ' . $payment->get_order_id() . ' is paid.' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED:
@@ -176,12 +176,12 @@ class WC_Payment_Checker_Maksuturva {
 						// The payment was canceled in Svea
 						$payment->cancel();
 						$order->cancel_order();
-						wc_maksuturva_log( 'Payment for order ' . $payment->get_order_id() . ' is updated to cancelled status.' );
+						wc_maksuturva_log( 'Payment for order ' . $payment->get_order_id() . ' is cancelled.' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
 						$payment->update();
-						wc_maksuturva_log( 'Payment check for order ' . $payment->get_order_id() . ' failed, because status is not found. ' );
+						wc_maksuturva_log( 'No payment for order ' . $payment->get_order_id() . ' was found.' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
@@ -195,7 +195,7 @@ class WC_Payment_Checker_Maksuturva {
 					default:
 						// The payment is still waiting for confirmation, update date_update
 						$payment->update();
-						wc_maksuturva_log( 'Payment status for order ' . $payment->get_order_id() . ' cannot be confirmed yet and is waiting for a payment.' );
+						wc_maksuturva_log( 'Payment for order ' . $payment->get_order_id() . ' cannot be confirmed yet and is waiting for a payment.' );
 						break;
 				}
 			}

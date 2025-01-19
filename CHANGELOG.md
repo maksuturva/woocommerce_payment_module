@@ -1,6 +1,7 @@
 ## Changelog
 
 ### 2.6.12 - 
+* Updated payment status query log messages
 
 ### 2.6.11 - 2024-12-12
 * 285659: Redirect payments with error state back to the checkout page.
