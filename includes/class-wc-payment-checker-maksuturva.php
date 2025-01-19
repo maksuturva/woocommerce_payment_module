@@ -181,7 +181,7 @@ class WC_Payment_Checker_Maksuturva {
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
 						$payment->update();
-						wc_maksuturva_log( 'No payment for order ' . $payment->get_order_id() . ' was found.' );
+						wc_maksuturva_log( 'No paid payment for order ' . $payment->get_order_id() . ' was found.' );
 						break;
 
 					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
