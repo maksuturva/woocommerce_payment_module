@@ -1,4 +1,4 @@
-# Copyright (C) 2024 WooCommerce Svea Payments Gateway
+# Copyright (C) 2025 WooCommerce Svea Payments Gateway
 # This file is distributed under the same license as the WooCommerce Svea Payments Gateway package.
 msgid ""
 msgstr ""

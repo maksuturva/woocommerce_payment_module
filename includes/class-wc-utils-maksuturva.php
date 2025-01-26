@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 8.x
+ * Svea Payments Gateway Plugin for WooCommerce
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *

@@ -17,13 +17,13 @@
  * Tested up to: 6.7.1       
  * License:      LGPL2.1
  * WC requires at least: 8.0
- * WC tested up to: 9.5.1           
+ * WC tested up to: 9.6.0             
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce 8.x
+ * Svea Payments Gateway Plugin for WooCommerce
  * Plugin developed for Svea Payments Oy Development Oy
- * Last update: 08/28/2024
+ * Last update: 01/26/2025
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
