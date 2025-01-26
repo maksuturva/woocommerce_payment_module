@@ -1039,10 +1039,6 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			return;
 		}
 	
-		if ( did_action( 'woocommerce_order_status_changed' ) > 1 ) {
-			return;
-		}
-
 		$option = $this->get_option(
 			'maksuturva_send_delivery_information_status'
 		);
