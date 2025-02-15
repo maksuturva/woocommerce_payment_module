@@ -31,7 +31,7 @@ jobs:
           echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT          # <--- Set environment variable
 
       - name: Upload release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # v2
         with:
           repo_token: ${{ secrets.SVEA_RELEASE_TOKEN }}
           file: woocommerce_payment_module.zip
@@ -44,7 +44,7 @@ jobs:
             ${{ steps.read_release.outputs.RELEASE_BODY }}
 
       - name: Upload release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # v2
         with:
           repo_token: ${{ secrets.SVEA_RELEASE_TOKEN }}
           file: Svea_Payment_Gateway_Manual.pdf
