@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<div>
+<fieldset>
 	<?php
 	foreach ( $payment_methods as $payment_method ) {
 		?>
@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			/>
 		</div>
 	<?php } ?>
-</div>
+</fieldset>>
 
 <p>
 <?php

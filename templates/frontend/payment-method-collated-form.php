@@ -39,16 +39,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 ?>
 
-<div>
+<fieldset>
+
 	<?php
 	if ( ! empty( $method_group1['methods'] ) ) {
 		?>
-	<div class="svea-payment-collated-title">
-		<?php echo esc_html( $method_group1['title'] ); ?>
-	</div>
+		<legend class="svea-payment-collated-title">
+			<?php echo esc_html( $method_group1['title'] ); ?>
+		</legend>
+	
 		<?php
 		foreach ( $method_group1['methods'] as $payment_method ) {
-			?>
+		?>
 		<div class="svea-payment-method-select" style="clear: both;">
 			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
 				<img
@@ -78,9 +80,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	if ( ! empty( $method_group2['methods'] ) ) {
 		?>
-	<div class="svea-payment-collated-title">
+		<legend class="svea-payment-collated-title">
 			<?php echo esc_html( $method_group2['title'] ); ?>
-	</div>
+		</legend>
+
 		<?php
 		foreach ( $method_group2['methods'] as $payment_method ) {
 			?>
@@ -113,9 +116,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	if ( ! empty( $method_group3['methods'] ) ) {
 		?>
-	<div class="svea-payment-collated-title">
+		<legend class="svea-payment-collated-title">
 			<?php echo esc_html( $method_group3['title'] ); ?>
-	</div>
+		</legend>
+		
 		<?php
 		foreach ( $method_group3['methods'] as $payment_method ) {
 			?>
@@ -123,7 +127,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
 				<img
 					alt="<?php echo esc_attr( $payment_method['displayname'] ); ?>"
-					src="<?php echo esc_html( $payment_method['imageurl'] ); ?>"
+					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
 				/>
 			</label>
 			<?php
@@ -148,9 +152,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	if ( ! empty( $method_group4['methods'] ) ) {
 		?>
-	<div class="svea-payment-collated-title">
-			<?php echo wp_kses_post( $method_group4['title'] ); ?>
-	</div>
+		<legend class="svea-payment-collated-title">
+			<?php echo esc_html( $method_group4['title'] ); ?>
+		</legend>
+
 		<?php
 		foreach ( $method_group4['methods'] as $payment_method ) {
 			?>
@@ -181,7 +186,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 	}
 	?>
-</div>
+</fieldset>
 
 <p>
 <?php

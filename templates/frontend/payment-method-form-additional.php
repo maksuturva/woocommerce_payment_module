@@ -61,12 +61,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 </script>
 
 <style>
-	.payment_box.payment_method_WC_Gateway_Svea_Credit_Card_And_Mobile div,
-	.payment_box.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase div,
-	.payment_box.payment_method_WC_Gateway_Svea_Online_Bank_Payments div,
-	.payment_box.payment_method_WC_Gateway_Svea_Other_Payments div,
-	.payment_box.payment_method_WC_Gateway_Svea_Estonia_Payments div,
-	.payment_box.payment_method_WC_Gateway_Svea_Collated div {
+	.payment_box.payment_method_WC_Gateway_Svea_Credit_Card_And_Mobile fieldset,
+	.payment_box.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase fieldset,
+	.payment_box.payment_method_WC_Gateway_Svea_Online_Bank_Payments fieldset,
+	.payment_box.payment_method_WC_Gateway_Svea_Other_Payments fieldset,
+	.payment_box.payment_method_WC_Gateway_Svea_Estonia_Payments fieldset,
+	.payment_box.payment_method_WC_Gateway_Svea_Collated fieldset {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(100px, 30%));
 		grid-gap: 1rem;
@@ -127,6 +127,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		justify-content: flex-start;
 		grid-column: 1/-1;
 		font-weight: 600;
+		padding-bottom: 0em;
 	}
-	
+
 </style>
