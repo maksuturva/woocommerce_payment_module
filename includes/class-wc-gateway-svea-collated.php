@@ -50,7 +50,7 @@ class WC_Gateway_Svea_Collated extends WC_Gateway_Maksuturva {
 		/* translators: %s: URL */
 		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'wc-maksuturva' ), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
 		$this->title              = __( $collated_title, 'wc-maksuturva' );
-		$this->icon               = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
+		$this->icon               = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 	}
 
 	/**

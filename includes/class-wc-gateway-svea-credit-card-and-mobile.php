@@ -55,7 +55,7 @@ class WC_Gateway_Svea_Credit_Card_And_Mobile extends WC_Gateway_Maksuturva {
 		} else {
 			$this->title = __( 'Credit Card and Mobile', 'wc-maksuturva' );
 		}
-		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
+		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 	}
 
 	/**

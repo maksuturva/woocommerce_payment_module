@@ -127,7 +127,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
 				<img
 					alt="<?php echo esc_attr( $payment_method['displayname'] ); ?>"
-					src="<?php echo esc_html( $payment_method['imageurl'] ); ?>"
+					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
 				/>
 			</label>
 			<?php

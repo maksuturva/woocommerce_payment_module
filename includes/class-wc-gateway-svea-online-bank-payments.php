@@ -54,7 +54,7 @@ class WC_Gateway_Svea_Online_Bank_Payments extends WC_Gateway_Maksuturva {
 		} else {
 			$this->title = __( 'Online Bank Payments', 'wc-maksuturva' );
 		}
-		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
+		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 	}
 
 	/**
