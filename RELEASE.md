@@ -1,3 +1,2 @@
-### 2.6.12 - 2025-01-26
-* Updated payment status query log messages.
-* Fix to allow multiple orders delivered in the bulk action.
+### 2.6.13 - 2025-05-05
+* Update the payment checkout page HTML/CSS for web accessibility compliance.
