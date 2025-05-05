@@ -40,12 +40,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<div style="width: auto; display: block;">
+<fieldset style="width: auto; display: block;">
 	<?php
 	foreach ( $payment_methods as $payment_method ) {
 		// only EEAC is accepted in this section.
 		if ( 'EEAC' === $payment_method['code'] ) {
 			?>
+			
 		<div class="svea-payment-method-select" style="clear: both; width: auto; display: block;">
 			<input
 				checked="checked" // This is the default payment method
@@ -75,7 +76,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 	}
 	?>
-</div>
+</fieldset>
 
 <p>
 <?php
