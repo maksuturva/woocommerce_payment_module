@@ -255,6 +255,30 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			}
 		}
 
+		/* Support for PW WooCommerce Gift Cards */
+		if (class_exists('WC_Order_Item_PW_Gift_Card') && null !== $order->get_items('pw_gift_card')) {
+			$pw_giftcards = $order->get_items('pw_gift_card');
+			foreach ($pw_giftcards as $gift_card_item) {
+				if ($gift_card_item instanceof WC_Order_Item_PW_Gift_Card) {
+					if (method_exists($gift_card_item, 'get_amount') && method_exists($gift_card_item, 'get_card_number')) {
+						$pwamount = $gift_card_item->get_amount();
+						$pwcardnumber = $gift_card_item->get_card_number();
+						$gctext         = __('Gift Card', 'wc-maksuturva');
+						$payment_rows[] = array(
+							'pmt_row_name'               => $gctext . ' ' . $pwcardnumber,
+							'pmt_row_desc'               => '-',
+							'pmt_row_quantity'           => 1,
+							'pmt_row_deliverydate'       => date('d.m.Y'),
+							'pmt_row_price_gross'        => '-' . WC_Utils_Maksuturva::filter_price($pwamount),
+							'pmt_row_vat'                => '00,00',
+							'pmt_row_discountpercentage' => '00,00',
+							'pmt_row_type'               => 6,
+						);
+					}
+				}
+			}
+		}
+		
 		$payment_row_handling_cost = $this->create_payment_row_handling_cost_data( $payment_method_handling_cost );
 		if ( is_array( $payment_row_handling_cost ) ) {
 			$payment_rows[] = $payment_row_handling_cost;
