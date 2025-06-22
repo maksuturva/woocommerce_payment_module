@@ -1,5 +1,8 @@
 ## Changelog
 
+### 2.6.15 -
+* Fixed typo in Payment Part Calculator plans function
+
 ### 2.6.14 - 2025-06-16
 * Added support for PW WooCommerce Gift Cards plugin
 
