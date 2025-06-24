@@ -9,11 +9,11 @@ Tags: svea, payment gateway, finland
 * Tested up to: 6.7.1               
 * Stable tag: 2.6.14                             
 * WC requires at least: 8.0  
-* WC tested up to: 9.9.3                        
+* WC tested up to: 9.9.5                        
 
-  There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
+There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
 
-  For WooCommerce versions >8.3, see Docs for new feature compatibility.
+For WooCommerce versions >8.3, see Docs for new feature compatibility.
 
 # Features
 
