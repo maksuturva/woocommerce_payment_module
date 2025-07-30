@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			/>
 		</div>
 	<?php } ?>
-</fieldset>>
+</fieldset>
 
 <p>
 <?php
