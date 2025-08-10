@@ -315,7 +315,10 @@ class WC_Maksuturva {
 		$gateway = new wc_gateway_maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === $current_location ) {
-			$this->();
+			$this->load_class( 'WC_Gateway_Maksuturva' );
+			$this->load_class( 'WC_Svea_Part_Payment_Calculator' );
+			$calculator = new WC_Svea_Part_Payment_Calculator( $gateway );
+			$calculator->load( wc_get_product() );
 		}
 	}
 
@@ -332,7 +335,7 @@ class WC_Maksuturva {
 			$this->load_class( 'WC_Gateway_Maksuturva' );
 			$this->load_class( 'WC_Svea_Part_Payment_Calculator' );
 			$calculator = new WC_Svea_Part_Payment_Calculator( $gateway );
-			$calculator->load( wc_get_product() );
+			$calculator->load( null );
 		}
 	}
 

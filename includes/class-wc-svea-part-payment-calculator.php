@@ -57,7 +57,7 @@ class WC_Svea_Part_Payment_Calculator {
 	 * @return void
 	 * @since 2.6.3
 	 */
-	public function load( \WC_Product $product ) {
+	public function load( ?\WC_Product $product ) {
 		$seller_id = $this->gateway->get_option( 'maksuturva_sellerid' );
 
 		if ( !$seller_id ) {
