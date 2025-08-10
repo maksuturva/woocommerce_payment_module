@@ -60,22 +60,43 @@ class WC_Svea_Part_Payment_Calculator {
 	public function load( \WC_Product $product ) {
 		$seller_id = $this->gateway->get_option( 'maksuturva_sellerid' );
 
-		if ( ! $this->is_valid_product( $product ) || ! $seller_id ) {
+		if ( !$seller_id ) {
 			return;
 		}
 
-		$price = (float) wc_get_price_including_tax( $product );
+		if ( $this->is_valid_product( $product ) ) {
+			// product page
+			$price = (float) wc_get_price_including_tax( $product );
 
-		if ( $product->is_type( 'variable' ) ) {
-			$variation_prices = $product->get_variation_prices( true );
-			$price = (float) max( $variation_prices['price'] );
+			if ( $product->is_type( 'variable' ) ) {
+				$variation_prices = $product->get_variation_prices( true );
+				$price = (float) max( $variation_prices['price'] );
+			}
+
+			if ( ! $price || ! $this->should_display_calculator( $price ) ) {
+				return;
+			}
+
+			if ( $product->is_type( 'variable' ) ) {
+				$variation_prices = $product->get_variation_prices( true );
+				$price            = (float) max( $variation_prices['price'] );
+			} else {
+				$price = floatval( wc_get_price_including_tax( $product ) );
+			}
+
+			$this->include_script( $seller_id, $price );
+		} else {
+			// checkout page
+			
+			// price is checkout total
+			$price = (float) WC()->cart->get_total( 'edit' );
+
+			if ( ! $price || ! $this->should_display_calculator( $price ) ) {
+				return;
+			}
+
+			$this->include_script( $seller_id, $product );
 		}
-
-		if ( ! $price || ! $this->should_display_calculator( $price ) ) {
-			return;
-		}
-
-		$this->include_script( $seller_id, $product );
 	}
 
 	/**
@@ -87,15 +108,9 @@ class WC_Svea_Part_Payment_Calculator {
 	 * @return void
 	 * @since 2.6.3
 	 */
-	protected function include_script( $seller_id, $product ) {
+	protected function include_script( $seller_id, $price ) {
 		$price_thresholds = $this->gateway->get_option( 'ppw_price_thresholds' );
 
-		if ( $product->is_type( 'variable' ) ) {
-			$variation_prices = $product->get_variation_prices( true );
-			$price            = (float) max( $variation_prices['price'] );
-		} else {
-			$price = floatval( wc_get_price_including_tax( $product ) );
-		}
 
 		$params = array(
 			'src'              => esc_url( 'https://payments.maksuturva.fi/tools/partpayment/partPayment.js' ),

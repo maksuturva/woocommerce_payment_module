@@ -203,6 +203,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Select Svea Part Payment Widget location on product page.', 'wc-maksuturva' ),
 				'options'     => $this->get_widget_locations(),
 			),
+			'partpayment_widget_checkout_location'                 => array(
+				'type'        => 'select',
+				'title'       => __( 'Part Payment widget on Checkout page', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'default'     => '',
+				'description' => __( 'Select Svea Part Payment Widget location on checkout page.', 'wc-maksuturva' ),
+				'options'     => $this->get_widget_checkout_locations(),
+			),
 			'partpayment_widget_use_test'                 => array(
 				'type'        => 'checkbox',
 				'title'       => __( 'Use test environment for Part Payment widget API calls', 'wc-maksuturva' ),
@@ -468,12 +476,22 @@ class WC_Gateway_Admin_Form_Fields {
 	}
 
 	/**
-	 * Get list of possible locations for part payment widget
+	 * Get list of possible locations for part payment widget on product page
 	 *
 	 * @since 2.4.1
 	 */
 	public function get_widget_locations() {
 		$widget_locations = array( 'Disabled', 'Before add to cart quantity', 'After add to cart button', 'After add to cart form' );
+		return $widget_locations;
+	}
+
+	/**
+	 * Get list of possible locations for part payment widget on checkout page
+	 *
+	 * @since 2.5.16
+	 */
+	public function get_widget_checkout_locations() {
+		$widget_locations = array( 'Disabled', 'Before payment', 'After payment' );
 		return $widget_locations;
 	}
 

@@ -8,7 +8,7 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.6.15     
+ * Version:     2.6.16     
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
  * Text Domain: wc-maksuturva
@@ -234,6 +234,10 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_before_add_to_cart_quantity', array( $this, 'svea_part_payment_widget_before_add_to_cart' ) );
 			add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'svea_part_payment_widget_after_add_to_cart' ) );
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'svea_part_payment_widget_after_add_to_cart_form' ) );
+
+			// part payment widget hook on checkout page
+			add_action( 'woocommerce_review_order_before_payment', array( $this, 'svea_part_payment_widget_checkout' ) );
+
 		} catch ( \Exception $e ) {
 			wc_maksuturva_log( 'Error in Svea Payments module inititalization: ' . $e->getMessage() );
 		}
@@ -249,25 +253,44 @@ class WC_Maksuturva {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
 
-		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === 0 ) {
-			return;
+		// product page widget
+		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) !== 0 ) {
+			if ( ! is_product() ) {
+				return;
+			}
+
+			global $post;
+
+			$product = wc_get_product($post->ID);
+			if ( $product && $product->is_type( 'variable' ) ) {
+				wp_enqueue_script(
+					'svea-part-payment-calculator-variable-product',
+					plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
+					array('jquery'),
+					time(),
+					true
+				);
+			}
 		}
 
-		if ( ! is_product() ) {
-			return;
-		}
+		// checkout page widget
+		if ( (int) $gateway->get_option( 'partpayment_widget_checkout_location' ) !== 0 ) {
+			if ( ! is_checkout() ) {
+				return;
+			}
 
-		global $post;
+			global $post;
 
-		$product = wc_get_product($post->ID);
-		if ( $product && $product->is_type( 'variable' ) ) {
-			wp_enqueue_script(
-				'svea-part-payment-calculator-variable-product',
-				plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
-				array('jquery'),
-				time(),
-				true
-			);
+//			$product = wc_get_product($post->ID);
+//			if ( $product && $product->is_type( 'variable' ) ) {
+				wp_enqueue_script(
+					'svea-part-payment-calculator-variable-product',
+					plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
+					array('jquery'),
+					time(),
+					true
+				);
+//			}
 		}
 	}
 
@@ -283,12 +306,33 @@ class WC_Maksuturva {
 		$this->part_payment_widget_callback( 3 );
 	}
 
+	public function svea_part_payment_widget_checkout() {
+		$this->part_payment_checkout_widget_callback( 1 );
+	}
+
 	protected function part_payment_widget_callback( $current_location ) {
 		$this->load_class( 'wc_gateway_maksuturva' );
 		$gateway = new wc_gateway_maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === $current_location ) {
-			$this->svea_add_part_payment_widget();
+			$this->();
+		}
+	}
+
+	/***
+	 * Part payment widget callback for checkout page
+	 * 
+	 * @since 2.5.16
+	 */
+	protected function part_payment_checkout_widget_callback( $current_location ) {
+		$this->load_class( 'wc_gateway_maksuturva' );
+		$gateway = new wc_gateway_maksuturva();
+
+		if ( (int) $gateway->get_option( 'partpayment_widget_checkout_location' ) === $current_location ) {
+			$this->load_class( 'WC_Gateway_Maksuturva' );
+			$this->load_class( 'WC_Svea_Part_Payment_Calculator' );
+			$calculator = new WC_Svea_Part_Payment_Calculator( $gateway );
+			$calculator->load( wc_get_product() );
 		}
 	}
 
