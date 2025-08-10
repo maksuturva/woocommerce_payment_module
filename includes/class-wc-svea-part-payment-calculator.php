@@ -64,7 +64,7 @@ class WC_Svea_Part_Payment_Calculator {
 			return;
 		}
 
-		if ( $this->is_valid_product( $product ) ) {
+		if ( $product!=null && $this->is_valid_product( $product ) ) {
 			// product page
 			$price = (float) wc_get_price_including_tax( $product );
 
@@ -95,7 +95,7 @@ class WC_Svea_Part_Payment_Calculator {
 				return;
 			}
 
-			$this->include_script( $seller_id, $product );
+			$this->include_script( $seller_id, $price  );
 		}
 	}
 
