@@ -333,14 +333,20 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', 'wc-maksuturva' ),
 			),
+			// --- MODIFIED FIELD ---
 			'partpayment_widget_mini' => array(
-				'type'        => 'checkbox',
-				'title'       => __( 'Use mini-layout', 'wc-maksuturva' ),
-				'default'     => 'no',
+				'type'        => 'select',
+				'title'       => __( 'Widget Layout', 'wc-maksuturva' ),
+				'default'     => 'full',
 				'desc_tip'    => true,
-				'description' => __( 'Enables the compact mini layout for the part payment widget.', 'wc-maksuturva' ),
+				'description' => __( 'Select the layout for the part payment widget.', 'wc-maksuturva' ),
+				'options'     => array(
+					'full'   => __( 'Full', 'wc-maksuturva' ),
+					'mini'   => __( 'Mini', 'wc-maksuturva' ),
+					'button' => __( 'Button', 'wc-maksuturva' ),
+				),
 			),
-
+			
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
 				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
@@ -440,23 +446,24 @@ class WC_Gateway_Admin_Form_Fields {
 				'default'     => get_option( 'ppw_fallback_text_en', 'Fallback text EN' ),
 			),
 			'ppw_price_threshold_minimum' => array(
-				'type'        => 'text', // Use 'number' type if you want number-specific attributes
+				'type'        => 'text',
 				'title'       => __( 'Minimum Price Threshold', 'wc-maksuturva' ),
 				'desc_tip'    => true,
 				'description' => __( 'If empty, the minimum threshold is deduced from the payment plans returned by Svea. Enter a value to override.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_price_threshold_minimum', '' ),
-				'css'         => 'width:60px;', // Example to control width
+				'css'         => 'width:60px;',
 			),
 			'ppw_price_thresholds' => array(
 				'type'        => 'text',
 				'title'       => __( 'Price Thresholds', 'wc-maksuturva' ),
 				'desc_tip'    => true,
-				'description' => __( 'Set price thresholds, one per line, in the format: price, months (e.g., 300, 6).', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_price_thresholds', "300, 6\n1000, 12" ),
+				'description' => __( 'Set price thresholds in the format: [price, months], [price, months] etc.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_price_thresholds', '[300, 6], [1000, 12]' ),
 				'css'         => 'width:250px',
 			),
 		);
 	}
+
 
 	/**
 	 * Payment method handling cost table content
