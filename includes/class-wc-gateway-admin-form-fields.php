@@ -371,6 +371,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget border color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_border_color', '#CCEEF5' ),
+				'css'         => 'width:100px;',
 			),
 			'ppw_text_color' => array(
 				'type'        => 'color',
@@ -378,6 +379,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget text color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_text_color', '#00325C' ),
+				'css'         => 'width:100px;',
 			),
 			'ppw_highlight_color' => array(
 				'type'        => 'color',
@@ -385,6 +387,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget highlight color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_highlight_color', '#00325C' ),
+				'css'         => 'width:100px;',
 			),
 			'ppw_active_color' => array(
 				'type'        => 'color',
@@ -392,6 +395,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget active color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
+				'css'         => 'width:100px;',
 			),
 			'ppw_campaign_text_fi' => array(
 				'type'        => 'text',
