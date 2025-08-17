@@ -1,0 +1,17 @@
+/* Style the container for the settings group */
+h2.wc-settings-group-start {
+    margin-top: 2em !important;
+    padding: 15px !important;
+    background-color: #f9f9f9;
+    border: 1px solid #ccd0d4;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+}
+
+/* Style the table that immediately follows the title */
+h2.wc-settings-group-start + table.form-table {
+    margin-top: 0 !important;
+    border: 1px solid #ccd0d4;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+}

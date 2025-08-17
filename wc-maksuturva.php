@@ -215,6 +215,7 @@ class WC_Maksuturva {
 			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 			add_filter( 'cron_schedules', array( $this, 'register_cron_schedules' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 
 			// woocommerce changed hook for the wc_clear_cart_after_payment function
 			// https://github.com/woocommerce/woocommerce/commit/1be5e81860df97ea0d2efb9aed919480de7ac288
@@ -291,6 +292,25 @@ class WC_Maksuturva {
 					true
 				);
 //			}
+		}
+	}
+
+	/**
+	 * Enqueue admin scripts and styles for the settings page.
+	 */
+	public function enqueue_admin_styles($hook) {
+		// Only load on the WooCommerce settings pages
+		if ('woocommerce_page_wc-settings' !== $hook) {
+			return;
+		}
+
+		// Check if we are on your specific gateway's settings tab
+		if (isset($_GET['section']) && $_GET['section'] === 'your_gateway_id') {
+			wp_enqueue_style(
+				'my-gateway-admin-styles',
+				plugin_dir_url(__FILE__) . 'assets/css/admin-styles.css', // Adjust the path to your CSS file
+				array()
+			);
 		}
 	}
 
