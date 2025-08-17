@@ -333,6 +333,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', 'wc-maksuturva' ),
 			),
+			'partpayment_widget_mini' => array(
+				'type'        => 'checkbox',
+				'title'       => __( 'Use mini-layout', 'wc-maksuturva' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'description' => __( 'Enables the compact mini layout for the part payment widget.', 'wc-maksuturva' ),
+			),
+			
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
 				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
@@ -356,13 +364,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'default'     => '',
 				'description' => __( 'Select Svea Part Payment Widget location on checkout page.', 'wc-maksuturva' ),
 				'options'     => $this->get_widget_checkout_locations(),
-			),
-			'partpayment_widget_mini' => array(
-				'type'        => 'checkbox',
-				'title'       => __( 'Use mini-layout', 'wc-maksuturva' ),
-				'default'     => 'no',
-				'desc_tip'    => true,
-				'description' => __( 'Enables the compact mini layout for the part payment widget.', 'wc-maksuturva' ),
 			),
 			'ppw_border_color' => array(
 				'type'        => 'color',

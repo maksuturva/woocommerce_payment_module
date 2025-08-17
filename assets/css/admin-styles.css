@@ -1,17 +1,23 @@
-/* Style the container for the settings group */
+/* Style the title (top part of the bordered container) */
 h3.wc-settings-group-start {
     margin-top: 2em !important;
-    padding: 15px !important;
+    /* Increased left padding for 20px indentation */
+    padding: 15px 15px 15px 35px !important; 
     background-color: #f9f9f9;
-    border: 1px solid #ccd0d4;
+    /* Thicker 2px border */
+    border: 2px solid #ccd0d4; 
     border-bottom: none;
     border-radius: 4px 4px 0 0;
 }
 
-/* Style the table that immediately follows the title */
+/* Style the table (bottom part of the bordered container) */
 h3.wc-settings-group-start + table.form-table {
     margin-top: 0 !important;
-    border: 1px solid #ccd0d4;
+    /* Added 20px padding to indent all settings rows */
+    padding: 20px !important; 
+    box-sizing: border-box; /* Ensures padding is calculated correctly */
+    /* Thicker 2px border */
+    border: 2px solid #ccd0d4; 
     border-top: none;
     border-radius: 0 0 4px 4px;
 }
