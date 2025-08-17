@@ -315,19 +315,15 @@ class WC_Gateway_Admin_Form_Fields {
 	 * @since 2.6.16
 	 */
 	public function get_part_payment_widget_settings() {
-		/**
-		 * WooCommerce Part Payment Widget Settings Array
-		 *
-		 * This array is structured to group settings logically for a cleaner user interface
-		 * in the WordPress admin area, following a tabbed or sectioned design proposal.
-		 */
+
 		return array(
 			// Section: General Settings
 			'partpayment_widget_settings' => array(
-				'title' => __( 'General Settings', 'wc-maksuturva' ),
+				'title' => __( 'Part Payment Widget Settings', 'wc-maksuturva' ),
 				'type'  => 'title',
-				'desc'  => __( 'Control where the part payment widget appears on your site.', 'wc-maksuturva' ),
+				'desc'  => __( 'All settings for the part payment calculator widget are here.', 'wc-maksuturva' ),
 				'id'    => 'partpayment_widget_settings',
+				'class' => 'wc-settings-group-start' // Add this class
 			),
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
