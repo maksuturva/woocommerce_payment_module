@@ -307,7 +307,7 @@ class WC_Maksuturva {
 		// Check if we are on your specific gateway's settings tab
 		if (isset($_GET['section']) && $_GET['section'] === 'wc_gateway_maksuturva') {
 			wp_enqueue_style(
-				'my-gateway-admin-styles',
+				'svea-gateway-admin-styles',
 				plugin_dir_url(__FILE__) . 'assets/css/admin-styles.css', // Adjust the path to your CSS file
 				array()
 			);

@@ -325,6 +325,14 @@ class WC_Gateway_Admin_Form_Fields {
 				'id'    => 'partpayment_widget_settings',
 				'class' => 'wc-settings-group-start' // Add this class
 			),
+			'partpayment_widget_use_test' => array(
+				'type'        => 'checkbox',
+				'title'       => __( 'Test Environment', 'wc-maksuturva' ),
+				'label'       => __( 'Use test environment for Part Payment widget API calls', 'wc-maksuturva' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', 'wc-maksuturva' ),
+			),
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
 				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
@@ -348,14 +356,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'default'     => '',
 				'description' => __( 'Select Svea Part Payment Widget location on checkout page.', 'wc-maksuturva' ),
 				'options'     => $this->get_widget_checkout_locations(),
-			),
-
-			// Section: Appearance Settings
-			'partpayment_widget_appearance_settings_title' => array(
-				'title' => __( 'Appearance Settings', 'wc-maksuturva' ),
-				'type'  => 'title',
-				'desc'  => __( 'Customize the look and feel of the widget to match your brand.', 'wc-maksuturva' ),
-				'id'    => 'partpayment_widget_appearance_settings_title',
 			),
 			'partpayment_widget_mini' => array(
 				'type'        => 'checkbox',
@@ -391,14 +391,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget active color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
-			),
-
-			// Section: Content Settings
-			'partpayment_widget_content_settings_title' => array(
-				'title' => __( 'Content & Messaging', 'wc-maksuturva' ),
-				'type'  => 'title',
-				'desc'  => __( 'Provide text for different scenarios and languages.', 'wc-maksuturva' ),
-				'id'    => 'partpayment_widget_content_settings_title',
 			),
 			'ppw_campaign_text_fi' => array(
 				'type'        => 'text',
@@ -441,21 +433,6 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'This text is shown if the calculator cannot be displayed.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_fallback_text_en', 'Fallback text EN' ),
-			),
-
-			// Section: Advanced Settings
-			'partpayment_widget_advanced_settings_title' => array(
-				'title' => __( 'Advanced Settings', 'wc-maksuturva' ),
-				'type'  => 'title',
-				'id'    => 'partpayment_widget_advanced_settings_title',
-			),
-			'partpayment_widget_use_test' => array(
-				'type'        => 'checkbox',
-				'title'       => __( 'Test Environment', 'wc-maksuturva' ),
-				'label'       => __( 'Use test environment for Part Payment widget API calls', 'wc-maksuturva' ),
-				'default'     => 'no',
-				'desc_tip'    => true,
-				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', 'wc-maksuturva' ),
 			),
 			'ppw_price_threshold_minimum' => array(
 				'type'        => 'text', // Use 'number' type if you want number-specific attributes
