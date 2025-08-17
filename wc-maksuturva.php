@@ -103,7 +103,7 @@ class WC_Maksuturva {
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.6.13';
+	const VERSION = '2.6.16';
 
 	/**
 	 * Plugin DB version.
