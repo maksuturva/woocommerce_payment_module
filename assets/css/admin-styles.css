@@ -28,23 +28,3 @@ h3.wc-settings-group-start + table.form-table th {
     padding-left: 40px !important; /* Default is ~20px, so we add 20px */
 }
 
-/* Target the table rows containing our color pickers */
-.form-table tr.inline-color-picker {
-    display: inline-block; /* Allows elements to sit side-by-side */
-    vertical-align: top;   /* Aligns the tops of the elements */
-    margin-right: 20px;    /* Adds some space between each color picker */
-    width: auto;           /* Let the content define the width */
-    min-width: 120px;      /* Ensure a minimum width for consistency */
-}
-
-/* Stack the label (th) on top of the input field */
-.form-table tr.inline-color-picker th {
-    display: block;        /* Make the label a block element */
-    padding: 0 0 5px 0;    /* Remove default padding and add space below */
-    text-align: left;      /* Ensure label text is left-aligned */
-}
-
-/* Adjust the input field cell (td) */
-.form-table tr.inline-color-picker td {
-    padding: 0;            /* Remove default cell padding */
-}

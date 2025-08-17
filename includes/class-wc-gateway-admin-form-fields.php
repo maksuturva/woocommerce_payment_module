@@ -323,7 +323,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'type'  => 'title',
 				'desc'  => __( 'All settings for the part payment calculator widget are here.', 'wc-maksuturva' ),
 				'id'    => 'partpayment_widget_settings',
-				'class' => 'wc-settings-group-start' // Class for CSS border styling
+				'class' => 'wc-settings-group-start' // Add this class
 			),
 			'partpayment_widget_use_test' => array(
 				'type'        => 'checkbox',
@@ -340,7 +340,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Enables the compact mini layout for the part payment widget.', 'wc-maksuturva' ),
 			),
-			
+
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
 				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
@@ -365,14 +365,13 @@ class WC_Gateway_Admin_Form_Fields {
 				'description' => __( 'Select Svea Part Payment Widget location on checkout page.', 'wc-maksuturva' ),
 				'options'     => $this->get_widget_checkout_locations(),
 			),
-			// --- MODIFIED COLOR SETTINGS ---
 			'ppw_border_color' => array(
 				'type'        => 'color',
 				'title'       => __( 'Border Color', 'wc-maksuturva' ),
 				'desc_tip'    => true,
 				'description' => __( 'Widget border color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_border_color', '#CCEEF5' ),
-				'class'       => 'inline-color-picker', // Added class
+				'css'         => 'width:100px;',
 			),
 			'ppw_text_color' => array(
 				'type'        => 'color',
@@ -380,7 +379,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget text color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_text_color', '#00325C' ),
-				'class'       => 'inline-color-picker', // Added class
+				'css'         => 'width:100px;',
 			),
 			'ppw_highlight_color' => array(
 				'type'        => 'color',
@@ -388,7 +387,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget highlight color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_highlight_color', '#00325C' ),
-				'class'       => 'inline-color-picker', // Added class
+				'css'         => 'width:100px;',
 			),
 			'ppw_active_color' => array(
 				'type'        => 'color',
@@ -396,7 +395,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Widget active color.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
-				'class'       => 'inline-color-picker', // Added class
+				'css'         => 'width:100px;',
 			),
 			'ppw_campaign_text_fi' => array(
 				'type'        => 'text',
@@ -441,24 +440,23 @@ class WC_Gateway_Admin_Form_Fields {
 				'default'     => get_option( 'ppw_fallback_text_en', 'Fallback text EN' ),
 			),
 			'ppw_price_threshold_minimum' => array(
-				'type'        => 'text',
+				'type'        => 'text', // Use 'number' type if you want number-specific attributes
 				'title'       => __( 'Minimum Price Threshold', 'wc-maksuturva' ),
 				'desc_tip'    => true,
 				'description' => __( 'If empty, the minimum threshold is deduced from the payment plans returned by Svea. Enter a value to override.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_price_threshold_minimum', '' ),
-				'css'         => 'width:60px;',
+				'css'         => 'width:60px;', // Example to control width
 			),
 			'ppw_price_thresholds' => array(
 				'type'        => 'text',
 				'title'       => __( 'Price Thresholds', 'wc-maksuturva' ),
 				'desc_tip'    => true,
-				'description' => __( 'Set price thresholds in the format: [price, months], [price, months] etc.', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_price_thresholds', '[300, 6], [1000, 12]' ),
+				'description' => __( 'Set price thresholds, one per line, in the format: price, months (e.g., 300, 6).', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_price_thresholds', "300, 6\n1000, 12" ),
 				'css'         => 'width:250px',
 			),
 		);
 	}
-
 
 	/**
 	 * Payment method handling cost table content
