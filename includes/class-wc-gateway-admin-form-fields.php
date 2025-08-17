@@ -340,7 +340,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Enables the compact mini layout for the part payment widget.', 'wc-maksuturva' ),
 			),
-			
+
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
 				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
@@ -441,15 +441,15 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'If empty, the minimum threshold is deduced from the payment plans returned by Svea. Enter a value to override.', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_price_threshold_minimum', '' ),
-				'css'         => 'width:150px;', // Example to control width
+				'css'         => 'width:60px;', // Example to control width
 			),
 			'ppw_price_thresholds' => array(
-				'type'        => 'textarea',
+				'type'        => 'text',
 				'title'       => __( 'Price Thresholds', 'wc-maksuturva' ),
 				'desc_tip'    => true,
 				'description' => __( 'Set price thresholds, one per line, in the format: price, months (e.g., 300, 6).', 'wc-maksuturva' ),
 				'default'     => get_option( 'ppw_price_thresholds', "300, 6\n1000, 12" ),
-				'css'         => 'width: 25em; height: 10em;',
+				'css'         => 'width:250px',
 			),
 		);
 	}
