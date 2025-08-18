@@ -526,7 +526,7 @@ class WC_Gateway_Admin_Form_Fields {
 	 * @since 2.5.16
 	 */
 	public function get_widget_cart_locations() {
-		$widget_locations = array( 'Disabled', 'Option 1', 'Option 2' );
+		$widget_locations = array( 'Disabled', 'After order total' );
 		return $widget_locations;
 	}
 

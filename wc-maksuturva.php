@@ -236,9 +236,10 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'svea_part_payment_widget_after_add_to_cart' ) );
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'svea_part_payment_widget_after_add_to_cart_form' ) );
 			// part payment widget hook on cart page
-			add_action( 'woocommerce_review_order_before_payment', array( $this, 'svea_part_payment_widget_cart' ) );
+			add_action( 'woocommerce_cart_totals_after_order_total', array( $this, 'svea_part_payment_widget_cart_after_order_total' ) );
 			// part payment widget hook on checkout page
-			add_action( 'woocommerce_review_order_before_payment', array( $this, 'svea_part_payment_widget_checkout' ) );
+			add_action( 'woocommerce_review_order_before_payment', array( $this, 'svea_part_payment_widget_checkout_before_payment' ) );
+			add_action( 'woocommerce_review_order_after_payment', array( $this, 'svea_part_payment_widget_checkout_after_payment' ) );
 
 		} catch ( \Exception $e ) {
 			wc_maksuturva_log( 'Error in Svea Payments module inititalization: ' . $e->getMessage() );
@@ -254,6 +255,7 @@ class WC_Maksuturva {
 	public function enqueue_scripts() {
 		$this->load_class( 'WC_Gateway_Maksuturva' );
 		$gateway = new WC_Gateway_Maksuturva();
+		$addscript = false;
 
 		// product page widget
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) !== 0 ) {
@@ -265,14 +267,17 @@ class WC_Maksuturva {
 
 			$product = wc_get_product($post->ID);
 			if ( $product && $product->is_type( 'variable' ) ) {
-				wp_enqueue_script(
-					'svea-part-payment-calculator-variable-product',
-					plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
-					array('jquery'),
-					time(),
-					true
-				);
+				$addscript = true;
 			}
+		}
+
+		// cart page widget
+		if ( (int) $gateway->get_option( 'partpayment_widget_cart_location' ) !== 0 ) {
+			if ( ! is_cart() ) {
+				return;
+			}
+
+			$addscript = true;
 		}
 
 		// checkout page widget
@@ -281,18 +286,17 @@ class WC_Maksuturva {
 				return;
 			}
 
-			global $post;
+			$addscript = true;
+		}
 
-//			$product = wc_get_product($post->ID);
-//			if ( $product && $product->is_type( 'variable' ) ) {
-				wp_enqueue_script(
-					'svea-part-payment-calculator-variable-product',
-					plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
-					array('jquery'),
-					time(),
-					true
-				);
-//			}
+		if ( $addscript ) {
+			wp_enqueue_script(
+				'svea-part-payment-calculator-variable-product',
+				plugin_dir_url( __FILE__ ) . '/../scripts/part-payment-calculator-variable-product.js',
+				array('jquery'),
+				time(),
+				true
+			);
 		}
 	}
 
@@ -327,12 +331,16 @@ class WC_Maksuturva {
 		$this->part_payment_widget_callback( 3 );
 	}
 
-	public function svea_part_payment_widget_cart() {
+	public function svea_part_payment_widget_cart_after_order_total() {
 		$this->part_payment_cart_widget_callback( 1 );
 	}
 
-	public function svea_part_payment_widget_checkout() {
+	public function svea_part_payment_widget_checkout_before_payment() {
 		$this->part_payment_checkout_widget_callback( 1 );
+	}
+
+	public function svea_part_payment_widget_checkout_after_payment() {
+		$this->part_payment_checkout_widget_callback( 2 );
 	}
 
 
