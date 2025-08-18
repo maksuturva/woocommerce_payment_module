@@ -238,7 +238,7 @@ class WC_Maksuturva {
 			// part payment widget hook on cart page
 			add_action( 'woocommerce_cart_totals_after_order_total', array( $this, 'svea_part_payment_widget_cart_after_order_total' ) );
 			add_action( 'woocommerce_after_cart', array( $this, 'svea_part_payment_widget_cart_after_cart' ) );
-
+			add_action( 'woocommerce_before_cart_totals', array( $this, 'svea_part_payment_widget_cart_before_cart_totals' ) );
 			// part payment widget hook on checkout page
 			add_action( 'woocommerce_review_order_before_payment', array( $this, 'svea_part_payment_widget_checkout_before_payment' ) );
 			add_action( 'woocommerce_review_order_after_payment', array( $this, 'svea_part_payment_widget_checkout_after_payment' ) );
@@ -321,6 +321,10 @@ class WC_Maksuturva {
 		}
 	}
 
+	/** Part payment calculator named hook functions 
+	 * 
+	 *
+	*/
 	public function svea_part_payment_widget_before_add_to_cart() {
 		$this->part_payment_widget_callback( 1 );
 	}
@@ -339,6 +343,10 @@ class WC_Maksuturva {
 
 	public function svea_part_payment_widget_cart_after_cart() {
 		$this->part_payment_cart_widget_callback( 2 );
+	}
+
+	public function svea_part_payment_widget_cart_before_cart_totals() {
+		$this->part_payment_cart_widget_callback( 3 );
 	}
 
 	public function svea_part_payment_widget_checkout_before_payment() {
