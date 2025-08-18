@@ -86,9 +86,8 @@ class WC_Svea_Part_Payment_Calculator {
 
 			$this->include_script( $seller_id, $price );
 		} else {
-			// checkout page
-			
-			// price is checkout total
+			// cart or checkout page - without product context
+			// price is cart total
 			$price = (float) WC()->cart->get_total( 'edit' );
 
 			if ( ! $price || ! $this->should_display_calculator( $price ) ) {
@@ -119,7 +118,7 @@ class WC_Svea_Part_Payment_Calculator {
 			'locale'           => explode( '_', get_user_locale() )[0],
 			'price'            => $price,
 			'maksuturva-host'  => $this->get_script_attr( 'partpayment_widget_use_test', 'yes' ) ? 'https://test1.maksuturva.fi' : '',
-			'layout'           => $this->get_script_attr( 'partpayment_widget_mini', 'yes' ) ? 'mini' : '',
+			'layout'           => $this->get_widget_layout_value($this->get_script_attr( 'partpayment_widget_layout') ),
 			'campaign-text-fi' => $this->get_script_attr( 'ppw_campaign_text_fi' ),
 			'campaign-text-sv' => $this->get_script_attr( 'ppw_campaign_text_sv' ),
 			'campaign-text-en' => $this->get_script_attr( 'ppw_campaign_text_en' ),
@@ -148,6 +147,24 @@ class WC_Svea_Part_Payment_Calculator {
 		}
 
 		wp_print_script_tag( $attrs );
+	}
+
+	/**
+	 * Part payment widget layout config value to Javascript data value
+	 * 
+	 */
+	private function get_widget_layout_value(string $attribute): string
+	{
+		switch ($attribute) {
+			case 'mini':
+				return 'mini';
+			case 'button':
+				return 'button';
+			case 'full':
+				// For 'full' or any other value, return an empty string.
+			default:
+				return '';
+		}
 	}
 
 	/**

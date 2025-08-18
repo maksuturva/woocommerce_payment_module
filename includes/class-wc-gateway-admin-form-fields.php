@@ -333,8 +333,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'desc_tip'    => true,
 				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', 'wc-maksuturva' ),
 			),
-			// --- MODIFIED FIELD ---
-			'partpayment_widget_mini' => array(
+			'partpayment_widget_layout' => array(
 				'type'        => 'select',
 				'title'       => __( 'Widget Layout', 'wc-maksuturva' ),
 				'default'     => 'full',
@@ -346,7 +345,6 @@ class WC_Gateway_Admin_Form_Fields {
 					'button' => __( 'Button', 'wc-maksuturva' ),
 				),
 			),
-			
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
 				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
