@@ -64,7 +64,7 @@ class WC_Gateway_Admin_Form_Fields {
 	 * @return array
 	 */
 	public function as_array() {
-		return array(
+		$payment_settings = array(
 			'enabled'                                     => array(
 				'title'   => __( 'Enable/Disable', 'wc-maksuturva' ),
 				'type'    => 'checkbox',
@@ -190,125 +190,6 @@ class WC_Gateway_Admin_Form_Fields {
 					'no'  => '0',
 				),
 			),
-			'partpayment_widget_settings'                 => array(
-				'title' => __( 'Part payment widget settings', 'wc-maksuturva' ),
-				'type'  => 'title',
-				'id'    => 'partpayment_widget_settings',
-			),
-			'partpayment_widget_location'                 => array(
-				'type'        => 'select',
-				'title'       => __( 'Part Payment widget on Product page', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'default'     => '',
-				'description' => __( 'Select Svea Part Payment Widget location on product page.', 'wc-maksuturva' ),
-				'options'     => $this->get_widget_locations(),
-			),
-			'partpayment_widget_use_test'                 => array(
-				'type'        => 'checkbox',
-				'title'       => __( 'Use test environment for Part Payment widget API calls', 'wc-maksuturva' ),
-				'default'     => 'no',
-				'desc_tip'    => true,
-				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', 'wc-maksuturva' ),
-				'options'     => array(
-					'yes' => '1',
-					'no'  => '0',
-				),
-			),
-			'partpayment_widget_mini'                     => array(
-				'type'        => 'checkbox',
-				'title'       => __( 'Use mini-layout for the widget', 'wc-maksuturva' ),
-				'default'     => 'no',
-				'desc_tip'    => true,
-				'description' => __( 'Enables mini layout user interface for the part payment widget.', 'wc-maksuturva' ),
-				'options'     => array(
-					'yes' => '1',
-					'no'  => '0',
-				),
-			),
-			'ppw_campaign_text_fi'                        => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Campaign text in Finnish', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Finnish campaign text', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_campaign_text_fi', 'Campaign text FI' ),
-			),
-			'ppw_campaign_text_sv'                        => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Campaign text in Swedish', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Swedish campaign text', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_campaign_text_sv', 'Campaign text SV' ),
-			),
-			'ppw_campaign_text_en'                        => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Campaign text in English', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'English campaign text', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_campaign_text_en', 'Campaign text EN' ),
-			),
-			'ppw_fallback_text_fi'                        => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Fallback text in Finnish', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Finnish fallback text', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_fallback_text_fi', 'Fallback text FI' ),
-			),
-			'ppw_fallback_text_sv'                        => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Fallback text in Swedish', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Swedish fallback text', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_fallback_text_sv', 'Fallback text SV' ),
-			),
-			'ppw_fallback_text_en'                        => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Fallback text in English', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'English fallback text', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_fallback_text_en', 'Fallback text EN' ),
-			),
-			'ppw_border_color'                            => array(
-				'type'        => 'color',
-				'title'       => __( 'Border color', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Widget border color', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_border_color', '#CCEEF5' ),
-			),
-			'ppw_text_color'                              => array(
-				'type'        => 'color',
-				'title'       => __( 'Text color', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Widget text color', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_text_color', '#00325C' ),
-			),
-			'ppw_highlight_color'                         => array(
-				'type'        => 'color',
-				'title'       => __( 'Highlight color', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Widget highlight color', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_highlight_color', '#00325C' ),
-			),
-			'ppw_active_color'                            => array(
-				'type'        => 'color',
-				'title'       => __( 'Active color', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Widget active color', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
-			),
-			'ppw_price_threshold_minimum'                 => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Price threshold minimum', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Enter a custom minimum price threshold only if you want to enable the calculator for more expensive purchases than the default minimum threshold returned by Svea. If empty, the minimum threshold is deduced from the payment plans returned by Svea.', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_price_threshold_minimum', '' ),
-			),
-			'ppw_price_thresholds'                        => array(
-				'type'        => 'textfield',
-				'title'       => __( 'Price thresholds', 'wc-maksuturva' ),
-				'desc_tip'    => true,
-				'description' => __( 'Set price thresholds in following format [600, 6], [400, 12], [100, 24], [1000, 13] ', 'wc-maksuturva' ),
-				'default'     => get_option( 'ppw_price_thresholds', '[300, 6], [1000, 12]' ),
-			),
 			'payment_group_customization'                 => array(
 				'title' => __( 'Payment group title customization', 'wc-maksuturva' ),
 				'type'  => 'title',
@@ -418,7 +299,169 @@ class WC_Gateway_Admin_Form_Fields {
 				'default'     => get_option( 'collated_group4_methods', '' ),
 			),
 		);
+
+		$widget_settings = $this->get_part_payment_widget_settings();
+
+		return array_merge( $payment_settings, $widget_settings );
 	}
+
+
+	/**
+	 * Returns the settings for the Part Payment Widget.
+	 *
+	 * This function encapsulates the settings array, making it easy to manage
+	 * and merge with other plugin settings.
+	 * 
+	 * @since 2.6.16
+	 */
+	public function get_part_payment_widget_settings() {
+
+		return array(
+			// Section: General Settings
+			'partpayment_widget_settings' => array(
+				'title' => __( 'Part Payment Widget Settings', 'wc-maksuturva' ),
+				'type'  => 'title',
+				'desc'  => __( 'All settings for the part payment calculator widget are here.', 'wc-maksuturva' ),
+				'id'    => 'partpayment_widget_settings',
+				'class' => 'wc-settings-group-start' // Add this class
+			),
+			'partpayment_widget_use_test' => array(
+				'type'        => 'checkbox',
+				'title'       => __( 'Test Environment', 'wc-maksuturva' ),
+				'label'       => __( 'Use test environment for Part Payment widget API calls', 'wc-maksuturva' ),
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'description' => __( 'Enable this if you use Svea test environment account in the credentials.', 'wc-maksuturva' ),
+			),
+			'partpayment_widget_layout' => array(
+				'type'        => 'select',
+				'title'       => __( 'Widget Layout', 'wc-maksuturva' ),
+				'default'     => 'full',
+				'desc_tip'    => true,
+				'description' => __( 'Select the layout for the part payment widget.', 'wc-maksuturva' ),
+				'options'     => array(
+					'full'   => __( 'Full', 'wc-maksuturva' ),
+					'mini'   => __( 'Mini', 'wc-maksuturva' ),
+					//'button' => __( 'Button', 'wc-maksuturva' ),
+				),
+			),
+			'partpayment_widget_location' => array(
+				'type'        => 'select',
+				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'default'     => '',
+				'description' => __( 'Select Svea Part Payment Widget location on product page.', 'wc-maksuturva' ),
+				'options'     => $this->get_widget_locations(),
+			),
+			'partpayment_widget_cart_location' => array(
+				'type'        => 'select',
+				'title'       => __( 'Cart Page Location', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'default'     => '',
+				'description' => __( 'Select Svea Part Payment Widget location on cart page.', 'wc-maksuturva' ),
+				'options'     => $this->get_widget_cart_locations(),
+			),
+			'partpayment_widget_checkout_location' => array(
+				'type'        => 'select',
+				'title'       => __( 'Checkout Page Location', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'default'     => '',
+				'description' => __( 'Select Svea Part Payment Widget location on checkout page.', 'wc-maksuturva' ),
+				'options'     => $this->get_widget_checkout_locations(),
+			),
+			'ppw_border_color' => array(
+				'type'        => 'color',
+				'title'       => __( 'Border Color', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget border color.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_border_color', '#CCEEF5' ),
+				'css'         => 'width:100px;',
+			),
+			'ppw_text_color' => array(
+				'type'        => 'color',
+				'title'       => __( 'Text Color', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget text color.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_text_color', '#00325C' ),
+				'css'         => 'width:100px;',
+			),
+			'ppw_highlight_color' => array(
+				'type'        => 'color',
+				'title'       => __( 'Highlight Color', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget highlight color.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_highlight_color', '#00325C' ),
+				'css'         => 'width:100px;',
+			),
+			'ppw_active_color' => array(
+				'type'        => 'color',
+				'title'       => __( 'Active Color', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'Widget active color.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_active_color', '#00AECE' ),
+				'css'         => 'width:100px;',
+			),
+			'ppw_campaign_text_fi' => array(
+				'type'        => 'text',
+				'title'       => __( 'Campaign Text (Finnish)', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'This text is shown when a specific campaign is active.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_campaign_text_fi', 'Campaign text FI' ),
+			),
+			'ppw_campaign_text_sv' => array(
+				'type'        => 'text',
+				'title'       => __( 'Campaign Text (Swedish)', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'This text is shown when a specific campaign is active.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_campaign_text_sv', 'Campaign text SV' ),
+			),
+			'ppw_campaign_text_en' => array(
+				'type'        => 'text',
+				'title'       => __( 'Campaign Text (English)', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'This text is shown when a specific campaign is active.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_campaign_text_en', 'Campaign text EN' ),
+			),
+			'ppw_fallback_text_fi' => array(
+				'type'        => 'text',
+				'title'       => __( 'Fallback Text (Finnish)', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'This text is shown if the calculator cannot be displayed.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_fallback_text_fi', 'Fallback text FI' ),
+			),
+			'ppw_fallback_text_sv' => array(
+				'type'        => 'text',
+				'title'       => __( 'Fallback Text (Swedish)', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'This text is shown if the calculator cannot be displayed.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_fallback_text_sv', 'Fallback text SV' ),
+			),
+			'ppw_fallback_text_en' => array(
+				'type'        => 'text',
+				'title'       => __( 'Fallback Text (English)', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'This text is shown if the calculator cannot be displayed.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_fallback_text_en', 'Fallback text EN' ),
+			),
+			'ppw_price_threshold_minimum' => array(
+				'type'        => 'text',
+				'title'       => __( 'Minimum Price Threshold', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'If empty, the minimum threshold is deduced from the payment plans returned by Svea. Enter a value to override.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_price_threshold_minimum', '' ),
+				'css'         => 'width:60px;',
+			),
+			'ppw_price_thresholds' => array(
+				'type'        => 'text',
+				'title'       => __( 'Price Thresholds', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'description' => __( 'Set price thresholds in the format: [price, months], [price, months] etc.', 'wc-maksuturva' ),
+				'default'     => get_option( 'ppw_price_thresholds', '[300, 6], [1000, 12]' ),
+				'css'         => 'width:250px',
+			),
+		);
+	}
+
 
 	/**
 	 * Payment method handling cost table content
@@ -468,7 +511,7 @@ class WC_Gateway_Admin_Form_Fields {
 	}
 
 	/**
-	 * Get list of possible locations for part payment widget
+	 * Get list of possible locations for part payment widget on product page
 	 *
 	 * @since 2.4.1
 	 */
@@ -476,6 +519,27 @@ class WC_Gateway_Admin_Form_Fields {
 		$widget_locations = array( 'Disabled', 'Before add to cart quantity', 'After add to cart button', 'After add to cart form' );
 		return $widget_locations;
 	}
+
+	/**
+	 * Get list of possible locations for part payment widget on cart page
+	 *
+	 * @since 2.5.16
+	 */
+	public function get_widget_cart_locations() {
+		$widget_locations = array( 'Disabled', 'After order total', "After cart", "Before cart totals" );
+		return $widget_locations;
+	}
+
+	/**
+	 * Get list of possible locations for part payment widget on checkout page
+	 *
+	 * @since 2.5.16
+	 */
+	public function get_widget_checkout_locations() {
+		$widget_locations = array( 'Disabled', 'Before payment', 'After payment' );
+		return $widget_locations;
+	}
+
 
 	/**
 	 * Handles saving payment method handling costs

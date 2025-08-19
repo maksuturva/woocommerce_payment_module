@@ -1,5 +1,8 @@
 ## Changelog
 
+### 2.6.16 - unreleased  
+* Part payment calculator can be added to cart and checkout pages also
+
 ### 2.6.15 - 2025-07-30  
 * Fixed an extra character on the payment method form
 

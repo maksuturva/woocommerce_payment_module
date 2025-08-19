@@ -51,11 +51,13 @@
     }
 
     function hideWidgets() {
+        $('#svea-pp-widget-button').parent().hide();
         $('#svea-pp-widget-mini').parent().hide();
         $('#svea-pp-widget').parent().hide();
     }
 
     function showWidgets() {
+        $('#svea-pp-widget-button').parent().show();
         $('#svea-pp-widget-mini').parent().show();
         $('#svea-pp-widget').parent().show();
     }

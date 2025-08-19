@@ -57,25 +57,45 @@ class WC_Svea_Part_Payment_Calculator {
 	 * @return void
 	 * @since 2.6.3
 	 */
-	public function load( \WC_Product $product ) {
+	public function load( ?\WC_Product $product ) {
 		$seller_id = $this->gateway->get_option( 'maksuturva_sellerid' );
 
-		if ( ! $this->is_valid_product( $product ) || ! $seller_id ) {
+		if ( !$seller_id ) {
 			return;
 		}
 
-		$price = (float) wc_get_price_including_tax( $product );
+		if ( $product!=null && $this->is_valid_product( $product ) ) {
+			// product page
+			$price = (float) wc_get_price_including_tax( $product );
 
-		if ( $product->is_type( 'variable' ) ) {
-			$variation_prices = $product->get_variation_prices( true );
-			$price = (float) max( $variation_prices['price'] );
+			if ( $product->is_type( 'variable' ) ) {
+				$variation_prices = $product->get_variation_prices( true );
+				$price = (float) max( $variation_prices['price'] );
+			}
+
+			if ( ! $price || ! $this->should_display_calculator( $price ) ) {
+				return;
+			}
+
+			if ( $product->is_type( 'variable' ) ) {
+				$variation_prices = $product->get_variation_prices( true );
+				$price            = (float) max( $variation_prices['price'] );
+			} else {
+				$price = floatval( wc_get_price_including_tax( $product ) );
+			}
+
+			$this->include_script( $seller_id, $price );
+		} else {
+			// cart or checkout page - without product context
+			// price is cart total
+			$price = (float) WC()->cart->get_total( 'edit' );
+
+			if ( ! $price || ! $this->should_display_calculator( $price ) ) {
+				return;
+			}
+
+			$this->include_script( $seller_id, $price  );
 		}
-
-		if ( ! $price || ! $this->should_display_calculator( $price ) ) {
-			return;
-		}
-
-		$this->include_script( $seller_id, $product );
 	}
 
 	/**
@@ -87,15 +107,9 @@ class WC_Svea_Part_Payment_Calculator {
 	 * @return void
 	 * @since 2.6.3
 	 */
-	protected function include_script( $seller_id, $product ) {
+	protected function include_script( $seller_id, $price ) {
 		$price_thresholds = $this->gateway->get_option( 'ppw_price_thresholds' );
 
-		if ( $product->is_type( 'variable' ) ) {
-			$variation_prices = $product->get_variation_prices( true );
-			$price            = (float) max( $variation_prices['price'] );
-		} else {
-			$price = floatval( wc_get_price_including_tax( $product ) );
-		}
 
 		$params = array(
 			'src'              => esc_url( 'https://payments.maksuturva.fi/tools/partpayment/partPayment.js' ),
@@ -104,7 +118,7 @@ class WC_Svea_Part_Payment_Calculator {
 			'locale'           => explode( '_', get_user_locale() )[0],
 			'price'            => $price,
 			'maksuturva-host'  => $this->get_script_attr( 'partpayment_widget_use_test', 'yes' ) ? 'https://test1.maksuturva.fi' : '',
-			'layout'           => $this->get_script_attr( 'partpayment_widget_mini', 'yes' ) ? 'mini' : '',
+			'layout'           => $this->get_widget_layout_value($this->get_script_attr( 'partpayment_widget_layout') ),
 			'campaign-text-fi' => $this->get_script_attr( 'ppw_campaign_text_fi' ),
 			'campaign-text-sv' => $this->get_script_attr( 'ppw_campaign_text_sv' ),
 			'campaign-text-en' => $this->get_script_attr( 'ppw_campaign_text_en' ),
@@ -133,6 +147,24 @@ class WC_Svea_Part_Payment_Calculator {
 		}
 
 		wp_print_script_tag( $attrs );
+	}
+
+	/**
+	 * Part payment widget layout config value to Javascript data value
+	 * 
+	 */
+	private function get_widget_layout_value(string $attribute): string
+	{
+		switch ($attribute) {
+			case 'mini':
+				return 'mini';
+			case 'button':
+				return 'button';
+			case 'full':
+				// For 'full' or any other value, return an empty string.
+			default:
+				return '';
+		}
 	}
 
 	/**
