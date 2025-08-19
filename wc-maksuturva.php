@@ -260,11 +260,7 @@ class WC_Maksuturva {
 		$addscript = false;
 
 		// product page widget
-		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) !== 0 ) {
-			if ( ! is_product() ) {
-				return;
-			}
-
+		if (is_product() && (int) $gateway->get_option( 'partpayment_widget_location' ) !== 0 ) {
 			global $post;
 
 			$product = wc_get_product($post->ID);
@@ -274,20 +270,12 @@ class WC_Maksuturva {
 		}
 
 		// cart page widget
-		if ( (int) $gateway->get_option( 'partpayment_widget_cart_location' ) !== 0 ) {
-			if ( ! is_cart() ) {
-				return;
-			}
-
+		if (is_cart() && (int) $gateway->get_option( 'partpayment_widget_cart_location' ) !== 0 ) {
 			$addscript = true;
 		}
 
 		// checkout page widget
-		if ( (int) $gateway->get_option( 'partpayment_widget_checkout_location' ) !== 0 ) {
-			if ( ! is_checkout() ) {
-				return;
-			}
-
+		if (is_checkout() && (int) $gateway->get_option( 'partpayment_widget_checkout_location' ) !== 0 ) {
 			$addscript = true;
 		}
 
@@ -359,11 +347,10 @@ class WC_Maksuturva {
 
 
 	protected function part_payment_widget_callback( $current_location ) {
-		$this->load_class( 'wc_gateway_maksuturva' );
-		$gateway = new wc_gateway_maksuturva();
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_location' ) === $current_location ) {
-			$this->load_class( 'WC_Gateway_Maksuturva' );
 			$this->load_class( 'WC_Svea_Part_Payment_Calculator' );
 			$calculator = new WC_Svea_Part_Payment_Calculator( $gateway );
 			$calculator->load( wc_get_product() );
@@ -376,11 +363,10 @@ class WC_Maksuturva {
 	 * @since 2.5.16
 	 */
 	protected function part_payment_cart_widget_callback( $current_location ) {
-		$this->load_class( 'wc_gateway_maksuturva' );
-		$gateway = new wc_gateway_maksuturva();
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_cart_location' ) === $current_location ) {
-			$this->load_class( 'WC_Gateway_Maksuturva' );
 			$this->load_class( 'WC_Svea_Part_Payment_Calculator' );
 			$calculator = new WC_Svea_Part_Payment_Calculator( $gateway );
 			$calculator->load( null );
@@ -393,11 +379,10 @@ class WC_Maksuturva {
 	 * @since 2.5.16
 	 */
 	protected function part_payment_checkout_widget_callback( $current_location ) {
-		$this->load_class( 'wc_gateway_maksuturva' );
-		$gateway = new wc_gateway_maksuturva();
+		$this->load_class( 'WC_Gateway_Maksuturva' );
+		$gateway = new WC_Gateway_Maksuturva();
 
 		if ( (int) $gateway->get_option( 'partpayment_widget_checkout_location' ) === $current_location ) {
-			$this->load_class( 'WC_Gateway_Maksuturva' );
 			$this->load_class( 'WC_Svea_Part_Payment_Calculator' );
 			$calculator = new WC_Svea_Part_Payment_Calculator( $gateway );
 			$calculator->load( null );
