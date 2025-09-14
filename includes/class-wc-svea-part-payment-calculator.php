@@ -109,16 +109,17 @@ class WC_Svea_Part_Payment_Calculator {
 	 */
 	protected function include_script( $seller_id, $price ) {
 		$price_thresholds = $this->gateway->get_option( 'ppw_price_thresholds' );
-
+		$widget_margin = $this->get_script_attr( 'partpayment_widget_margin' );
 
 		$params = array(
-			'src'              => esc_url( 'https://payments.maksuturva.fi/tools/partpayment/partPayment.js' ),
+			'src'              => esc_url( 'https://test1.maksuturva.fi/tools/partpayment/partPayment.js' ),
 			'class'            => 'svea-pp-widget-part-payment',
 			'sellerid'         => $seller_id,
 			'locale'           => explode( '_', get_user_locale() )[0],
 			'price'            => $price,
 			'maksuturva-host'  => $this->get_script_attr( 'partpayment_widget_use_test', 'yes' ) ? 'https://test1.maksuturva.fi' : '',
 			'layout'           => $this->get_widget_layout_value($this->get_script_attr( 'partpayment_widget_layout') ),
+			'margin'           => !empty( $widget_margin ) ? $widget_margin : '5px',	 
 			'campaign-text-fi' => $this->get_script_attr( 'ppw_campaign_text_fi' ),
 			'campaign-text-sv' => $this->get_script_attr( 'ppw_campaign_text_sv' ),
 			'campaign-text-en' => $this->get_script_attr( 'ppw_campaign_text_en' ),

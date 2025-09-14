@@ -345,6 +345,13 @@ class WC_Gateway_Admin_Form_Fields {
 					//'button' => __( 'Button', 'wc-maksuturva' ),
 				),
 			),
+			'partpayment_widget_margin' => array(
+				'type'        => 'text',
+				'title'       => __( 'Widget Margin', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'default'     => '5px',
+				'description' => __( 'Set the margin for the part payment widget. Use format "10px".', 'wc-maksuturva' ),
+			),
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
 				'title'       => __( 'Product Page Location', 'wc-maksuturva' ),
