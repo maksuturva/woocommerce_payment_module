@@ -342,7 +342,7 @@ class WC_Gateway_Admin_Form_Fields {
 				'options'     => array(
 					'full'   => __( 'Full', 'wc-maksuturva' ),
 					'mini'   => __( 'Mini', 'wc-maksuturva' ),
-					//'button' => __( 'Button', 'wc-maksuturva' ),
+					'button' => __( 'Button', 'wc-maksuturva' ),
 				),
 			),
 			'partpayment_widget_margin' => array(
