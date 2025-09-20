@@ -117,6 +117,7 @@ class WC_Svea_Part_Payment_Calculator {
 			'sellerid'         => $seller_id,
 			'locale'           => explode( '_', get_user_locale() )[0],
 			'price'            => $price,
+			'showprice'        => 'true',
 			'maksuturva-host'  => $this->get_script_attr( 'partpayment_widget_use_test', 'yes' ) ? 'https://test1.maksuturva.fi' : '',
 			'layout'           => $this->get_widget_layout_value($this->get_script_attr( 'partpayment_widget_layout') ),
 			'margin'           => !empty( $widget_margin ) ? $widget_margin : '5px',	 
