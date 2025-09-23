@@ -17,8 +17,8 @@
  * Tested up to: 6.8.2       
  * License:      LGPL2.1
  * WC requires at least: 8.0
- * WC tested up to: 10.1.0 
- * /
+ * WC tested up to: 10.1.2   
+ */
 
 /**
  * Svea Payments Gateway Plugin for WooCommerce
@@ -237,7 +237,7 @@ class WC_Maksuturva {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'svea_part_payment_widget_after_add_to_cart_form' ) );
 			// part payment widget hook on cart page
 			add_action( 'woocommerce_cart_totals_after_order_total', array( $this, 'svea_part_payment_widget_cart_after_order_total' ) );
-			add_action( 'woocommerce_after_cart', array( $this, 'svea_part_payment_widget_cart_after_cart' ) );
+			add_action( 'woocommerce_after_cart_table', array( $this, 'svea_part_payment_widget_cart_after_cart_table' ) );
 			add_action( 'woocommerce_before_cart_totals', array( $this, 'svea_part_payment_widget_cart_before_cart_totals' ) );
 			// part payment widget hook on checkout page
 			add_action( 'woocommerce_review_order_before_payment', array( $this, 'svea_part_payment_widget_checkout_before_payment' ) );
@@ -329,7 +329,7 @@ class WC_Maksuturva {
 		$this->part_payment_cart_widget_callback( 1 );
 	}
 
-	public function svea_part_payment_widget_cart_after_cart() {
+	public function svea_part_payment_widget_cart_after_cart_table() {
 		$this->part_payment_cart_widget_callback( 2 );
 	}
 

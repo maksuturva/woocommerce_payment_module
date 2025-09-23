@@ -342,8 +342,15 @@ class WC_Gateway_Admin_Form_Fields {
 				'options'     => array(
 					'full'   => __( 'Full', 'wc-maksuturva' ),
 					'mini'   => __( 'Mini', 'wc-maksuturva' ),
-					//'button' => __( 'Button', 'wc-maksuturva' ),
+					'button' => __( 'Button', 'wc-maksuturva' ),
 				),
+			),
+			'partpayment_widget_margin' => array(
+				'type'        => 'text',
+				'title'       => __( 'Widget Margin', 'wc-maksuturva' ),
+				'desc_tip'    => true,
+				'default'     => '5px',
+				'description' => __( 'Set the margin for the part payment widget. Use format "10px".', 'wc-maksuturva' ),
 			),
 			'partpayment_widget_location' => array(
 				'type'        => 'select',
@@ -526,7 +533,7 @@ class WC_Gateway_Admin_Form_Fields {
 	 * @since 2.5.16
 	 */
 	public function get_widget_cart_locations() {
-		$widget_locations = array( 'Disabled', 'After order total', "After cart", "Before cart totals" );
+		$widget_locations = array( 'Disabled', 'After order total', "After cart table", "Before cart totals" );
 		return $widget_locations;
 	}
 
