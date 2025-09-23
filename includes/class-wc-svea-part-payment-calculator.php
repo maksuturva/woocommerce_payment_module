@@ -112,7 +112,7 @@ class WC_Svea_Part_Payment_Calculator {
 		$widget_margin = $this->get_script_attr( 'partpayment_widget_margin' );
 
 		$params = array(
-			'src'              => esc_url( 'https://test1.maksuturva.fi/tools/partpayment/partPayment.js' ),
+			'src'              => esc_url( 'https://payments.maksuturva.fi/tools/partpayment/partPayment.js' ),
 			'class'            => 'svea-pp-widget-part-payment',
 			'sellerid'         => $seller_id,
 			'locale'           => explode( '_', get_user_locale() )[0],
