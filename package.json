@@ -1,0 +1,20 @@
+{
+  "name": "woocommerce-payment-module",
+  "version": "2.7.0",
+  "description": "Svea Payment Gateway for WooCommerce",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start"
+  },
+  "keywords": [
+    "woocommerce",
+    "payment",
+    "svea"
+  ],
+  "author": "Svea Development Oy",
+  "license": "LGPL-2.1",
+  "devDependencies": {
+    "@wordpress/scripts": "^26.0.0"
+  }
+}
