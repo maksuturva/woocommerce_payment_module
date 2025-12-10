@@ -55,7 +55,7 @@ const Content = (props) => {
         <div>
             <div className="svea-payment-methods-container">
                 {settings.groups.map((group, groupIndex) => (
-                    <fieldset key={groupIndex}>
+                    <fieldset key={groupIndex} style={{ border: 'none', margin: 0, padding: 0 }}>
                         <legend className="svea-payment-collated-title">{decodeEntities(group.title)}</legend>
                         <div className="svea-payment-methods-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                             {group.methods.map((method) => {
