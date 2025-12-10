@@ -55,7 +55,7 @@ const Content = (props) => {
         <div>
             <div className="svea-payment-methods-container">
                 {settings.groups.map((group, groupIndex) => (
-                    <fieldset key={groupIndex} style={{ border: 'none', margin: 0, padding: 0 }}>
+                    <fieldset key={groupIndex} style={{ border: 'none', margin: 0, padding: 0, marginTop: '10px' }}>
                         <legend className="svea-payment-collated-title">{decodeEntities(group.title)}</legend>
                         <div className="svea-payment-methods-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                             {group.methods.map((method) => {
@@ -106,7 +106,7 @@ const Content = (props) => {
                                         </label>
                                         {handlingCost && (
                                             <div className="handling-cost-amount" style={{ textAlign: 'center', fontSize: '0.9em', color: '#666', marginTop: '5px' }}>
-                                                +{formatPrice(handlingCost)} {settings.currency_symbol}
+                                                +{formatPrice(handlingCost)} {decodeEntities(settings.currency_symbol)}
                                             </div>
                                         )}
                                         <input
