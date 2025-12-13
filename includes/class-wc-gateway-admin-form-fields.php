@@ -68,11 +68,32 @@ class WC_Gateway_Admin_Form_Fields
 	public function as_array()
 	{
 		$payment_settings = array(
+			'general_settings' => array(
+				'title' => __('General settings', 'wc-maksuturva'),
+				'type' => 'title',
+				'id' => 'general_settings',
+			),
 			'enabled' => array(
 				'title' => __('Enable/Disable', 'wc-maksuturva'),
 				'type' => 'checkbox',
 				'label' => __('Enable Svea Payments Gateway', 'wc-maksuturva'),
 				'default' => 'yes',
+			),
+			'block_mode_enabled' => array(
+				'type' => 'checkbox',
+				'title' => __('Enable Block Mode', 'wc-maksuturva'),
+				'label' => __('Enable support for WooCommerce Blocks Checkout', 'wc-maksuturva'),
+				'default' => 'yes',
+				'desc_tip' => true,
+				'description' => __('Enable this if you are using the new WooCommerce Blocks Checkout. If you are using the classic shortcode checkout, you can disable this.', 'wc-maksuturva'),
+			),
+			'outbound_payment' => array(
+				'type' => 'checkbox',
+				'title' => __('Redirect to Svea\'s Payment Method Selection Page', 'wc-maksuturva'),
+				'label' => __('The buyer is redirected to the Svea Payments site where they choose the payment method', 'wc-maksuturva'),
+				'default' => 'no',
+				'desc_tip' => true,
+				'description' => __('If enabling this, visitors will see a single Svea Payments-button that sends them to the SVEA payment gateway', 'wc-maksuturva'),
 			),
 			'title' => array(
 				'title' => __('Title', 'wc-maksuturva'),
@@ -89,22 +110,8 @@ class WC_Gateway_Admin_Form_Fields
 				'desc_tip' => true,
 				'css' => 'width: 25em;',
 			),
-			'outbound_payment' => array(
-				'type' => 'checkbox',
-				'title' => __('Redirect to Svea\'s Payment Method Selection Page', 'wc-maksuturva'),
-				'label' => __('The buyer is redirected to the Svea Payments site where they choose the payment method', 'wc-maksuturva'),
-				'default' => 'no',
-				'desc_tip' => true,
-				'description' => __('If enabling this, visitors will see a single Svea Payments-button that sends them to the SVEA payment gateway', 'wc-maksuturva'),
-			),
-			'block_mode_enabled' => array(
-				'type' => 'checkbox',
-				'title' => __('Enable Block Mode', 'wc-maksuturva'),
-				'label' => __('Enable support for WooCommerce Blocks Checkout', 'wc-maksuturva'),
-				'default' => 'yes',
-				'desc_tip' => true,
-				'description' => __('Enable this if you are using the new WooCommerce Blocks Checkout. If you are using the classic shortcode checkout, you can disable this.', 'wc-maksuturva'),
-			),
+
+
 			'payment_method_handling_cost_table' => array(
 				'add_new_button_text' => __('Add new', 'wc-maksuturva'),
 				'amount_column_title' => __('Handling cost amount', 'wc-maksuturva'),
@@ -185,64 +192,8 @@ class WC_Gateway_Admin_Form_Fields
 					'wc-maksuturva'
 				),
 			),
-			'estonia_settings' => array(
-				'title' => __('Estonia payment method settings', 'wc-maksuturva'),
-				'type' => 'title',
-				'id' => 'estonia_settings',
-			),
-			'estonia_special_delivery' => array(
-				'type' => 'checkbox',
-				'title' => __('Estonia Payment Method EEAC / Enable special delivery information support', 'wc-maksuturva'),
-				'default' => 'no',
-				'desc_tip' => true,
-				'description' => __('This enables the special functionality for delivery info plugins without checkout addresses.', 'wc-maksuturva'),
-				'options' => array(
-					'yes' => '1',
-					'no' => '0',
-				),
-			),
-			'payment_group_customization' => array(
-				'title' => __('Separate payment methods group title customization', 'wc-maksuturva'),
-				'type' => 'title',
-				'id' => 'payment_group_customization',
-			),
-			'payment_group_creditcard_title' => array(
-				'type' => 'textfield',
-				'title' => __('Credit card and mobile payments group title', 'wc-maksuturva'),
-				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Credit Cards and Mobile payment group. If not set, the default localized title is used.', 'wc-maksuturva'),
-				'default' => get_option('payment_group_creditcard_title', ''),
-			),
-			'payment_group_invoice_title' => array(
-				'type' => 'textfield',
-				'title' => __('Invoice and Part Payment group title', 'wc-maksuturva'),
-				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Invoice and Part Payment payment group. If not set, the default localized title is used.', 'wc-maksuturva'),
-				'default' => get_option('payment_group_invoice_title', ''),
-			),
-			'payment_group_onlinebank_title' => array(
-				'type' => 'textfield',
-				'title' => __('Online bank payments group title', 'wc-maksuturva'),
-				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Online bank payment group. If not set, the default localized title is used.', 'wc-maksuturva'),
-				'default' => get_option('payment_group_onlinebank_title', ''),
-			),
-			'payment_group_other_title' => array(
-				'type' => 'textfield',
-				'title' => __('Other payments group title', 'wc-maksuturva'),
-				'desc_tip' => true,
-				'description' => __('Change the checkout page title for Other payment methods group. If not set, the default localized title is used.', 'wc-maksuturva'),
-				'default' => get_option('payment_group_other_title', ''),
-			),
-			'payment_group_estonia_title' => array(
-				'type' => 'textfield',
-				'title' => __('Estonia payment group title', 'wc-maksuturva'),
-				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', 'wc-maksuturva'),
-				'default' => get_option('payment_group_estonia_title', ''),
-			),
 			'collated_settings' => array(
-				'title' => __('Collated payment methods', 'wc-maksuturva'),
+				'title' => __('Grouped payment method view settings', 'wc-maksuturva'),
 				'type' => 'title',
 				'id' => 'collated_settings',
 			),
@@ -309,11 +260,71 @@ class WC_Gateway_Admin_Form_Fields
 				'description' => __('Collated payment methods, group 4 methods', 'wc-maksuturva'),
 				'default' => get_option('collated_group4_methods', ''),
 			),
+
+			'payment_group_customization' => array(
+				'title' => __('Separate payment methods view settings', 'wc-maksuturva'),
+				'type' => 'title',
+				'id' => 'payment_group_customization',
+			),
+			'payment_group_creditcard_title' => array(
+				'type' => 'textfield',
+				'title' => __('Credit card and mobile payments group title', 'wc-maksuturva'),
+				'desc_tip' => true,
+				'description' => __('Change the checkout page title for the Credit Cards and Mobile payment group. If not set, the default localized title is used.', 'wc-maksuturva'),
+				'default' => get_option('payment_group_creditcard_title', ''),
+			),
+			'payment_group_invoice_title' => array(
+				'type' => 'textfield',
+				'title' => __('Invoice and Part Payment group title', 'wc-maksuturva'),
+				'desc_tip' => true,
+				'description' => __('Change the checkout page title for the Invoice and Part Payment payment group. If not set, the default localized title is used.', 'wc-maksuturva'),
+				'default' => get_option('payment_group_invoice_title', ''),
+			),
+			'payment_group_onlinebank_title' => array(
+				'type' => 'textfield',
+				'title' => __('Online bank payments group title', 'wc-maksuturva'),
+				'desc_tip' => true,
+				'description' => __('Change the checkout page title for the Online bank payment group. If not set, the default localized title is used.', 'wc-maksuturva'),
+				'default' => get_option('payment_group_onlinebank_title', ''),
+			),
+			'payment_group_other_title' => array(
+				'type' => 'textfield',
+				'title' => __('Other payments group title', 'wc-maksuturva'),
+				'desc_tip' => true,
+				'description' => __('Change the checkout page title for Other payment methods group. If not set, the default localized title is used.', 'wc-maksuturva'),
+				'default' => get_option('payment_group_other_title', ''),
+			),
+			'payment_group_estonia_title' => array(
+				'type' => 'textfield',
+				'title' => __('Estonia payment group title', 'wc-maksuturva'),
+				'desc_tip' => true,
+				'description' => __('Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', 'wc-maksuturva'),
+				'default' => get_option('payment_group_estonia_title', ''),
+			),
 		);
 
 		$widget_settings = $this->get_part_payment_widget_settings();
 
-		return array_merge($payment_settings, $widget_settings);
+		$estonia_settings = array(
+			'estonia_settings' => array(
+				'title' => __('Estonia payment method settings', 'wc-maksuturva'),
+				'type' => 'title',
+				'id' => 'estonia_settings',
+			),
+			'estonia_special_delivery' => array(
+				'type' => 'checkbox',
+				'title' => __('Estonia Payment Method EEAC / Enable special delivery information support', 'wc-maksuturva'),
+				'default' => 'no',
+				'desc_tip' => true,
+				'description' => __('This enables the special functionality for delivery info plugins without checkout addresses.', 'wc-maksuturva'),
+				'options' => array(
+					'yes' => '1',
+					'no' => '0',
+				),
+			),
+		);
+
+		return array_merge($payment_settings, $widget_settings, $estonia_settings);
 	}
 
 
@@ -333,9 +344,8 @@ class WC_Gateway_Admin_Form_Fields
 			'partpayment_widget_settings' => array(
 				'title' => __('Part Payment Widget Settings', 'wc-maksuturva'),
 				'type' => 'title',
-				'desc' => __('All settings for the part payment calculator widget are here.', 'wc-maksuturva'),
+				'description' => __('All settings for the part payment calculator widget are here.', 'wc-maksuturva'),
 				'id' => 'partpayment_widget_settings',
-				'class' => 'wc-settings-group-start' // Add this class
 			),
 			'partpayment_widget_use_test' => array(
 				'type' => 'checkbox',

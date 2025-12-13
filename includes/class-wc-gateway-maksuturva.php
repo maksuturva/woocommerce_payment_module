@@ -261,14 +261,25 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 */
 	public function admin_options() {
 
+
 		if ( ! WC_Maksuturva::get_instance()->is_currency_supported() ) {
 			$this->render( 'not-supported-banner', 'admin' );
 		}
 
-		$svealogo = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 		?>
-		<img src="<?php echo esc_url( $svealogo ); ?>" />
+		<style>
+			.woocommerce_page_wc-settings .form-table {
+				border: 1px solid #c3c4c7;
+				padding: 15px;
+				margin-bottom: 20px;
+				background: #fff;
+			}
+			.woocommerce_page_wc-settings .form-table th, .woocommerce_page_wc-settings .form-table td {
+				padding-left: 20px;
+			}
+		</style>
 		<?php
+
 		parent::admin_options();
 
 		/***

@@ -14,10 +14,10 @@
  * Text Domain: wc-maksuturva
  * Domain Path: /languages/
  * Requires at least: 6.0
- * Tested up to: 6.8.2       
+ * Tested up to: 6.9     
  * License:      LGPL2.1
  * WC requires at least: 8.0
- * WC tested up to: 10.1.2   
+ * WC tested up to: 10.4.2    
  */
 
 /**
@@ -38,6 +38,8 @@
  */
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+use Automattic\WooCommerce\StoreApi\StoreApi;
+use Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
@@ -69,6 +71,41 @@ add_action(
 		}
 	}
 );
+
+
+/** 
+ * Register the Store API Update Callback for payment method selection
+ * 
+ * @param $extend
+ * 
+ * @since 2.7.0
+ */
+add_action(
+	'woocommerce_init',
+	function () {
+		$extend = StoreApi::container()->get(ExtendSchema::class);
+		if (
+			is_callable(
+				array(
+					$extend,
+					'register_update_callback',
+				)
+			)
+		) {
+			$extend->register_update_callback(
+				array(
+					'namespace' => 'svea_payments_update',
+					'callback' => function ($data) {
+						if (!empty($data['payment_method'])) {
+							WC()->session->set('svea_payment_method', $data['payment_method']);
+						}
+					},
+				)
+			);
+		}
+	}
+);
+
 
 /**
  * Log a message.
@@ -248,11 +285,13 @@ class WC_Maksuturva
 			add_action('woocommerce_review_order_before_payment', array($this, 'svea_part_payment_widget_checkout_before_payment'));
 			add_action('woocommerce_review_order_after_payment', array($this, 'svea_part_payment_widget_checkout_after_payment'));
 
+			add_action('woocommerce_blocks_payment_method_type_registration', array($this, 'maksuturva_blocks_support'));
+
 		} catch (\Exception $e) {
 			wc_maksuturva_log('Error in Svea Payments module inititalization: ' . $e->getMessage());
 		}
 
-		add_action('woocommerce_blocks_payment_method_type_registration', array($this, 'maksuturva_blocks_support'));
+
 	}
 
 	/**
@@ -306,6 +345,17 @@ class WC_Maksuturva
 				'svea-part-payment-calculator-variable-product',
 				plugin_dir_url(__FILE__) . '/../scripts/part-payment-calculator-variable-product.js',
 				array('jquery'),
+				time(),
+				true
+			);
+		}
+
+		// Enqueue the checkout fee trigger script
+		if ('yes' === $gateway->get_option('block_mode_enabled', 'yes') && is_checkout() && !is_order_received_page()) {
+			wp_enqueue_script(
+				'svea-checkout-fee-trigger',
+				plugin_dir_url(__FILE__) . 'assets/js/checkout-fee-trigger.js',
+				array('wc-blocks-checkout', 'wp-data'),
 				time(),
 				true
 			);
@@ -828,7 +878,7 @@ class WC_Maksuturva
 	 */
 	public function set_handling_cost(\WC_Cart $cart)
 	{
-
+		error_log('Svea: set_handling_cost called');
 		$this->load_class('WC_Gateway_Maksuturva');
 		$gateway = new WC_Gateway_Maksuturva();
 

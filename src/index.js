@@ -37,6 +37,18 @@ const Content = (props) => {
         };
     }, [emitResponse.responseTypes.ERROR, emitResponse.responseTypes.SUCCESS, onPaymentSetup, selectedSubMethod]);
 
+    // Construct extension Cart Update trigger
+    useEffect(() => {
+        if (selectedSubMethod && window.wc && window.wc.blocksCheckout && window.wc.blocksCheckout.extensionCartUpdate) {
+            window.wc.blocksCheckout.extensionCartUpdate({
+                namespace: 'svea_payments_update',
+                data: {
+                    payment_method: selectedSubMethod
+                }
+            });
+        }
+    }, [selectedSubMethod]);
+
     if (!settings.groups || settings.groups.length === 0) {
         return <div>{decodeEntities(settings.description || '')}</div>;
     }
@@ -56,7 +68,7 @@ const Content = (props) => {
             <div className="svea-payment-methods-container">
                 {settings.groups.map((group, groupIndex) => (
                     <fieldset key={groupIndex} style={{ border: 'none', margin: 0, padding: 0, marginTop: '10px' }}>
-                        <legend className="svea-payment-collated-title">{decodeEntities(group.title)}</legend>
+                        <legend className="svea-payment-collated-title" style={{ fontSize: '1em', fontWeight: 'bold', marginBottom: '10px' }}>{decodeEntities(group.title)}</legend>
                         <div className="svea-payment-methods-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                             {group.methods.map((method) => {
                                 const handlingCost = getHandlingCost(method.code);
@@ -68,7 +80,7 @@ const Content = (props) => {
                                         style={{
                                             cursor: 'pointer',
                                             border: isSelected ? '2px solid #007cba' : '1px solid #ddd',
-                                            padding: '5px',
+                                            padding: '10px',
                                             borderRadius: '4px',
                                             backgroundColor: isSelected ? '#f0f0f1' : '#fff',
                                             transition: 'all 0.2s ease',
@@ -77,7 +89,7 @@ const Content = (props) => {
                                             flexDirection: 'column',
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                            minHeight: '60px'
+                                            minHeight: '100px'
                                         }}
                                         onClick={() => setSelectedSubMethod(method.code)}
                                         onMouseEnter={(e) => {
@@ -93,7 +105,7 @@ const Content = (props) => {
                                             }
                                         }}
                                     >
-                                        <label htmlFor={`svea_payment_method_${method.code}`} style={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', margin: 0 }}>
+                                        <label htmlFor={`svea_payment_method_${method.code}`} style={{ cursor: 'pointer', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1, margin: 0 }}>
                                             {method.imageurl ? (
                                                 <img
                                                     src={method.imageurl}
