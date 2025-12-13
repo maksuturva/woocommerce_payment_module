@@ -71,7 +71,7 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 			'checkout' => is_checkout() ? 'yes' : 'no',
 			'active' => $is_active ? 'yes' : 'no',
 		);
-		wc_maksuturva_log('Block is_active check: ' . json_encode($context));
+		// wc_maksuturva_log('Block is_active check: ' . json_encode($context));
 		return $is_active;
 	}
 
@@ -126,9 +126,9 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 		if (empty($price)) {
 			$price = 1000;
 		}
-		wc_maksuturva_log('Block get_payment_method_data price: ' . $price);
+		// wc_maksuturva_log('Block get_payment_method_data price: ' . $price);
 		$collated_methods = $payment_method_select->get_payment_type_payment_methods('collated', $price);
-		wc_maksuturva_log('Block get_payment_method_data methods count: ' . count($collated_methods));
+		// wc_maksuturva_log('Block get_payment_method_data methods count: ' . count($collated_methods));
 
 		$group_methods = array(
 			'group1' => array(),

@@ -224,14 +224,14 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			$is_checkout        = is_checkout();
 			$block_mode_enabled = 'yes' === $this->get_option( 'block_mode_enabled', 'yes' );
 
-			wc_maksuturva_log( "Check disable: Outbound: " . ( $is_outbound ? 'yes' : 'no' ) . ", REST: " . ( $is_rest ? 'yes' : 'no' ) . ", Checkout: " . ( $is_checkout ? 'yes' : 'no' ) . ", BlockMode: " . ( $block_mode_enabled ? 'yes' : 'no' ) );
+			// wc_maksuturva_log( "Check disable: Outbound: " . ( $is_outbound ? 'yes' : 'no' ) . ", REST: " . ( $is_rest ? 'yes' : 'no' ) . ", Checkout: " . ( $is_checkout ? 'yes' : 'no' ) . ", BlockMode: " . ( $block_mode_enabled ? 'yes' : 'no' ) );
 
 			// Allow if outbound payment is enabled OR if it's a REST request (Block Checkout)
 			// OR if it's the checkout page AND block mode is enabled.
 			$allow = $is_outbound || $is_rest || ( $is_checkout && $block_mode_enabled );
 
 			if ( ! $allow ) {
-				wc_maksuturva_log( "Disabling gateway because conditions met." );
+				// wc_maksuturva_log( "Disabling gateway because conditions met." );
 				unset( $available_gateways[ $this->id ] );
 			}
 			return $available_gateways;

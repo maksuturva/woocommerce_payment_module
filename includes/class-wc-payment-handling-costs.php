@@ -105,23 +105,21 @@ class WC_Payment_Handling_Costs
 	 */
 	public function set_handling_cost(\WC_Cart $cart)
 	{
-		error_log('Svea, set_handling_cost called');
+
 
 		if (is_admin()) {
-			error_log('Svea, set_handling_cost: is_admin is true');
 			if (!is_ajax()) {
-				error_log('Svea, set_handling_cost: is_ajax is false');
 				return;
 			}
 		}
 
 		$payment_method_select_id = $this->get_payment_method_select_id();
 		if ($payment_method_select_id === null) {
-			error_log('Svea, set_handling_cost: payment_method_select_id is null');
+
 			return;
 		}
 
-		error_log('Svea, set_handling_cost: payment_method_select_id: ' . $payment_method_select_id);
+
 
 		$gateways_with_handling_costs = array(
 			WC_Gateway_Svea_Credit_Card_And_Mobile::class,
@@ -134,10 +132,10 @@ class WC_Payment_Handling_Costs
 		);
 
 		$chosen_gateway = WC()->session->get('chosen_payment_method');
-		error_log('Svea, set_handling_cost: chosen_gateway: ' . $chosen_gateway);
+
 
 		if (!in_array($chosen_gateway, $gateways_with_handling_costs)) {
-			error_log('Svea, set_handling_cost: chosen_gateway not in handling costs list');
+
 			return;
 		}
 
@@ -146,7 +144,7 @@ class WC_Payment_Handling_Costs
 		);
 
 		if ($payment_method_handling_cost_without_tax !== null) {
-			error_log('Svea, set_handling_cost: Adding fee: ' . $payment_method_handling_cost_without_tax);
+
 			$cart->add_fee(
 				__('Payment handling fee', 'wc-maksuturva'),
 				$payment_method_handling_cost_without_tax,
@@ -154,7 +152,7 @@ class WC_Payment_Handling_Costs
 				$this->get_payment_method_handling_cost_tax_class()
 			);
 		} else {
-			error_log('Svea, set_handling_cost: Cost is null');
+
 		}
 	}
 

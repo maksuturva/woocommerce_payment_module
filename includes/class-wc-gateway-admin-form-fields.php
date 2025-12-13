@@ -93,24 +93,23 @@ class WC_Gateway_Admin_Form_Fields
 				'label' => __('The buyer is redirected to the Svea Payments site where they choose the payment method', 'wc-maksuturva'),
 				'default' => 'no',
 				'desc_tip' => true,
-				'description' => __('If enabling this, visitors will see a single Svea Payments-button that sends them to the SVEA payment gateway', 'wc-maksuturva'),
+				'description' => __('If enabling this, visitors will see a single Svea Payments-button that redirects them to the SVEA payment gateway', 'wc-maksuturva'),
 			),
 			'title' => array(
-				'title' => __('Title', 'wc-maksuturva'),
+				'title' => __('Redirect to Svea\'s Payment Method Title', 'wc-maksuturva'),
 				'type' => 'text',
-				'description' => __('This controls the title which the user sees during checkout.', 'wc-maksuturva'),
+				'description' => __('This controls the title which the user sees during checkout when using the redirect to Svea\'s Payment Method Selection Page.', 'wc-maksuturva'),
 				'default' => __('Svea Payments', 'wc-maksuturva'),
 				'desc_tip' => true,
 			),
 			'description' => array(
-				'title' => __('Customer Message', 'wc-maksuturva'),
+				'title' => __('Redirect to Svea\'s Payment Method Customer Message', 'wc-maksuturva'),
 				'type' => 'textarea',
 				'description' => __('This message is shown below the payment method on the checkout page.', 'wc-maksuturva'),
 				'default' => __('Make payment using Svea Payments card, mobile, invoice and bank payment methods', 'wc-maksuturva'),
 				'desc_tip' => true,
 				'css' => 'width: 25em;',
 			),
-
 
 			'payment_method_handling_cost_table' => array(
 				'add_new_button_text' => __('Add new', 'wc-maksuturva'),

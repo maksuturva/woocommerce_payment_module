@@ -878,7 +878,7 @@ class WC_Maksuturva
 	 */
 	public function set_handling_cost(\WC_Cart $cart)
 	{
-		error_log('Svea: set_handling_cost called');
+
 		$this->load_class('WC_Gateway_Maksuturva');
 		$gateway = new WC_Gateway_Maksuturva();
 
