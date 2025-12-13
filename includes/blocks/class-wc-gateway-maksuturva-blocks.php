@@ -46,9 +46,9 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 			$payment_data = $context->payment_data;
 			if (isset($payment_data['svea_payment_method'])) {
 				$_POST['svea_payment_method'] = $payment_data['svea_payment_method'];
-				wc_maksuturva_log('Block REST payment: Set svea_payment_method to ' . $payment_data['svea_payment_method']);
+
 			} else {
-				wc_maksuturva_log('Block REST payment: svea_payment_method not found in payment_data');
+
 			}
 		}
 	}

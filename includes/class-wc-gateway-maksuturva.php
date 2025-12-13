@@ -737,21 +737,21 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		// Fix: Use standard WooCommerce payment URL
 		$url = $order->get_checkout_payment_url( true );
 
-		wc_maksuturva_log( 'Process payment: Order status: ' . $order->get_status() );
-		wc_maksuturva_log( 'Process payment: Initial URL: ' . $url );
+		// wc_maksuturva_log( 'Process payment: Order status: ' . $order->get_status() );
+		// wc_maksuturva_log( 'Process payment: Initial URL: ' . $url );
 
 		if ( ! $this->is_outbound_payment_enabled() ) {
 			if ( isset( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
 				$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
 				$url            = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
-				wc_maksuturva_log( 'Process payment: Added payment method ' . $payment_method . ' to URL.' );
+				// wc_maksuturva_log( 'Process payment: Added payment method ' . $payment_method . ' to URL.' );
 			} else {
-				wc_maksuturva_log( 'Process payment: Payment method ID ' . WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID . ' not set in POST.' );
-				wc_maksuturva_log( 'Process payment: POST data: ' . print_r( $_POST, true ) );
+				// wc_maksuturva_log( 'Process payment: Payment method ID ' . WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID . ' not set in POST.' );
+				// wc_maksuturva_log( 'Process payment: POST data: ' . print_r( $_POST, true ) );
 			}
 		}
 
-		wc_maksuturva_log( 'Process payment: Final Redirect URL: ' . $url );
+		// wc_maksuturva_log( 'Process payment: Final Redirect URL: ' . $url );
 
 		return array(
 			'result'   => 'success',
@@ -769,8 +769,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 * @since 2.0.0
 	 */
 	public function receipt_page( $order_id ) {
-		wc_maksuturva_log( 'Receipt page called for order: ' . $order_id );
-		wc_maksuturva_log( 'Receipt page GET: ' . print_r( $_GET, true ) );
+
 
 		$order = wc_get_order( $order_id );
 
