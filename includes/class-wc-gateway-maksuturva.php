@@ -113,6 +113,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 		$this->title              = $this->get_option( 'title' );
 		$this->description        = $this->get_option( 'description' );
+		$this->enabled            = $this->get_option( 'enabled' );
 		$this->method_title       = __( 'Svea', 'wc-maksuturva' );
 		$this->method_description = sprintf(
                 '%s %s',
@@ -218,7 +219,19 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		}
 
 		if ( $this->id === self::class ) {
-			if ( ! $this->is_outbound_payment_enabled() ) {
+			$is_outbound        = $this->is_outbound_payment_enabled();
+			$is_rest            = defined( 'REST_REQUEST' ) && REST_REQUEST;
+			$is_checkout        = is_checkout();
+			$block_mode_enabled = 'yes' === $this->get_option( 'block_mode_enabled', 'yes' );
+
+			// wc_maksuturva_log( "Check disable: Outbound: " . ( $is_outbound ? 'yes' : 'no' ) . ", REST: " . ( $is_rest ? 'yes' : 'no' ) . ", Checkout: " . ( $is_checkout ? 'yes' : 'no' ) . ", BlockMode: " . ( $block_mode_enabled ? 'yes' : 'no' ) );
+
+			// Allow if outbound payment is enabled OR if it's a REST request (Block Checkout)
+			// OR if it's the checkout page AND block mode is enabled.
+			$allow = $is_outbound || $is_rest || ( $is_checkout && $block_mode_enabled );
+
+			if ( ! $allow ) {
+				// wc_maksuturva_log( "Disabling gateway because conditions met." );
 				unset( $available_gateways[ $this->id ] );
 			}
 			return $available_gateways;
@@ -248,14 +261,25 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 */
 	public function admin_options() {
 
+
 		if ( ! WC_Maksuturva::get_instance()->is_currency_supported() ) {
 			$this->render( 'not-supported-banner', 'admin' );
 		}
 
-		$svealogo = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 		?>
-		<img src="<?php echo esc_url( $svealogo ); ?>" />
+		<style>
+			.woocommerce_page_wc-settings .form-table {
+				border: 1px solid #c3c4c7;
+				padding: 15px;
+				margin-bottom: 20px;
+				background: #fff;
+			}
+			.woocommerce_page_wc-settings .form-table th, .woocommerce_page_wc-settings .form-table td {
+				padding-left: 20px;
+			}
+		</style>
 		<?php
+
 		parent::admin_options();
 
 		/***
@@ -312,6 +336,8 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	public function payment_fields() {
 		if ( $this->is_outbound_payment_enabled() ) {
 			$payment_method_type = 'outbound';
+		} elseif ( $this->id === 'WC_Gateway_Maksuturva' ) {
+			$payment_method_type = 'collated';
 		} else {
 			$payment_method_type = str_replace( '_', '-', strtolower( explode( 'WC_Gateway_Svea_', $this->id )[1] ) );
 		}
@@ -708,14 +734,24 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			}
 			$order->save();
 		}
-		$url = $order->get_checkout_order_received_url();
-		$url = add_query_arg( 'key', $order_handler->get_order_key(), $url );
-		$url = add_query_arg( 'order-pay', $order_handler->get_id(), $url );
+		// Fix: Use standard WooCommerce payment URL
+		$url = $order->get_checkout_payment_url( true );
+
+		// wc_maksuturva_log( 'Process payment: Order status: ' . $order->get_status() );
+		// wc_maksuturva_log( 'Process payment: Initial URL: ' . $url );
 
 		if ( ! $this->is_outbound_payment_enabled() ) {
-			$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
-			$url            = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+			if ( isset( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
+				$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
+				$url            = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+				// wc_maksuturva_log( 'Process payment: Added payment method ' . $payment_method . ' to URL.' );
+			} else {
+				// wc_maksuturva_log( 'Process payment: Payment method ID ' . WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID . ' not set in POST.' );
+				// wc_maksuturva_log( 'Process payment: POST data: ' . print_r( $_POST, true ) );
+			}
 		}
+
+		// wc_maksuturva_log( 'Process payment: Final Redirect URL: ' . $url );
 
 		return array(
 			'result'   => 'success',
@@ -733,6 +769,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 	 * @since 2.0.0
 	 */
 	public function receipt_page( $order_id ) {
+
 
 		$order = wc_get_order( $order_id );
 

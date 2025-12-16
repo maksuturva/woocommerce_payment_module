@@ -6,10 +6,10 @@ Tags: svea, payment gateway, finland
 # System requirements
 
 * Requires at least: 6.0    
-* Tested up to: 6.8.2               
-* Stable tag: 2.6.16                              
+* Tested up to: 6.9                 
+* Stable tag: 2.7.0                              
 * WC requires at least: 8.0  
-* WC tested up to: 10.1.2                       
+* WC tested up to: 10.4.2                       
 
 There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
 

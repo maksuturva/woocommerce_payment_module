@@ -2,3 +2,5 @@
 docs/~$ea_Payment_Gateway_Manual.docx
 
 /vendor/
+.vscode
+node_modules/

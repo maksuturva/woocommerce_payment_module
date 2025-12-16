@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -34,7 +34,8 @@ require_once 'class-wc-payment-method-select.php';
  *
  * Handles handling costs
  */
-class WC_Payment_Handling_Costs {
+class WC_Payment_Handling_Costs
+{
 
 	/**
 	 * Gateway.
@@ -52,7 +53,8 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function __construct( $gateway ) {
+	public function __construct($gateway)
+	{
 		$this->gateway = $gateway;
 	}
 
@@ -63,13 +65,14 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function get_handling_costs_by_payment_method() {
+	public function get_handling_costs_by_payment_method()
+	{
 		return get_option(
 			'payment_method_handling_costs',
 			array(
 				array(
-					'payment_method_type'  => $this->gateway->get_option( 'payment_method_type' ),
-					'handling_cost_amount' => $this->gateway->get_option( 'handling_cost_amount' ),
+					'payment_method_type' => $this->gateway->get_option('payment_method_type'),
+					'handling_cost_amount' => $this->gateway->get_option('handling_cost_amount'),
 				),
 			)
 		);
@@ -84,12 +87,13 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function get_payment_method_handling_cost( $payment_method_type ) {
-		if ( wc_prices_include_tax() ) {
-			return $this->get_payment_method_handling_base_cost( $payment_method_type );
+	public function get_payment_method_handling_cost($payment_method_type)
+	{
+		if (wc_prices_include_tax()) {
+			return $this->get_payment_method_handling_base_cost($payment_method_type);
 		}
 
-		return $this->get_payment_method_handling_cost_without_tax( $payment_method_type );
+		return $this->get_payment_method_handling_cost_without_tax($payment_method_type);
 	}
 
 	/**
@@ -99,15 +103,23 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function set_handling_cost( \WC_Cart $cart ) {
-		if ( ! $_POST || ( is_admin() && ! is_ajax() ) ) {
-			return;
+	public function set_handling_cost(\WC_Cart $cart)
+	{
+
+
+		if (is_admin()) {
+			if (!is_ajax()) {
+				return;
+			}
 		}
 
 		$payment_method_select_id = $this->get_payment_method_select_id();
-		if ( $payment_method_select_id === null ) {
+		if ($payment_method_select_id === null) {
+
 			return;
 		}
+
+
 
 		$gateways_with_handling_costs = array(
 			WC_Gateway_Svea_Credit_Card_And_Mobile::class,
@@ -116,10 +128,14 @@ class WC_Payment_Handling_Costs {
 			WC_Gateway_Svea_Other_Payments::class,
 			WC_Gateway_Svea_Estonia_Payments::class,
 			WC_Gateway_Svea_Collated::class,
+			WC_Gateway_Maksuturva::class,
 		);
 
-		$chosen_gateway = WC()->session->get( 'chosen_payment_method' );
-		if ( ! in_array( $chosen_gateway, $gateways_with_handling_costs ) ) {
+		$chosen_gateway = WC()->session->get('chosen_payment_method');
+
+
+		if (!in_array($chosen_gateway, $gateways_with_handling_costs)) {
+
 			return;
 		}
 
@@ -127,13 +143,16 @@ class WC_Payment_Handling_Costs {
 			$payment_method_select_id
 		);
 
-		if ( $payment_method_handling_cost_without_tax !== null ) {
+		if ($payment_method_handling_cost_without_tax !== null) {
+
 			$cart->add_fee(
-				__( 'Payment handling fee', 'wc-maksuturva' ),
+				__('Payment handling fee', 'wc-maksuturva'),
 				$payment_method_handling_cost_without_tax,
 				true,
 				$this->get_payment_method_handling_cost_tax_class()
 			);
+		} else {
+
 		}
 	}
 
@@ -146,9 +165,10 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function get_payment_method_handling_base_cost( $payment_method_type ) {
-		foreach ( $this->get_handling_costs_by_payment_method() as $handling_cost ) {
-			if ( $handling_cost['payment_method_type'] === $payment_method_type ) {
+	public function get_payment_method_handling_base_cost($payment_method_type)
+	{
+		foreach ($this->get_handling_costs_by_payment_method() as $handling_cost) {
+			if ($handling_cost['payment_method_type'] === $payment_method_type) {
 				return $handling_cost['handling_cost_amount'];
 			}
 		}
@@ -163,7 +183,8 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function get_payment_method_handling_cost_tax_class() {
+	public function get_payment_method_handling_cost_tax_class()
+	{
 		return $this->gateway->get_option(
 			'payment_method_handling_cost_tax_class'
 		);
@@ -176,12 +197,13 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function get_payment_method_handling_cost_tax_rate() {
+	public function get_payment_method_handling_cost_tax_rate()
+	{
 		$tax_class = $this->get_payment_method_handling_cost_tax_class();
 
 		$rate = 0;
 
-		foreach ( \WC_Tax::get_rates( $tax_class ) as $tax_rate ) {
+		foreach (\WC_Tax::get_rates($tax_class) as $tax_rate) {
 			$rate += $tax_rate['rate'];
 		}
 
@@ -195,15 +217,16 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	public function update_payment_handling_cost_fee( $order ) {
+	public function update_payment_handling_cost_fee($order)
+	{
 
 		$payment_handling_cost_fee = $this->get_payment_method_handling_cost_without_tax(
-			$_GET[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ]
+			$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
 		);
 
-		if ( $payment_handling_cost_fee === null ) {
-			foreach ( $order->get_fees() as $fee ) {
-				if ( $fee['name'] === __( 'Payment handling fee', 'wc-maksuturva' ) ) {
+		if ($payment_handling_cost_fee === null) {
+			foreach ($order->get_fees() as $fee) {
+				if ($fee['name'] === __('Payment handling fee', 'wc-maksuturva')) {
 					$fee['total'] = 0;
 					$order->calculate_totals();
 					return;
@@ -215,19 +238,19 @@ class WC_Payment_Handling_Costs {
 
 		$fee_already_exists = false;
 
-		foreach ( $order->get_fees() as $fee ) {
-			if ( $fee['name'] === __( 'Payment handling fee', 'wc-maksuturva' ) ) {
-				$fee['total']       = $payment_handling_cost_fee;
+		foreach ($order->get_fees() as $fee) {
+			if ($fee['name'] === __('Payment handling fee', 'wc-maksuturva')) {
+				$fee['total'] = $payment_handling_cost_fee;
 				$fee_already_exists = true;
 			}
 		}
 
-		if ( ! $fee_already_exists ) {
-			$fee          = new \stdClass();
-			$fee->name    = __( 'Payment handling fee', 'wc-maksuturva' );
-			$fee->amount  = $payment_handling_cost_fee;
+		if (!$fee_already_exists) {
+			$fee = new \stdClass();
+			$fee->name = __('Payment handling fee', 'wc-maksuturva');
+			$fee->amount = $payment_handling_cost_fee;
 			$fee->taxable = true;
-			$order->add_fee( $fee );
+			$order->add_fee($fee);
 		}
 
 		$order->calculate_totals();
@@ -242,18 +265,19 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	private function get_payment_method_handling_cost_without_tax( $payment_method_type ) {
+	private function get_payment_method_handling_cost_without_tax($payment_method_type)
+	{
 
 		$payment_method_handling_cost = $this->get_payment_method_handling_base_cost(
 			$payment_method_type
 		);
 
-		if ( $payment_method_handling_cost === null ) {
+		if ($payment_method_handling_cost === null) {
 			return null;
 		}
 
 		$tax_rate = $this->get_payment_method_handling_cost_tax_rate();
-		return $payment_method_handling_cost / ( 1 + $tax_rate / 100 );
+		return $payment_method_handling_cost / (1 + $tax_rate / 100);
 	}
 
 	/**
@@ -263,21 +287,26 @@ class WC_Payment_Handling_Costs {
 	 *
 	 * @since 2.1.3
 	 */
-	private function get_payment_method_select_id() {
+	private function get_payment_method_select_id()
+	{
 
-		if ( isset( $_POST['post_data'] ) ) {
+		if (isset($_POST['post_data'])) {
 
-			$post_data_array  = array();
+			$post_data_array = array();
 			$post_data_string = $_POST['post_data'];
-			parse_str( $post_data_string, $post_data_array );
+			parse_str($post_data_string, $post_data_array);
 
-			if ( isset( $post_data_array[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
-				return $post_data_array[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ];
+			if (isset($post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+				return $post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
 			}
 		}
 
-		if ( isset( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
-			return $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ];
+		if (isset($_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+			return $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+		}
+
+		if (WC()->session->get(WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID)) {
+			return WC()->session->get(WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID);
 		}
 
 		return null;
