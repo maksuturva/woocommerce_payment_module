@@ -11,7 +11,7 @@
  * Version:     2.7.0     
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
- * Text Domain: wc-maksuturva
+ * Text Domain: svea-payment-gateway
  * Domain Path: /languages/
  * Requires at least: 6.0
  * Tested up to: 6.9     
@@ -250,7 +250,7 @@ class WC_Maksuturva
 		try {
 			$this->update_db_check();
 
-			load_plugin_textdomain('wc-maksuturva', false, basename(__DIR__) . '/languages');
+			load_plugin_textdomain('svea-payment-gateway', false, basename(__DIR__) . '/languages');
 
 			add_filter('woocommerce_payment_gateways', array($this, 'add_maksuturva_gateway'));
 			add_filter('plugin_action_links_' . $this->plugin_name, array(__CLASS__, 'maksuturva_action_links'));

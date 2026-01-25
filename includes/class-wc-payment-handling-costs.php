@@ -220,9 +220,14 @@ class WC_Payment_Handling_Costs
 	public function update_payment_handling_cost_fee($order)
 	{
 
-		$payment_handling_cost_fee = $this->get_payment_method_handling_cost_without_tax(
-			$_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]
-		);
+		// Check if isset first to avoid warnings and sanitize
+		if (isset($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+			$payment_handling_cost_fee = $this->get_payment_method_handling_cost_without_tax(
+				wc_clean($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])
+			);
+		} else {
+			$payment_handling_cost_fee = null;
+		}
 
 		if ($payment_handling_cost_fee === null) {
 			foreach ($order->get_fees() as $fee) {
@@ -293,16 +298,16 @@ class WC_Payment_Handling_Costs
 		if (isset($_POST['post_data'])) {
 
 			$post_data_array = array();
-			$post_data_string = $_POST['post_data'];
-			parse_str($post_data_string, $post_data_array);
+			$post_data_string = wc_clean(wp_unslash($_POST['post_data']));
+			wp_parse_str($post_data_string, $post_data_array);
 
 			if (isset($post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
-				return $post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+				return wc_clean($post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
 			}
 		}
 
 		if (isset($_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
-			return $_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+			return wc_clean($_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
 		}
 
 		if (WC()->session->get(WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID)) {

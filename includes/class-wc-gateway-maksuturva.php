@@ -742,8 +742,9 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 
 		if ( ! $this->is_outbound_payment_enabled() ) {
 			if ( isset( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
-				$payment_method = WC_Utils_Maksuturva::filter_alphanumeric( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
-				$url            = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+				$payment_method_id = wc_clean( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
+				$payment_method    = WC_Utils_Maksuturva::filter_alphanumeric( $payment_method_id );
+				$url               = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
 				// wc_maksuturva_log( 'Process payment: Added payment method ' . $payment_method . ' to URL.' );
 			} else {
 				// wc_maksuturva_log( 'Process payment: Payment method ID ' . WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID . ' not set in POST.' );
@@ -826,7 +827,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			return;
 		}
 
-		$params = $_GET;
+		$params = array_map( 'wc_clean', $_GET );
 		// Make sure the payment id is found in the return parameters, and that it actually exists.
 		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
 			$this->add_notice( __( 'Missing reference number in response.', 'wc-maksuturva' ), 'error' );
@@ -861,7 +862,8 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		switch ( $validator->get_status() ) {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				if ( isset( $params['pmt_errortexttouser'] ) ) {
-					$this->add_notice( __( 'Payment failed: ' . $params['pmt_errortexttouser'], 'wc-maksuturva' ), 'error' );
+					$error_text = wc_clean( $params['pmt_errortexttouser'] );
+					$this->add_notice( __( 'Payment failed: ' . $error_text, 'wc-maksuturva' ), 'error' );
 					wc_add_notice( 'Correct the checkout information and try again.' );
 				} else {
 					$this->add_notice( __( 'Error from Svea received.', 'wc-maksuturva' ), 'error' );
