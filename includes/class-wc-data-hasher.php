@@ -167,7 +167,7 @@ class WC_Data_Hasher
 
 		throw new WC_Gateway_Maksuturva_Exception(
 			$message, // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			WC_Gateway_Abstract_Maksuturva::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED
+			WC_Gateway_Abstract_Maksuturva::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		);
 	}
 

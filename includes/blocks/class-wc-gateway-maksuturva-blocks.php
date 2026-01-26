@@ -141,6 +141,7 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 		);
 
 		// Pass debug info to frontend
+		$collated_methods = $payment_method_select->get_payment_type_payment_methods('collated', $price);
 		$this->settings['debug_info'] = array(
 			'price' => $price,
 			'methods_count' => count($collated_methods),
