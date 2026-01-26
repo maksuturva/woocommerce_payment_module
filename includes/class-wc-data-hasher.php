@@ -23,7 +23,7 @@
  */
 
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -38,7 +38,8 @@ require_once 'class-wc-gateway-maksuturva-exception.php';
  *
  * @since 2.1.3
  */
-class WC_Data_Hasher {
+class WC_Data_Hasher
+{
 
 	/**
 	 * SHA-1 algorithm
@@ -84,7 +85,8 @@ class WC_Data_Hasher {
 	 *
 	 * @since 2.1.3
 	 */
-	public function __construct( WC_Gateway_Maksuturva $gateway ) {
+	public function __construct(WC_Gateway_Maksuturva $gateway)
+	{
 		$this->secret_key = $gateway->get_secret_key();
 	}
 
@@ -99,12 +101,13 @@ class WC_Data_Hasher {
 	 *
 	 * @return string
 	 */
-	public function create_hash( array $hash_data ) {
+	public function create_hash(array $hash_data)
+	{
 
 		$hash_string = '';
 
-		foreach ( $hash_data as $key => $data ) {
-			if ( 'pmt_hash' != $key ) {
+		foreach ($hash_data as $key => $data) {
+			if ('pmt_hash' != $key) {
 				$hash_string .= $data . '&';
 			}
 		}
@@ -128,7 +131,8 @@ class WC_Data_Hasher {
 	 *
 	 * @return string
 	 */
-	public static function get_hash_algorithm() {
+	public static function get_hash_algorithm()
+	{
 
 		$hashing_algorithms = hash_algos();
 
@@ -139,13 +143,13 @@ class WC_Data_Hasher {
 			self::ALGORITHM_MD5,
 		);
 
-		foreach ( $allowed_hash_algorithms_in_priority_order as $allowed_hash_algorithm ) {
+		foreach ($allowed_hash_algorithms_in_priority_order as $allowed_hash_algorithm) {
 
 			$algorithm_in_php_format = self::get_algorithm_in_php_format(
 				$allowed_hash_algorithm
 			);
 
-			if ( in_array( $algorithm_in_php_format, $hashing_algorithms ) ) {
+			if (in_array($algorithm_in_php_format, $hashing_algorithms)) {
 				return $allowed_hash_algorithm;
 			}
 		}
@@ -156,7 +160,11 @@ class WC_Data_Hasher {
 		);
 
 		throw new WC_Gateway_Maksuturva_Exception(
-			'The hash algorithms ' . $hash_alhorithms_string . ' are not supported!',
+			/* translators: %s: list of unsupported algorithms */
+			sprintf(
+				esc_html__('The hash algorithms %s are not supported!', 'svea-payments'),
+				esc_html($hash_alhorithms_string)
+			),
 			WC_Gateway_Abstract_Maksuturva::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED
 		);
 	}
@@ -170,7 +178,8 @@ class WC_Data_Hasher {
 	 *
 	 * @return string
 	 */
-	private static function get_algorithm_in_php_format( $hash_algorithm ) {
+	private static function get_algorithm_in_php_format($hash_algorithm)
+	{
 		return str_replace(
 			'-',
 			'',

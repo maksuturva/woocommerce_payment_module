@@ -183,13 +183,7 @@ class WC_Gateway_Admin_Form_Fields
 				'type' => 'textfield',
 				'title' => __('Send delivery confirmation only for specific payment methods', 'svea-payments'),
 				'desc_tip' => true,
-				'description' => __(
-					'Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, ' .
-					'the selected delivery confirmation is sent on all orders paid with any payment method. ' .
-					'If the payment method codes are added, the selected delivery confirmation is sent only on ' .
-					'orders paid with specific payment methods.',
-					'svea-payments'
-				),
+				'description' => __('Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, the selected delivery confirmation is sent on all orders paid with any payment method. If the payment method codes are added, the selected delivery confirmation is sent only on orders paid with specific payment methods.', 'svea-payments'),
 			),
 			'collated_settings' => array(
 				'title' => __('Grouped payment method view settings', 'svea-payments'),
@@ -535,7 +529,7 @@ class WC_Gateway_Admin_Form_Fields
 		if (!isset($tax_classes) || empty($tax_classes)) {
 			$tax_classes = array();
 		}
-		$tax_classes = $tax_classes + array('' => __('Standard', 'woocommerce'));
+		$tax_classes = $tax_classes + array('' => __('Standard', 'svea-payments'));
 		asort($tax_classes);
 		return $tax_classes;
 	}
@@ -598,10 +592,10 @@ class WC_Gateway_Admin_Form_Fields
 				if (!is_numeric($handling_cost_amounts[$i])) {
 					// accept comma decimals
 					if (!is_numeric(str_replace(',', '.', $handling_cost_amounts[$i]))) {
-						$errors[] = __(
-							'Invalid payment method handling costs, not a valid numeric value -> "'
-							. $handling_cost_amounts[$i] . "'",
-							'svea-payments'
+						$errors[] = sprintf(
+							/* translators: %s is the invalid value */
+							__('Invalid payment method handling costs, not a valid numeric value -> "%s"', 'svea-payments'),
+							$handling_cost_amounts[$i]
 						);
 					} else {
 						$handling_cost_amounts[$i] = floatval(str_replace(',', '.', $handling_cost_amounts[$i]));

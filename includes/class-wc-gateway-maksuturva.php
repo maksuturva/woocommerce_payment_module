@@ -421,7 +421,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		<tr valign="top">
 			<th scope="row" class="titledesc">
 				<label for="<?php echo esc_attr( $field ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
-				<?php echo $this->get_tooltip_html( $data ); ?>
+				<?php echo wp_kses_post( $this->get_tooltip_html( $data ) ); ?>
 			</th>
 			<td class="forminp">
 				<fieldset>
@@ -437,11 +437,11 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 							style="<?php echo esc_attr( $data['css'] ); ?>"
 							value="<?php echo esc_attr( $value ); ?>"
 							<?php checked( $this->get_option( $key, $data['default'] ), $value ); ?>
-							<?php echo $this->get_custom_attribute_html( $data ); ?> />
+							<?php echo $this->get_custom_attribute_html( $data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> />
 							<?php echo wp_kses_post( $label ); ?>
 						</label><br/>
 					<?php endforeach; ?>
-					<?php echo $this->get_description_html( $data ); ?>
+					<?php echo wp_kses_post( $this->get_description_html( $data ) ); ?>
 				</fieldset>
 			</td>
 		</tr>
@@ -861,7 +861,14 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				if ( isset( $params['pmt_errortexttouser'] ) ) {
 					$error_text = wc_clean( $params['pmt_errortexttouser'] );
-					$this->add_notice( sprintf( __( 'Payment failed: %s', 'svea-payments' ), $error_text ), 'error' );
+					$this->add_notice(
+						sprintf(
+							/* translators: %s: error message */
+							__( 'Payment failed: %s', 'svea-payments' ),
+							$error_text
+						),
+						'error'
+					);
 					wc_add_notice( 'Correct the checkout information and try again.' );
 				} else {
 					$this->add_notice( __( 'Error from Svea received.', 'svea-payments' ), 'error' );

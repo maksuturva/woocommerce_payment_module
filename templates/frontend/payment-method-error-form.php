@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -36,13 +36,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <p>
 	<?php
-	echo apply_filters(
+	echo wp_kses_post(apply_filters(
 		'svea_payment_gateway_payment_method_error_message',
 		esc_html__(
-            'Failed to fetch payment methods from Svea',
+			'Failed to fetch payment methods from Svea',
 			'svea-payments'
 		)
-	);
+	));
 	?>
 </p>
 
