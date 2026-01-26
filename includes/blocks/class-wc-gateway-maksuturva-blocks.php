@@ -67,7 +67,10 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 	{
 		$block_mode_enabled = 'yes' === $this->gateway->get_option('block_mode_enabled', 'yes');
 		if (!$block_mode_enabled) {
+			error_log("Block mode is disabled");
 			return false;
+		} else {
+			error_log("Block mode is enabled");
 		}
 
 		$is_active = $this->gateway->is_available();
@@ -141,7 +144,6 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 		);
 
 		// Pass debug info to frontend
-		$collated_methods = $payment_method_select->get_payment_type_payment_methods('collated', $price);
 		$this->settings['debug_info'] = array(
 			'price' => $price,
 			'methods_count' => count($collated_methods),
