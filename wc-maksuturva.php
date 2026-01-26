@@ -687,7 +687,7 @@ class WC_Maksuturva
 	{
 		$url = admin_url('admin.php?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
 		$action_links = array(
-			'settings' => '<a href="' . esc_attr($url) . '">' . esc_html__('Settings') . '</a>',
+			'settings' => '<a href="' . esc_attr($url) . '">' . esc_html__('Settings', 'svea-payments') . '</a>',
 		);
 
 		return array_merge($action_links, $links);

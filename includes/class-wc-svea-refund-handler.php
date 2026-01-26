@@ -248,7 +248,7 @@ class WC_Svea_Refund_Handler
 			);
 
 			throw new WC_Gateway_Maksuturva_Exception(
-				$return_text
+				esc_html($return_text)
 			);
 		}
 

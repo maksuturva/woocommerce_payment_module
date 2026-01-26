@@ -258,11 +258,11 @@ class WC_Payment_Maksuturva
 
 		$tbl = $wpdb->prefix . self::TABLE_NAME;
 		$query = $wpdb->prepare(
-			'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN ("%s","%s")',
+			'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN (%s,%s)', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			self::STATUS_PENDING,
 			self::STATUS_DELAYED
 		);
-		$data = $wpdb->get_results($query); // Db call ok; No-cache ok.
+		$data = $wpdb->get_results($query); // Db call ok; No-cache ok. // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		$payments = array();
 
@@ -286,12 +286,12 @@ class WC_Payment_Maksuturva
 
 		try {
 			$sql = $wpdb->prepare(
-				"UPDATE {$tbl} SET status = %s, date_updated = %s WHERE order_id = %d",
+				"UPDATE {$tbl} SET status = %s, date_updated = %s WHERE order_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				self::STATUS_CANCELLED,
 				current_time('mysql'),
 				$order_id
 			);
-			$result = $wpdb->query($sql);
+			$result = $wpdb->query($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			if ($result === false) {
 				wc_maksuturva_log('Could not cancel order ' . $order_id . ' in the queue.');
 			}
@@ -594,11 +594,11 @@ class WC_Payment_Maksuturva
 
 		$query = $wpdb->prepare(
 			'SELECT order_id, payment_id, payment_method, status, data_sent, data_received, date_added, date_updated FROM `'
-			. $wpdb->prefix . self::TABLE_NAME . '` WHERE `order_id` = %d LIMIT 1',
+			. $wpdb->prefix . self::TABLE_NAME . '` WHERE `order_id` = %d LIMIT 1', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$order_id
 		);
 
-		$data = $wpdb->get_results($query); // Db call ok; No-cache ok.
+		$data = $wpdb->get_results($query); // Db call ok; No-cache ok. // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if (!(is_array($data) && count($data) === 1)) {
 			return; // no order found in Maksuturva queue

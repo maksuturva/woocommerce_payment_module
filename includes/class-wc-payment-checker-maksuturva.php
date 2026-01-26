@@ -88,7 +88,7 @@ class WC_Payment_Checker_Maksuturva
 		$tbl = $wpdb->prefix . self::TABLE_NAME;
 
 		$sql = 'TRUNCATE TABLE `' . $tbl . '`;'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$result = $wpdb->query($sql);
+		$result = $wpdb->query($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		if ($result === false) {
 			wc_maksuturva_log('Could not truncate status log table ' . $tbl);
 		}
@@ -314,7 +314,7 @@ class WC_Payment_Checker_Maksuturva
 		// First get the results for the payment.
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT payment_id, date_added, query_count FROM `' . $tbl . '` WHERE payment_id = %s',
+				'SELECT payment_id, date_added, query_count FROM `' . $tbl . '` WHERE payment_id = %s', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$payment_id
 			)
 		);

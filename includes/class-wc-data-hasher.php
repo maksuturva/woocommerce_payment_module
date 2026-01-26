@@ -159,12 +159,14 @@ class WC_Data_Hasher
 			$allowed_hash_algorithms_in_priority_order
 		);
 
+		/* translators: %s: list of unsupported algorithms */
+		$message = sprintf(
+			esc_html__('The hash algorithms %s are not supported!', 'svea-payments'),
+			esc_html($hash_alhorithms_string)
+		);
+
 		throw new WC_Gateway_Maksuturva_Exception(
-			/* translators: %s: list of unsupported algorithms */
-			sprintf(
-				esc_html__('The hash algorithms %s are not supported!', 'svea-payments'),
-				esc_html($hash_alhorithms_string)
-			),
+			esc_html($message),
 			WC_Gateway_Abstract_Maksuturva::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED
 		);
 	}
