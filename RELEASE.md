@@ -1,2 +1,2 @@
-### 2.7.0 - 2025-12-16
-* Added support for WooCommerce Blocks (Checkout Block).
+### 3.0.0 - 2026-01-27
+* Added support for Wordpress Marketplace

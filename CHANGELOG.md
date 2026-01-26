@@ -1,5 +1,8 @@
 ## Changelog
 
+### 3.0.0 - 2026-01-27
+* Added support for Wordpress Marketplace
+
 ### 2.7.0 - 2025-11-30
 * Added support for WooCommerce Blocks (Checkout Block).
 

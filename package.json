@@ -1,6 +1,6 @@
 {
   "name": "woocommerce-payment-module",
-  "version": "2.7.0",
+  "version": "3.0.0",
   "description": "Svea Payment Gateway for WooCommerce",
   "main": "index.js",
   "scripts": {

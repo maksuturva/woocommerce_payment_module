@@ -8,16 +8,16 @@
  * Plugin Name:  Svea Payment Gateway
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
- * Version:     2.7.0     
+ * Version:     3.0.0     
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
- * Text Domain: svea-payment-gateway
+ * Text Domain: wc-maksuturva
  * Domain Path: /languages/
  * Requires at least: 6.0
- * Tested up to: 6.9     
+ * Tested up to: 6.7     
  * License:      LGPL2.1
  * WC requires at least: 8.0
- * WC tested up to: 10.4.2    
+ * WC tested up to: 10.4.3    
  */
 
 /**
@@ -118,10 +118,32 @@ add_action(
  */
 function wc_maksuturva_log($message)
 {
-	if (is_array($message) || is_object($message)) {
-		error_log('[SVEA PAYMENTS] ' . var_export($message, true));
+	$debug_enabled = false;
+	if (defined('WP_DEBUG') && WP_DEBUG) {
+		$debug_enabled = true;
 	} else {
-		error_log('[SVEA PAYMENTS] ' . $message);
+		try {
+			// Check if we can get an instance effectively
+			if (class_exists('WC_Gateway_Maksuturva')) {
+				// We need to avoid infinite loops if get_instance triggers logging
+				// Ideally we check options directly but Gateway instance wraps them
+				// For now, rely on WP_DEBUG primarily or if we can access the option
+				$settings = get_option('woocommerce_WC_Gateway_Maksuturva_settings');
+				if (isset($settings['debug']) && 'yes' === $settings['debug']) {
+					$debug_enabled = true;
+				}
+			}
+		} catch (Exception $e) {
+			// Squelch
+		}
+	}
+
+	if ($debug_enabled) {
+		if (is_array($message) || is_object($message)) {
+			error_log('[SVEA PAYMENTS] ' . var_export($message, true));
+		} else {
+			error_log('[SVEA PAYMENTS] ' . $message);
+		}
 	}
 }
 
@@ -250,7 +272,7 @@ class WC_Maksuturva
 		try {
 			$this->update_db_check();
 
-			load_plugin_textdomain('svea-payment-gateway', false, basename(__DIR__) . '/languages');
+			load_plugin_textdomain('wc-maksuturva', false, basename(__DIR__) . '/languages');
 
 			add_filter('woocommerce_payment_gateways', array($this, 'add_maksuturva_gateway'));
 			add_filter('plugin_action_links_' . $this->plugin_name, array(__CLASS__, 'maksuturva_action_links'));

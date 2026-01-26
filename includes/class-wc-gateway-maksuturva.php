@@ -224,14 +224,14 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			$is_checkout        = is_checkout();
 			$block_mode_enabled = 'yes' === $this->get_option( 'block_mode_enabled', 'yes' );
 
-			// wc_maksuturva_log( "Check disable: Outbound: " . ( $is_outbound ? 'yes' : 'no' ) . ", REST: " . ( $is_rest ? 'yes' : 'no' ) . ", Checkout: " . ( $is_checkout ? 'yes' : 'no' ) . ", BlockMode: " . ( $block_mode_enabled ? 'yes' : 'no' ) );
+
 
 			// Allow if outbound payment is enabled OR if it's a REST request (Block Checkout)
 			// OR if it's the checkout page AND block mode is enabled.
 			$allow = $is_outbound || $is_rest || ( $is_checkout && $block_mode_enabled );
 
 			if ( ! $allow ) {
-				// wc_maksuturva_log( "Disabling gateway because conditions met." );
+
 				unset( $available_gateways[ $this->id ] );
 			}
 			return $available_gateways;
@@ -737,22 +737,20 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		// Fix: Use standard WooCommerce payment URL
 		$url = $order->get_checkout_payment_url( true );
 
-		// wc_maksuturva_log( 'Process payment: Order status: ' . $order->get_status() );
-		// wc_maksuturva_log( 'Process payment: Initial URL: ' . $url );
+
 
 		if ( ! $this->is_outbound_payment_enabled() ) {
 			if ( isset( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
 				$payment_method_id = wc_clean( $_POST[ WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
 				$payment_method    = WC_Utils_Maksuturva::filter_alphanumeric( $payment_method_id );
 				$url               = add_query_arg( WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
-				// wc_maksuturva_log( 'Process payment: Added payment method ' . $payment_method . ' to URL.' );
+
 			} else {
-				// wc_maksuturva_log( 'Process payment: Payment method ID ' . WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID . ' not set in POST.' );
-				// wc_maksuturva_log( 'Process payment: POST data: ' . print_r( $_POST, true ) );
+
 			}
 		}
 
-		// wc_maksuturva_log( 'Process payment: Final Redirect URL: ' . $url );
+
 
 		return array(
 			'result'   => 'success',
