@@ -276,7 +276,7 @@ class WC_Svea_Refund_Handler
 
 			if ($return_code === self::RESPONSE_TYPE_FAILED) {
 				throw new WC_Gateway_Maksuturva_Exception(
-					$return_text
+					esc_html($return_text)
 				);
 			}
 		}

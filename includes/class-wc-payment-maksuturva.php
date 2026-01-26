@@ -286,7 +286,7 @@ class WC_Payment_Maksuturva
 
 		try {
 			$sql = $wpdb->prepare(
-				"UPDATE {$tbl} SET status = %s, date_updated = %s WHERE order_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				'UPDATE ' . $tbl . ' SET status = %s, date_updated = %s WHERE order_id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				self::STATUS_CANCELLED,
 				current_time('mysql'),
 				$order_id

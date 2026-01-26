@@ -88,7 +88,7 @@ class WC_Payment_Checker_Maksuturva
 		$tbl = $wpdb->prefix . self::TABLE_NAME;
 
 		$sql = 'TRUNCATE TABLE `' . $tbl . '`;'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$result = $wpdb->query($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$result = $wpdb->query($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		if ($result === false) {
 			wc_maksuturva_log('Could not truncate status log table ' . $tbl);
 		}
