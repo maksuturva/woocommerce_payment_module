@@ -272,7 +272,7 @@ class WC_Maksuturva
 		try {
 			$this->update_db_check();
 
-			load_plugin_textdomain('svea-payments', false, basename(__DIR__) . '/languages');
+
 
 			add_filter('woocommerce_payment_gateways', array($this, 'add_maksuturva_gateway'));
 			add_filter('plugin_action_links_' . $this->plugin_name, array(__CLASS__, 'maksuturva_action_links'));

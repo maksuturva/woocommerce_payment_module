@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -33,7 +33,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.0.0
  */
-class WC_Payment_Validator_Maksuturva {
+class WC_Payment_Validator_Maksuturva
+{
 
 	/**
 	 * Return action "ok".
@@ -167,7 +168,8 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @since 2.0.0
 	 */
-	public function __construct( WC_Gateway_Implementation_Maksuturva $gateway ) {
+	public function __construct(WC_Gateway_Implementation_Maksuturva $gateway)
+	{
 		$this->gateway = $gateway;
 	}
 
@@ -183,8 +185,9 @@ class WC_Payment_Validator_Maksuturva {
 	 * @throws WC_Gateway_Maksuturva_Exception
 	 * @since 2.0.0
 	 */
-	public function validate( array $params ) {
-		switch ( $this->get_action( $params ) ) {
+	public function validate(array $params)
+	{
+		switch ($this->get_action($params)) {
 			case self::ACTION_CANCEL:
 				$this->status = self::STATUS_CANCEL;
 				break;
@@ -193,17 +196,17 @@ class WC_Payment_Validator_Maksuturva {
 				break;
 			case self::ACTION_ERROR:
 				$this->status = self::STATUS_ERROR;
-				$this->error( __( 'An error occurred and the payment was not confirmed.', 'svea-payments' ) );
+				$this->error(__('An error occurred and the payment was not confirmed.', 'svea-payments'));
 				break;
 			case self::ACTION_OK:
 			default:
-				$values = $this->validate_mandatory_fields( $params );
-				$this->validate_payment_id( $values );
-				$this->validate_checksum( $values );
-				$this->validate_consistency( $values );
-				$this->validate_seller_costs( $values );
-				$this->validate_reference_number( $values );
-				if ( ! empty( $this->errors ) ) {
+				$values = $this->validate_mandatory_fields($params);
+				$this->validate_payment_id($values);
+				$this->validate_checksum($values);
+				$this->validate_consistency($values);
+				$this->validate_seller_costs($values);
+				$this->validate_reference_number($values);
+				if (!empty($this->errors)) {
 					$this->status = self::STATUS_ERROR;
 				} else {
 					$this->status = self::STATUS_OK;
@@ -223,7 +226,8 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public function get_status() {
+	public function get_status()
+	{
 		return $this->status;
 	}
 
@@ -236,7 +240,8 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @return array
 	 */
-	public function get_errors() {
+	public function get_errors()
+	{
 		return $this->errors;
 	}
 
@@ -249,7 +254,8 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @since 2.0.0
 	 */
-	protected function error( $message ) {
+	protected function error($message)
+	{
 		$this->errors[] = $message;
 	}
 
@@ -271,13 +277,16 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @return string
 	 */
-	protected function get_action( array $params = array() ) {
+	protected function get_action(array $params = array())
+	{
 		$action = self::ACTION_ERROR;
-		if ( isset( $params['pmt_act'] ) && in_array(
-			$params['pmt_act'],
-			array( self::ACTION_CANCEL, self::ACTION_DELAYED, self::ACTION_ERROR, self::ACTION_OK ),
-			true
-		) ) {
+		if (
+			isset($params['pmt_act']) && in_array(
+				$params['pmt_act'],
+				array(self::ACTION_CANCEL, self::ACTION_DELAYED, self::ACTION_ERROR, self::ACTION_OK),
+				true
+			)
+		) {
 			$action = $params['pmt_act'];
 		}
 
@@ -296,21 +305,23 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @return array
 	 */
-	protected function validate_mandatory_fields( array $params ) {
-		$values         = array();
+	protected function validate_mandatory_fields(array $params)
+	{
+		$values = array();
 		$missing_fields = array();
-		foreach ( self::$mandatory_fields as $field ) {
-			if ( isset( $params[ $field ] ) ) {
-				$values[ $field ] = $params[ $field ];
+		foreach (self::$mandatory_fields as $field) {
+			if (isset($params[$field])) {
+				$values[$field] = $params[$field];
 			} else {
 				$missing_fields[] = $field;
 			}
 		}
-		if ( count( $missing_fields ) > 0 ) {
+		if (count($missing_fields) > 0) {
 			$this->error(
 				sprintf(
-					__( 'Missing payment field(s) in response: "%s"', 'svea-payments' ),
-					implode( '", "', $missing_fields )
+					/* translators: %s: list of missing fields */
+					__('Missing payment field(s) in response: "%s"', 'svea-payments'),
+					implode('", "', $missing_fields)
 				)
 			);
 		}
@@ -327,9 +338,10 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @since 2.0.0
 	 */
-	protected function validate_payment_id( array $values ) {
-		if ( ! isset( $values['pmt_id'] ) || ! $this->gateway->check_payment_id( $values['pmt_id'] ) ) {
-			$this->error( __( 'The payment did not match any order', 'svea-payments' ) );
+	protected function validate_payment_id(array $values)
+	{
+		if (!isset($values['pmt_id']) || !$this->gateway->check_payment_id($values['pmt_id'])) {
+			$this->error(__('The payment did not match any order', 'svea-payments'));
 		}
 	}
 
@@ -342,10 +354,11 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @since 2.0.0
 	 */
-	protected function validate_checksum( array $values ) {
-		$data_hasher = new WC_Data_Hasher( $this->gateway->wc_gateway );
-		if ( ! isset( $values['pmt_hash'] ) || $data_hasher->create_hash( $values ) != $values['pmt_hash'] ) {
-			$this->error( __( 'Payment verification checksum does not match', 'svea-payments' ) );
+	protected function validate_checksum(array $values)
+	{
+		$data_hasher = new WC_Data_Hasher($this->gateway->wc_gateway);
+		if (!isset($values['pmt_hash']) || $data_hasher->create_hash($values) != $values['pmt_hash']) {
+			$this->error(__('Payment verification checksum does not match', 'svea-payments'));
 		}
 	}
 
@@ -359,11 +372,13 @@ class WC_Payment_Validator_Maksuturva {
 	 * @throws WC_Gateway_Maksuturva_Exception
 	 * @since 2.0.0
 	 */
-	protected function validate_reference_number( array $values ) {
-		if ( ! isset( $values['pmt_reference'] )
-			|| ! $this->gateway->check_payment_reference_number( $values['pmt_reference'] )
+	protected function validate_reference_number(array $values)
+	{
+		if (
+			!isset($values['pmt_reference'])
+			|| !$this->gateway->check_payment_reference_number($values['pmt_reference'])
 		) {
-			$this->error( __( 'Payment reference number could not be verified', 'svea-payments' ) );
+			$this->error(__('Payment reference number could not be verified', 'svea-payments'));
 		}
 	}
 
@@ -377,26 +392,29 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @since 2.0.0
 	 */
-	protected function validate_consistency( array $values ) {
+	protected function validate_consistency(array $values)
+	{
 		$not_matching_fields = array();
-		foreach ( $values as $key => $value ) {
-			if ( in_array( $key, self::$ignored_consistency_check_fields, true ) ) {
+		foreach ($values as $key => $value) {
+			if (in_array($key, self::$ignored_consistency_check_fields, true)) {
 				continue;
 			}
-			if ( isset( $this->gateway->{$key} ) && $this->gateway->{$key} !== $value ) {
+			if (isset($this->gateway->{$key}) && $this->gateway->{$key} !== $value) {
 				$not_matching_fields[] = sprintf(
-					__( '%1$s (obtained %2$s, expected %3$s)', 'svea-payments' ),
+					/* translators: %1$s: field name, %2$s: obtained value, %3$s: expected value */
+					__('%1$s (obtained %2$s, expected %3$s)', 'svea-payments'),
 					$key,
 					$value,
 					$this->gateway->{$key}
 				);
 			}
 		}
-		if ( count( $not_matching_fields ) > 0 ) {
+		if (count($not_matching_fields) > 0) {
 			$this->error(
 				sprintf(
-					__( 'The following field(s) differs from order: %s', 'svea-payments' ),
-					implode( ', ', $not_matching_fields )
+					/* translators: %s: list of differing fields */
+					__('The following field(s) differs from order: %s', 'svea-payments'),
+					implode(', ', $not_matching_fields)
 				)
 			);
 		}
@@ -412,14 +430,16 @@ class WC_Payment_Validator_Maksuturva {
 	 *
 	 * @since 2.0.0
 	 */
-	protected function validate_seller_costs( array $values ) {
-		if ( isset( $this->gateway->{'pmt_sellercosts'}, $values['pmt_sellercosts'] ) ) {
-			$sent_seller_cost     = str_replace( ',', '.', $this->gateway->{'pmt_sellercosts'} );
-			$received_seller_cost = str_replace( ',', '.', $values['pmt_sellercosts'] );
-			if ( $sent_seller_cost > $received_seller_cost ) {
+	protected function validate_seller_costs(array $values)
+	{
+		if (isset($this->gateway->{'pmt_sellercosts'}, $values['pmt_sellercosts'])) {
+			$sent_seller_cost = str_replace(',', '.', $this->gateway->{'pmt_sellercosts'});
+			$received_seller_cost = str_replace(',', '.', $values['pmt_sellercosts']);
+			if ($sent_seller_cost > $received_seller_cost) {
 				$this->error(
 					sprintf(
-						__( 'Invalid payment amount (obtained %1$s, expected %2$s)', 'svea-payments' ),
+						/* translators: %1$s: obtained amount, %2$s: expected amount */
+						__('Invalid payment amount (obtained %1$s, expected %2$s)', 'svea-payments'),
 						$values['pmt_sellercosts'],
 						$this->gateway->{'pmt_sellercosts'}
 					)

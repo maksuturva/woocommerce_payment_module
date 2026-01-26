@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -33,7 +33,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.1.4
  */
-class WC_Gateway_Svea_Estonia_Payments extends WC_Gateway_Maksuturva {
+class WC_Gateway_Svea_Estonia_Payments extends WC_Gateway_Maksuturva
+{
 
 	/**
 	 * WC_Gateway_Svea_Estonia_Payments constructor.
@@ -42,20 +43,21 @@ class WC_Gateway_Svea_Estonia_Payments extends WC_Gateway_Maksuturva {
 	 *
 	 * @since 2.1.4
 	 */
-	public function __construct() {
-		parent::__construct( self::class );
-		$this->method_title = 'Svea ' . __( 'Payments Estonia', 'svea-payments' );
+	public function __construct()
+	{
+		parent::__construct(self::class);
+		$this->method_title = 'Svea ' . __('Payments Estonia', 'svea-payments');
 
-		/* translators: %s: URL */
 		$this->method_description = sprintf(
-			__( 'This payment method is for Estonia partners only. General Svea settings are managed <a href="%s">here</a>.', 'svea-payments' ),
+			/* translators: %s: URL */
+			__('This payment method is for Estonia partners only. General Svea settings are managed <a href="%s">here</a>.', 'svea-payments'),
 			'?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva'
 		);
-		$custom_title             = $this->get_option( 'payment_group_estonia_title' );
-		if ( ! empty( $custom_title ) ) {
-			$this->title = esc_html( $custom_title );
+		$custom_title = $this->get_option('payment_group_estonia_title');
+		if (!empty($custom_title)) {
+			$this->title = esc_html($custom_title);
 		} else {
-			$this->title = __( 'Ostukonto - maksa turvaliselt ja paindlikult', 'svea-payments' );
+			$this->title = __('Ostukonto - maksa turvaliselt ja paindlikult', 'svea-payments');
 		}
 		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
 	}
@@ -63,7 +65,8 @@ class WC_Gateway_Svea_Estonia_Payments extends WC_Gateway_Maksuturva {
 	/**
 	 * @inheritdoc
 	 */
-	public function init_form_fields() {
+	public function init_form_fields()
+	{
 		$this->form_fields = array();
 	}
 }

@@ -861,7 +861,7 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				if ( isset( $params['pmt_errortexttouser'] ) ) {
 					$error_text = wc_clean( $params['pmt_errortexttouser'] );
-					$this->add_notice( __( 'Payment failed: ' . $error_text, 'svea-payments' ), 'error' );
+					$this->add_notice( sprintf( __( 'Payment failed: %s', 'svea-payments' ), $error_text ), 'error' );
 					wc_add_notice( 'Correct the checkout information and try again.' );
 				} else {
 					$this->add_notice( __( 'Error from Svea received.', 'svea-payments' ), 'error' );

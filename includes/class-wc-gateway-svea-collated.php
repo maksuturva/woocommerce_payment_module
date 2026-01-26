@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -33,7 +33,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.1.3
  */
-class WC_Gateway_Svea_Collated extends WC_Gateway_Maksuturva {
+class WC_Gateway_Svea_Collated extends WC_Gateway_Maksuturva
+{
 
 	/**
 	 * WC_Gateway_Svea_Collated constructor.
@@ -42,21 +43,23 @@ class WC_Gateway_Svea_Collated extends WC_Gateway_Maksuturva {
 	 *
 	 * @since 2.4.0
 	 */
-	public function __construct() {
-		$collated_title = parent::get_option( 'collated_title', 'Svea Payments' );
-		parent::__construct( self::class );
-		$this->method_title = 'Svea ' . __( 'Collated Payments', 'svea-payments' );
+	public function __construct()
+	{
+		$collated_title = parent::get_option('collated_title', 'Svea Payments');
+		parent::__construct(self::class);
+		$this->method_title = 'Svea ' . __('Collated Payments', 'svea-payments');
 
 		/* translators: %s: URL */
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'svea-payments' ), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$this->title              = __( $collated_title, 'svea-payments' );
-		$this->icon               = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
+		$this->method_description = sprintf(__('General Svea settings are managed <a href="%s">here</a>.', 'svea-payments'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
+		$this->title = $collated_title;
+		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function init_form_fields() {
+	public function init_form_fields()
+	{
 		$this->form_fields = array();
 	}
 }

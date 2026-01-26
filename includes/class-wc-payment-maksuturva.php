@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -33,7 +33,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.0.0
  */
-class WC_Payment_Maksuturva {
+class WC_Payment_Maksuturva
+{
 
 	/**
 	 * The queue table name.
@@ -172,9 +173,10 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If load fails.
 	 */
-	public function __construct( $order_id = null ) {
-		if ( (int) $order_id > 0 ) {
-			$this->load( $order_id );
+	public function __construct($order_id = null)
+	{
+		if ((int) $order_id > 0) {
+			$this->load($order_id);
 		}
 	}
 
@@ -185,7 +187,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @since 2.0.2
 	 */
-	public static function install_db() {
+	public static function install_db()
+	{
 		global $wpdb;
 
 		$tbl = $wpdb->prefix . self::TABLE_NAME;
@@ -201,7 +204,7 @@ class WC_Payment_Maksuturva {
 		`date_updated`  DATETIME NULL DEFAULT NULL,
 		UNIQUE KEY order_id_payment_id (order_id,payment_id)) DEFAULT CHARSET=utf8;';
 
-		dbDelta( $sql );
+		dbDelta($sql);
 	}
 
 	/**
@@ -216,28 +219,29 @@ class WC_Payment_Maksuturva {
 	 * @return WC_Payment_Maksuturva
 	 * @throws WC_Gateway_Maksuturva_Exception If creating fails.
 	 */
-	public static function create( array $data ) {
+	public static function create(array $data)
+	{
 		global $wpdb;
 
 		$result = $wpdb->replace(
 			$wpdb->prefix . self::TABLE_NAME,
 			array(
-				'order_id'       => (int) $data['order_id'],
-				'payment_id'     => $data['payment_id'],
+				'order_id' => (int) $data['order_id'],
+				'payment_id' => $data['payment_id'],
 				'payment_method' => $data['payment_method'],
-				'status'         => $data['status'],
-				'data_sent'      => wp_json_encode( $data['data_sent'] ),
-				'data_received'  => wp_json_encode( $data['data_received'] ),
-				'date_added'     => date( 'Y-m-d H:i:s' ),
-				'date_updated'   => null,
+				'status' => $data['status'],
+				'data_sent' => wp_json_encode($data['data_sent']),
+				'data_received' => wp_json_encode($data['data_received']),
+				'date_added' => date('Y-m-d H:i:s'),
+				'date_updated' => null,
 			)
 		); // Db call ok.
 
-		if ( false === $result ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to create Svea payment.' );
+		if (false === $result) {
+			throw new WC_Gateway_Maksuturva_Exception('Failed to create Svea payment.');
 		}
 
-		return new self( (int) $data['order_id'] );
+		return new self((int) $data['order_id']);
 	}
 
 	/**
@@ -248,25 +252,26 @@ class WC_Payment_Maksuturva {
 	 * @return WC_Payment_Maksuturva[]
 	 * @since 2.0.2
 	 */
-	public static function findPending() {
+	public static function findPending()
+	{
 		global $wpdb;
 
-		$tbl   = $wpdb->prefix . self::TABLE_NAME;
+		$tbl = $wpdb->prefix . self::TABLE_NAME;
 		$query = $wpdb->prepare(
 			'SELECT `order_id` FROM `' . $tbl . '` WHERE `status` IN ("%s","%s")',
 			self::STATUS_PENDING,
 			self::STATUS_DELAYED
 		);
-		$data  = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
+		$data = $wpdb->get_results($query); // Db call ok; No-cache ok.
 
 		$payments = array();
 
-		if ( is_array( $data ) && count( $data ) > 0 ) {
-			foreach ( $data as $item ) {
+		if (is_array($data) && count($data) > 0) {
+			foreach ($data as $item) {
 				try {
-					$payments[] = new WC_Payment_Maksuturva( $item->order_id );
-				} catch ( WC_Gateway_Maksuturva_Exception $e ) {
-					wc_maksuturva_log( (string) $e );
+					$payments[] = new WC_Payment_Maksuturva($item->order_id);
+				} catch (WC_Gateway_Maksuturva_Exception $e) {
+					wc_maksuturva_log((string) $e);
 				}
 			}
 		}
@@ -274,20 +279,24 @@ class WC_Payment_Maksuturva {
 		return $payments;
 	}
 
-	public static function updateToCancelled( $order_id ) {
+	public static function updateToCancelled($order_id)
+	{
 		global $wpdb;
 		$tbl = $wpdb->prefix . self::TABLE_NAME;
 
 		try {
-			$sql    = 'UPDATE ' . $tbl .
-				" SET status='" . self::STATUS_CANCELLED . "',date_updated='" . date( 'Y-m-d H:i:s' ) .
-				"' WHERE (order_id = '" . $order_id . "');";
-			$result = $wpdb->query( $sql );
-			if ( $result === false ) {
-				wc_maksuturva_log( 'Could not cancel order ' . $order_id . ' in thr queue.' );
+			$sql = $wpdb->prepare(
+				"UPDATE {$tbl} SET status = %s, date_updated = %s WHERE order_id = %d",
+				self::STATUS_CANCELLED,
+				current_time('mysql'),
+				$order_id
+			);
+			$result = $wpdb->query($sql);
+			if ($result === false) {
+				wc_maksuturva_log('Could not cancel order ' . $order_id . ' in the queue.');
 			}
-		} catch ( Exception $e ) {
-			wc_maksuturva_log( 'Order cancel in thr queue failed: ' . $e->getMessage() );
+		} catch (Exception $e) {
+			wc_maksuturva_log('Order cancel in thr queue failed: ' . $e->getMessage());
 		}
 	}
 	/**
@@ -299,7 +308,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return int
 	 */
-	public function get_order_id() {
+	public function get_order_id()
+	{
 		return $this->order_id;
 	}
 
@@ -312,7 +322,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public function get_payment_id() {
+	public function get_payment_id()
+	{
 		return $this->payment_id;
 	}
 
@@ -325,7 +336,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public function get_payment_method() {
+	public function get_payment_method()
+	{
 		return $this->payment_method;
 	}
 
@@ -338,7 +350,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public function get_status() {
+	public function get_status()
+	{
 		return $this->status;
 	}
 
@@ -349,7 +362,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @since 2.1.1
 	 */
-	public function get_date_added() {
+	public function get_date_added()
+	{
 		return $this->date_added;
 	}
 
@@ -360,7 +374,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @since 2.1.1
 	 */
-	public function get_date_updated() {
+	public function get_date_updated()
+	{
 		return $this->date_updated;
 	}
 
@@ -375,7 +390,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function set_data_received( array $data ) {
+	public function set_data_received(array $data)
+	{
 		$this->data_received = $data;
 		$this->update();
 	}
@@ -389,7 +405,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function complete() {
+	public function complete()
+	{
 		$this->status = self::STATUS_COMPLETED;
 		$this->update();
 	}
@@ -403,8 +420,9 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return bool
 	 */
-	public function is_completed() {
-		return ( $this->status === self::STATUS_COMPLETED );
+	public function is_completed()
+	{
+		return ($this->status === self::STATUS_COMPLETED);
 	}
 
 	/**
@@ -416,7 +434,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function cancel() {
+	public function cancel()
+	{
 		$this->status = self::STATUS_CANCELLED;
 		$this->update();
 	}
@@ -430,8 +449,9 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return bool
 	 */
-	public function is_cancelled() {
-		return ( $this->status === self::STATUS_CANCELLED );
+	public function is_cancelled()
+	{
+		return ($this->status === self::STATUS_CANCELLED);
 	}
 
 	/**
@@ -443,7 +463,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function error() {
+	public function error()
+	{
 		$this->status = self::STATUS_ERROR;
 		$this->update();
 	}
@@ -457,8 +478,9 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return bool
 	 */
-	public function is_error() {
-		return ( $this->status === self::STATUS_ERROR );
+	public function is_error()
+	{
+		return ($this->status === self::STATUS_ERROR);
 	}
 
 	/**
@@ -470,7 +492,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function delayed() {
+	public function delayed()
+	{
 		$this->status = self::STATUS_DELAYED;
 		$this->update();
 	}
@@ -484,8 +507,9 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return bool
 	 */
-	public function is_delayed() {
-		return ( $this->status === self::STATUS_DELAYED );
+	public function is_delayed()
+	{
+		return ($this->status === self::STATUS_DELAYED);
 	}
 
 	/**
@@ -497,7 +521,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function pending() {
+	public function pending()
+	{
 		$this->status = self::STATUS_PENDING;
 		$this->update();
 	}
@@ -511,8 +536,9 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return bool
 	 */
-	public function is_pending() {
-		return ( $this->status === self::STATUS_PENDING );
+	public function is_pending()
+	{
+		return ($this->status === self::STATUS_PENDING);
 	}
 
 	/**
@@ -524,12 +550,13 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return float|int
 	 */
-	public function get_surcharge() {
-		if ( isset( $this->data_sent['pmt_sellercosts'], $this->data_received['pmt_sellercosts'] ) ) {
-			$sent_seller_cost     = str_replace( ',', '.', $this->data_sent['pmt_sellercosts'] );
-			$received_seller_cost = str_replace( ',', '.', $this->data_received['pmt_sellercosts'] );
-			if ( $received_seller_cost > $sent_seller_cost ) {
-				return number_format( $received_seller_cost - $sent_seller_cost, 2, '.', '' );
+	public function get_surcharge()
+	{
+		if (isset($this->data_sent['pmt_sellercosts'], $this->data_received['pmt_sellercosts'])) {
+			$sent_seller_cost = str_replace(',', '.', $this->data_sent['pmt_sellercosts']);
+			$received_seller_cost = str_replace(',', '.', $this->data_received['pmt_sellercosts']);
+			if ($received_seller_cost > $sent_seller_cost) {
+				return number_format($received_seller_cost - $sent_seller_cost, 2, '.', '');
 			}
 		}
 
@@ -545,8 +572,9 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @return bool
 	 */
-	public function includes_surcharge() {
-		return ( $this->get_surcharge() > 0 );
+	public function includes_surcharge()
+	{
+		return ($this->get_surcharge() > 0);
 	}
 
 	/**
@@ -560,7 +588,8 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If load fails.
 	 */
-	protected function load( $order_id ) {
+	protected function load($order_id)
+	{
 		global $wpdb;
 
 		$query = $wpdb->prepare(
@@ -569,25 +598,25 @@ class WC_Payment_Maksuturva {
 			$order_id
 		);
 
-		$data = $wpdb->get_results( $query ); // Db call ok; No-cache ok.
+		$data = $wpdb->get_results($query); // Db call ok; No-cache ok.
 
-		if ( ! ( is_array( $data ) && count( $data ) === 1 ) ) {
+		if (!(is_array($data) && count($data) === 1)) {
 			return; // no order found in Maksuturva queue
 			// throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payment!' );
 		}
 
-		$this->order_id       = (int) $data[0]->order_id;
-		$this->payment_id     = $data[0]->payment_id;
+		$this->order_id = (int) $data[0]->order_id;
+		$this->payment_id = $data[0]->payment_id;
 		$this->payment_method = $data[0]->payment_method;
-		$this->status         = $data[0]->status;
-		$this->data_sent      = (array) json_decode( $data[0]->data_sent );
-		$this->data_received  = (array) json_decode( $data[0]->data_received );
-		$this->date_added     = $data[0]->date_added;
-		$this->date_updated   = $data[0]->date_updated;
+		$this->status = $data[0]->status;
+		$this->data_sent = (array) json_decode($data[0]->data_sent);
+		$this->data_received = (array) json_decode($data[0]->data_received);
+		$this->date_added = $data[0]->date_added;
+		$this->date_updated = $data[0]->date_updated;
 
 		if (
-			empty( $this->payment_method )
-			&& ! empty( $this->data_received['pmt_paymentmethod'] )
+			empty($this->payment_method)
+			&& !empty($this->data_received['pmt_paymentmethod'])
 		) {
 			$this->payment_method = $this->data_received['pmt_paymentmethod'];
 		}
@@ -602,20 +631,21 @@ class WC_Payment_Maksuturva {
 	 *
 	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
 	 */
-	public function update() {
+	public function update()
+	{
 		global $wpdb;
 
 		$data = array(
-			'status'        => $this->status,
-			'data_received' => wp_json_encode( $this->data_received ),
-			'date_updated'  => date( 'Y-m-d H:i:s' ),
+			'status' => $this->status,
+			'data_received' => wp_json_encode($this->data_received),
+			'date_updated' => date('Y-m-d H:i:s'),
 		);
 
 		if (
-			empty( $this->payment_method )
-			&& ! empty( $this->data_received['pmt_paymentmethod'] )
+			empty($this->payment_method)
+			&& !empty($this->data_received['pmt_paymentmethod'])
 		) {
-			$this->payment_method   = $this->data_received['pmt_paymentmethod'];
+			$this->payment_method = $this->data_received['pmt_paymentmethod'];
 			$data['payment_method'] = $this->payment_method;
 		}
 
@@ -623,13 +653,13 @@ class WC_Payment_Maksuturva {
 			$wpdb->prefix . self::TABLE_NAME,
 			$data,
 			array(
-				'order_id'   => $this->order_id,
+				'order_id' => $this->order_id,
 				'payment_id' => $this->payment_id,
 			)
 		); // Db call ok; No-cache ok.
 
-		if ( false === $result ) {
-			throw new WC_Gateway_Maksuturva_Exception( 'Failed to update Svea payment!' );
+		if (false === $result) {
+			throw new WC_Gateway_Maksuturva_Exception('Failed to update Svea payment!');
 		}
 	}
 }
