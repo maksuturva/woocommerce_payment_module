@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		'svea_payment_gateway_payment_method_error_message',
 		esc_html__(
             'Failed to fetch payment methods from Svea',
-			'wc-maksuturva'
+			'svea-payments'
 		)
 	);
 	?>

@@ -5,7 +5,7 @@ const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extract
 module.exports = {
 	...defaultConfig,
 	entry: {
-		'wc-maksuturva-blocks': path.resolve(process.cwd(), 'src', 'index.js'),
+		'svea-payments-blocks': path.resolve(process.cwd(), 'src', 'index.js'),
 	},
 	output: {
 		path: path.resolve(process.cwd(), 'assets/js'),

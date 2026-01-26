@@ -13,6 +13,6 @@
         }
     },
     "scripts": {
-        "lint": "vendor/bin/phpcs --standard=WordPress includes/ wc-maksuturva.php -ps"
+        "lint": "vendor/bin/phpcs --standard=WordPress includes/ svea-payments.php -ps"
     }
 }

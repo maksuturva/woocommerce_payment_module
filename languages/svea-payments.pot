@@ -327,15 +327,15 @@ msgstr ""
 msgid "Pay for order"
 msgstr ""
 
-#: wc-maksuturva.php:197
+#: svea-payments.php:197
 msgid "Svea order details"
 msgstr ""
 
-#: wc-maksuturva.php:215
+#: svea-payments.php:215
 msgid "Once every 5 minutes"
 msgstr ""
 
-#: wc-maksuturva.php:267
+#: svea-payments.php:267
 msgid "Settings"
 msgstr ""
 

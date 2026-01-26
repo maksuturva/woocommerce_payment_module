@@ -146,7 +146,7 @@ class WC_Payment_Handling_Costs
 		if ($payment_method_handling_cost_without_tax !== null) {
 
 			$cart->add_fee(
-				__('Payment handling fee', 'wc-maksuturva'),
+				__('Payment handling fee', 'svea-payments'),
 				$payment_method_handling_cost_without_tax,
 				true,
 				$this->get_payment_method_handling_cost_tax_class()
@@ -231,7 +231,7 @@ class WC_Payment_Handling_Costs
 
 		if ($payment_handling_cost_fee === null) {
 			foreach ($order->get_fees() as $fee) {
-				if ($fee['name'] === __('Payment handling fee', 'wc-maksuturva')) {
+				if ($fee['name'] === __('Payment handling fee', 'svea-payments')) {
 					$fee['total'] = 0;
 					$order->calculate_totals();
 					return;
@@ -244,7 +244,7 @@ class WC_Payment_Handling_Costs
 		$fee_already_exists = false;
 
 		foreach ($order->get_fees() as $fee) {
-			if ($fee['name'] === __('Payment handling fee', 'wc-maksuturva')) {
+			if ($fee['name'] === __('Payment handling fee', 'svea-payments')) {
 				$fee['total'] = $payment_handling_cost_fee;
 				$fee_already_exists = true;
 			}
@@ -252,7 +252,7 @@ class WC_Payment_Handling_Costs
 
 		if (!$fee_already_exists) {
 			$fee = new \stdClass();
-			$fee->name = __('Payment handling fee', 'wc-maksuturva');
+			$fee->name = __('Payment handling fee', 'svea-payments');
 			$fee->amount = $payment_handling_cost_fee;
 			$fee->taxable = true;
 			$order->add_fee($fee);

@@ -197,7 +197,7 @@ class WC_Payment_Method_Select
 	{
 
 		if (!isset($_POST[self::PAYMENT_METHOD_SELECT_ID])) {
-			wc_add_notice(__('Payment method not selected', 'wc-maksuturva'), 'error');
+			wc_add_notice(__('Payment method not selected', 'svea-payments'), 'error');
 			return false;
 		}
 

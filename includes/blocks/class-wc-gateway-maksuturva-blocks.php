@@ -1,4 +1,9 @@
 <?php
+
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
 /**
@@ -82,8 +87,8 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 	 */
 	public function get_payment_method_script_handles()
 	{
-		$script_path = '/assets/js/wc-maksuturva-blocks.js';
-		$script_asset_path = WC_Maksuturva::get_instance()->get_plugin_dir() . '/assets/js/wc-maksuturva-blocks.asset.php';
+		$script_path = '/assets/js/svea-payments-blocks.js';
+		$script_asset_path = WC_Maksuturva::get_instance()->get_plugin_dir() . '/assets/js/svea-payments-blocks.asset.php';
 		$script_asset = file_exists($script_asset_path)
 			? require $script_asset_path
 			: array(
@@ -96,17 +101,17 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 			array('wc-blocks-registry', 'wc-settings')
 		);
 
-		$script_url = WC_Maksuturva::get_instance()->get_plugin_url() . 'assets/js/wc-maksuturva-blocks.js';
+		$script_url = WC_Maksuturva::get_instance()->get_plugin_url() . 'assets/js/svea-payments-blocks.js';
 
 		wp_register_script(
-			'wc-maksuturva-blocks',
+			'svea-payments-blocks',
 			$script_url,
 			$script_asset['dependencies'],
 			$script_asset['version'],
 			true
 		);
 
-		return array('wc-maksuturva-blocks');
+		return array('svea-payments-blocks');
 	}
 
 	/**

@@ -11,10 +11,10 @@
  * Version:     3.0.0     
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
- * Text Domain: wc-maksuturva
+ * Text Domain: svea-payments
  * Domain Path: /languages/
  * Requires at least: 6.0
- * Tested up to: 6.7     
+ * Tested up to: 6.9     
  * License:      LGPL2.1
  * WC requires at least: 8.0
  * WC tested up to: 10.4.3    
@@ -182,7 +182,7 @@ class WC_Maksuturva
 	 *
 	 * @var string OPTION_DB_VERSION The plugin DB version option name.
 	 */
-	const OPTION_DB_VERSION = 'wc-maksuturva-db-version';
+	const OPTION_DB_VERSION = 'svea-payments-db-version';
 
 	/**
 	 * The working instance of the plugin, singleton.
@@ -272,7 +272,7 @@ class WC_Maksuturva
 		try {
 			$this->update_db_check();
 
-			load_plugin_textdomain('wc-maksuturva', false, basename(__DIR__) . '/languages');
+			load_plugin_textdomain('svea-payments', false, basename(__DIR__) . '/languages');
 
 			add_filter('woocommerce_payment_gateways', array($this, 'add_maksuturva_gateway'));
 			add_filter('plugin_action_links_' . $this->plugin_name, array(__CLASS__, 'maksuturva_action_links'));
@@ -585,7 +585,7 @@ class WC_Maksuturva
 
 		add_meta_box(
 			'maksuturva-order-details',
-			__('Details for order in Svea Payments Extranet', 'wc-maksuturva'),
+			__('Details for order in Svea Payments Extranet', 'svea-payments'),
 			'WC_Meta_Box_Maksuturva::output',
 			$screen,
 			'side',
@@ -609,7 +609,7 @@ class WC_Maksuturva
 	{
 		$schedules['five_minutes'] = array(
 			'interval' => 5 * 60,
-			'display' => __('Once every 5 minutes', 'wc-maksuturva'),
+			'display' => __('Once every 5 minutes', 'svea-payments'),
 		);
 
 		return $schedules;

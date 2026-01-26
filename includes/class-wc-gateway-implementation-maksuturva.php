@@ -241,7 +241,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		if ( null !== $order->get_items( 'gift_card' ) ) {
 			$giftcards = $order->get_items( 'gift_card' );
 			foreach ( $giftcards as $giftcard ) {
-				$gctext         = __( 'Gift Card', 'wc-maksuturva' );
+				$gctext         = __( 'Gift Card', 'svea-payments' );
 				$payment_rows[] = array(
 					'pmt_row_name'               => $gctext . ' ' . $giftcard->get_name(),
 					'pmt_row_desc'               => '-',
@@ -263,7 +263,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 					if (method_exists($gift_card_item, 'get_amount') && method_exists($gift_card_item, 'get_card_number')) {
 						$pwamount = $gift_card_item->get_amount();
 						$pwcardnumber = $gift_card_item->get_card_number();
-						$gctext         = __('Gift Card', 'wc-maksuturva');
+						$gctext         = __('Gift Card', 'svea-payments');
 						$payment_rows[] = array(
 							'pmt_row_name'               => $gctext . ' ' . $pwcardnumber,
 							'pmt_row_desc'               => '-',
@@ -318,7 +318,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			}
 
 			return array(
-				'pmt_row_name'               => __( 'Shipping cost', 'wc-maksuturva' ),
+				'pmt_row_name'               => __( 'Shipping cost', 'svea-payments' ),
 				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $order->get_shipping_method() ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
@@ -351,7 +351,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$description = implode( ',', $order->get_used_coupons() );
 
 			return array(
-				'pmt_row_name'               => __( 'Discount', 'wc-maksuturva' ),
+				'pmt_row_name'               => __( 'Discount', 'svea-payments' ),
 				'pmt_row_desc'               => WC_Utils_Maksuturva::filter_productname( $description ),
 				'pmt_row_quantity'           => 1,
 				'pmt_row_deliverydate'       => date( 'd.m.Y' ),
@@ -385,8 +385,8 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$tax_rate                       = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
 
 		return array(
-			'pmt_row_name'               => __( 'Payment handling fee', 'wc-maksuturva' ),
-			'pmt_row_desc'               => __( 'Payment handling fee', 'wc-maksuturva' ),
+			'pmt_row_name'               => __( 'Payment handling fee', 'svea-payments' ),
+			'pmt_row_desc'               => __( 'Payment handling fee', 'svea-payments' ),
 			'pmt_row_quantity'           => 1,
 			'pmt_row_deliverydate'       => date( 'd.m.Y' ),
 			'pmt_row_price_gross'        => WC_Utils_Maksuturva::filter_price( $payment_method_handling_cost ),
@@ -415,7 +415,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
 
-			if ( $fee['name'] === __( 'Payment handling fee', 'wc-maksuturva' ) ) {
+			if ( $fee['name'] === __( 'Payment handling fee', 'svea-payments' ) ) {
 				$this->removed_fees += $fee_total;
 				continue;
 			}

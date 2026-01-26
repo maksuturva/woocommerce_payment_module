@@ -230,7 +230,7 @@ class WC_Svea_Refund_Handler {
 			$this->create_comment(
 				/* translators: %s: amount */
 				sprintf(
-					__( 'Made a refund of %s € through Svea', 'wc-maksuturva' ),
+					__( 'Made a refund of %s € through Svea', 'svea-payments' ),
 					$this->format_amount( $amount )
 				)
 			);
@@ -382,11 +382,11 @@ class WC_Svea_Refund_Handler {
 			. '/dashboard/PaymentEvent.db'
 			. '?pmt_id=' . $this->payment->get_payment_id();
 
-		return __( 'Creating a refund failed', 'wc-maksuturva' )
+		return __( 'Creating a refund failed', 'svea-payments' )
 			. '. '
-			. __( 'Make a refund directly', 'wc-maksuturva' )
+			. __( 'Make a refund directly', 'svea-payments' )
 			. ' <a href="' . $extranet_payment_url . '" target="_blank">'
-			. __( 'in Svea Extranet', 'wc-maksuturva' )
+			. __( 'in Svea Extranet', 'svea-payments' )
 			. '</a>.';
 	}
 
@@ -403,11 +403,11 @@ class WC_Svea_Refund_Handler {
 		return implode(
 			'<br />',
 			array(
-				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', 'wc-maksuturva' ),
-				__( 'Recipient', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_recipientname'],
-				__( 'IBAN', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_iban'],
-				__( 'Reference', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_reference'],
-				__( 'Amount', 'wc-maksuturva' ) . ': ' . $response['pmtc_pay_with_amount'] . ' €',
+				__( 'Payment is already settled. A payment to Svea is required to finalize refund:', 'svea-payments' ),
+				__( 'Recipient', 'svea-payments' ) . ': ' . $response['pmtc_pay_with_recipientname'],
+				__( 'IBAN', 'svea-payments' ) . ': ' . $response['pmtc_pay_with_iban'],
+				__( 'Reference', 'svea-payments' ) . ': ' . $response['pmtc_pay_with_reference'],
+				__( 'Amount', 'svea-payments' ) . ': ' . $response['pmtc_pay_with_amount'] . ' €',
 			)
 		);
 	}

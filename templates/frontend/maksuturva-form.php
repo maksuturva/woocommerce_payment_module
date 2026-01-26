@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <?php
-$msg = __( 'Thank you for your order. You will now be redirected to Svea to complete the payment.', 'wc-maksuturva' );
+$msg = __( 'Thank you for your order. You will now be redirected to Svea to complete the payment.', 'svea-payments' );
 wc_enqueue_js(
 	'
 		$.blockUI({
@@ -73,8 +73,8 @@ wc_enqueue_js(
 	<!-- Button Fallback -->
 	<div class="payment_buttons">
 		<a class="button cancel" href="<?php echo esc_url( $order->get_cancel_order_url() ); ?>">
-			<?php echo esc_attr( __( 'Cancel order', 'wc-maksuturva' ) ); ?></a>
+			<?php echo esc_attr( __( 'Cancel order', 'svea-payments' ) ); ?></a>
 		<input type="submit" class="button alt" id="submit_maksuturva_payment_form"
-				value="<?php echo esc_attr( __( 'Pay for order', 'wc-maksuturva' ) ); ?>"/>
+				value="<?php echo esc_attr( __( 'Pay for order', 'svea-payments' ) ); ?>"/>
 	</div>
 </form>

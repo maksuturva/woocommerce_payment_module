@@ -193,7 +193,7 @@ class WC_Payment_Validator_Maksuturva {
 				break;
 			case self::ACTION_ERROR:
 				$this->status = self::STATUS_ERROR;
-				$this->error( __( 'An error occurred and the payment was not confirmed.', 'wc-maksuturva' ) );
+				$this->error( __( 'An error occurred and the payment was not confirmed.', 'svea-payments' ) );
 				break;
 			case self::ACTION_OK:
 			default:
@@ -309,7 +309,7 @@ class WC_Payment_Validator_Maksuturva {
 		if ( count( $missing_fields ) > 0 ) {
 			$this->error(
 				sprintf(
-					__( 'Missing payment field(s) in response: "%s"', 'wc-maksuturva' ),
+					__( 'Missing payment field(s) in response: "%s"', 'svea-payments' ),
 					implode( '", "', $missing_fields )
 				)
 			);
@@ -329,7 +329,7 @@ class WC_Payment_Validator_Maksuturva {
 	 */
 	protected function validate_payment_id( array $values ) {
 		if ( ! isset( $values['pmt_id'] ) || ! $this->gateway->check_payment_id( $values['pmt_id'] ) ) {
-			$this->error( __( 'The payment did not match any order', 'wc-maksuturva' ) );
+			$this->error( __( 'The payment did not match any order', 'svea-payments' ) );
 		}
 	}
 
@@ -345,7 +345,7 @@ class WC_Payment_Validator_Maksuturva {
 	protected function validate_checksum( array $values ) {
 		$data_hasher = new WC_Data_Hasher( $this->gateway->wc_gateway );
 		if ( ! isset( $values['pmt_hash'] ) || $data_hasher->create_hash( $values ) != $values['pmt_hash'] ) {
-			$this->error( __( 'Payment verification checksum does not match', 'wc-maksuturva' ) );
+			$this->error( __( 'Payment verification checksum does not match', 'svea-payments' ) );
 		}
 	}
 
@@ -363,7 +363,7 @@ class WC_Payment_Validator_Maksuturva {
 		if ( ! isset( $values['pmt_reference'] )
 			|| ! $this->gateway->check_payment_reference_number( $values['pmt_reference'] )
 		) {
-			$this->error( __( 'Payment reference number could not be verified', 'wc-maksuturva' ) );
+			$this->error( __( 'Payment reference number could not be verified', 'svea-payments' ) );
 		}
 	}
 
@@ -385,7 +385,7 @@ class WC_Payment_Validator_Maksuturva {
 			}
 			if ( isset( $this->gateway->{$key} ) && $this->gateway->{$key} !== $value ) {
 				$not_matching_fields[] = sprintf(
-					__( '%1$s (obtained %2$s, expected %3$s)', 'wc-maksuturva' ),
+					__( '%1$s (obtained %2$s, expected %3$s)', 'svea-payments' ),
 					$key,
 					$value,
 					$this->gateway->{$key}
@@ -395,7 +395,7 @@ class WC_Payment_Validator_Maksuturva {
 		if ( count( $not_matching_fields ) > 0 ) {
 			$this->error(
 				sprintf(
-					__( 'The following field(s) differs from order: %s', 'wc-maksuturva' ),
+					__( 'The following field(s) differs from order: %s', 'svea-payments' ),
 					implode( ', ', $not_matching_fields )
 				)
 			);
@@ -419,7 +419,7 @@ class WC_Payment_Validator_Maksuturva {
 			if ( $sent_seller_cost > $received_seller_cost ) {
 				$this->error(
 					sprintf(
-						__( 'Invalid payment amount (obtained %1$s, expected %2$s)', 'wc-maksuturva' ),
+						__( 'Invalid payment amount (obtained %1$s, expected %2$s)', 'svea-payments' ),
 						$values['pmt_sellercosts'],
 						$this->gateway->{'pmt_sellercosts'}
 					)

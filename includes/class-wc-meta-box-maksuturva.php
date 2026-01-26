@@ -119,21 +119,21 @@ class WC_Meta_Box_Maksuturva
 
 		switch ($payment->get_status()) {
 			case WC_Payment_Maksuturva::STATUS_COMPLETED:
-				$msg = __('The payment is confirmed by Svea Payments', 'wc-maksuturva');
+				$msg = __('The payment is confirmed by Svea Payments', 'svea-payments');
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
-				$msg = __('The payment is canceled by Svea Payments', 'wc-maksuturva');
+				$msg = __('The payment is canceled by Svea Payments', 'svea-payments');
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_ERROR:
-				$msg = __('The payment could not be confirmed by Svea Payments, please check manually', 'wc-maksuturva');
+				$msg = __('The payment could not be confirmed by Svea Payments, please check manually', 'svea-payments');
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 			case WC_Payment_Maksuturva::STATUS_PENDING:
 			default:
-				$msg = __('The payment is still waiting for confirmation by Svea Payments', 'wc-maksuturva');
+				$msg = __('The payment is still waiting for confirmation by Svea Payments', 'svea-payments');
 				break;
 		}
 
