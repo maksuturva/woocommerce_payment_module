@@ -164,7 +164,7 @@ class WC_Maksuturva
 	 *
 	 * @var string VERSION The plugin version.
 	 */
-	const VERSION = '2.7.0';
+	const VERSION = '3.0.0';
 
 	/**
 	 * Plugin DB version.
@@ -257,6 +257,8 @@ class WC_Maksuturva
 		register_deactivation_hook($this->plugin_name, array($this, 'deactivate'));
 		// The uninstall hook callback needs to be a static class method or function.
 		register_uninstall_hook($this->plugin_name, array(__CLASS__, 'uninstall'));
+
+		add_action('woocommerce_blocks_payment_method_type_registration', array($this, 'maksuturva_blocks_support'));
 	}
 
 	/**
@@ -307,7 +309,7 @@ class WC_Maksuturva
 			add_action('woocommerce_review_order_before_payment', array($this, 'svea_part_payment_widget_checkout_before_payment'));
 			add_action('woocommerce_review_order_after_payment', array($this, 'svea_part_payment_widget_checkout_after_payment'));
 
-			add_action('woocommerce_blocks_payment_method_type_registration', array($this, 'maksuturva_blocks_support'));
+
 
 		} catch (\Exception $e) {
 			wc_maksuturva_log('Error in Svea Payments module inititalization: ' . $e->getMessage());
@@ -323,6 +325,7 @@ class WC_Maksuturva
 	 */
 	public function maksuturva_blocks_support(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry)
 	{
+		error_log('maksuturva_blocks_support running');
 		if (class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
 			$this->load_class('WC_Gateway_Maksuturva');
 			require_once 'includes/blocks/class-wc-gateway-maksuturva-blocks.php';
