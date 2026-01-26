@@ -910,4 +910,4 @@ class WC_Maksuturva
 	}
 }
 
-add_action('plugins_loaded', array(WC_Maksuturva::get_instance(), 'init'));
+add_action('init', array(WC_Maksuturva::get_instance(), 'init'));
