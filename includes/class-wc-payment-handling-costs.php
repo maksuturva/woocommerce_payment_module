@@ -255,6 +255,9 @@ class WC_Payment_Handling_Costs
 			$fee->name = __('Payment handling fee', 'svea-payments');
 			$fee->amount = $payment_handling_cost_fee;
 			$fee->taxable = true;
+			$fee->tax_class = $this->get_payment_method_handling_cost_tax_class();
+			$fee->tax = 0;
+			$fee->tax_data = array();
 			$order->add_fee($fee);
 		}
 
