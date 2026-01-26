@@ -262,7 +262,7 @@ class WC_Payment_Maksuturva
 			self::STATUS_PENDING,
 			self::STATUS_DELAYED
 		);
-		$data = $wpdb->get_results($query); // Db call ok; No-cache ok. // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$data = $wpdb->get_results($query); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		$payments = array();
 
@@ -598,7 +598,7 @@ class WC_Payment_Maksuturva
 			$order_id
 		);
 
-		$data = $wpdb->get_results($query); // Db call ok; No-cache ok. // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$data = $wpdb->get_results($query); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if (!(is_array($data) && count($data) === 1)) {
 			return; // no order found in Maksuturva queue
