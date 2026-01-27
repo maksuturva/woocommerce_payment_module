@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: master
+          ref: marketplace_compatible
           path: woocommerce_payment_module
 
       - name: Create release package
