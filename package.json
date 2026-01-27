@@ -1,7 +1,7 @@
 {
-  "name": "woocommerce-payment-module",
+  "name": "svea-payments-finland-for-woocommerce",
   "version": "3.0.0",
-  "description": "Svea Payment Gateway for WooCommerce",
+  "description": "Svea Payments Finland for WooCommerce",
   "main": "index.js",
   "scripts": {
     "build": "wp-scripts build",

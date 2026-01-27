@@ -1,11 +1,11 @@
 <?php
 /**
- * Svea Payment Gateway
+ * Svea Payments Finland for WooCommerce
  *
- * @package     Svea Payment Gateway
+ * @package     Svea Payments Finland for WooCommerce
  *
  * @wordpress-plugin
- * Plugin Name:  Svea Payment Gateway
+ * Plugin Name:  Svea Payments Finland for WooCommerce
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
  * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
  * Version:     3.0.0     
@@ -18,23 +18,6 @@
  * License:      LGPL2.1
  * WC requires at least: 8.0
  * WC tested up to: 10.4.3    
- */
-
-/**
- * Svea Payments Gateway Plugin for WooCommerce
- * Plugin developed for Svea Payments Oy Development Oy
- * Last update: 01/26/2025
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * [GNU LGPL v. 2.1 @gnu.org] (https://www.gnu.org/licenses/lgpl-2.1.html)
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
  */
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;

@@ -1,4 +1,4 @@
-=== Svea Payment Gateway ===
+=== Svea Payments Finland for WooCommerce ===
 Contributors: svea_payments
 Tags: svea, payment gateway, finland, woocommerce
 Requires at least: 6.0
@@ -8,7 +8,7 @@ Requires PHP: 7.4
 License: LGPLv2.1
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
-Svea Payments Gateway Plugin for WooCommerce provides intelligent online payment services for the Finnish market.
+Svea Payments Finland for WooCommerce provides intelligent online payment services for the Finnish market.
 
 == Description ==
 
