@@ -1,2 +1,2 @@
-### 2.7.0 - 2025-12-16
-* Added support for WooCommerce Blocks (Checkout Block).
+### 2.7.1 - 2026-03-01
+* Added Apple Pay and Google Pay payment methods
