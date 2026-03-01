@@ -14,9 +14,8 @@
  * Text Domain: svea-payments
  * Domain Path: /languages/
  * Requires at least: 6.0
- * Requires Plugins: woocommerce
  * Tested up to: 6.9     
- * License:      LGPL2.1
+ * Last update: 01/03/2026
  * WC requires at least: 8.0
  * WC tested up to: 10.4.3    
  */
@@ -309,7 +308,7 @@ class Sveapafi_Maksuturva
 	 */
 	public function maksuturva_blocks_support(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry)
 	{
-		error_log('maksuturva_blocks_support running');
+
 		if (class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
 			$this->load_class('Sveapafi_Gateway');
 			require_once 'includes/blocks/class-sveapafi-gateway-blocks.php';

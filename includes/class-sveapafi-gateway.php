@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin 4.x, 5.x
  * Plugin developed for Svea Payments Oy
- * Last update: 11/04/2021
+ * Last update: 01/03/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,7 @@ require_once 'class-sveapafi-utils.php';
  *
  * @since 2.0.0
  */
+#[\AllowDynamicProperties]
 class Sveapafi_Gateway extends \WC_Payment_Gateway
 {
 
@@ -152,9 +153,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 
 		add_action('woocommerce_order_status_changed', array($this, 'order_status_changed_event'), 10, 3);
 
-		// see Github issue #23, @since 2.1.7, 2.4.2 added is checkout boolean
-		// if (!is_admin() && is_checkout()) {
-		if (!is_admin()) { // TODO: ## Restore to old
+		if (!is_admin()) {
 			add_filter('woocommerce_available_payment_gateways', array($this, 'payment_gateway_disable_empty'));
 		}
 
@@ -241,7 +240,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 			return $available_gateways;
 		}
 
-		$payment_method_type = explode('WC_Gateway_Svea_', $this->id)[1];
+		$payment_method_type = explode('Sveapafi_Gateway_Svea_', $this->id)[1];
 		$payment_method_type = strtolower($payment_method_type);
 		$payment_method_type = str_replace('_', '-', $payment_method_type);
 		try {
@@ -307,6 +306,28 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function init_settings()
+	{
+		parent::init_settings();
+
+		if (empty($this->settings)) {
+			// Try to load old settings and populate $this->settings before the form renders
+			$old_settings = get_option('woocommerce_WC_Gateway_Maksuturva_settings');
+			if (!empty($old_settings)) {
+				$this->settings = $old_settings;
+
+				// Re-initialize class attributes that rely on settings array (like $this->title, etc)
+				// otherwise they'll be empty in the admin panel inputs
+				foreach ($this->settings as $key => $value) {
+					$this->$key = $value;
+				}
+			}
+		}
+	}
+
+	/**
 	 * Generates payment method handling cost table html
 	 *
 	 * @since 2.1.3
@@ -350,7 +371,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		} elseif ($this->id === 'Sveapafi_Gateway') {
 			$payment_method_type = 'collated';
 		} else {
-			$payment_method_type = str_replace('_', '-', strtolower(explode('WC_Gateway_Svea_', $this->id)[1]));
+			$payment_method_type = str_replace('_', '-', strtolower(explode('Sveapafi_Gateway_Svea_', $this->id)[1]));
 		}
 
 		return $this->payment_method_select->initialize_payment_method_select(

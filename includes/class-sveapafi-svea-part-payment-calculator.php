@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 03/11/2024
+ * Last update: 01/03/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

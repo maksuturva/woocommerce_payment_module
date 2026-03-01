@@ -20,6 +20,19 @@ final class Sveapafi_Gateway_Blocks extends AbstractPaymentMethodType
 	 * @var Sveapafi_Gateway
 	 */
 	private $gateway;
+	/**
+	 * The gateway url
+	 * 
+	 * @var string
+	 */
+	public $gateway_url;
+
+	/**
+	 * Gateway settings.
+	 *
+	 * @var array
+	 */
+	protected $settings;
 
 	/**
 	 * Payment method name/id/slug.
@@ -76,7 +89,7 @@ final class Sveapafi_Gateway_Blocks extends AbstractPaymentMethodType
 			error_log("Block mode is disabled");
 			return false;
 		} else {
-			error_log("Block mode is enabled");
+
 		}
 
 		$is_active = $this->gateway->is_available();

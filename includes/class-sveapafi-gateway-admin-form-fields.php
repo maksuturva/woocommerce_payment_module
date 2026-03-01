@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 30/11/2025
+ * Last update: 01/03/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -631,7 +631,7 @@ class Sveapafi_Gateway_Admin_Form_Fields
 				jQuery(function($) {
 					toggle_non_outbound_settings(' . ($is_outbound_payment_enabled ? 'true' : 'false') . ');
 
-					$("body").on("change", "#woocommerce_WC_Gateway_Maksuturva_outbound_payment", function() {
+					$("body").on("change", "#woocommerce_Sveapafi_Gateway_outbound_payment", function() {
 						toggle_non_outbound_settings(this.checked);
 					});
 
@@ -639,7 +639,7 @@ class Sveapafi_Gateway_Admin_Form_Fields
 					{
 						$("#payment_method_handling_cost_table").closest("tr")
 							.css("display", is_op_enabled ? "none" : "table-row");
-						$("#woocommerce_WC_Gateway_Maksuturva_payment_method_handling_cost_tax_class").closest("tr")
+						$("#woocommerce_Sveapafi_Gateway_payment_method_handling_cost_tax_class").closest("tr")
 							.css("display", is_op_enabled ? "none" : "table-row");
 					}
 				});
