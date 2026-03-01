@@ -33,7 +33,13 @@ final class Sveapafi_Gateway_Blocks extends AbstractPaymentMethodType
 	 */
 	public function initialize()
 	{
-		$this->settings = get_option('woocommerce_WC_Gateway_Maksuturva_settings', []);
+		// Try to get new settings, fallback to old WC_Gateway_Maksuturva settings if empty
+		$this->settings = get_option('woocommerce_Sveapafi_Gateway_settings', []);
+		if (empty($this->settings)) {
+			$this->settings = get_option('woocommerce_WC_Gateway_Maksuturva_settings', []);
+		}
+
+		$this->gateway_url = Sveapafi_Maksuturva::get_instance()->plugin_url() . '/';
 		$this->gateway = new Sveapafi_Gateway();
 
 		add_action('woocommerce_rest_checkout_process_payment_with_context', array($this, 'set_payment_method_for_rest'), 10, 2);

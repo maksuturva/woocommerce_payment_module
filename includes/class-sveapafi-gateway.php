@@ -272,20 +272,22 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		}
 
 		?>
-				<style>
-					.woocommerce_page_wc-settings .form-table {
-						border: 1px solid #c3c4c7;
-						padding: 15px;
-						margin-bottom: 20px;
-						background: #fff;
-					}
-					.woocommerce_page_wc-settings .form-table th, .woocommerce_page_wc-settings .form-table td {
-						padding-left: 20px;
-					}
-				</style>
-				<?php
+		<style>
+			.woocommerce_page_wc-settings .form-table {
+				border: 1px solid #c3c4c7;
+				padding: 15px;
+				margin-bottom: 20px;
+				background: #fff;
+			}
 
-				parent::admin_options();
+			.woocommerce_page_wc-settings .form-table th,
+			.woocommerce_page_wc-settings .form-table td {
+				padding-left: 20px;
+			}
+		</style>
+		<?php
+
+		parent::admin_options();
 
 		/***
 		 * <p>You may use diagnostics functionality to send additional webstore platform information to Svea Payments
@@ -430,36 +432,31 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 
 		ob_start();
 		?>
-				<tr valign="top">
-					<th scope="row" class="titledesc">
-						<label for="<?php echo esc_attr($field); ?>"><?php echo wp_kses_post($data['title']); ?></label>
-						<?php echo wp_kses_post($this->get_tooltip_html($data)); ?>
-					</th>
-					<td class="forminp">
-						<fieldset>
-							<legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span>
-							</legend>
-							<?php foreach ($data['options'] as $value => $label): ?>
-									<label for="<?php echo esc_attr($field . '_' . $value); ?>">
-									<input <?php disabled($data['disabled'], true); ?>
-										class="<?php echo esc_attr($data['class']); ?>"
-										type="radio"
-										name="<?php echo esc_attr($field); ?>"
-										id="<?php echo esc_attr($field . '_' . $value); ?>"
-										style="<?php echo esc_attr($data['css']); ?>"
-										value="<?php echo esc_attr($value); ?>"
-										<?php checked($this->get_option($key, $data['default']), $value); ?>
-										<?php echo $this->get_custom_attribute_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> />
-										<?php echo wp_kses_post($label); ?>
-									</label><br/>
-							<?php endforeach; ?>
-							<?php echo wp_kses_post($this->get_description_html($data)); ?>
-						</fieldset>
-					</td>
-				</tr>
-				<?php
+		<tr valign="top">
+			<th scope="row" class="titledesc">
+				<label for="<?php echo esc_attr($field); ?>"><?php echo wp_kses_post($data['title']); ?></label>
+				<?php echo wp_kses_post($this->get_tooltip_html($data)); ?>
+			</th>
+			<td class="forminp">
+				<fieldset>
+					<legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span>
+					</legend>
+					<?php foreach ($data['options'] as $value => $label): ?>
+						<label for="<?php echo esc_attr($field . '_' . $value); ?>">
+							<input <?php disabled($data['disabled'], true); ?> class="<?php echo esc_attr($data['class']); ?>"
+								type="radio" name="<?php echo esc_attr($field); ?>"
+								id="<?php echo esc_attr($field . '_' . $value); ?>" style="<?php echo esc_attr($data['css']); ?>"
+								value="<?php echo esc_attr($value); ?>" <?php checked($this->get_option($key, $data['default']), $value); ?> 			<?php echo $this->get_custom_attribute_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> />
+							<?php echo wp_kses_post($label); ?>
+						</label><br />
+					<?php endforeach; ?>
+					<?php echo wp_kses_post($this->get_description_html($data)); ?>
+				</fieldset>
+			</td>
+		</tr>
+		<?php
 
-				return ob_get_clean();
+		return ob_get_clean();
 	}
 
 	/**
@@ -558,9 +555,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		}
 
 		// Fetch the previous namespace settings if the current namespace settings are not found
-		$previous_namespace = str_replace(__NAMESPACE__, '', $option_name);
-		$previous_namespace = str_replace('\\', '', $previous_namespace);
-		$fallback_settings = get_option($previous_namespace);
+		$fallback_settings = get_option('woocommerce_WC_Gateway_Maksuturva_settings');
 
 		if (isset($fallback_settings[$key])) {
 			return $fallback_settings[$key];
