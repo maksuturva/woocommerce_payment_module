@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Svea Payments Gateway
+ * Svea Payments Finland for WooCommerce Plugin
  *
- * @package WooCommerce Svea Payments Gateway
+ * @package Svea Payments Finland for WooCommerce Plugin
  */
 
 /**
@@ -47,28 +47,28 @@ if (!defined('ABSPATH')) {
 		if ('EEAC' === $payment_method['code']) {
 			?>
 
-			<div class="svea-payment-method-select" style="clear: both; width: auto; display: block;">
-				<input checked="checked" // This is the default payment method
-					class="input-radio svea-payment-method-select-radio"
-					id="<?php echo esc_attr($payment_method_select_id); ?>-<?php echo esc_attr($payment_method['code']); ?>"
-					name="<?php echo esc_attr($payment_method_select_id); ?>" type="radio"
-					value="<?php echo esc_attr($payment_method['code']); ?>" />
-				<label class="label-eeac"
-					for="<?php echo esc_attr($payment_method_select_id); ?>-<?php echo esc_attr($payment_method['code']); ?>">
-					<img alt="<?php echo esc_attr($payment_method['displayname']); ?>"
-						src="<?php echo esc_url($payment_method['imageurl']); ?>" />
-				</label>
-				<?php
-				foreach ($payment_method_handling_costs as $handling_cost) {
-					if ($handling_cost['payment_method_type'] === $payment_method['code']) {
-						echo wp_kses_post('<div class="handling-cost-amount">+' . Sveapafi_Utils::filter_price($handling_cost['handling_cost_amount']) . $currency_symbol . '</div>');
-						break;
-					}
-				}
-				?>
+					<div class="svea-payment-method-select" style="clear: both; width: auto; display: block;">
+						<input checked="checked" // This is the default payment method
+							class="input-radio svea-payment-method-select-radio"
+							id="<?php echo esc_attr($payment_method_select_id); ?>-<?php echo esc_attr($payment_method['code']); ?>"
+							name="<?php echo esc_attr($payment_method_select_id); ?>" type="radio"
+							value="<?php echo esc_attr($payment_method['code']); ?>" />
+						<label class="label-eeac"
+							for="<?php echo esc_attr($payment_method_select_id); ?>-<?php echo esc_attr($payment_method['code']); ?>">
+							<img alt="<?php echo esc_attr($payment_method['displayname']); ?>"
+								src="<?php echo esc_url($payment_method['imageurl']); ?>" />
+						</label>
+						<?php
+						foreach ($payment_method_handling_costs as $handling_cost) {
+							if ($handling_cost['payment_method_type'] === $payment_method['code']) {
+								echo wp_kses_post('<div class="handling-cost-amount">+' . Sveapafi_Utils::filter_price($handling_cost['handling_cost_amount']) . $currency_symbol . '</div>');
+								break;
+							}
+						}
+						?>
 
-			</div>
-			<?php
+					</div>
+					<?php
 		}
 	}
 	?>
@@ -79,7 +79,7 @@ if (!defined('ABSPATH')) {
 	if (!empty($terms['text'])) {
 		echo esc_html($terms['text']);
 		?>
-		(<a href="<?php echo esc_url($terms['url']); ?>" target="_blank">PDF</a>)
+			(<a href="<?php echo esc_url($terms['url']); ?>" target="_blank">PDF</a>)
 	<?php } ?>
 </p>
 

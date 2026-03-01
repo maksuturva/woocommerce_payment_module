@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Svea Payments Gateway
+ * Svea Payments Finland for WooCommerce Plugin
  *
- * @package WooCommerce Svea Payments Gateway
+ * @package Svea Payments Finland for WooCommerce Plugin
  */
 
 /**
@@ -41,7 +41,7 @@ if (!defined('ABSPATH')) {
 		<label for="payment_method_handling_cost_table">
 			<?php echo esc_html($field['title']); ?>
 			<?php if (isset($field['description']) && isset($field['desc_tip']) && $field['desc_tip']) { ?>
-				<span class="woocommerce-help-tip" data-tip="<?php echo esc_html($field['description']); ?>"></span>
+					<span class="woocommerce-help-tip" data-tip="<?php echo esc_html($field['description']); ?>"></span>
 			<?php } ?>
 		</label>
 	</th>
@@ -55,16 +55,16 @@ if (!defined('ABSPATH')) {
 			</thead>
 			<tbody>
 				<?php foreach ($payment_method_handling_costs as $key => $handling_cost) { ?>
-					<tr>
-						<td>
-							<input type="text" name="payment_method_type[<?php echo esc_attr($key); ?>]"
-								value="<?php echo esc_html($handling_cost['payment_method_type']); ?>" />
-						</td>
-						<td>
-							<input type="text" name="handling_cost_amount[<?php echo esc_attr($key); ?>]"
-								value="<?php echo esc_html($handling_cost['handling_cost_amount']); ?>" />
-						</td>
-					</tr>
+						<tr>
+							<td>
+								<input type="text" name="payment_method_type[<?php echo esc_attr($key); ?>]"
+									value="<?php echo esc_html($handling_cost['payment_method_type']); ?>" />
+							</td>
+							<td>
+								<input type="text" name="handling_cost_amount[<?php echo esc_attr($key); ?>]"
+									value="<?php echo esc_html($handling_cost['handling_cost_amount']); ?>" />
+							</td>
+						</tr>
 				<?php } ?>
 			</tbody>
 			<tfoot>

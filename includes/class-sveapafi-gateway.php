@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Svea Payments Gateway
+ * Svea Payments Finland for WooCommerce Plugin
  *
- * @package WooCommerce Svea Payments Gateway
+ * @package Svea Payments Finland for WooCommerce Plugin
  */
 
 /**
@@ -24,7 +24,7 @@
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -46,7 +46,8 @@ require_once 'class-sveapafi-utils.php';
  *
  * @since 2.0.0
  */
-class Sveapafi_Gateway extends \WC_Payment_Gateway {
+class Sveapafi_Gateway extends \WC_Payment_Gateway
+{
 
 	/**
 	 * Major WooCommerce version no longer supporting notices on cancellation, thank you etc
@@ -106,34 +107,35 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.0.0
 	 */
-	public function __construct( $id = null ) {
+	public function __construct($id = null)
+	{
 		global $wpdb;
 
-		$this->id = isset( $id ) ? $id : self::class;
+		$this->id = isset($id) ? $id : self::class;
 
-		$this->title              = $this->get_option( 'title' );
-		$this->description        = $this->get_option( 'description' );
-		$this->enabled            = $this->get_option( 'enabled' );
-		$this->method_title       = __( 'Svea', 'svea-payments-finland-for-woocommerce' );
+		$this->title = $this->get_option('title');
+		$this->description = $this->get_option('description');
+		$this->enabled = $this->get_option('enabled');
+		$this->method_title = __('Svea', 'svea-payments-finland-for-woocommerce');
 		$this->method_description = sprintf(
-                '%s %s',
-                __( 'Take payments via Svea.', 'svea-payments-finland-for-woocommerce' ),
-                sprintf(
-                        '<a href="%s" target="_blank">%s</a>',
-                        'https://sveapayments.atlassian.net/wiki/spaces/DOCS/pages/1657014153/TESTING',
-                        __( 'Testing instructions', 'svea-payments-finland-for-woocommerce' )
-                )
-        );
+			'%s %s',
+			__('Take payments via Svea.', 'svea-payments-finland-for-woocommerce'),
+			sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				'https://sveapayments.atlassian.net/wiki/spaces/DOCS/pages/1657014153/TESTING',
+				__('Testing instructions', 'svea-payments-finland-for-woocommerce')
+			)
+		);
 
-		$this->outbound_payment = $this->get_option( 'outbound_payment' );
+		$this->outbound_payment = $this->get_option('outbound_payment');
 
-		$this->notify_url = WC()->api_request_url( self::class );
+		$this->notify_url = WC()->api_request_url(self::class);
 
 		$this->icon = Sveapafi_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 
 		$this->table_name = $wpdb->prefix . 'maksuturva_queue';
 
-		$this->payment_method_select = new Sveapafi_Payment_Method_Select( $this );
+		$this->payment_method_select = new Sveapafi_Payment_Method_Select($this);
 
 		$this->has_fields = true;
 
@@ -143,59 +145,60 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 		$this->init_settings();
 
 		// Save the settings.
-		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
 
-		add_action( 'woocommerce_api_wc_gateway_maksuturva', array( $this, 'check_response' ) );
-		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+		add_action('woocommerce_api_wc_gateway_maksuturva', array($this, 'check_response'));
+		add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
 
-		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_changed_event' ), 10, 3 );
+		add_action('woocommerce_order_status_changed', array($this, 'order_status_changed_event'), 10, 3);
 
 		// see Github issue #23, @since 2.1.7, 2.4.2 added is checkout boolean
 		// if (!is_admin() && is_checkout()) {
-		if ( ! is_admin() ) { // TODO: ## Restore to old
-			add_filter( 'woocommerce_available_payment_gateways', array( $this, 'payment_gateway_disable_empty' ) );
+		if (!is_admin()) { // TODO: ## Restore to old
+			add_filter('woocommerce_available_payment_gateways', array($this, 'payment_gateway_disable_empty'));
 		}
 
-		add_filter( 'woocommerce_gateway_title', array( $this, 'override_payment_gateway_title' ), 25, 2 );
+		add_filter('woocommerce_gateway_title', array($this, 'override_payment_gateway_title'), 25, 2);
 	}
 
-	public function override_payment_gateway_title( $title, $gateway_id ) {
+	public function override_payment_gateway_title($title, $gateway_id)
+	{
 		global $woocommerce, $post;
-		if ( ! is_admin() ) {
+		if (!is_admin()) {
 			return $title;
 		}
-		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+		if (OrderUtil::custom_orders_table_usage_is_enabled()) {
 			if (
-				'wc-orders' != wc_clean( $_GET['page'] )
+				'wc-orders' != wc_clean($_GET['page'])
 				// (!('shop_order' === OrderUtil::get_order_type( $order_id )) )
-				|| ( ! str_contains( $gateway_id, 'Maksuturva' ) && ! str_contains( $gateway_id, 'Svea' ) )
+				|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
 			) {
 				return $title;
 			}
 
-			if ( empty( $_GET['id'] ) ) {
+			if (empty($_GET['id'])) {
 				return $title;
 			}
-			$order_id = wc_clean( $_GET['id'] );
-			$order    = new \WC_Order( $order_id );
+			$order_id = wc_clean($_GET['id']);
+			$order = new \WC_Order($order_id);
 		} else {
 			// old WC way
 			if (
-				( 'shop_order' != get_post_type() )
-				|| ( ! str_contains( $gateway_id, 'Maksuturva' ) && ! str_contains( $gateway_id, 'Svea' ) )
+				('shop_order' != get_post_type())
+				|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
 			) {
 				return $title;
 			}
 
-			$order = new \WC_Order( $post->ID );
+			$order = new \WC_Order($post->ID);
 		}
 
-		if ( ! empty( $order ) && $order->get_payment_method() !== null ) {
-			$payment       = new Sveapafi_Payment( $order->get_id() );
+		if (!empty($order) && $order->get_payment_method() !== null) {
+			$payment = new Sveapafi_Payment($order->get_id());
 			$paymentMethod = $payment->get_payment_method();
-			if ( ! empty( $paymentMethod ) ) {
-				$paymentMethodName = $this->payment_method_select->get_payment_method_name( $paymentMethod );
-				if ( ! empty( $paymentMethodName ) && ! str_contains( $title, $paymentMethodName ) ) {
+			if (!empty($paymentMethod)) {
+				$paymentMethodName = $this->payment_method_select->get_payment_method_name($paymentMethod);
+				if (!empty($paymentMethodName) && !str_contains($title, $paymentMethodName)) {
 					return $title . ': ' . $paymentMethodName;
 				}
 			}
@@ -213,44 +216,45 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return array
 	 */
-	public function payment_gateway_disable_empty( $available_gateways ) {
-		if ( empty( WC()->cart ) ) {
+	public function payment_gateway_disable_empty($available_gateways)
+	{
+		if (empty(WC()->cart)) {
 			return;
 		}
 
-		if ( $this->id === self::class ) {
-			$is_outbound        = $this->is_outbound_payment_enabled();
-			$is_rest            = defined( 'REST_REQUEST' ) && REST_REQUEST;
-			$is_checkout        = is_checkout();
-			$block_mode_enabled = 'yes' === $this->get_option( 'block_mode_enabled', 'yes' );
+		if ($this->id === self::class) {
+			$is_outbound = $this->is_outbound_payment_enabled();
+			$is_rest = defined('REST_REQUEST') && REST_REQUEST;
+			$is_checkout = is_checkout();
+			$block_mode_enabled = 'yes' === $this->get_option('block_mode_enabled', 'yes');
 
 
 
 			// Allow if outbound payment is enabled OR if it's a REST request (Block Checkout)
 			// OR if it's the checkout page AND block mode is enabled.
-			$allow = $is_outbound || $is_rest || ( $is_checkout && $block_mode_enabled );
+			$allow = $is_outbound || $is_rest || ($is_checkout && $block_mode_enabled);
 
-			if ( ! $allow ) {
+			if (!$allow) {
 
-				unset( $available_gateways[ $this->id ] );
+				unset($available_gateways[$this->id]);
 			}
 			return $available_gateways;
 		}
 
-		$payment_method_type = explode( 'WC_Gateway_Svea_', $this->id )[1];
-		$payment_method_type = strtolower( $payment_method_type );
-		$payment_method_type = str_replace( '_', '-', $payment_method_type );
+		$payment_method_type = explode('WC_Gateway_Svea_', $this->id)[1];
+		$payment_method_type = strtolower($payment_method_type);
+		$payment_method_type = str_replace('_', '-', $payment_method_type);
 		try {
 			$payment_methods = $this->payment_method_select->get_payment_type_payment_methods(
 				$payment_method_type,
 				\WC_Payment_Gateway::get_order_total()
 			);
-		} catch ( \Exception $e ) {
-			sveapafi_log( "Couldn't get available payment gateways, reason: " . $e->getMessage() );
+		} catch (\Exception $e) {
+			sveapafi_log("Couldn't get available payment gateways, reason: " . $e->getMessage());
 		}
 
-		if ( ! isset( $payment_methods ) || count( $payment_methods ) === 0 ) {
-			unset( $available_gateways[ $this->id ] );
+		if (!isset($payment_methods) || count($payment_methods) === 0) {
+			unset($available_gateways[$this->id]);
 		}
 
 		return $available_gateways;
@@ -259,28 +263,29 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	/**
 	 * @inheritdoc
 	 */
-	public function admin_options() {
+	public function admin_options()
+	{
 
 
-		if ( ! Sveapafi_Maksuturva::get_instance()->is_currency_supported() ) {
-			$this->render( 'not-supported-banner', 'admin' );
+		if (!Sveapafi_Maksuturva::get_instance()->is_currency_supported()) {
+			$this->render('not-supported-banner', 'admin');
 		}
 
 		?>
-		<style>
-			.woocommerce_page_wc-settings .form-table {
-				border: 1px solid #c3c4c7;
-				padding: 15px;
-				margin-bottom: 20px;
-				background: #fff;
-			}
-			.woocommerce_page_wc-settings .form-table th, .woocommerce_page_wc-settings .form-table td {
-				padding-left: 20px;
-			}
-		</style>
-		<?php
+				<style>
+					.woocommerce_page_wc-settings .form-table {
+						border: 1px solid #c3c4c7;
+						padding: 15px;
+						margin-bottom: 20px;
+						background: #fff;
+					}
+					.woocommerce_page_wc-settings .form-table th, .woocommerce_page_wc-settings .form-table td {
+						padding-left: 20px;
+					}
+				</style>
+				<?php
 
-		parent::admin_options();
+				parent::admin_options();
 
 		/***
 		 * <p>You may use diagnostics functionality to send additional webstore platform information to Svea Payments
@@ -292,10 +297,11 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	/**
 	 * @inheritdoc
 	 */
-	public function init_form_fields() {
-		$gateway_admin_form_fields = new Sveapafi_Gateway_Admin_Form_Fields( $this );
-		$this->form_fields         = $gateway_admin_form_fields->as_array();
-		$gateway_admin_form_fields->toggle_gateway_admin_settings( $this->is_outbound_payment_enabled() );
+	public function init_form_fields()
+	{
+		$gateway_admin_form_fields = new Sveapafi_Gateway_Admin_Form_Fields($this);
+		$this->form_fields = $gateway_admin_form_fields->as_array();
+		$gateway_admin_form_fields->toggle_gateway_admin_settings($this->is_outbound_payment_enabled());
 	}
 
 	/**
@@ -303,8 +309,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.1.3
 	 */
-	public function generate_payment_method_handling_cost_table_html() {
-		$gateway_admin_form_fields = new Sveapafi_Gateway_Admin_Form_Fields( $this );
+	public function generate_payment_method_handling_cost_table_html()
+	{
+		$gateway_admin_form_fields = new Sveapafi_Gateway_Admin_Form_Fields($this);
 		return $gateway_admin_form_fields->generate_payment_method_handling_cost_table_html();
 	}
 
@@ -313,16 +320,17 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.1.3
 	 */
-	public function process_admin_options() {
+	public function process_admin_options()
+	{
 
-		$gateway_admin_form_fields = new Sveapafi_Gateway_Admin_Form_Fields( $this );
-		$errors                    = $gateway_admin_form_fields->save_payment_method_handling_costs();
+		$gateway_admin_form_fields = new Sveapafi_Gateway_Admin_Form_Fields($this);
+		$errors = $gateway_admin_form_fields->save_payment_method_handling_costs();
 
 		$settings = new \WC_Admin_Settings();
 
-		if ( isset( $errors ) ) {
-			foreach ( $errors as $error ) {
-				$settings->add_error( $error );
+		if (isset($errors)) {
+			foreach ($errors as $error) {
+				$settings->add_error($error);
 			}
 		}
 		parent::process_admin_options();
@@ -333,13 +341,14 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.1.3
 	 */
-	public function payment_fields() {
-		if ( $this->is_outbound_payment_enabled() ) {
+	public function payment_fields()
+	{
+		if ($this->is_outbound_payment_enabled()) {
 			$payment_method_type = 'outbound';
-		} elseif ( $this->id === 'Sveapafi_Gateway' ) {
+		} elseif ($this->id === 'Sveapafi_Gateway') {
 			$payment_method_type = 'collated';
 		} else {
-			$payment_method_type = str_replace( '_', '-', strtolower( explode( 'WC_Gateway_Svea_', $this->id )[1] ) );
+			$payment_method_type = str_replace('_', '-', strtolower(explode('WC_Gateway_Svea_', $this->id)[1]));
 		}
 
 		return $this->payment_method_select->initialize_payment_method_select(
@@ -354,11 +363,12 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.1.3
 	 */
-	public function validate_fields() {
-		if ( ! $this->is_outbound_payment_enabled() ) {
+	public function validate_fields()
+	{
+		if (!$this->is_outbound_payment_enabled()) {
 			$valid = $this->payment_method_select->validate_payment_method_select();
 
-			if ( ! $valid ) {
+			if (!$valid) {
 				return false;
 			}
 		}
@@ -377,10 +387,11 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.1.2
 	 */
-	public function process_refund( $order_id, $amount = null, $reason = '' ) {
-		$payment             = new Sveapafi_Payment( $order_id );
-		$svea_refund_handler = new Sveapafi_Svea_Refund_Handler( $order_id, $payment, $this );
-		return $svea_refund_handler->process_refund( $amount, $reason );
+	public function process_refund($order_id, $amount = null, $reason = '')
+	{
+		$payment = new Sveapafi_Payment($order_id);
+		$svea_refund_handler = new Sveapafi_Svea_Refund_Handler($order_id, $payment, $this);
+		return $svea_refund_handler->process_refund($amount, $reason);
 	}
 
 	/**
@@ -395,59 +406,60 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function generate_radio_html( $key, $data ) {
+	public function generate_radio_html($key, $data)
+	{
 
-		$field    = $this->get_field_key( $key );
+		$field = $this->get_field_key($key);
 		$defaults = array(
-			'title'             => '',
-			'label'             => '',
-			'disabled'          => false,
-			'class'             => '',
-			'css'               => '',
-			'type'              => 'text',
-			'desc_tip'          => false,
-			'description'       => '',
+			'title' => '',
+			'label' => '',
+			'disabled' => false,
+			'class' => '',
+			'css' => '',
+			'type' => 'text',
+			'desc_tip' => false,
+			'description' => '',
 			'custom_attributes' => array(),
 		);
 
-		$data = wp_parse_args( $data, $defaults );
+		$data = wp_parse_args($data, $defaults);
 
-		if ( ! $data['label'] ) {
+		if (!$data['label']) {
 			$data['label'] = $data['title'];
 		}
 
 		ob_start();
 		?>
-		<tr valign="top">
-			<th scope="row" class="titledesc">
-				<label for="<?php echo esc_attr( $field ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
-				<?php echo wp_kses_post( $this->get_tooltip_html( $data ) ); ?>
-			</th>
-			<td class="forminp">
-				<fieldset>
-					<legend class="screen-reader-text"><span><?php echo wp_kses_post( $data['title'] ); ?></span>
-					</legend>
-					<?php foreach ( $data['options'] as $value => $label ) : ?>
-						<label for="<?php echo esc_attr( $field . '_' . $value ); ?>">
-						<input <?php disabled( $data['disabled'], true ); ?>
-							class="<?php echo esc_attr( $data['class'] ); ?>"
-							type="radio"
-							name="<?php echo esc_attr( $field ); ?>"
-							id="<?php echo esc_attr( $field . '_' . $value ); ?>"
-							style="<?php echo esc_attr( $data['css'] ); ?>"
-							value="<?php echo esc_attr( $value ); ?>"
-							<?php checked( $this->get_option( $key, $data['default'] ), $value ); ?>
-							<?php echo $this->get_custom_attribute_html( $data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> />
-							<?php echo wp_kses_post( $label ); ?>
-						</label><br/>
-					<?php endforeach; ?>
-					<?php echo wp_kses_post( $this->get_description_html( $data ) ); ?>
-				</fieldset>
-			</td>
-		</tr>
-		<?php
+				<tr valign="top">
+					<th scope="row" class="titledesc">
+						<label for="<?php echo esc_attr($field); ?>"><?php echo wp_kses_post($data['title']); ?></label>
+						<?php echo wp_kses_post($this->get_tooltip_html($data)); ?>
+					</th>
+					<td class="forminp">
+						<fieldset>
+							<legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span>
+							</legend>
+							<?php foreach ($data['options'] as $value => $label): ?>
+									<label for="<?php echo esc_attr($field . '_' . $value); ?>">
+									<input <?php disabled($data['disabled'], true); ?>
+										class="<?php echo esc_attr($data['class']); ?>"
+										type="radio"
+										name="<?php echo esc_attr($field); ?>"
+										id="<?php echo esc_attr($field . '_' . $value); ?>"
+										style="<?php echo esc_attr($data['css']); ?>"
+										value="<?php echo esc_attr($value); ?>"
+										<?php checked($this->get_option($key, $data['default']), $value); ?>
+										<?php echo $this->get_custom_attribute_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> />
+										<?php echo wp_kses_post($label); ?>
+									</label><br/>
+							<?php endforeach; ?>
+							<?php echo wp_kses_post($this->get_description_html($data)); ?>
+						</fieldset>
+					</td>
+				</tr>
+				<?php
 
-		return ob_get_clean();
+				return ob_get_clean();
 	}
 
 	/**
@@ -459,7 +471,8 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_table_name() {
+	public function get_table_name()
+	{
 		return $this->table_name;
 	}
 
@@ -475,10 +488,11 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_payment_url( $payment_id, $type ) {
-		$base_url = $this->get_payment_base_url( $payment_id );
+	public function get_payment_url($payment_id, $type)
+	{
+		$base_url = $this->get_payment_base_url($payment_id);
 
-		return add_query_arg( 'pmt_act', $type, $base_url );
+		return add_query_arg('pmt_act', $type, $base_url);
 	}
 
 	/**
@@ -492,14 +506,15 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	protected function get_payment_base_url( $payment_id ) {
+	protected function get_payment_base_url($payment_id)
+	{
 		global $woocommerce;
 
 		$return_url = $this->notify_url;
-		if ( $woocommerce->session && $woocommerce->session->id ) {
+		if ($woocommerce->session && $woocommerce->session->id) {
 			$session_id = $woocommerce->session->id;
-			$return_url = add_query_arg( 'sessionid', $session_id, $this->notify_url );
-			$return_url = add_query_arg( 'orderid', $payment_id, $return_url );
+			$return_url = add_query_arg('sessionid', $session_id, $this->notify_url);
+			$return_url = add_query_arg('orderid', $payment_id, $return_url);
 		}
 
 		return $return_url;
@@ -514,7 +529,8 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_notify_url() {
+	public function get_notify_url()
+	{
 		return $this->notify_url;
 	}
 
@@ -527,29 +543,30 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string|int|array|null
 	 */
-	public function get_option( $key, $empty_value = null ) {
+	public function get_option($key, $empty_value = null)
+	{
 
-		if ( $key === 'enabled' ) {
-			return parent::get_option( $key, $empty_value );
+		if ($key === 'enabled') {
+			return parent::get_option($key, $empty_value);
 		}
 
-		$option_name   = 'woocommerce_' . self::class . '_settings';
-		$main_settings = get_option( $option_name );
+		$option_name = 'woocommerce_' . self::class . '_settings';
+		$main_settings = get_option($option_name);
 
-		if ( isset( $main_settings[ $key ] ) ) {
-			return $main_settings[ $key ];
+		if (isset($main_settings[$key])) {
+			return $main_settings[$key];
 		}
 
 		// Fetch the previous namespace settings if the current namespace settings are not found
-		$previous_namespace = str_replace( __NAMESPACE__, '', $option_name );
-		$previous_namespace = str_replace( '\\', '', $previous_namespace );
-		$fallback_settings  = get_option( $previous_namespace );
+		$previous_namespace = str_replace(__NAMESPACE__, '', $option_name);
+		$previous_namespace = str_replace('\\', '', $previous_namespace);
+		$fallback_settings = get_option($previous_namespace);
 
-		if ( isset( $fallback_settings[ $key ] ) ) {
-			return $fallback_settings[ $key ];
+		if (isset($fallback_settings[$key])) {
+			return $fallback_settings[$key];
 		}
 
-		return parent::get_option( $key, $empty_value );
+		return parent::get_option($key, $empty_value);
 	}
 
 	/**
@@ -561,8 +578,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_seller_id() {
-		return $this->get_option( 'maksuturva_sellerid' );
+	public function get_seller_id()
+	{
+		return $this->get_option('maksuturva_sellerid');
 	}
 
 	/**
@@ -574,8 +592,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_secret_key() {
-		return $this->get_option( 'maksuturva_secretkey' );
+	public function get_secret_key()
+	{
+		return $this->get_option('maksuturva_secretkey');
 	}
 
 	/**
@@ -587,8 +606,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_secret_key_version() {
-		return $this->get_option( 'maksuturva_keyversion' );
+	public function get_secret_key_version()
+	{
+		return $this->get_option('maksuturva_keyversion');
 	}
 
 	/**
@@ -600,8 +620,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_encoding() {
-		return $this->get_option( 'maksuturva_encoding', 'UTF-8' );
+	public function get_encoding()
+	{
+		return $this->get_option('maksuturva_encoding', 'UTF-8');
 	}
 
 	/**
@@ -613,8 +634,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_payment_id_prefix() {
-		return $this->get_option( 'maksuturva_orderid_prefix' );
+	public function get_payment_id_prefix()
+	{
+		return $this->get_option('maksuturva_orderid_prefix');
 	}
 
 	/**
@@ -626,8 +648,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function get_gateway_url() {
-		return $this->get_option( 'maksuturva_url' );
+	public function get_gateway_url()
+	{
+		return $this->get_option('maksuturva_url');
 	}
 
 	/**
@@ -637,7 +660,8 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return string
 	 */
-	public function is_outbound_payment_enabled() {
+	public function is_outbound_payment_enabled()
+	{
 		return $this->outbound_payment == 'yes';
 	}
 
@@ -650,7 +674,8 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return bool
 	 */
-	public function is_sandbox() {
+	public function is_sandbox()
+	{
 		return false;
 		// return ( $this->get_option( 'sandbox' ) === 'yes' );
 	}
@@ -664,8 +689,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return bool
 	 */
-	public function is_estonia_special_delivery() {
-		return ( $this->get_option( 'estonia_special_delivery' ) === 'yes' );
+	public function is_estonia_special_delivery()
+	{
+		return ($this->get_option('estonia_special_delivery') === 'yes');
 	}
 
 	/**
@@ -679,71 +705,73 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return \WC_Order
 	 */
-	protected function load_order_by_pmt_id( $pmt_id ) {
-		$pmt_id_prefix = $this->get_option( 'maksuturva_orderid_prefix' );
-		if ( strlen( $pmt_id_prefix ) && substr( $pmt_id, 0, strlen( $pmt_id_prefix ) ) === $pmt_id_prefix ) {
-			$pmt_id = substr( $pmt_id, strlen( $pmt_id_prefix ) );
+	protected function load_order_by_pmt_id($pmt_id)
+	{
+		$pmt_id_prefix = $this->get_option('maksuturva_orderid_prefix');
+		if (strlen($pmt_id_prefix) && substr($pmt_id, 0, strlen($pmt_id_prefix)) === $pmt_id_prefix) {
+			$pmt_id = substr($pmt_id, strlen($pmt_id_prefix));
 		}
 		$order_id = (int) $pmt_id - 100;
 
-		return wc_get_order( $order_id );
+		return wc_get_order($order_id);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function process_payment( $order_id ) {
+	public function process_payment($order_id)
+	{
 
-		$order         = wc_get_order( $order_id );
-		$order_handler = new Sveapafi_Order_Compatibility_Handler( $order );
+		$order = wc_get_order($order_id);
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 
 		/**
 		 * special functionality for Estonia EEAC payment method, needs to be activated in the admin panel
 		 *
 		 * @since 2.1.5
 		 */
-		if ( $this->is_estonia_special_delivery() && $order->get_payment_method() == 'Sveapafi_Gateway_Svea_Estonia_Payments' ) {
-			if ( trim( $order->get_shipping_postcode() ) == '' ) {
-				$order->set_shipping_postcode( '00000' );
+		if ($this->is_estonia_special_delivery() && $order->get_payment_method() == 'Sveapafi_Gateway_Svea_Estonia_Payments') {
+			if (trim($order->get_shipping_postcode()) == '') {
+				$order->set_shipping_postcode('00000');
 			}
-			if ( trim( $order->get_shipping_city() ) == '' ) {
-				$order->set_shipping_city( 'none' );
-			}
-
-			if ( trim( $order->get_billing_first_name() ) == '' ) {
-				$order->set_billing_first_name( 'none' );
-			}
-			if ( trim( $order->get_billing_last_name() ) == '' ) {
-				$order->set_billing_last_name( 'none' );
-			}
-			if ( trim( $order->get_billing_address_1() ) == '' ) {
-				$order->set_billing_address_1( 'none' );
-			}
-			if ( trim( $order->get_billing_postcode() ) == '' ) {
-				$order->set_billing_postcode( '00000' );
-			}
-			if ( trim( $order->get_billing_city() ) == '' ) {
-				$order->set_billing_city( 'none' );
-			}
-			if ( trim( $order->get_billing_country() ) == '' ) {
-				$order->set_billing_country( 'EE' );
+			if (trim($order->get_shipping_city()) == '') {
+				$order->set_shipping_city('none');
 			}
 
-			if ( trim( $order->get_billing_country() ) == '' ) {
-				$order->set_billing_country( 'EE' );
+			if (trim($order->get_billing_first_name()) == '') {
+				$order->set_billing_first_name('none');
+			}
+			if (trim($order->get_billing_last_name()) == '') {
+				$order->set_billing_last_name('none');
+			}
+			if (trim($order->get_billing_address_1()) == '') {
+				$order->set_billing_address_1('none');
+			}
+			if (trim($order->get_billing_postcode()) == '') {
+				$order->set_billing_postcode('00000');
+			}
+			if (trim($order->get_billing_city()) == '') {
+				$order->set_billing_city('none');
+			}
+			if (trim($order->get_billing_country()) == '') {
+				$order->set_billing_country('EE');
+			}
+
+			if (trim($order->get_billing_country()) == '') {
+				$order->set_billing_country('EE');
 			}
 			$order->save();
 		}
 		// Fix: Use standard WooCommerce payment URL
-		$url = $order->get_checkout_payment_url( true );
+		$url = $order->get_checkout_payment_url(true);
 
 
 
-		if ( ! $this->is_outbound_payment_enabled() ) {
-			if ( isset( $_POST[ Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] ) ) {
-				$payment_method_id = wc_clean( $_POST[ Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID ] );
-				$payment_method    = Sveapafi_Utils::filter_alphanumeric( $payment_method_id );
-				$url               = add_query_arg( Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url );
+		if (!$this->is_outbound_payment_enabled()) {
+			if (isset($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+				$payment_method_id = wc_clean($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
+				$payment_method = Sveapafi_Utils::filter_alphanumeric($payment_method_id);
+				$url = add_query_arg(Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID, $payment_method, $url);
 
 			} else {
 
@@ -753,7 +781,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 
 
 		return array(
-			'result'   => 'success',
+			'result' => 'success',
 			'redirect' => $url,
 		);
 	}
@@ -767,29 +795,30 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.0
 	 */
-	public function receipt_page( $order_id ) {
+	public function receipt_page($order_id)
+	{
 
 
-		$order = wc_get_order( $order_id );
+		$order = wc_get_order($order_id);
 
-		$payment_handling_costs = new Sveapafi_Payment_Handling_Costs( $this );
-		$payment_handling_costs->update_payment_handling_cost_fee( $order );
+		$payment_handling_costs = new Sveapafi_Payment_Handling_Costs($this);
+		$payment_handling_costs->update_payment_handling_cost_fee($order);
 
-		$gateway             = new Sveapafi_Gateway_Implementation( $this, $order );
-		$order_handler       = new Sveapafi_Order_Compatibility_Handler( $order );
+		$gateway = new Sveapafi_Gateway_Implementation($this, $order);
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		$payment_gateway_url = $gateway->get_payment_url();
-		$data                = $gateway->get_field_array();
-		$payment_method      = isset( $data['pmt_paymentmethod'] ) ? $data['pmt_paymentmethod'] : '';
+		$data = $gateway->get_field_array();
+		$payment_method = isset($data['pmt_paymentmethod']) ? $data['pmt_paymentmethod'] : '';
 
 		// Create the payment for Svea.
 		Sveapafi_Payment::create(
 			array(
-				'order_id'       => $order_handler->get_id(),
-				'payment_id'     => $data['pmt_id'],
+				'order_id' => $order_handler->get_id(),
+				'payment_id' => $data['pmt_id'],
 				'payment_method' => $payment_method,
-				'data_sent'      => $data,
-				'data_received'  => array(),
-				'status'         => Sveapafi_Payment::STATUS_PENDING,
+				'data_sent' => $data,
+				'data_received' => array(),
+				'status' => Sveapafi_Payment::STATUS_PENDING,
 			)
 		);
 
@@ -797,9 +826,9 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 			'maksuturva-form',
 			'frontend',
 			array(
-				'order'               => $order,
+				'order' => $order,
 				'payment_gateway_url' => $payment_gateway_url,
-				'data'                => $data,
+				'data' => $data,
 			)
 		);
 	}
@@ -811,70 +840,71 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.0.0
 	 */
-	public function check_response() {
+	public function check_response()
+	{
 
 		global $woocommerce;
 
 		// Clear any existing notices in case of "double-submissions".
 		wc_clear_notices();
 
-		if ( ! Sveapafi_Maksuturva::get_instance()->is_currency_supported() ) {
-			$this->add_notice( __( 'Payment gateway not available.', 'svea-payments-finland-for-woocommerce' ), 'error' );
-			wp_redirect( $woocommerce->cart->get_cart_url() );
+		if (!Sveapafi_Maksuturva::get_instance()->is_currency_supported()) {
+			$this->add_notice(__('Payment gateway not available.', 'svea-payments-finland-for-woocommerce'), 'error');
+			wp_redirect($woocommerce->cart->get_cart_url());
 
 			return;
 		}
 
-		$params = array_map( 'wc_clean', $_GET );
+		$params = array_map('wc_clean', $_GET);
 		// Make sure the payment id is found in the return parameters, and that it actually exists.
-		if ( ! isset( $params['pmt_id'] ) || false === ( $order = $this->load_order_by_pmt_id( $params['pmt_id'] ) ) ) {
-			$this->add_notice( __( 'Missing reference number in response.', 'svea-payments-finland-for-woocommerce' ), 'error' );
-			wp_redirect( $woocommerce->cart->get_cart_url() );
+		if (!isset($params['pmt_id']) || false === ($order = $this->load_order_by_pmt_id($params['pmt_id']))) {
+			$this->add_notice(__('Missing reference number in response.', 'svea-payments-finland-for-woocommerce'), 'error');
+			wp_redirect($woocommerce->cart->get_cart_url());
 			return;
 		}
 
-		$order_handler = new Sveapafi_Order_Compatibility_Handler( $order );
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		try {
-			$payment = new Sveapafi_Payment( $order_handler->get_id() );
-		} catch ( Sveapafi_Gateway_Exception $e ) {
-			sveapafi_log( (string) $e );
-			$this->add_notice( __( 'Could not process order.', 'svea-payments-finland-for-woocommerce' ), 'error' );
-			wp_redirect( $woocommerce->cart->get_cart_url() );
+			$payment = new Sveapafi_Payment($order_handler->get_id());
+		} catch (Sveapafi_Gateway_Exception $e) {
+			sveapafi_log((string) $e);
+			$this->add_notice(__('Could not process order.', 'svea-payments-finland-for-woocommerce'), 'error');
+			wp_redirect($woocommerce->cart->get_cart_url());
 
 			return;
 		}
 
-		$gateway   = new Sveapafi_Gateway_Implementation( $this, $order );
-		$validator = $gateway->validate_payment( $params );
+		$gateway = new Sveapafi_Gateway_Implementation($this, $order);
+		$validator = $gateway->validate_payment($params);
 
 		// If the payment is already completed.
-		if ( $payment->is_completed() ) {
+		if ($payment->is_completed()) {
 			// Redirect the user ALWAYS to the order complete page.
-			wp_redirect( $this->get_return_url( $order ) );
+			wp_redirect($this->get_return_url($order));
 
 			return;
 		}
 
-		$payment->set_data_received( $params );
+		$payment->set_data_received($params);
 
-		switch ( $validator->get_status() ) {
+		switch ($validator->get_status()) {
 			case Sveapafi_Payment::STATUS_ERROR:
-				if ( isset( $params['pmt_errortexttouser'] ) ) {
-					$error_text = wc_clean( $params['pmt_errortexttouser'] );
+				if (isset($params['pmt_errortexttouser'])) {
+					$error_text = wc_clean($params['pmt_errortexttouser']);
 					$this->add_notice(
 						sprintf(
 							/* translators: %s: error message */
-							__( 'Payment failed: %s', 'svea-payments-finland-for-woocommerce' ),
+							__('Payment failed: %s', 'svea-payments-finland-for-woocommerce'),
 							$error_text
 						),
 						'error'
 					);
-					wc_add_notice( 'Correct the checkout information and try again.' );
+					wc_add_notice('Correct the checkout information and try again.');
 				} else {
-					$this->add_notice( __( 'Error from Svea received.', 'svea-payments-finland-for-woocommerce' ), 'error' );
+					$this->add_notice(__('Error from Svea received.', 'svea-payments-finland-for-woocommerce'), 'error');
 				}
 
-				$this->order_fail( $order, $payment );
+				$this->order_fail($order, $payment);
 				// wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
 
 				/**
@@ -887,28 +917,28 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 				 *
 				 * @since 2.6.11
 				 */
-				$error_url = apply_filters( 'svea_payment_gateway_payment_error_return_url', wc_get_checkout_url() );
-				wp_redirect( $error_url );
+				$error_url = apply_filters('svea_payment_gateway_payment_error_return_url', wc_get_checkout_url());
+				wp_redirect($error_url);
 				break;
 
 			case Sveapafi_Payment::STATUS_DELAYED:
-				$this->order_delay( $order, $payment );
-				$this->add_notice( __( 'Payment delayed by Svea.', 'svea-payments-finland-for-woocommerce' ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
+				$this->order_delay($order, $payment);
+				$this->add_notice(__('Payment delayed by Svea.', 'svea-payments-finland-for-woocommerce'), 'notice');
+				wp_redirect(add_query_arg('key', $order_handler->get_order_key(), $this->get_return_url($order)));
 				break;
 
 			case Sveapafi_Payment::STATUS_CANCELLED:
-				$this->order_cancel( $order, $payment );
-				$this->add_notice( __( 'Cancellation from Svea received.', 'svea-payments-finland-for-woocommerce' ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $order->get_cancel_order_url() ) );
+				$this->order_cancel($order, $payment);
+				$this->add_notice(__('Cancellation from Svea received.', 'svea-payments-finland-for-woocommerce'), 'notice');
+				wp_redirect(add_query_arg('key', $order_handler->get_order_key(), $order->get_cancel_order_url()));
 				break;
 
 			case Sveapafi_Payment::STATUS_COMPLETED:
 			default:
-				$this->order_complete( $order, $payment );
+				$this->order_complete($order, $payment);
 				$woocommerce->cart->empty_cart();
-				$this->add_notice( __( 'Payment confirmed by Svea.', 'svea-payments-finland-for-woocommerce' ), 'success' );
-				wp_redirect( $this->get_return_url( $order ) );
+				$this->add_notice(__('Payment confirmed by Svea.', 'svea-payments-finland-for-woocommerce'), 'success');
+				wp_redirect($this->get_return_url($order));
 				break;
 		}
 	}
@@ -924,12 +954,13 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @return bool
 	 */
-	public function is_order_paid( \WC_Order $order ) {
-		if ( method_exists( $order, 'is_paid' ) ) {
+	public function is_order_paid(\WC_Order $order)
+	{
+		if (method_exists($order, 'is_paid')) {
 			return $order->is_paid();
 		} else {
 			return $order->has_status(
-				array( Sveapafi_Payment::STATUS_PROCESSING, Sveapafi_Payment::STATUS_COMPLETED )
+				array(Sveapafi_Payment::STATUS_PROCESSING, Sveapafi_Payment::STATUS_COMPLETED)
 			);
 		}
 	}
@@ -944,13 +975,14 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.0.0
 	 */
-	protected function add_surcharge( $payment, $order ) {
-		if ( ! $payment->is_cancelled() && $payment->includes_surcharge() ) {
-			$fee          = new \stdClass();
-			$fee->name    = __( 'Surcharge from Payment Gateway', 'svea-payments-finland-for-woocommerce' );
-			$fee->amount  = $payment->get_surcharge();
+	protected function add_surcharge($payment, $order)
+	{
+		if (!$payment->is_cancelled() && $payment->includes_surcharge()) {
+			$fee = new \stdClass();
+			$fee->name = __('Surcharge from Payment Gateway', 'svea-payments-finland-for-woocommerce');
+			$fee->amount = $payment->get_surcharge();
 			$fee->taxable = false;
-			$order->add_fee( $fee );
+			$order->add_fee($fee);
 			$order->calculate_totals();
 		}
 	}
@@ -965,9 +997,10 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.0.2
 	 */
-	protected function add_notice( $msg, $type ) {
-		if ( ! wc_has_notice( $msg, $type ) ) {
-			wc_add_notice( $msg, $type );
+	protected function add_notice($msg, $type)
+	{
+		if (!wc_has_notice($msg, $type)) {
+			wc_add_notice($msg, $type);
 		}
 	}
 
@@ -982,16 +1015,17 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.2
 	 */
-	protected function order_fail( $order, $payment ) {
-		if ( ! $order->has_status( Sveapafi_Payment::STATUS_FAILED ) ) {
+	protected function order_fail($order, $payment)
+	{
+		if (!$order->has_status(Sveapafi_Payment::STATUS_FAILED)) {
 			$order->update_status(
 				Sveapafi_Payment::STATUS_FAILED,
-				__( 'Error from Svea received.', 'svea-payments-finland-for-woocommerce' )
+				__('Error from Svea received.', 'svea-payments-finland-for-woocommerce')
 			);
 		}
 
-		if ( ! $payment->is_error() ) {
-			$this->add_surcharge( $payment, $order );
+		if (!$payment->is_error()) {
+			$this->add_surcharge($payment, $order);
 			$payment->error();
 		}
 	}
@@ -1007,15 +1041,16 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.2
 	 */
-	protected function order_cancel( $order, $payment ) {
-		if ( ! $order->has_status( Sveapafi_Payment::STATUS_CANCELLED ) ) {
+	protected function order_cancel($order, $payment)
+	{
+		if (!$order->has_status(Sveapafi_Payment::STATUS_CANCELLED)) {
 			$order->update_status(
 				Sveapafi_Payment::STATUS_CANCELLED,
-				__( 'Cancellation from Svea received.', 'svea-payments-finland-for-woocommerce' )
+				__('Cancellation from Svea received.', 'svea-payments-finland-for-woocommerce')
 			);
 		}
 
-		if ( ! $payment->is_cancelled() ) {
+		if (!$payment->is_cancelled()) {
 			$payment->cancel();
 		}
 	}
@@ -1031,9 +1066,10 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.2
 	 */
-	protected function order_delay( $order, $payment ) {
-		if ( ! $payment->is_delayed() ) {
-			$this->add_surcharge( $payment, $order );
+	protected function order_delay($order, $payment)
+	{
+		if (!$payment->is_delayed()) {
+			$this->add_surcharge($payment, $order);
 			$payment->delayed();
 		}
 	}
@@ -1049,13 +1085,14 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.2
 	 */
-	protected function order_complete( $order, $payment ) {
-		if ( ! $this->is_order_paid( $order ) ) {
-			$order->payment_complete( $payment->get_payment_id() );
+	protected function order_complete($order, $payment)
+	{
+		if (!$this->is_order_paid($order)) {
+			$order->payment_complete($payment->get_payment_id());
 		}
 
-		if ( ! $payment->is_completed() ) {
-			$this->add_surcharge( $payment, $order );
+		if (!$payment->is_completed()) {
+			$this->add_surcharge($payment, $order);
 			$payment->complete();
 		}
 	}
@@ -1070,56 +1107,57 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @since 2.1.2
 	 */
-	public function order_status_changed_event( $order_id, $old_status, $new_status ) {
+	public function order_status_changed_event($order_id, $old_status, $new_status)
+	{
 
-		if ( $old_status === $new_status ) {
+		if ($old_status === $new_status) {
 			return;
 		}
 
-		$order   = wc_get_order( $order_id );
-		$payment = new Sveapafi_Payment( $order->get_id() );
+		$order = wc_get_order($order_id);
+		$payment = new Sveapafi_Payment($order->get_id());
 
-		if ( empty( $payment->get_payment_id() ) ) {
+		if (empty($payment->get_payment_id())) {
 			return;
 		}
-	
+
 		$option = $this->get_option(
 			'maksuturva_send_delivery_information_status'
 		);
 
-		if ( ! is_string( $option ) ) {
+		if (!is_string($option)) {
 			return;
 		}
 
 		// addDelivery info already triggered, skip backend call
-		if ( $order->get_meta( '_svea_add_deliveryinfo_triggered' ) ) {
+		if ($order->get_meta('_svea_add_deliveryinfo_triggered')) {
 			return;
 		}
 
-		$sendDeliveryInformationToSveaStatus = preg_replace( '/^wc-/', '', $option );
+		$sendDeliveryInformationToSveaStatus = preg_replace('/^wc-/', '', $option);
 
-		if ( $new_status === $sendDeliveryInformationToSveaStatus ) {
+		if ($new_status === $sendDeliveryInformationToSveaStatus) {
 			$selectedPayments = $this->get_option(
 				'maksuturva_send_delivery_for_specific_payments'
 			);
 
-			if ( ! empty( $selectedPayments ) ) {
-				$selectedPaymentsArray = explode( ',', str_ireplace( ' ', '', $selectedPayments ) );
+			if (!empty($selectedPayments)) {
+				$selectedPaymentsArray = explode(',', str_ireplace(' ', '', $selectedPayments));
 
-				if ( ! empty( $order ) && ! empty( $order->get_payment_method() ) ) {
+				if (!empty($order) && !empty($order->get_payment_method())) {
 					$paymentMethod = $payment->get_payment_method();
 
-					if ( ! empty( $paymentMethod ) && ! in_array( $paymentMethod, $selectedPaymentsArray ) ) {
+					if (!empty($paymentMethod) && !in_array($paymentMethod, $selectedPaymentsArray)) {
 						return;
 					}
 				}
 			}
 
 			// use meta info to trigger this function only once per status change
-			$order->update_meta_data( '_svea_add_deliveryinfo_triggered', 'yes' );
+			$order->update_meta_data('_svea_add_deliveryinfo_triggered', 'yes');
 			$order->save();
 
-			$deliveryHandler = new Sveapafi_Svea_Delivery_Handler( $this, $order_id );
+			$deliveryHandler = new Sveapafi_Svea_Delivery_Handler($this, $order_id);
 			$deliveryHandler->send_delivery_info();
 		}
 	}
@@ -1137,7 +1175,8 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway {
 	 * @param string $domain   The "domain" the template belongs to. Subdirectory under /templates/.
 	 * @param array  $data     The data to pass to the template file.
 	 */
-	public function render( $template, $domain, array $data = array() ) {
-		Sveapafi_Maksuturva::get_instance()->render( $template, $domain, $data );
+	public function render($template, $domain, array $data = array())
+	{
+		Sveapafi_Maksuturva::get_instance()->render($template, $domain, $data);
 	}
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Svea Payments Gateway
+ * Svea Payments Finland for WooCommerce Plugin
  *
- * @package WooCommerce Svea Payments Gateway
+ * @package Svea Payments Finland for WooCommerce Plugin
  */
 
 /**
@@ -45,7 +45,7 @@ if (!defined('ABSPATH')) {
 	if (!empty($terms['text'])) {
 		echo esc_html($terms['text']);
 		?>
-		(<a href="<?php echo esc_url($terms['url']); ?>" target="_blank">PDF</a>)
+			(<a href="<?php echo esc_url($terms['url']); ?>" target="_blank">PDF</a>)
 	<?php } ?>
 </p>
 

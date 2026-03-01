@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Svea Payments Gateway
+ * Svea Payments Finland for WooCommerce Plugin
  *
- * @package WooCommerce Svea Payments Gateway
+ * @package Svea Payments Finland for WooCommerce Plugin
  */
 
 /**

@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Svea Payments Gateway
+ * Svea Payments Finland for WooCommerce Plugin
  *
- * @package WooCommerce Svea Payments Gateway
+ * @package Svea Payments Finland for WooCommerce Plugin
  */
 
 /**
@@ -68,7 +68,7 @@ wc_enqueue_js(
 
 <form action="<?php echo esc_url($payment_gateway_url); ?>" method="post" id="maksuturva_payment_form" target="_top">
 	<?php foreach ($data as $key => $value): ?>
-		<input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>" />
+			<input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>" />
 	<?php endforeach; ?>
 	<!-- Button Fallback -->
 	<div class="payment_buttons">
