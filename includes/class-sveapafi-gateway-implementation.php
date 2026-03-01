@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Last update: 01/01/2024
  *
  * This library is free software; you can redistribute it and/or
@@ -27,22 +27,22 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-abstract-maksuturva.php';
-require_once 'class-wc-gateway-maksuturva-exception.php';
-require_once 'class-wc-order-compatibility-handler.php';
-require_once 'class-wc-payment-method-select.php';
-require_once 'class-wc-payment-validator-maksuturva.php';
-require_once 'class-wc-product-compatibility-handler.php';
-require_once 'class-wc-utils-maksuturva.php';
+require_once 'class-sveapafi-gateway-abstract.php';
+require_once 'class-sveapafi-gateway-exception.php';
+require_once 'class-sveapafi-order-compatibility-handler.php';
+require_once 'class-sveapafi-payment-method-select.php';
+require_once 'class-sveapafi-payment-validator.php';
+require_once 'class-sveapafi-product-compatibility-handler.php';
+require_once 'class-sveapafi-utils.php';
 
 /**
- * Class WC_Gateway_Implementation_Maksuturva.
+ * Class Sveapafi_Gateway_Implementation.
  *
  * Handles payment related data handling. Creates the necessary rows for the order.
  *
  * @since 2.0.0
  */
-class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturva
+class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 {
 
 	/**
@@ -73,15 +73,15 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	private $removed_fees = 0.00;
 
 	/**
-	 * WC_Gateway_Implementation_Maksuturva constructor.
+	 * Sveapafi_Gateway_Implementation constructor.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
+	 * @param Sveapafi_Gateway $gateway The gateway object.
 	 * @param \WC_Order             $order The order.
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.0
 	 */
-	public function __construct(WC_Gateway_Maksuturva $gateway, \WC_Order $order)
+	public function __construct(Sveapafi_Gateway $gateway, \WC_Order $order)
 	{
 		$this->wc_gateway = $gateway;
 		$this->set_base_url($gateway->get_gateway_url());
@@ -96,14 +96,14 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * Creates the payment data to be used for the Svea payments gateway.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
+	 * @param Sveapafi_Gateway $gateway The gateway object.
 	 * @param \WC_Order             $order   The order.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @return array
 	 */
-	private function create_payment_data(WC_Gateway_Maksuturva $gateway, \WC_Order $order)
+	private function create_payment_data(Sveapafi_Gateway $gateway, \WC_Order $order)
 	{
 
 		$selected_payment_method = $this->get_selected_payment_method();
@@ -113,7 +113,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$buyer_data = $this->create_buyer_data($order);
 		$delivery_data = $this->create_delivery_data($order);
 		$payment_id = $this->get_payment_id($order);
-		$order_handler = new WC_Order_Compatibility_Handler($order);
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 
 		$data = array(
 			'pmt_keygeneration' => $gateway->get_secret_key_version(),
@@ -127,7 +127,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_errorreturn' => $gateway->get_payment_url($payment_id, 'error'),
 			'pmt_cancelreturn' => $gateway->get_payment_url($payment_id, 'cancel'),
 			'pmt_delayedpayreturn' => $gateway->get_payment_url($payment_id, 'delay'),
-			'pmt_amount' => WC_Utils_Maksuturva::filter_price($order->get_total() - $this->shipping_cost - $this->total_fees - $this->removed_fees),
+			'pmt_amount' => Sveapafi_Utils::filter_price($order->get_total() - $this->shipping_cost - $this->total_fees - $this->removed_fees),
 			'pmt_buyername' => $buyer_data['name'],
 			'pmt_buyeraddress' => $buyer_data['address'],
 			'pmt_buyerpostalcode' => $buyer_data['postal_code'],
@@ -141,7 +141,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_deliverypostalcode' => $delivery_data['postal_code'],
 			'pmt_deliverycity' => $delivery_data['city'],
 			'pmt_deliverycountry' => $delivery_data['country'],
-			'pmt_sellercosts' => WC_Utils_Maksuturva::filter_price($this->shipping_cost + $this->total_fees + $payment_method_handling_cost),
+			'pmt_sellercosts' => Sveapafi_Utils::filter_price($this->shipping_cost + $this->total_fees + $payment_method_handling_cost),
 			'pmt_rows' => count($payment_row_data),
 			'pmt_rows_data' => $payment_row_data,
 		);
@@ -150,7 +150,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$data['pmt_paymentmethod'] = $selected_payment_method;
 		}
 
-		wc_maksuturva_log('Payment request data: ' . print_r($data, true));
+		sveapafi_log('Payment request data: ' . print_r($data, true));
 
 		return $data;
 	}
@@ -170,7 +170,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			return null;
 		}
 
-		$payment_handling_costs_handler = new WC_Payment_Handling_Costs($this->wc_gateway);
+		$payment_handling_costs_handler = new Sveapafi_Payment_Handling_Costs($this->wc_gateway);
 		return $payment_handling_costs_handler->get_payment_method_handling_base_cost(
 			$selected_payment_method
 		);
@@ -179,7 +179,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	/**
 	 * Get selected payment method
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 * @param Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.3
 	 *
@@ -187,10 +187,10 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private function get_selected_payment_method()
 	{
-		if (isset($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]) && !empty($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
-			$spm = $_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+		if (isset($_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]) && !empty($_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+			$spm = $_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
 			if ($spm) {
-				return WC_Utils_Maksuturva::filter_alphanumeric($spm);
+				return Sveapafi_Utils::filter_alphanumeric($spm);
 			}
 		}
 	}
@@ -219,17 +219,17 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$payment_row_product = array();
 
-			$payment_row_product['pmt_row_name'] = WC_Utils_Maksuturva::filter_productname($item['name']);
-			$payment_row_product['pmt_row_desc'] = WC_Utils_Maksuturva::filter_description($description);
-			$payment_row_product['pmt_row_quantity'] = WC_Utils_Maksuturva::filter_quantity($item['qty']);
+			$payment_row_product['pmt_row_name'] = Sveapafi_Utils::filter_productname($item['name']);
+			$payment_row_product['pmt_row_desc'] = Sveapafi_Utils::filter_description($description);
+			$payment_row_product['pmt_row_quantity'] = Sveapafi_Utils::filter_quantity($item['qty']);
 
 			$payment_row_product['pmt_row_articlenr'] = $product->get_sku() ?: '-';
 
 			$price_gross = $order->get_item_subtotal($item, true);
 
 			$payment_row_product['pmt_row_deliverydate'] = date('d.m.Y');
-			$payment_row_product['pmt_row_price_gross'] = WC_Utils_Maksuturva::filter_price($price_gross);
-			$payment_row_product['pmt_row_vat'] = WC_Utils_Maksuturva::filter_price($this->calc_tax_rate($product));
+			$payment_row_product['pmt_row_price_gross'] = Sveapafi_Utils::filter_price($price_gross);
+			$payment_row_product['pmt_row_vat'] = Sveapafi_Utils::filter_price($this->calc_tax_rate($product));
 			$payment_row_product['pmt_row_discountpercentage'] = '00,00';
 			$payment_row_product['pmt_row_type'] = 1;
 			$payment_rows[] = $payment_row_product;
@@ -249,13 +249,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		if (null !== $order->get_items('gift_card')) {
 			$giftcards = $order->get_items('gift_card');
 			foreach ($giftcards as $giftcard) {
-				$gctext = __('Gift Card', 'svea-payments');
+				$gctext = __('Gift Card', 'svea-payments-finland-for-woocommerce');
 				$payment_rows[] = array(
 					'pmt_row_name' => $gctext . ' ' . $giftcard->get_name(),
 					'pmt_row_desc' => '-',
 					'pmt_row_quantity' => 1,
 					'pmt_row_deliverydate' => date('d.m.Y'),
-					'pmt_row_price_gross' => '-' . WC_Utils_Maksuturva::filter_price($giftcard->get_amount()),
+					'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($giftcard->get_amount()),
 					'pmt_row_vat' => '00,00',
 					'pmt_row_discountpercentage' => '00,00',
 					'pmt_row_type' => 6,
@@ -271,13 +271,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 					if (method_exists($gift_card_item, 'get_amount') && method_exists($gift_card_item, 'get_card_number')) {
 						$pwamount = $gift_card_item->get_amount();
 						$pwcardnumber = $gift_card_item->get_card_number();
-						$gctext = __('Gift Card', 'svea-payments');
+						$gctext = __('Gift Card', 'svea-payments-finland-for-woocommerce');
 						$payment_rows[] = array(
 							'pmt_row_name' => $gctext . ' ' . $pwcardnumber,
 							'pmt_row_desc' => '-',
 							'pmt_row_quantity' => 1,
 							'pmt_row_deliverydate' => date('d.m.Y'),
-							'pmt_row_price_gross' => '-' . WC_Utils_Maksuturva::filter_price($pwamount),
+							'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($pwamount),
 							'pmt_row_vat' => '00,00',
 							'pmt_row_discountpercentage' => '00,00',
 							'pmt_row_type' => 6,
@@ -327,12 +327,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			}
 
 			return array(
-				'pmt_row_name' => __('Shipping cost', 'svea-payments'),
-				'pmt_row_desc' => WC_Utils_Maksuturva::filter_productname($order->get_shipping_method()),
+				'pmt_row_name' => __('Shipping cost', 'svea-payments-finland-for-woocommerce'),
+				'pmt_row_desc' => Sveapafi_Utils::filter_productname($order->get_shipping_method()),
 				'pmt_row_quantity' => 1,
 				'pmt_row_deliverydate' => date('d.m.Y'),
-				'pmt_row_price_gross' => WC_Utils_Maksuturva::filter_price($this->shipping_cost),
-				'pmt_row_vat' => WC_Utils_Maksuturva::filter_price($shipping_tax),
+				'pmt_row_price_gross' => Sveapafi_Utils::filter_price($this->shipping_cost),
+				'pmt_row_vat' => Sveapafi_Utils::filter_price($shipping_tax),
 				'pmt_row_discountpercentage' => '00,00',
 				'pmt_row_type' => 2,
 			);
@@ -361,11 +361,11 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$description = implode(',', $order->get_used_coupons());
 
 			return array(
-				'pmt_row_name' => __('Discount', 'svea-payments'),
-				'pmt_row_desc' => WC_Utils_Maksuturva::filter_productname($description),
+				'pmt_row_name' => __('Discount', 'svea-payments-finland-for-woocommerce'),
+				'pmt_row_desc' => Sveapafi_Utils::filter_productname($description),
 				'pmt_row_quantity' => 1,
 				'pmt_row_deliverydate' => date('d.m.Y'),
-				'pmt_row_price_gross' => '-' . WC_Utils_Maksuturva::filter_price($amount), // Negative amount.
+				'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($amount), // Negative amount.
 				'pmt_row_vat' => '00,00',
 				'pmt_row_discountpercentage' => '00,00',
 				'pmt_row_type' => 6,
@@ -392,16 +392,16 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			return null;
 		}
 
-		$payment_handling_costs_handler = new WC_Payment_Handling_Costs($this->wc_gateway);
+		$payment_handling_costs_handler = new Sveapafi_Payment_Handling_Costs($this->wc_gateway);
 		$tax_rate = $payment_handling_costs_handler->get_payment_method_handling_cost_tax_rate();
 
 		return array(
-			'pmt_row_name' => __('Payment handling fee', 'svea-payments'),
-			'pmt_row_desc' => __('Payment handling fee', 'svea-payments'),
+			'pmt_row_name' => __('Payment handling fee', 'svea-payments-finland-for-woocommerce'),
+			'pmt_row_desc' => __('Payment handling fee', 'svea-payments-finland-for-woocommerce'),
 			'pmt_row_quantity' => 1,
 			'pmt_row_deliverydate' => date('d.m.Y'),
-			'pmt_row_price_gross' => WC_Utils_Maksuturva::filter_price($payment_method_handling_cost),
-			'pmt_row_vat' => WC_Utils_Maksuturva::filter_price($tax_rate),
+			'pmt_row_price_gross' => Sveapafi_Utils::filter_price($payment_method_handling_cost),
+			'pmt_row_vat' => Sveapafi_Utils::filter_price($tax_rate),
 			'pmt_row_discountpercentage' => '00,00',
 			'pmt_row_type' => 3,
 		);
@@ -427,7 +427,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 			$fee_total = $fee['line_total'] + $fee['line_tax'];
 
-			if ($fee['name'] === __('Payment handling fee', 'svea-payments')) {
+			if ($fee['name'] === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
 				$this->removed_fees += $fee_total;
 				continue;
 			}
@@ -445,12 +445,12 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			}
 
 			$fee_rows[] = array(
-				'pmt_row_name' => substr(WC_Utils_Maksuturva::filter_productname($fee['name']), 0, 40),
-				'pmt_row_desc' => substr(WC_Utils_Maksuturva::filter_productname($fee['name']), 0, 1000),
+				'pmt_row_name' => substr(Sveapafi_Utils::filter_productname($fee['name']), 0, 40),
+				'pmt_row_desc' => substr(Sveapafi_Utils::filter_productname($fee['name']), 0, 1000),
 				'pmt_row_quantity' => 1,
 				'pmt_row_deliverydate' => date('d.m.Y'),
-				'pmt_row_price_gross' => WC_Utils_Maksuturva::filter_price($fee_total),
-				'pmt_row_vat' => WC_Utils_Maksuturva::filter_price($fee_tax),
+				'pmt_row_price_gross' => Sveapafi_Utils::filter_price($fee_total),
+				'pmt_row_vat' => Sveapafi_Utils::filter_price($fee_tax),
 				'pmt_row_discountpercentage' => '00,00',
 				'pmt_row_type' => 3,
 			);
@@ -476,7 +476,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private function create_buyer_data(\WC_Order $order)
 	{
-		$order_handler = new WC_Order_Compatibility_Handler($order);
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		$email = $order_handler->get_billing_email();
 		if (!empty($order_handler->get_customer_id())) {
 			$user = get_user_by('id', $order_handler->get_customer_id());
@@ -509,7 +509,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 */
 	private function create_delivery_data(\WC_Order $order)
 	{
-		$order_handler = new WC_Order_Compatibility_Handler($order);
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		return array(
 			'name' => trim($order_handler->get_shipping_first_name() . ' ' . $order_handler->get_shipping_last_name()),
 			'address' => trim($order_handler->get_shipping_address_1() . ', ' . $order_handler->get_shipping_address_2(), ', '),
@@ -576,11 +576,11 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @since 2.0.0
 	 *
 	 * @return int
-	 * @throws WC_Gateway_Maksuturva_Exception If reference number is invalid.
+	 * @throws Sveapafi_Gateway_Exception If reference number is invalid.
 	 */
 	private function get_internal_payment_id(\WC_Order $order)
 	{
-		$order_handler = new WC_Order_Compatibility_Handler($order);
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		return $order_handler->get_id() + 100;
 	}
 
@@ -594,7 +594,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @since 2.0.0
 	 *
 	 * @return bool
-	 * @throws WC_Gateway_Maksuturva_Exception If reference number is invalid.
+	 * @throws Sveapafi_Gateway_Exception If reference number is invalid.
 	 */
 	public function check_payment_reference_number($pmt_reference)
 	{
@@ -610,7 +610,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 * @since 2.0.0
 	 *
 	 * @return string
-	 * @throws WC_Gateway_Maksuturva_Exception If reference number is invalid.
+	 * @throws Sveapafi_Gateway_Exception If reference number is invalid.
 	 */
 	public function get_payment_reference_number()
 	{
@@ -647,13 +647,13 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	 *
 	 * @param array $params The parameters to validate.
 	 *
-	 * @return WC_Payment_Validator_Maksuturva
-	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @return Sveapafi_Payment_Validator
+	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.0
 	 */
 	public function validate_payment(array $params)
 	{
-		$validator = new WC_Payment_Validator_Maksuturva($this);
+		$validator = new Sveapafi_Payment_Validator($this);
 
 		return $validator->validate($params);
 	}
@@ -697,7 +697,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	protected function get_product_description($product, $order, $order_item_id)
 	{
 		$description = '';
-		$product_handler = new WC_Product_Compatibility_Handler($product);
+		$product_handler = new Sveapafi_Product_Compatibility_Handler($product);
 
 		if ('variable' === $product_handler->get_type()) {
 			$description .= implode(',', $product->get_variation_attributes()) . ' ';
@@ -726,7 +726,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 	private function get_meta_description_wc2($order, $order_item_id)
 	{
 		$description = '';
-		$order_handler = new WC_Order_Compatibility_Handler($order);
+		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		$item_meta = new \WC_Order_Item_Meta($order_handler->get_item_meta($order_item_id));
 		$formatted = $item_meta->get_formatted();
 		if ($formatted) {

@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -27,18 +27,18 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-abstract-maksuturva.php';
-require_once 'class-wc-gateway-maksuturva.php';
-require_once 'class-wc-gateway-maksuturva-exception.php';
+require_once 'class-sveapafi-gateway-abstract.php';
+require_once 'class-sveapafi-gateway.php';
+require_once 'class-sveapafi-gateway-exception.php';
 
 /**
- * Class WC_Data_Hasher.
+ * Class Sveapafi_Data_Hasher.
  *
  * Handles encryption of data.
  *
  * @since 2.1.3
  */
-class WC_Data_Hasher
+class Sveapafi_Data_Hasher
 {
 
 	/**
@@ -79,13 +79,13 @@ class WC_Data_Hasher
 	private $secret_key;
 
 	/**
-	 * WC_Data_Hasher constructor.
+	 * Sveapafi_Data_Hasher constructor.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
+	 * @param Sveapafi_Gateway $gateway The gateway object.
 	 *
 	 * @since 2.1.3
 	 */
-	public function __construct(WC_Gateway_Maksuturva $gateway)
+	public function __construct(Sveapafi_Gateway $gateway)
 	{
 		$this->secret_key = $gateway->get_secret_key();
 	}
@@ -161,13 +161,13 @@ class WC_Data_Hasher
 
 		$message = sprintf(
 			/* translators: %s: list of unsupported algorithms */
-			esc_html__('The hash algorithms %s are not supported!', 'svea-payments'),
+			esc_html__('The hash algorithms %s are not supported!', 'svea-payments-finland-for-woocommerce'),
 			esc_html($hash_alhorithms_string)
 		);
 
-		throw new WC_Gateway_Maksuturva_Exception(
+		throw new Sveapafi_Gateway_Exception(
 			$message, // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			WC_Gateway_Abstract_Maksuturva::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			Sveapafi_Gateway_Abstract::EXCEPTION_CODE_ALGORITHMS_NOT_SUPPORTED // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		);
 	}
 

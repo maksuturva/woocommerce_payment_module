@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -27,13 +27,13 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Class WC_Payment_Validator_Maksuturva.
+ * Class Sveapafi_Payment_Validator.
  *
  * Handles validation of the Svea data.
  *
  * @since 2.0.0
  */
-class WC_Payment_Validator_Maksuturva
+class Sveapafi_Payment_Validator
 {
 
 	/**
@@ -139,7 +139,7 @@ class WC_Payment_Validator_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @var WC_Gateway_Implementation_Maksuturva|null $gateway The payment gateway implementation.
+	 * @var Sveapafi_Gateway_Implementation|null $gateway The payment gateway implementation.
 	 */
 	protected $gateway;
 
@@ -162,13 +162,13 @@ class WC_Payment_Validator_Maksuturva
 	protected $errors = array();
 
 	/**
-	 * WC_Payment_Validator_Maksuturva constructor.
+	 * Sveapafi_Payment_Validator constructor.
 	 *
-	 * @param WC_Gateway_Implementation_Maksuturva $gateway The payment gateway implementation.
+	 * @param Sveapafi_Gateway_Implementation $gateway The payment gateway implementation.
 	 *
 	 * @since 2.0.0
 	 */
-	public function __construct(WC_Gateway_Implementation_Maksuturva $gateway)
+	public function __construct(Sveapafi_Gateway_Implementation $gateway)
 	{
 		$this->gateway = $gateway;
 	}
@@ -181,8 +181,8 @@ class WC_Payment_Validator_Maksuturva
 	 *
 	 * @param array $params List of parameters to validate.
 	 *
-	 * @return WC_Payment_Validator_Maksuturva
-	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @return Sveapafi_Payment_Validator
+	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.0
 	 */
 	public function validate(array $params)
@@ -196,7 +196,7 @@ class WC_Payment_Validator_Maksuturva
 				break;
 			case self::ACTION_ERROR:
 				$this->status = self::STATUS_ERROR;
-				$this->error(__('An error occurred and the payment was not confirmed.', 'svea-payments'));
+				$this->error(__('An error occurred and the payment was not confirmed.', 'svea-payments-finland-for-woocommerce'));
 				break;
 			case self::ACTION_OK:
 			default:
@@ -320,7 +320,7 @@ class WC_Payment_Validator_Maksuturva
 			$this->error(
 				sprintf(
 					/* translators: %s: list of missing fields */
-					__('Missing payment field(s) in response: "%s"', 'svea-payments'),
+					__('Missing payment field(s) in response: "%s"', 'svea-payments-finland-for-woocommerce'),
 					implode('", "', $missing_fields)
 				)
 			);
@@ -341,7 +341,7 @@ class WC_Payment_Validator_Maksuturva
 	protected function validate_payment_id(array $values)
 	{
 		if (!isset($values['pmt_id']) || !$this->gateway->check_payment_id($values['pmt_id'])) {
-			$this->error(__('The payment did not match any order', 'svea-payments'));
+			$this->error(__('The payment did not match any order', 'svea-payments-finland-for-woocommerce'));
 		}
 	}
 
@@ -356,9 +356,9 @@ class WC_Payment_Validator_Maksuturva
 	 */
 	protected function validate_checksum(array $values)
 	{
-		$data_hasher = new WC_Data_Hasher($this->gateway->wc_gateway);
+		$data_hasher = new Sveapafi_Data_Hasher($this->gateway->wc_gateway);
 		if (!isset($values['pmt_hash']) || $data_hasher->create_hash($values) != $values['pmt_hash']) {
-			$this->error(__('Payment verification checksum does not match', 'svea-payments'));
+			$this->error(__('Payment verification checksum does not match', 'svea-payments-finland-for-woocommerce'));
 		}
 	}
 
@@ -369,7 +369,7 @@ class WC_Payment_Validator_Maksuturva
 	 *
 	 * @param array $values List of values.
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception
+	 * @throws Sveapafi_Gateway_Exception
 	 * @since 2.0.0
 	 */
 	protected function validate_reference_number(array $values)
@@ -378,7 +378,7 @@ class WC_Payment_Validator_Maksuturva
 			!isset($values['pmt_reference'])
 			|| !$this->gateway->check_payment_reference_number($values['pmt_reference'])
 		) {
-			$this->error(__('Payment reference number could not be verified', 'svea-payments'));
+			$this->error(__('Payment reference number could not be verified', 'svea-payments-finland-for-woocommerce'));
 		}
 	}
 
@@ -402,7 +402,7 @@ class WC_Payment_Validator_Maksuturva
 			if (isset($this->gateway->{$key}) && $this->gateway->{$key} !== $value) {
 				$not_matching_fields[] = sprintf(
 					/* translators: %1$s: field name, %2$s: obtained value, %3$s: expected value */
-					__('%1$s (obtained %2$s, expected %3$s)', 'svea-payments'),
+					__('%1$s (obtained %2$s, expected %3$s)', 'svea-payments-finland-for-woocommerce'),
 					$key,
 					$value,
 					$this->gateway->{$key}
@@ -413,7 +413,7 @@ class WC_Payment_Validator_Maksuturva
 			$this->error(
 				sprintf(
 					/* translators: %s: list of differing fields */
-					__('The following field(s) differs from order: %s', 'svea-payments'),
+					__('The following field(s) differs from order: %s', 'svea-payments-finland-for-woocommerce'),
 					implode(', ', $not_matching_fields)
 				)
 			);
@@ -439,7 +439,7 @@ class WC_Payment_Validator_Maksuturva
 				$this->error(
 					sprintf(
 						/* translators: %1$s: obtained amount, %2$s: expected amount */
-						__('Invalid payment amount (obtained %1$s, expected %2$s)', 'svea-payments'),
+						__('Invalid payment amount (obtained %1$s, expected %2$s)', 'svea-payments-finland-for-woocommerce'),
 						$values['pmt_sellercosts'],
 						$this->gateway->{'pmt_sellercosts'}
 					)

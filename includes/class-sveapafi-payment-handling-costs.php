@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 3/4/2020
  *
@@ -26,30 +26,30 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-maksuturva.php';
-require_once 'class-wc-payment-method-select.php';
+require_once 'class-sveapafi-gateway.php';
+require_once 'class-sveapafi-payment-method-select.php';
 
 /**
- * Class WC_Payment_Handling_Costs.
+ * Class Sveapafi_Payment_Handling_Costs.
  *
  * Handles handling costs
  */
-class WC_Payment_Handling_Costs
+class Sveapafi_Payment_Handling_Costs
 {
 
 	/**
 	 * Gateway.
 	 *
-	 * @var WC_Gateway_Maksuturva $gateway The gateway.
+	 * @var Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.3
 	 */
 	private $gateway;
 
 	/**
-	 * WC_Payment_Handling_Costs constructor.
+	 * Sveapafi_Payment_Handling_Costs constructor.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 * @param Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.3
 	 */
@@ -122,13 +122,13 @@ class WC_Payment_Handling_Costs
 
 
 		$gateways_with_handling_costs = array(
-			WC_Gateway_Svea_Credit_Card_And_Mobile::class,
-			WC_Gateway_Svea_Invoice_And_Hire_Purchase::class,
-			WC_Gateway_Svea_Online_Bank_Payments::class,
-			WC_Gateway_Svea_Other_Payments::class,
-			WC_Gateway_Svea_Estonia_Payments::class,
-			WC_Gateway_Svea_Collated::class,
-			WC_Gateway_Maksuturva::class,
+			Sveapafi_Gateway_Svea_Credit_Card_And_Mobile::class,
+			Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase::class,
+			Sveapafi_Gateway_Svea_Online_Bank_Payments::class,
+			Sveapafi_Gateway_Svea_Other_Payments::class,
+			Sveapafi_Gateway_Svea_Estonia_Payments::class,
+			Sveapafi_Gateway_Svea_Collated::class,
+			Sveapafi_Gateway::class,
 		);
 
 		$chosen_gateway = WC()->session->get('chosen_payment_method');
@@ -146,7 +146,7 @@ class WC_Payment_Handling_Costs
 		if ($payment_method_handling_cost_without_tax !== null) {
 
 			$cart->add_fee(
-				__('Payment handling fee', 'svea-payments'),
+				__('Payment handling fee', 'svea-payments-finland-for-woocommerce'),
 				$payment_method_handling_cost_without_tax,
 				true,
 				$this->get_payment_method_handling_cost_tax_class()
@@ -221,9 +221,9 @@ class WC_Payment_Handling_Costs
 	{
 
 		// Check if isset first to avoid warnings and sanitize
-		if (isset($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+		if (isset($_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
 			$payment_handling_cost_fee = $this->get_payment_method_handling_cost_without_tax(
-				wc_clean($_GET[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])
+				wc_clean($_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])
 			);
 		} else {
 			$payment_handling_cost_fee = null;
@@ -231,7 +231,7 @@ class WC_Payment_Handling_Costs
 
 		if ($payment_handling_cost_fee === null) {
 			foreach ($order->get_fees() as $fee) {
-				if ($fee['name'] === __('Payment handling fee', 'svea-payments')) {
+				if ($fee['name'] === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
 					$fee['total'] = 0;
 					$order->calculate_totals();
 					return;
@@ -244,7 +244,7 @@ class WC_Payment_Handling_Costs
 		$fee_already_exists = false;
 
 		foreach ($order->get_fees() as $fee) {
-			if ($fee['name'] === __('Payment handling fee', 'svea-payments')) {
+			if ($fee['name'] === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
 				$fee['total'] = $payment_handling_cost_fee;
 				$fee_already_exists = true;
 			}
@@ -252,7 +252,7 @@ class WC_Payment_Handling_Costs
 
 		if (!$fee_already_exists) {
 			$fee = new \stdClass();
-			$fee->name = __('Payment handling fee', 'svea-payments');
+			$fee->name = __('Payment handling fee', 'svea-payments-finland-for-woocommerce');
 			$fee->amount = $payment_handling_cost_fee;
 			$fee->taxable = true;
 			$fee->tax_class = $this->get_payment_method_handling_cost_tax_class();
@@ -304,17 +304,17 @@ class WC_Payment_Handling_Costs
 			$post_data_string = wc_clean(wp_unslash($_POST['post_data']));
 			wp_parse_str($post_data_string, $post_data_array);
 
-			if (isset($post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
-				return wc_clean($post_data_array[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
+			if (isset($post_data_array[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+				return wc_clean($post_data_array[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
 			}
 		}
 
-		if (isset($_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
-			return wc_clean($_POST[WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
+		if (isset($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
+			return wc_clean($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
 		}
 
-		if (WC()->session->get(WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID)) {
-			return WC()->session->get(WC_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID);
+		if (WC()->session->get(Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID)) {
+			return WC()->session->get(Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID);
 		}
 
 		return null;

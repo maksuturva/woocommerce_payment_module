@@ -11,13 +11,13 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
  *
  * @since 2.7.0
  */
-final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
+final class Sveapafi_Gateway_Blocks extends AbstractPaymentMethodType
 {
 
 	/**
 	 * The gateway instance.
 	 *
-	 * @var WC_Gateway_Maksuturva
+	 * @var Sveapafi_Gateway
 	 */
 	private $gateway;
 
@@ -26,7 +26,7 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 	 *
 	 * @var string
 	 */
-	protected $name = 'WC_Gateway_Maksuturva';
+	protected $name = 'Sveapafi_Gateway';
 
 	/**
 	 * Initialize the payment method type.
@@ -34,7 +34,7 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 	public function initialize()
 	{
 		$this->settings = get_option('woocommerce_WC_Gateway_Maksuturva_settings', []);
-		$this->gateway = new WC_Gateway_Maksuturva();
+		$this->gateway = new Sveapafi_Gateway();
 
 		add_action('woocommerce_rest_checkout_process_payment_with_context', array($this, 'set_payment_method_for_rest'), 10, 2);
 	}
@@ -91,7 +91,7 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 	public function get_payment_method_script_handles()
 	{
 		$script_path = '/assets/js/svea-payments-blocks.js';
-		$script_asset_path = WC_Maksuturva::get_instance()->get_plugin_dir() . '/assets/js/svea-payments-blocks.asset.php';
+		$script_asset_path = Sveapafi_Maksuturva::get_instance()->get_plugin_dir() . '/assets/js/svea-payments-blocks.asset.php';
 		$script_asset = file_exists($script_asset_path)
 			? require $script_asset_path
 			: array(
@@ -104,7 +104,7 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 			array('wc-blocks-registry', 'wc-settings')
 		);
 
-		$script_url = WC_Maksuturva::get_instance()->get_plugin_url() . 'assets/js/svea-payments-blocks.js';
+		$script_url = Sveapafi_Maksuturva::get_instance()->get_plugin_url() . 'assets/js/svea-payments-blocks.js';
 
 		wp_register_script(
 			'svea-payments-blocks',
@@ -124,12 +124,12 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 	 */
 	public function get_payment_method_data()
 	{
-		// Load WC_Payment_Method_Select class
-		if (!class_exists('WC_Payment_Method_Select')) {
-			require_once WC_Maksuturva::get_instance()->get_plugin_dir() . '/includes/class-wc-payment-method-select.php';
+		// Load Sveapafi_Payment_Method_Select class
+		if (!class_exists('Sveapafi_Payment_Method_Select')) {
+			require_once Sveapafi_Maksuturva::get_instance()->get_plugin_dir() . '/includes/class-sveapafi-payment-method-select.php';
 		}
 
-		$payment_method_select = new WC_Payment_Method_Select($this->gateway);
+		$payment_method_select = new Sveapafi_Payment_Method_Select($this->gateway);
 		$price = WC()->cart ? WC()->cart->get_total('edit') : 0;
 		if (empty($price)) {
 			$price = 1000;
@@ -192,11 +192,11 @@ final class WC_Gateway_Maksuturva_Blocks extends AbstractPaymentMethodType
 			);
 		}
 
-		// Load WC_Payment_Handling_Costs class
-		if (!class_exists('WC_Payment_Handling_Costs')) {
-			require_once WC_Maksuturva::get_instance()->get_plugin_dir() . '/includes/class-wc-payment-handling-costs.php';
+		// Load Sveapafi_Payment_Handling_Costs class
+		if (!class_exists('Sveapafi_Payment_Handling_Costs')) {
+			require_once Sveapafi_Maksuturva::get_instance()->get_plugin_dir() . '/includes/class-sveapafi-payment-handling-costs.php';
 		}
-		$payment_handling_costs_handler = new WC_Payment_Handling_Costs($this->gateway);
+		$payment_handling_costs_handler = new Sveapafi_Payment_Handling_Costs($this->gateway);
 		$handling_costs = $payment_handling_costs_handler->get_handling_costs_by_payment_method();
 
 		// Get Terms

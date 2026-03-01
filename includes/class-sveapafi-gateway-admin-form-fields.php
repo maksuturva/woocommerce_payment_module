@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2025
  *
@@ -26,34 +26,34 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-maksuturva.php';
-require_once 'class-wc-payment-handling-costs.php';
+require_once 'class-sveapafi-gateway.php';
+require_once 'class-sveapafi-payment-handling-costs.php';
 
 /**
- * Class WC_Gateway_Admin_Form_Fields.
+ * Class Sveapafi_Gateway_Admin_Form_Fields.
  *
  * Handles defining the gateway admin view form fields.
  *
  * @since 2.1.3
  */
-class WC_Gateway_Admin_Form_Fields
+class Sveapafi_Gateway_Admin_Form_Fields
 {
 
 	/**
 	 * Gateway.
 	 *
-	 * @var WC_Gateway_Maksuturva $gateway The gateway.
+	 * @var Sveapafi_Gateway $gateway The gateway.
 	 */
 	private $gateway;
 
 	/**
-	 * WC_Gateway_Maksuturva constructor.
+	 * Sveapafi_Gateway constructor.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 * @param Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.3
 	 */
-	public function __construct(WC_Gateway_Maksuturva $gateway)
+	public function __construct(Sveapafi_Gateway $gateway)
 	{
 		$this->gateway = $gateway;
 	}
@@ -69,229 +69,229 @@ class WC_Gateway_Admin_Form_Fields
 	{
 		$payment_settings = array(
 			'general_settings' => array(
-				'title' => __('General settings', 'svea-payments'),
+				'title' => __('General settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
 				'id' => 'general_settings',
 			),
 			'enabled' => array(
-				'title' => __('Enable/Disable', 'svea-payments'),
+				'title' => __('Enable/Disable', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'checkbox',
-				'label' => __('Enable Svea Payments Gateway', 'svea-payments'),
+				'label' => __('Enable Svea Payments Gateway', 'svea-payments-finland-for-woocommerce'),
 				'default' => 'yes',
 			),
 			'block_mode_enabled' => array(
 				'type' => 'checkbox',
-				'title' => __('Enable Block Mode', 'svea-payments'),
-				'label' => __('Enable support for WooCommerce Blocks Checkout', 'svea-payments'),
+				'title' => __('Enable Block Mode', 'svea-payments-finland-for-woocommerce'),
+				'label' => __('Enable support for WooCommerce Blocks Checkout', 'svea-payments-finland-for-woocommerce'),
 				'default' => 'yes',
 				'desc_tip' => true,
-				'description' => __('Enable this if you are using the new WooCommerce Blocks Checkout. If you are using the classic shortcode checkout, you can disable this.', 'svea-payments'),
+				'description' => __('Enable this if you are using the new WooCommerce Blocks Checkout. If you are using the classic shortcode checkout, you can disable this.', 'svea-payments-finland-for-woocommerce'),
 			),
 			'outbound_payment' => array(
 				'type' => 'checkbox',
-				'title' => __('Redirect to Svea\'s Payment Method Selection Page', 'svea-payments'),
-				'label' => __('The buyer is redirected to the Svea Payments site where they choose the payment method', 'svea-payments'),
+				'title' => __('Redirect to Svea\'s Payment Method Selection Page', 'svea-payments-finland-for-woocommerce'),
+				'label' => __('The buyer is redirected to the Svea Payments site where they choose the payment method', 'svea-payments-finland-for-woocommerce'),
 				'default' => 'no',
 				'desc_tip' => true,
-				'description' => __('If enabling this, visitors will see a single Svea Payments-button that redirects them to the SVEA payment gateway', 'svea-payments'),
+				'description' => __('If enabling this, visitors will see a single Svea Payments-button that redirects them to the SVEA payment gateway', 'svea-payments-finland-for-woocommerce'),
 			),
 			'title' => array(
-				'title' => __('Redirect to Svea\'s Payment Method Title', 'svea-payments'),
+				'title' => __('Redirect to Svea\'s Payment Method Title', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'text',
-				'description' => __('This controls the title which the user sees during checkout when using the redirect to Svea\'s Payment Method Selection Page.', 'svea-payments'),
-				'default' => __('Svea Payments', 'svea-payments'),
+				'description' => __('This controls the title which the user sees during checkout when using the redirect to Svea\'s Payment Method Selection Page.', 'svea-payments-finland-for-woocommerce'),
+				'default' => __('Svea Payments', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 			),
 			'description' => array(
-				'title' => __('Redirect to Svea\'s Payment Method Customer Message', 'svea-payments'),
+				'title' => __('Redirect to Svea\'s Payment Method Customer Message', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'textarea',
-				'description' => __('This message is shown below the payment method on the checkout page.', 'svea-payments'),
-				'default' => __('Make payment using Svea Payments card, mobile, invoice and bank payment methods', 'svea-payments'),
+				'description' => __('This message is shown below the payment method on the checkout page.', 'svea-payments-finland-for-woocommerce'),
+				'default' => __('Make payment using Svea Payments card, mobile, invoice and bank payment methods', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'css' => 'width: 25em;',
 			),
 
 			'payment_method_handling_cost_table' => array(
-				'add_new_button_text' => __('Add new', 'svea-payments'),
-				'amount_column_title' => __('Handling cost amount', 'svea-payments'),
-				'code_column_title' => __('Payment method code', 'svea-payments'),
+				'add_new_button_text' => __('Add new', 'svea-payments-finland-for-woocommerce'),
+				'amount_column_title' => __('Handling cost amount', 'svea-payments-finland-for-woocommerce'),
+				'code_column_title' => __('Payment method code', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Payment method handling costs', 'svea-payments'),
-				'remove_selected_rows_button_text' => __('Remove selected rows', 'svea-payments'),
-				'title' => __('Payment handling fees', 'svea-payments'),
+				'description' => __('Payment method handling costs', 'svea-payments-finland-for-woocommerce'),
+				'remove_selected_rows_button_text' => __('Remove selected rows', 'svea-payments-finland-for-woocommerce'),
+				'title' => __('Payment handling fees', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'payment_method_handling_cost_table',
 			),
 			'payment_method_handling_cost_tax_class' => array(
 				'type' => 'select',
-				'title' => __('Payment handling fees tax class', 'svea-payments'),
+				'title' => __('Payment handling fees tax class', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'default' => '',
-				'description' => __('Tax class determines the tax percentage used for the payment handling fees.', 'svea-payments'),
+				'description' => __('Tax class determines the tax percentage used for the payment handling fees.', 'svea-payments-finland-for-woocommerce'),
 				'options' => $this->get_tax_class_options(),
 			),
 			'account_settings' => array(
-				'title' => __('Account settings', 'svea-payments'),
+				'title' => __('Account settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
 				'id' => 'account_settings',
 			),
 			'maksuturva_url' => array(
 				'type' => 'textfield',
-				'title' => __('Gateway URL', 'svea-payments'),
+				'title' => __('Gateway URL', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('The URL used to communicate with Svea Payments API.', 'svea-payments'),
+				'description' => __('The URL used to communicate with Svea Payments API.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('maksuturva_url', 'https://www.maksuturva.fi'),
 			),
 			'maksuturva_sellerid' => array(
 				'type' => 'textfield',
-				'title' => __('Seller Id', 'svea-payments'),
+				'title' => __('Seller Id', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('The seller identification provided by Svea upon your registration.', 'svea-payments'),
+				'description' => __('The seller identification provided by Svea upon your registration.', 'svea-payments-finland-for-woocommerce'),
 			),
 			'maksuturva_secretkey' => array(
 				'type' => 'textfield',
-				'title' => __('Secret Key', 'svea-payments'),
+				'title' => __('Secret Key', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Your unique secret key provided by Svea.', 'svea-payments'),
+				'description' => __('Your unique secret key provided by Svea.', 'svea-payments-finland-for-woocommerce'),
 			),
 			'maksuturva_keyversion' => array(
 				'type' => 'textfield',
-				'title' => __('Secret Key Version', 'svea-payments'),
+				'title' => __('Secret Key Version', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('The version of the secret key provided by Svea.', 'svea-payments'),
+				'description' => __('The version of the secret key provided by Svea.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('maksuturva_keyversion', '001'),
 			),
 			'advanced_settings' => array(
-				'title' => __('Advanced settings', 'svea-payments'),
+				'title' => __('Advanced settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
 				'id' => 'advanced_settings',
 			),
 			'maksuturva_orderid_prefix' => array(
 				'type' => 'textfield',
-				'title' => __('Payment Prefix', 'svea-payments'),
+				'title' => __('Payment Prefix', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall.', 'svea-payments'),
+				'description' => __('Prefix for order identifiers. Can be used to generate unique payment ids after e.g. reinstall.', 'svea-payments-finland-for-woocommerce'),
 			),
 			'maksuturva_send_delivery_information_status' => array(
 				'type' => 'select',
-				'title' => __('Send delivery confirmation on status change to status', 'svea-payments'),
+				'title' => __('Send delivery confirmation on status change to status', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'default' => 'none',
-				'description' => __('Send delivery confirmation to Svea when this status is selected.', 'svea-payments'),
+				'description' => __('Send delivery confirmation to Svea when this status is selected.', 'svea-payments-finland-for-woocommerce'),
 				'options' => array('' => '-') + wc_get_order_statuses(),
 			),
 			'maksuturva_send_delivery_for_specific_payments' => array(
 				'type' => 'textfield',
-				'title' => __('Send delivery confirmation only for specific payment methods', 'svea-payments'),
+				'title' => __('Send delivery confirmation only for specific payment methods', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, the selected delivery confirmation is sent on all orders paid with any payment method. If the payment method codes are added, the selected delivery confirmation is sent only on orders paid with specific payment methods.', 'svea-payments'),
+				'description' => __('Add payment method codes (for example FI70,FI71,FI72). If this field is left empty, the selected delivery confirmation is sent on all orders paid with any payment method. If the payment method codes are added, the selected delivery confirmation is sent only on orders paid with specific payment methods.', 'svea-payments-finland-for-woocommerce'),
 			),
 			'collated_settings' => array(
-				'title' => __('Grouped payment method view settings', 'svea-payments'),
+				'title' => __('Grouped payment method view settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
 				'id' => 'collated_settings',
 			),
 			'collated_title' => array(
 				'type' => 'textfield',
-				'title' => __('Grouped payment methods title', 'svea-payments'),
+				'title' => __('Grouped payment methods title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Grouped payment methods title', 'svea-payments'),
+				'description' => __('Grouped payment methods title', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_title', 'Svea Payments'),
 			),
 			'collated_group1_title' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 1 title', 'svea-payments'),
+				'title' => __('Payment group 1 title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 1 title', 'svea-payments'),
+				'description' => __('Collated payment methods, group 1 title', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group1_title', 'Online bank payments'),
 			),
 			'collated_group1_methods' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 1 methods', 'svea-payments'),
+				'title' => __('Payment group 1 methods', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 1 methods', 'svea-payments'),
+				'description' => __('Collated payment methods, group 1 methods', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group1_methods', 'FI01,FI02,FI03,FI04,FI05,FI06,FI07,FI08,FI09,FI10,FI11,FI12,FI13,FI14,FI15'),
 			),
 			'collated_group2_title' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 2 title', 'svea-payments'),
+				'title' => __('Payment group 2 title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 2 title', 'svea-payments'),
+				'description' => __('Collated payment methods, group 2 title', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group2_title', 'Mobile and Card payments'),
 			),
 			'collated_group2_methods' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 2 methods', 'svea-payments'),
+				'title' => __('Payment group 2 methods', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 2 methods', 'svea-payments'),
+				'description' => __('Collated payment methods, group 2 methods', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group2_methods', 'FI50,FI51,FI52,FI53,FI54,SIIR'),
 			),
 			'collated_group3_title' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 3 title', 'svea-payments'),
+				'title' => __('Payment group 3 title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 3 title', 'svea-payments'),
+				'description' => __('Collated payment methods, group 3 title', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group3_title', 'Pay later'),
 			),
 			'collated_group3_methods' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 3 methods', 'svea-payments'),
+				'title' => __('Payment group 3 methods', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 3 methods', 'svea-payments'),
+				'description' => __('Collated payment methods, group 3 methods', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group3_methods', 'FI70,FI71,FI72,FIIN,FIPP,FIBI'),
 			),
 			'collated_group4_title' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 4 title', 'svea-payments'),
+				'title' => __('Payment group 4 title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 4 title', 'svea-payments'),
+				'description' => __('Collated payment methods, group 4 title', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group4_title', ''),
 			),
 			'collated_group4_methods' => array(
 				'type' => 'textfield',
-				'title' => __('Payment group 4 methods', 'svea-payments'),
+				'title' => __('Payment group 4 methods', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Collated payment methods, group 4 methods', 'svea-payments'),
+				'description' => __('Collated payment methods, group 4 methods', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('collated_group4_methods', ''),
 			),
 
 			'payment_group_customization' => array(
-				'title' => __('Separate payment methods view settings', 'svea-payments'),
+				'title' => __('Separate payment methods view settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
 				'id' => 'payment_group_customization',
 			),
 			'payment_group_creditcard_title' => array(
 				'type' => 'textfield',
-				'title' => __('Credit card and mobile payments group title', 'svea-payments'),
+				'title' => __('Credit card and mobile payments group title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Credit Cards and Mobile payment group. If not set, the default localized title is used.', 'svea-payments'),
+				'description' => __('Change the checkout page title for the Credit Cards and Mobile payment group. If not set, the default localized title is used.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('payment_group_creditcard_title', ''),
 			),
 			'payment_group_invoice_title' => array(
 				'type' => 'textfield',
-				'title' => __('Invoice and Part Payment group title', 'svea-payments'),
+				'title' => __('Invoice and Part Payment group title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Invoice and Part Payment payment group. If not set, the default localized title is used.', 'svea-payments'),
+				'description' => __('Change the checkout page title for the Invoice and Part Payment payment group. If not set, the default localized title is used.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('payment_group_invoice_title', ''),
 			),
 			'payment_group_onlinebank_title' => array(
 				'type' => 'textfield',
-				'title' => __('Online bank payments group title', 'svea-payments'),
+				'title' => __('Online bank payments group title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Online bank payment group. If not set, the default localized title is used.', 'svea-payments'),
+				'description' => __('Change the checkout page title for the Online bank payment group. If not set, the default localized title is used.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('payment_group_onlinebank_title', ''),
 			),
 			'payment_group_other_title' => array(
 				'type' => 'textfield',
-				'title' => __('Other payments group title', 'svea-payments'),
+				'title' => __('Other payments group title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Change the checkout page title for Other payment methods group. If not set, the default localized title is used.', 'svea-payments'),
+				'description' => __('Change the checkout page title for Other payment methods group. If not set, the default localized title is used.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('payment_group_other_title', ''),
 			),
 			'payment_group_estonia_title' => array(
 				'type' => 'textfield',
-				'title' => __('Estonia payment group title', 'svea-payments'),
+				'title' => __('Estonia payment group title', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', 'svea-payments'),
+				'description' => __('Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('payment_group_estonia_title', ''),
 			),
 		);
@@ -300,16 +300,16 @@ class WC_Gateway_Admin_Form_Fields
 
 		$estonia_settings = array(
 			'estonia_settings' => array(
-				'title' => __('Estonia payment method settings', 'svea-payments'),
+				'title' => __('Estonia payment method settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
 				'id' => 'estonia_settings',
 			),
 			'estonia_special_delivery' => array(
 				'type' => 'checkbox',
-				'title' => __('Estonia Payment Method EEAC / Enable special delivery information support', 'svea-payments'),
+				'title' => __('Estonia Payment Method EEAC / Enable special delivery information support', 'svea-payments-finland-for-woocommerce'),
 				'default' => 'no',
 				'desc_tip' => true,
-				'description' => __('This enables the special functionality for delivery info plugins without checkout addresses.', 'svea-payments'),
+				'description' => __('This enables the special functionality for delivery info plugins without checkout addresses.', 'svea-payments-finland-for-woocommerce'),
 				'options' => array(
 					'yes' => '1',
 					'no' => '0',
@@ -335,149 +335,149 @@ class WC_Gateway_Admin_Form_Fields
 		return array(
 			// Section: General Settings
 			'partpayment_widget_settings' => array(
-				'title' => __('Part Payment Widget Settings', 'svea-payments'),
+				'title' => __('Part Payment Widget Settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
-				'description' => __('All settings for the part payment calculator widget are here.', 'svea-payments'),
+				'description' => __('All settings for the part payment calculator widget are here.', 'svea-payments-finland-for-woocommerce'),
 				'id' => 'partpayment_widget_settings',
 			),
 			'partpayment_widget_use_test' => array(
 				'type' => 'checkbox',
-				'title' => __('Test Environment', 'svea-payments'),
-				'label' => __('Use test environment for Part Payment widget API calls', 'svea-payments'),
+				'title' => __('Test Environment', 'svea-payments-finland-for-woocommerce'),
+				'label' => __('Use test environment for Part Payment widget API calls', 'svea-payments-finland-for-woocommerce'),
 				'default' => 'no',
 				'desc_tip' => true,
-				'description' => __('Enable this if you use Svea test environment account in the credentials.', 'svea-payments'),
+				'description' => __('Enable this if you use Svea test environment account in the credentials.', 'svea-payments-finland-for-woocommerce'),
 			),
 			'partpayment_widget_layout' => array(
 				'type' => 'select',
-				'title' => __('Widget Layout', 'svea-payments'),
+				'title' => __('Widget Layout', 'svea-payments-finland-for-woocommerce'),
 				'default' => 'full',
 				'desc_tip' => true,
-				'description' => __('Select the layout for the part payment widget.', 'svea-payments'),
+				'description' => __('Select the layout for the part payment widget.', 'svea-payments-finland-for-woocommerce'),
 				'options' => array(
-					'full' => __('Full', 'svea-payments'),
-					'mini' => __('Mini', 'svea-payments'),
-					'button' => __('Button', 'svea-payments'),
+					'full' => __('Full', 'svea-payments-finland-for-woocommerce'),
+					'mini' => __('Mini', 'svea-payments-finland-for-woocommerce'),
+					'button' => __('Button', 'svea-payments-finland-for-woocommerce'),
 				),
 			),
 			'partpayment_widget_margin' => array(
 				'type' => 'text',
-				'title' => __('Widget Margin', 'svea-payments'),
+				'title' => __('Widget Margin', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'default' => '5px',
-				'description' => __('Set the margin for the part payment widget. Use format "10px".', 'svea-payments'),
+				'description' => __('Set the margin for the part payment widget. Use format "10px".', 'svea-payments-finland-for-woocommerce'),
 			),
 			'partpayment_widget_location' => array(
 				'type' => 'select',
-				'title' => __('Product Page Location', 'svea-payments'),
+				'title' => __('Product Page Location', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'default' => '',
-				'description' => __('Select Svea Part Payment Widget location on product page.', 'svea-payments'),
+				'description' => __('Select Svea Part Payment Widget location on product page.', 'svea-payments-finland-for-woocommerce'),
 				'options' => $this->get_widget_locations(),
 			),
 			'partpayment_widget_cart_location' => array(
 				'type' => 'select',
-				'title' => __('Cart Page Location', 'svea-payments'),
+				'title' => __('Cart Page Location', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'default' => '',
-				'description' => __('Select Svea Part Payment Widget location on cart page.', 'svea-payments'),
+				'description' => __('Select Svea Part Payment Widget location on cart page.', 'svea-payments-finland-for-woocommerce'),
 				'options' => $this->get_widget_cart_locations(),
 			),
 			'partpayment_widget_checkout_location' => array(
 				'type' => 'select',
-				'title' => __('Checkout Page Location', 'svea-payments'),
+				'title' => __('Checkout Page Location', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'default' => '',
-				'description' => __('Select Svea Part Payment Widget location on checkout page.', 'svea-payments'),
+				'description' => __('Select Svea Part Payment Widget location on checkout page.', 'svea-payments-finland-for-woocommerce'),
 				'options' => $this->get_widget_checkout_locations(),
 			),
 			'ppw_border_color' => array(
 				'type' => 'color',
-				'title' => __('Border Color', 'svea-payments'),
+				'title' => __('Border Color', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Widget border color.', 'svea-payments'),
+				'description' => __('Widget border color.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_border_color', '#CCEEF5'),
 				'css' => 'width:100px;',
 			),
 			'ppw_text_color' => array(
 				'type' => 'color',
-				'title' => __('Text Color', 'svea-payments'),
+				'title' => __('Text Color', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Widget text color.', 'svea-payments'),
+				'description' => __('Widget text color.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_text_color', '#00325C'),
 				'css' => 'width:100px;',
 			),
 			'ppw_highlight_color' => array(
 				'type' => 'color',
-				'title' => __('Highlight Color', 'svea-payments'),
+				'title' => __('Highlight Color', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Widget highlight color.', 'svea-payments'),
+				'description' => __('Widget highlight color.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_highlight_color', '#00325C'),
 				'css' => 'width:100px;',
 			),
 			'ppw_active_color' => array(
 				'type' => 'color',
-				'title' => __('Active Color', 'svea-payments'),
+				'title' => __('Active Color', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Widget active color.', 'svea-payments'),
+				'description' => __('Widget active color.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_active_color', '#00AECE'),
 				'css' => 'width:100px;',
 			),
 			'ppw_campaign_text_fi' => array(
 				'type' => 'text',
-				'title' => __('Campaign Text (Finnish)', 'svea-payments'),
+				'title' => __('Campaign Text (Finnish)', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('This text is shown when a specific campaign is active.', 'svea-payments'),
+				'description' => __('This text is shown when a specific campaign is active.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_campaign_text_fi', 'Campaign text FI'),
 			),
 			'ppw_campaign_text_sv' => array(
 				'type' => 'text',
-				'title' => __('Campaign Text (Swedish)', 'svea-payments'),
+				'title' => __('Campaign Text (Swedish)', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('This text is shown when a specific campaign is active.', 'svea-payments'),
+				'description' => __('This text is shown when a specific campaign is active.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_campaign_text_sv', 'Campaign text SV'),
 			),
 			'ppw_campaign_text_en' => array(
 				'type' => 'text',
-				'title' => __('Campaign Text (English)', 'svea-payments'),
+				'title' => __('Campaign Text (English)', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('This text is shown when a specific campaign is active.', 'svea-payments'),
+				'description' => __('This text is shown when a specific campaign is active.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_campaign_text_en', 'Campaign text EN'),
 			),
 			'ppw_fallback_text_fi' => array(
 				'type' => 'text',
-				'title' => __('Fallback Text (Finnish)', 'svea-payments'),
+				'title' => __('Fallback Text (Finnish)', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('This text is shown if the calculator cannot be displayed.', 'svea-payments'),
+				'description' => __('This text is shown if the calculator cannot be displayed.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_fallback_text_fi', 'Fallback text FI'),
 			),
 			'ppw_fallback_text_sv' => array(
 				'type' => 'text',
-				'title' => __('Fallback Text (Swedish)', 'svea-payments'),
+				'title' => __('Fallback Text (Swedish)', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('This text is shown if the calculator cannot be displayed.', 'svea-payments'),
+				'description' => __('This text is shown if the calculator cannot be displayed.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_fallback_text_sv', 'Fallback text SV'),
 			),
 			'ppw_fallback_text_en' => array(
 				'type' => 'text',
-				'title' => __('Fallback Text (English)', 'svea-payments'),
+				'title' => __('Fallback Text (English)', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('This text is shown if the calculator cannot be displayed.', 'svea-payments'),
+				'description' => __('This text is shown if the calculator cannot be displayed.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_fallback_text_en', 'Fallback text EN'),
 			),
 			'ppw_price_threshold_minimum' => array(
 				'type' => 'text',
-				'title' => __('Minimum Price Threshold', 'svea-payments'),
+				'title' => __('Minimum Price Threshold', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('If empty, the minimum threshold is deduced from the payment plans returned by Svea. Enter a value to override.', 'svea-payments'),
+				'description' => __('If empty, the minimum threshold is deduced from the payment plans returned by Svea. Enter a value to override.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_price_threshold_minimum', ''),
 				'css' => 'width:60px;',
 			),
 			'ppw_price_thresholds' => array(
 				'type' => 'text',
-				'title' => __('Price Thresholds', 'svea-payments'),
+				'title' => __('Price Thresholds', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
-				'description' => __('Set price thresholds in the format: [price, months], [price, months] etc.', 'svea-payments'),
+				'description' => __('Set price thresholds in the format: [price, months], [price, months] etc.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('ppw_price_thresholds', '[300, 6], [1000, 12]'),
 				'css' => 'width:250px',
 			),
@@ -495,7 +495,7 @@ class WC_Gateway_Admin_Form_Fields
 
 		ob_start();
 
-		$payment_method_handling_costs_handler = new WC_Payment_Handling_Costs($this->gateway);
+		$payment_method_handling_costs_handler = new Sveapafi_Payment_Handling_Costs($this->gateway);
 
 		$handling_cost_field = null;
 		foreach ($this->gateway->get_form_fields() as $field) {
@@ -529,7 +529,7 @@ class WC_Gateway_Admin_Form_Fields
 		if (!isset($tax_classes) || empty($tax_classes)) {
 			$tax_classes = array();
 		}
-		$tax_classes = $tax_classes + array('' => __('Standard', 'svea-payments'));
+		$tax_classes = $tax_classes + array('' => __('Standard', 'svea-payments-finland-for-woocommerce'));
 		asort($tax_classes);
 		return $tax_classes;
 	}
@@ -594,7 +594,7 @@ class WC_Gateway_Admin_Form_Fields
 					if (!is_numeric(str_replace(',', '.', $handling_cost_amounts[$i]))) {
 						$errors[] = sprintf(
 							/* translators: %s is the invalid value */
-							__('Invalid payment method handling costs, not a valid numeric value -> "%s"', 'svea-payments'),
+							__('Invalid payment method handling costs, not a valid numeric value -> "%s"', 'svea-payments-finland-for-woocommerce'),
 							$handling_cost_amounts[$i]
 						);
 					} else {

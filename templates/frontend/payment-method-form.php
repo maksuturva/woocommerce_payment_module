@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -42,40 +42,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <fieldset>
 	<?php
-	foreach ( $payment_methods as $payment_method ) {
+	foreach ($payment_methods as $payment_method) {
 		?>
 		<div class="svea-payment-method-select" style="clear: both;">
-			<label for="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>">
-				<img
-					alt="<?php echo esc_attr( $payment_method['displayname'] ); ?>"
-					src="<?php echo esc_url( $payment_method['imageurl'] ); ?>"
-				/>
+			<label
+				for="<?php echo esc_attr($payment_method_select_id); ?>-<?php echo esc_attr($payment_method['code']); ?>">
+				<img alt="<?php echo esc_attr($payment_method['displayname']); ?>"
+					src="<?php echo esc_url($payment_method['imageurl']); ?>" />
 			</label>
-		<?php
-		foreach ( $payment_method_handling_costs as $handling_cost ) {
-			if ( $handling_cost['payment_method_type'] === $payment_method['code'] ) {
-				echo wp_kses_post( '<div class="handling-cost-amount">+' . WC_Utils_Maksuturva::filter_price( $handling_cost['handling_cost_amount'] ) . ' ' . $currency_symbol . '</div>' );
-				break;
+			<?php
+			foreach ($payment_method_handling_costs as $handling_cost) {
+				if ($handling_cost['payment_method_type'] === $payment_method['code']) {
+					echo wp_kses_post('<div class="handling-cost-amount">+' . Sveapafi_Utils::filter_price($handling_cost['handling_cost_amount']) . ' ' . $currency_symbol . '</div>');
+					break;
+				}
 			}
-		}
-		?>
-			<input
-				class="input-radio svea-payment-method-select-radio"
-				id="<?php echo esc_attr( $payment_method_select_id ); ?>-<?php echo esc_attr( $payment_method['code'] ); ?>"
-				name="<?php echo esc_attr( $payment_method_select_id ); ?>"
-				type="radio"
-				value="<?php echo esc_attr( $payment_method['code'] ); ?>"
-			/>
+			?>
+			<input class="input-radio svea-payment-method-select-radio"
+				id="<?php echo esc_attr($payment_method_select_id); ?>-<?php echo esc_attr($payment_method['code']); ?>"
+				name="<?php echo esc_attr($payment_method_select_id); ?>" type="radio"
+				value="<?php echo esc_attr($payment_method['code']); ?>" />
 		</div>
 	<?php } ?>
 </fieldset>
 
 <p>
-<?php
-if ( ! empty( $terms['text'] ) ) {
-	echo esc_html( $terms['text'] );
-	?>
-(<a href="<?php echo esc_url( $terms['url'] ); ?>" target="_blank">PDF</a>)
-<?php } ?></p>
+	<?php
+	if (!empty($terms['text'])) {
+		echo esc_html($terms['text']);
+		?>
+		(<a href="<?php echo esc_url($terms['url']); ?>" target="_blank">PDF</a>)
+	<?php } ?>
+</p>
 
 <div style="clear: both;"></div>

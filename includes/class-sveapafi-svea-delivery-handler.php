@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 3/4/2020
  *
@@ -22,20 +22,21 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-implementation-maksuturva.php';
-require_once 'class-wc-payment-maksuturva.php';
-require_once 'class-wc-svea-api-request-handler.php';
+require_once 'class-sveapafi-gateway-implementation.php';
+require_once 'class-sveapafi-payment.php';
+require_once 'class-sveapafi-svea-api-request-handler.php';
 
 /**
- * Class WC_Svea_Delivery_Handler.
+ * Class Sveapafi_Svea_Delivery_Handler.
  *
  * Handles sending delivery information to Svea API
  */
-class WC_Svea_Delivery_Handler {
+class Sveapafi_Svea_Delivery_Handler
+{
 
 	/**
 	 * Payment cancellation route.
@@ -49,7 +50,7 @@ class WC_Svea_Delivery_Handler {
 	/**
 	 * Gateway.
 	 *
-	 * @var WC_Gateway_Maksuturva $gateway The gateway.
+	 * @var Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.3
 	 */
@@ -104,16 +105,17 @@ class WC_Svea_Delivery_Handler {
 	private $seller_id;
 
 	/**
-	 * WC_Svea_Delivery_Handler constructor.
+	 * Sveapafi_Svea_Delivery_Handler constructor.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 * @param Sveapafi_Gateway $gateway The gateway.
 	 * @param int                   $order_id The order.
 	 *
 	 * @since 2.1.2
 	 */
-	public function __construct( $gateway, $order_id ) {
-		$this->gateway   = $gateway;
-		$this->order_id  = $order_id;
+	public function __construct($gateway, $order_id)
+	{
+		$this->gateway = $gateway;
+		$this->order_id = $order_id;
 		$this->seller_id = $gateway->get_seller_id();
 	}
 
@@ -124,34 +126,35 @@ class WC_Svea_Delivery_Handler {
 	 *
 	 * @return array
 	 */
-	public function send_delivery_info() {
+	public function send_delivery_info()
+	{
 
-		$payment = new WC_Payment_Maksuturva( $this->order_id );
+		$payment = new Sveapafi_Payment($this->order_id);
 
-		$gateway_implementation = new WC_Gateway_Implementation_Maksuturva( $this->gateway, wc_get_order( $this->order_id ) );
-		$gateway_data           = $gateway_implementation->get_field_array();
+		$gateway_implementation = new Sveapafi_Gateway_Implementation($this->gateway, wc_get_order($this->order_id));
+		$gateway_data = $gateway_implementation->get_field_array();
 
 		$post_fields = array(
-			'pkg_version'          => '0002',
-			'pkg_sellerid'         => $this->seller_id,
-			'pkg_id'               => $payment->get_payment_id(),
+			'pkg_version' => '0002',
+			'pkg_sellerid' => $this->seller_id,
+			'pkg_id' => $payment->get_payment_id(),
 			'pkg_deliverymethodid' => 'ODLVR',
-			'pkg_adddeliveryinfo'  => 'Capture from WooCommerce',
-			'pkg_allsent'          => 'Y',
-			'pkg_resptype'         => 'XML',
-			'pkg_hashversion'      => $gateway_data['pmt_hashversion'],
-			'pkg_keygeneration'    => $this->gateway->get_secret_key_version(),
+			'pkg_adddeliveryinfo' => 'Capture from WooCommerce',
+			'pkg_allsent' => 'Y',
+			'pkg_resptype' => 'XML',
+			'pkg_hashversion' => $gateway_data['pmt_hashversion'],
+			'pkg_keygeneration' => $this->gateway->get_secret_key_version(),
 		);
 
-		$api = new WC_Svea_Api_Request_Handler( $this->gateway );
+		$api = new Sveapafi_Svea_Api_Request_Handler($this->gateway);
 		return $api->post(
 			self::ROUTE_ADD_DELIVERY_INFO,
 			$post_fields,
 			array(
-				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH => self::$request_hash_fields,
-				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH => self::$response_hash_fields,
-				WC_Svea_Api_Request_Handler::SETTINGS_HASH_FIELD => 'pkg_hash',
-				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pkg_resultcode',
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH => self::$request_hash_fields,
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH => self::$response_hash_fields,
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_HASH_FIELD => 'pkg_hash',
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pkg_resultcode',
 			)
 		);
 	}

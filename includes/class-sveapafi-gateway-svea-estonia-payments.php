@@ -6,9 +6,9 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 6/4/2023
+ * Last update: 3/4/2020
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,32 +27,39 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Class WC_Gateway_Svea_Collated
+ * Class Sveapafi_Gateway_Svea_Estonia_Payments
  *
  * Gateway handler for credit card and mobile payments
  *
- * @since 2.1.3
+ * @since 2.1.4
  */
-class WC_Gateway_Svea_Collated extends WC_Gateway_Maksuturva
+class Sveapafi_Gateway_Svea_Estonia_Payments extends Sveapafi_Gateway
 {
 
 	/**
-	 * WC_Gateway_Svea_Collated constructor.
+	 * Sveapafi_Gateway_Svea_Estonia_Payments constructor.
 	 *
 	 * Sets the values for gateway specific parent class properties
 	 *
-	 * @since 2.4.0
+	 * @since 2.1.4
 	 */
 	public function __construct()
 	{
-		$collated_title = parent::get_option('collated_title', 'Svea Payments');
 		parent::__construct(self::class);
-		$this->method_title = 'Svea ' . __('Collated Payments', 'svea-payments');
+		$this->method_title = 'Svea ' . __('Payments Estonia', 'svea-payments-finland-for-woocommerce');
 
-		/* translators: %s: URL */
-		$this->method_description = sprintf(__('General Svea settings are managed <a href="%s">here</a>.', 'svea-payments'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
-		$this->title = $collated_title;
-		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
+		$this->method_description = sprintf(
+			/* translators: %s: URL */
+			__('This payment method is for Estonia partners only. General Svea settings are managed <a href="%s">here</a>.', 'svea-payments-finland-for-woocommerce'),
+			'?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva'
+		);
+		$custom_title = $this->get_option('payment_group_estonia_title');
+		if (!empty($custom_title)) {
+			$this->title = esc_html($custom_title);
+		} else {
+			$this->title = __('Ostukonto - maksa turvaliselt ja paindlikult', 'svea-payments-finland-for-woocommerce');
+		}
+		$this->icon = Sveapafi_Maksuturva::get_instance()->get_plugin_url() . 'Empty_logo.png';
 	}
 
 	/**

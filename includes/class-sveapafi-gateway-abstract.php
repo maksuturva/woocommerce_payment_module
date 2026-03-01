@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -26,10 +26,10 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-data-hasher.php';
+require_once 'class-sveapafi-data-hasher.php';
 
 /**
- * Class WC_Gateway_Abstract_Maksuturva.
+ * Class Sveapafi_Gateway_Abstract.
  *
  * Abstract for the Svea payments gateway. Handles basic functionality against the Svea Payments Gateway.
  *
@@ -38,7 +38,7 @@ require_once 'class-wc-data-hasher.php';
  * @property int $pmt_orderid The Svea order id.
  * @property int $pmt_id      The Svea payment id.
  */
-abstract class WC_Gateway_Abstract_Maksuturva
+abstract class Sveapafi_Gateway_Abstract
 {
 
 	/**
@@ -234,7 +234,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 *
 	 * @since 2.1.3
 	 *
-	 * @var WC_Gateway_Maksuturva $wc_gateway The WC_Payment_Gateway extension.
+	 * @var Sveapafi_Gateway $wc_gateway The WC_Payment_Gateway extension.
 	 */
 	public $wc_gateway;
 
@@ -501,7 +501,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If validation fails.
+	 * @throws Sveapafi_Gateway_Exception If validation fails.
 	 */
 	protected function validate_payment_data()
 	{
@@ -524,14 +524,14 @@ abstract class WC_Gateway_Abstract_Maksuturva
 
 		foreach (self::$mandatory_data as $field) {
 			if (!array_key_exists($field, $this->payment_data)) {
-				throw new WC_Gateway_Maksuturva_Exception(
+				throw new Sveapafi_Gateway_Exception(
 					sprintf('Field "%s" is mandatory', esc_html($field)),
 					esc_attr(self::EXCEPTION_CODE_FIELD_ARRAY_GENERATION_ERRORS)
 				);
 			}
 			if ('pmt_reference' === $field) {
 				if (mb_strlen((string) $this->payment_data['pmt_reference']) < 3) {
-					throw new WC_Gateway_Maksuturva_Exception(
+					throw new Sveapafi_Gateway_Exception(
 						sprintf('Field "%s" needs to have at least 3 digits', esc_html($field)),
 						esc_attr(self::EXCEPTION_CODE_FIELD_ARRAY_GENERATION_ERRORS)
 					);
@@ -548,7 +548,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 		}
 
 		if ($count_rows != $this->payment_data['pmt_rows']) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				sprintf(
 					'The amount of items (%s) passed in field "pmt_rows" does not match with real amount(%s)',
 					esc_html($this->payment_data['pmt_rows']),
@@ -571,14 +571,14 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If validation fails.
+	 * @throws Sveapafi_Gateway_Exception If validation fails.
 	 */
 	protected function validate_payment_data_item(array $data, $count_rows = null)
 	{
 		foreach (self::$row_mandatory_data as $field) {
 			if (array_key_exists($field, $data)) {
 				if ('pmt_row_price_gross' === $field && array_key_exists('pmt_row_price_net', $data)) {
-					throw new WC_Gateway_Maksuturva_Exception(
+					throw new Sveapafi_Gateway_Exception(
 						sprintf(
 							'pmt_row_price_net%d and pmt_row_price_gross%d are both supplied, only one of them should be',
 							esc_html($count_rows),
@@ -592,7 +592,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 				} elseif ('pmt_row_price_net' === $field && array_key_exists('pmt_row_price_gross', $data)) {
 					continue;
 				}
-				throw new WC_Gateway_Maksuturva_Exception(sprintf('Field %s%d is mandatory', esc_html($field), esc_html($count_rows)));
+				throw new Sveapafi_Gateway_Exception(sprintf('Field %s%d is mandatory', esc_html($field), esc_html($count_rows)));
 			}
 		}
 	}
@@ -631,7 +631,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 			}
 		}
 
-		$data_hasher = new WC_Data_Hasher($this->wc_gateway);
+		$data_hasher = new Sveapafi_Data_Hasher($this->wc_gateway);
 		return $data_hasher->create_hash($hash_data);
 	}
 
@@ -645,12 +645,12 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 * @since 2.0.0
 	 *
 	 * @return string
-	 * @throws WC_Gateway_Maksuturva_Exception If number below 100.
+	 * @throws Sveapafi_Gateway_Exception If number below 100.
 	 */
 	protected function get_pmt_reference_number($number)
 	{
 		if ($number < 100) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Cannot generate reference numbers for an ID smaller than 100',
 				esc_attr(self::EXCEPTION_CODE_REFERENCE_NUMBER_UNDER_100)
 			);
@@ -721,7 +721,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 			$hash_data[$field] = $data[$field];
 		}
 
-		$data_hasher = new WC_Data_Hasher($this->wc_gateway);
+		$data_hasher = new Sveapafi_Data_Hasher($this->wc_gateway);
 		if ($data_hasher->create_hash($hash_data) != $data['pmtq_hash']) {
 			return false;
 		}
@@ -737,7 +737,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If validation fails.
+	 * @throws Sveapafi_Gateway_Exception If validation fails.
 	 */
 	private function filter_fields()
 	{
@@ -747,7 +747,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 				|| array_key_exists($k, self::$field_filters) && in_array($k, self::$row_mandatory_data)
 			) {
 				if (mb_strlen($value) < self::$field_filters[$k][0]) {
-					throw new WC_Gateway_Maksuturva_Exception(
+					throw new Sveapafi_Gateway_Exception(
 						sprintf(
 							'Field "%s" should be at least %d characters long.',
 							esc_html($k),
@@ -768,7 +768,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 					&& in_array($k, self::$row_optional_data) && mb_strlen($value))
 			) {
 				if (mb_strlen($value) < self::$field_filters[$k][0]) {
-					throw new WC_Gateway_Maksuturva_Exception(
+					throw new Sveapafi_Gateway_Exception(
 						sprintf(
 							'Field "%s" should be at least %d characters long.',
 							esc_html($k),
@@ -799,7 +799,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 					|| array_key_exists($k, self::$field_filters) && in_array($k, self::$row_mandatory_data)
 				) {
 					if (mb_strlen($value) < self::$field_filters[$k][0]) {
-						throw new WC_Gateway_Maksuturva_Exception(
+						throw new Sveapafi_Gateway_Exception(
 							sprintf(
 								'Field "%s" should be at least %d characters long.',
 								esc_html($k),
@@ -826,7 +826,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 						&& in_array($k, self::$row_optional_data) && mb_strlen($value))
 				) {
 					if (mb_strlen($value) < self::$field_filters[$k][0]) {
-						throw new WC_Gateway_Maksuturva_Exception(
+						throw new Sveapafi_Gateway_Exception(
 							sprintf(
 								'Field "%s" should be at least %d characters long.',
 								esc_html($k),
@@ -904,7 +904,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 * @since 2.0.0
 	 *
 	 * @return array|bool
-	 * @throws WC_Gateway_Maksuturva_Exception If failure to communicate with Svea.
+	 * @throws Sveapafi_Gateway_Exception If failure to communicate with Svea.
 	 */
 	public function status_query($data = array())
 	{
@@ -933,7 +933,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 			$hash_data[$field] = $this->status_query_data[$field];
 		}
 
-		$data_hasher = new WC_Data_Hasher($this->wc_gateway);
+		$data_hasher = new Sveapafi_Data_Hasher($this->wc_gateway);
 		$this->status_query_data['pmtq_hash'] = $data_hasher->create_hash($hash_data);
 
 		$res = wp_remote_post(
@@ -941,12 +941,12 @@ abstract class WC_Gateway_Abstract_Maksuturva
 			array(
 				'body' => $this->status_query_data,
 				'timeout' => 30,
-				'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+				'user-agent' => Sveapafi_Utils::get_user_agent(),
 			)
 		);
 
 		if (wp_remote_retrieve_response_code($res) !== \WP_Http::OK) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Failed to communicate with Svea Payments API. Please check the network connection.'
 			);
 		}
@@ -987,7 +987,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 		}
 		// Do not provide a response which is not valid.
 		if (!$this->verify_status_query_response($parsed_response)) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'The authenticity of the answer could not be verified. Hashes did not match.',
 				esc_attr(self::EXCEPTION_CODE_HASHES_DONT_MATCH)
 			);
@@ -995,7 +995,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 
 		// Check that pmt_orderid exists in the response
 		if (empty($parsed_response['pmtq_orderid'])) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Status query response order id does not exist for the order ' . esc_html($this->payment_data['pmt_orderid']) .
 				'. Unable to verify the response.',
 				esc_attr(self::EXCEPTION_CODE_DATA_MISMATCH)
@@ -1004,7 +1004,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 
 		// Validate order to match payment data
 		if (!($this->payment_data['pmt_orderid'] === $parsed_response['pmtq_orderid'])) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Status query response order id does not match the requested payment order id. ' .
 				esc_html($this->payment_data['pmt_orderid']) . ' vs response ' . esc_html($parsed_response['pmtq_orderid']),
 				esc_attr(self::EXCEPTION_CODE_DATA_MISMATCH)
@@ -1020,7 +1020,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 		}
 
 		if (abs(floatval(str_replace(',', '.', $this->payment_data['pmt_sellercosts'])) - $pmtq_sellercosts) > 1.00) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Status query response seller costs does not match the requested payment seller costs. ' .
 				esc_html($this->payment_data['pmt_sellercosts']) . ' vs response ' . esc_html($parsed_response['pmtq_sellercosts']),
 				esc_attr(self::EXCEPTION_CODE_DATA_MISMATCH)
@@ -1028,7 +1028,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 		}
 
 		if (abs(floatval(str_replace(',', '.', $this->payment_data['pmt_amount'])) - $pmtq_amount) > 5.00) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Status query response amount does not match the requested payment amount. Amount ' .
 				esc_html($this->payment_data['pmt_amount']) . ' vs response ' . esc_html($parsed_response['pmtq_amount']),
 				esc_attr(self::EXCEPTION_CODE_DATA_MISMATCH)
@@ -1047,7 +1047,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 * @since 2.0.0
 	 *
 	 * @return array
-	 * @throws WC_Gateway_Maksuturva_Exception If reference number is invalid.
+	 * @throws Sveapafi_Gateway_Exception If reference number is invalid.
 	 */
 	public function get_field_array()
 	{
@@ -1198,7 +1198,7 @@ abstract class WC_Gateway_Abstract_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If hash algorithm is not supported.
+	 * @throws Sveapafi_Gateway_Exception If hash algorithm is not supported.
 	 */
 	public function set_payment_data(array $payment_data)
 	{
@@ -1213,9 +1213,9 @@ abstract class WC_Gateway_Abstract_Maksuturva
 			}
 		}
 
-		$this->payment_data['server_info'] = WC_Utils_Maksuturva::get_user_agent();
+		$this->payment_data['server_info'] = Sveapafi_Utils::get_user_agent();
 		$this->payment_data['req_ts_ms'] = $this->build_req_ts_ms();
-		$this->payment_data['pmt_hashversion'] = WC_Data_Hasher::get_hash_algorithm();
+		$this->payment_data['pmt_hashversion'] = Sveapafi_Data_Hasher::get_hash_algorithm();
 	}
 
 	/***

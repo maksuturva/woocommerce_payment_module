@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 18/01/2023
  *
@@ -22,42 +22,42 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 ?>
 
 <script>
-(function() {
-	jQuery(function($) {
-		$(document).ready( function() {
-			var radioButtons = document.querySelectorAll( '.svea-payment-method-select-radio' );
-			for( var i = 0; i < radioButtons.length; ++i ) {
-			radioButtons[i].addEventListener('click', function() {
-					$('.svea-payment-method-select-radio:checked').parent().addClass('checked');
-					$('.svea-payment-method-select-radio:not(:checked)').parent().removeClass('checked');
-					document.querySelector( 'body' ).dispatchEvent( new CustomEvent('update_checkout') );
+	(function () {
+		jQuery(function ($) {
+			$(document).ready(function () {
+				var radioButtons = document.querySelectorAll('.svea-payment-method-select-radio');
+				for (var i = 0; i < radioButtons.length; ++i) {
+					radioButtons[i].addEventListener('click', function () {
+						$('.svea-payment-method-select-radio:checked').parent().addClass('checked');
+						$('.svea-payment-method-select-radio:not(:checked)').parent().removeClass('checked');
+						document.querySelector('body').dispatchEvent(new CustomEvent('update_checkout'));
 					});
-			}
-			
-			$('body').on('updated_checkout', function() {
+				}
+
+				$('body').on('updated_checkout', function () {
 					$('.svea-payment-method-select-radio:checked').parent().addClass('checked');
 					$('.svea-payment-method-select-radio:not(:checked)').parent().removeClass('checked');
 				});
-			
 
-			$('body').on('payment_method_selected', function() {
-				if ( ($('div.payment_method_WC_Gateway_Svea_Credit_Card_And_Mobile > div > div > input').length==1) &&
-						($('form[name="checkout"] input[name="payment_method"]:checked').val()=="WC_Gateway_Svea_Credit_Card_And_Mobile") )  {
+
+				$('body').on('payment_method_selected', function () {
+					if (($('div.payment_method_WC_Gateway_Svea_Credit_Card_And_Mobile > div > div > input').length == 1) &&
+						($('form[name="checkout"] input[name="payment_method"]:checked').val() == "Sveapafi_Gateway_Svea_Credit_Card_And_Mobile")) {
 						console.log("Autoselecting the only payment method that is available in this payment group.");
 						$('div.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase > div > div > input').prop("checked", true);
-						document.querySelector( 'body' ).dispatchEvent( new CustomEvent('update_checkout') );
-				}
+						document.querySelector('body').dispatchEvent(new CustomEvent('update_checkout'));
+					}
+				});
 			});
 		});
-	});
-})();
+	})();
 </script>
 
 <style>
@@ -129,5 +129,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 		font-weight: 600;
 		padding-bottom: 0em;
 	}
-
 </style>

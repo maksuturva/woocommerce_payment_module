@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 3/4/2020
  *
@@ -26,16 +26,16 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-maksuturva.php';
-require_once 'class-wc-gateway-maksuturva-exception.php';
-require_once 'class-wc-utils-maksuturva.php';
+require_once 'class-sveapafi-gateway.php';
+require_once 'class-sveapafi-gateway-exception.php';
+require_once 'class-sveapafi-utils.php';
 
 /**
- * Class WC_Svea_Api_Request_Handler.
+ * Class Sveapafi_Svea_Api_Request_Handler.
  *
  * Handles requests to Svea api
  */
-class WC_Svea_Api_Request_Handler
+class Sveapafi_Svea_Api_Request_Handler
 {
 
 	public $gateway;
@@ -86,13 +86,13 @@ class WC_Svea_Api_Request_Handler
 	public const SETTINGS_RETURN_CODE_FIELD = 'return_code_field';
 
 	/**
-	 * WC_Svea_Api_Request_Handler constructor.
+	 * Sveapafi_Svea_Api_Request_Handler constructor.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 * @param Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.2
 	 */
-	public function __construct(WC_Gateway_Maksuturva $gateway)
+	public function __construct(Sveapafi_Gateway $gateway)
 	{
 		$this->gateway = $gateway;
 	}
@@ -123,7 +123,7 @@ class WC_Svea_Api_Request_Handler
 			array(
 				'body' => $data,
 				'timeout' => 120,
-				'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+				'user-agent' => Sveapafi_Utils::get_user_agent(),
 			)
 		);
 
@@ -166,7 +166,7 @@ class WC_Svea_Api_Request_Handler
 			$request_url,
 			array(
 				'timeout' => 120,
-				'user-agent' => WC_Utils_Maksuturva::get_user_agent(),
+				'user-agent' => Sveapafi_Utils::get_user_agent(),
 			)
 		);
 
@@ -196,7 +196,7 @@ class WC_Svea_Api_Request_Handler
 			}
 		}
 
-		$data_hasher = new WC_Data_Hasher($this->gateway);
+		$data_hasher = new Sveapafi_Data_Hasher($this->gateway);
 		return $data_hasher->create_hash($hash_data);
 	}
 
@@ -216,7 +216,7 @@ class WC_Svea_Api_Request_Handler
 		try {
 			$xml_response = new \SimpleXMLElement($body);
 		} catch (\Exception $e) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Not able to parse response XML.'
 			);
 		}
@@ -234,7 +234,7 @@ class WC_Svea_Api_Request_Handler
 	private function verify_response_has_value($response)
 	{
 		if (wp_remote_retrieve_response_code($response) !== \WP_Http::OK) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Failed to communicate with Svea. Please check the network connection.'
 			);
 		}
@@ -260,7 +260,7 @@ class WC_Svea_Api_Request_Handler
 			$message = 'The authenticity of the answer could not be verified. '
 				. 'Hashes did not match.';
 
-			throw new WC_Gateway_Maksuturva_Exception(esc_html($message));
+			throw new Sveapafi_Gateway_Exception(esc_html($message));
 		}
 	}
 

@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,19 +22,20 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Class WC_Order_Compatibility_Handler.
+ * Class Sveapafi_Order_Compatibility_Handler.
  *
  * Handles the difference on how to access order properties between
  * WooCommerce version 2.x and 3.x
  *
  * @since 2.0.6
  */
-class WC_Order_Compatibility_Handler {
+class Sveapafi_Order_Compatibility_Handler
+{
 
 	/**
 	 * Order to handle
@@ -49,13 +50,14 @@ class WC_Order_Compatibility_Handler {
 	const NO_PROPERTIES_VERSION = 3;
 
 	/**
-	 * WC_Order_Compatibility_Handler constructor.
+	 * Sveapafi_Order_Compatibility_Handler constructor.
 	 *
 	 * @param \WC_Order $order Order to handle.
 	 *
 	 * @since 2.0.6
 	 */
-	public function __construct( \WC_Order $order ) {
+	public function __construct(\WC_Order $order)
+	{
 		$this->order = $order;
 	}
 
@@ -64,8 +66,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return int
 	 */
-	public function get_id() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_id()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->id;
 		} else {
 			return $this->order->get_id();
@@ -77,8 +80,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_first_name() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_first_name()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_first_name;
 		} else {
 			return $this->order->get_billing_first_name();
@@ -90,8 +94,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_last_name() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_last_name()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_last_name;
 		} else {
 			return $this->order->get_billing_last_name();
@@ -103,8 +108,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_address_1() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_address_1()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_address_1;
 		} else {
 			return $this->order->get_billing_address_1();
@@ -116,8 +122,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_address_2() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_address_2()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_address_2;
 		} else {
 			return $this->order->get_billing_address_2();
@@ -129,8 +136,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_postcode() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_postcode()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_postcode;
 		} else {
 			return $this->order->get_billing_postcode();
@@ -142,8 +150,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_city() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_city()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_city;
 		} else {
 			return $this->order->get_billing_city();
@@ -155,8 +164,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_country() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_country()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_country;
 		} else {
 			return $this->order->get_billing_country();
@@ -168,8 +178,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_phone() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_phone()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_phone;
 		} else {
 			return $this->order->get_billing_phone();
@@ -181,8 +192,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_shipping_first_name() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_shipping_first_name()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->shipping_first_name;
 		} else {
 			return $this->order->get_shipping_first_name();
@@ -194,8 +206,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_shipping_last_name() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_shipping_last_name()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->shipping_last_name;
 		} else {
 			return $this->order->get_shipping_last_name();
@@ -207,8 +220,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_shipping_address_1() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_shipping_address_1()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->shipping_address_1;
 		} else {
 			return $this->order->get_shipping_address_1();
@@ -220,8 +234,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_shipping_address_2() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_shipping_address_2()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->shipping_address_2;
 		} else {
 			return $this->order->get_shipping_address_2();
@@ -233,8 +248,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_shipping_postcode() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_shipping_postcode()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->shipping_postcode;
 		} else {
 			return $this->order->get_shipping_postcode();
@@ -246,8 +262,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_shipping_city() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_shipping_city()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->shipping_city;
 		} else {
 			return $this->order->get_shipping_city();
@@ -259,8 +276,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_shipping_country() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_shipping_country()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->shipping_country;
 		} else {
 			return $this->order->get_shipping_country();
@@ -272,8 +290,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_billing_email() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_billing_email()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->billing_email;
 		} else {
 			return $this->order->get_billing_email();
@@ -285,8 +304,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return int
 	 */
-	public function get_customer_id() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_customer_id()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->customer_user;
 		} else {
 			return $this->order->get_customer_id();
@@ -298,8 +318,9 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_order_key() {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
+	public function get_order_key()
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
 			return $this->order->order_key;
 		} else {
 			return $this->order->get_order_key();
@@ -315,11 +336,12 @@ class WC_Order_Compatibility_Handler {
 	 *
 	 * @return array|string
 	 */
-	public function get_item_meta( $order_item_id, $key = '', $single = false ) {
-		if ( version_compare( WC_VERSION, self::NO_PROPERTIES_VERSION, '<' ) ) {
-			return $this->order->get_item_meta( $order_item_id, $key, $single );
+	public function get_item_meta($order_item_id, $key = '', $single = false)
+	{
+		if (version_compare(WC_VERSION, self::NO_PROPERTIES_VERSION, '<')) {
+			return $this->order->get_item_meta($order_item_id, $key, $single);
 		} else {
-			return get_metadata( 'order_item', $order_item_id, $key, $single );
+			return get_metadata('order_item', $order_item_id, $key, $single);
 		}
 	}
 }

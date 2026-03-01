@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -40,7 +40,7 @@ if (!defined('ABSPATH')) {
 		'svea_payment_gateway_payment_method_error_message',
 		esc_html__(
 			'Failed to fetch payment methods from Svea',
-			'svea-payments'
+			'svea-payments-finland-for-woocommerce'
 		)
 	));
 	?>

@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -27,13 +27,13 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Class WC_Payment_Maksuturva.
+ * Class Sveapafi_Payment.
  *
  * Handles the saving and loading payment related data. Keeps track of payments and their statuses.
  *
  * @since 2.0.0
  */
-class WC_Payment_Maksuturva
+class Sveapafi_Payment
 {
 
 	/**
@@ -163,7 +163,7 @@ class WC_Payment_Maksuturva
 	protected $date_updated;
 
 	/**
-	 * WC_Payment_Maksuturva constructor.
+	 * Sveapafi_Payment constructor.
 	 *
 	 * If the order id is given, the model will be loaded from the database.
 	 *
@@ -171,7 +171,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If load fails.
+	 * @throws Sveapafi_Gateway_Exception If load fails.
 	 */
 	public function __construct($order_id = null)
 	{
@@ -216,8 +216,8 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @return WC_Payment_Maksuturva
-	 * @throws WC_Gateway_Maksuturva_Exception If creating fails.
+	 * @return Sveapafi_Payment
+	 * @throws Sveapafi_Gateway_Exception If creating fails.
 	 */
 	public static function create(array $data)
 	{
@@ -238,7 +238,7 @@ class WC_Payment_Maksuturva
 		); // Db call ok.
 
 		if (false === $result) {
-			throw new WC_Gateway_Maksuturva_Exception('Failed to create Svea payment.');
+			throw new Sveapafi_Gateway_Exception('Failed to create Svea payment.');
 		}
 
 		return new self((int) $data['order_id']);
@@ -249,7 +249,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * Queries for payments that are `pending` or `delayed` and returns object representations.
 	 *
-	 * @return WC_Payment_Maksuturva[]
+	 * @return Sveapafi_Payment[]
 	 * @since 2.0.2
 	 */
 	public static function findPending()
@@ -269,9 +269,9 @@ class WC_Payment_Maksuturva
 		if (is_array($data) && count($data) > 0) {
 			foreach ($data as $item) {
 				try {
-					$payments[] = new WC_Payment_Maksuturva($item->order_id);
-				} catch (WC_Gateway_Maksuturva_Exception $e) {
-					wc_maksuturva_log((string) $e);
+					$payments[] = new Sveapafi_Payment($item->order_id);
+				} catch (Sveapafi_Gateway_Exception $e) {
+					sveapafi_log((string) $e);
 				}
 			}
 		}
@@ -293,10 +293,10 @@ class WC_Payment_Maksuturva
 			);
 			$result = $wpdb->query($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			if ($result === false) {
-				wc_maksuturva_log('Could not cancel order ' . $order_id . ' in the queue.');
+				sveapafi_log('Could not cancel order ' . $order_id . ' in the queue.');
 			}
 		} catch (Exception $e) {
-			wc_maksuturva_log('Order cancel in thr queue failed: ' . $e->getMessage());
+			sveapafi_log('Order cancel in thr queue failed: ' . $e->getMessage());
 		}
 	}
 	/**
@@ -388,7 +388,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
+	 * @throws Sveapafi_Gateway_Exception If update fails.
 	 */
 	public function set_data_received(array $data)
 	{
@@ -403,7 +403,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
+	 * @throws Sveapafi_Gateway_Exception If update fails.
 	 */
 	public function complete()
 	{
@@ -432,7 +432,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
+	 * @throws Sveapafi_Gateway_Exception If update fails.
 	 */
 	public function cancel()
 	{
@@ -461,7 +461,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
+	 * @throws Sveapafi_Gateway_Exception If update fails.
 	 */
 	public function error()
 	{
@@ -490,7 +490,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
+	 * @throws Sveapafi_Gateway_Exception If update fails.
 	 */
 	public function delayed()
 	{
@@ -519,7 +519,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
+	 * @throws Sveapafi_Gateway_Exception If update fails.
 	 */
 	public function pending()
 	{
@@ -586,7 +586,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If load fails.
+	 * @throws Sveapafi_Gateway_Exception If load fails.
 	 */
 	protected function load($order_id)
 	{
@@ -602,7 +602,7 @@ class WC_Payment_Maksuturva
 
 		if (!(is_array($data) && count($data) === 1)) {
 			return; // no order found in Maksuturva queue
-			// throw new WC_Gateway_Maksuturva_Exception( 'Failed to load Svea payment!' );
+			// throw new Sveapafi_Gateway_Exception( 'Failed to load Svea payment!' );
 		}
 
 		$this->order_id = (int) $data[0]->order_id;
@@ -629,7 +629,7 @@ class WC_Payment_Maksuturva
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws WC_Gateway_Maksuturva_Exception If update fails.
+	 * @throws Sveapafi_Gateway_Exception If update fails.
 	 */
 	public function update()
 	{
@@ -659,7 +659,7 @@ class WC_Payment_Maksuturva
 		); // Db call ok; No-cache ok.
 
 		if (false === $result) {
-			throw new WC_Gateway_Maksuturva_Exception('Failed to update Svea payment!');
+			throw new Sveapafi_Gateway_Exception('Failed to update Svea payment!');
 		}
 	}
 }

@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 3/4/2020
  *
@@ -26,17 +26,17 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-maksuturva-exception.php';
-require_once 'class-wc-svea-api-request-handler.php';
+require_once 'class-sveapafi-gateway-exception.php';
+require_once 'class-sveapafi-svea-api-request-handler.php';
 
 /**
- * Class WC_Svea_Refund_Handler.
+ * Class Sveapafi_Svea_Refund_Handler.
  *
  * Handles payment cancellations and refunding after settlement
  *
  * @since 2.1.2
  */
-class WC_Svea_Refund_Handler
+class Sveapafi_Svea_Refund_Handler
 {
 
 	/**
@@ -153,7 +153,7 @@ class WC_Svea_Refund_Handler
 	/**
 	 * The Svea gateway.
 	 *
-	 * @var WC_Gateway_Maksuturva $gateway The gateway.
+	 * @var Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.2
 	 */
@@ -171,18 +171,18 @@ class WC_Svea_Refund_Handler
 	/**
 	 * The payment.
 	 *
-	 * @var WC_Payment_Maksuturva $order The payment.
+	 * @var Sveapafi_Payment $order The payment.
 	 *
 	 * @since 2.1.2
 	 */
 	private $payment;
 
 	/**
-	 * WC_Svea_Refund_Handler constructor.
+	 * Sveapafi_Svea_Refund_Handler constructor.
 	 *
 	 * @param int $order_id Order id.
-	 * @param WC_Payment_Maksuturva $payment Payment.
-	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 * @param Sveapafi_Payment $payment Payment.
+	 * @param Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.2
 	 */
@@ -221,19 +221,19 @@ class WC_Svea_Refund_Handler
 				$refund_type
 			);
 		} catch (Exception $e) {
-			wc_maksuturva_log("Refund action failed. " . $e->getMessage());
-			throw new WC_Gateway_Maksuturva_Exception("The refund action to Svea Payments failed due communication error.");
+			sveapafi_log("Refund action failed. " . $e->getMessage());
+			throw new Sveapafi_Gateway_Exception("The refund action to Svea Payments failed due communication error.");
 		}
 
 		$return_code = $cancel_response['pmtc_returncode'];
 		$return_text = $cancel_response['pmtc_returntext'];
 
-		if ($return_code === WC_Svea_Api_Request_Handler::RESPONSE_TYPE_OK) {
+		if ($return_code === Sveapafi_Svea_Api_Request_Handler::RESPONSE_TYPE_OK) {
 
 			$this->create_comment(
 				sprintf(
 					/* translators: %s: amount */
-					__('Made a refund of %s € through Svea', 'svea-payments'),
+					__('Made a refund of %s € through Svea', 'svea-payments-finland-for-woocommerce'),
 					$this->format_amount($amount)
 				)
 			);
@@ -247,7 +247,7 @@ class WC_Svea_Refund_Handler
 				$this->get_refund_failed_message()
 			);
 
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				esc_html($return_text)
 			);
 		}
@@ -264,7 +264,7 @@ class WC_Svea_Refund_Handler
 			$return_code = $refund_after_settlement_response['pmtc_returncode'];
 			$return_text = $refund_after_settlement_response['pmtc_returntext'];
 
-			if ($return_code === WC_Svea_Api_Request_Handler::RESPONSE_TYPE_OK) {
+			if ($return_code === Sveapafi_Svea_Api_Request_Handler::RESPONSE_TYPE_OK) {
 				$this->create_comment(
 					$this->get_refund_payment_required_message(
 						$refund_after_settlement_response
@@ -275,7 +275,7 @@ class WC_Svea_Refund_Handler
 			}
 
 			if ($return_code === self::RESPONSE_TYPE_FAILED) {
-				throw new WC_Gateway_Maksuturva_Exception(
+				throw new Sveapafi_Gateway_Exception(
 					esc_html($return_text)
 				);
 			}
@@ -315,7 +315,7 @@ class WC_Svea_Refund_Handler
 	private function post_to_svea($amount, $reason, $action, $cancel_type)
 	{
 
-		$gateway_implementation = new WC_Gateway_Implementation_Maksuturva($this->gateway, $this->order);
+		$gateway_implementation = new Sveapafi_Gateway_Implementation($this->gateway, $this->order);
 		$gateway_data = $gateway_implementation->get_field_array();
 
 		$post_fields = array(
@@ -341,15 +341,15 @@ class WC_Svea_Refund_Handler
 			unset($post_fields['pmtc_canceldescription']);
 		}
 
-		$api = new WC_Svea_Api_Request_Handler($this->gateway);
+		$api = new Sveapafi_Svea_Api_Request_Handler($this->gateway);
 		return $api->post(
 			self::ROUTE_CANCEL_PAYMENT,
 			$post_fields,
 			array(
-				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH => self::$request_hash_fields,
-				WC_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH => self::$response_hash_fields,
-				WC_Svea_Api_Request_Handler::SETTINGS_HASH_FIELD => 'pmtc_hash',
-				WC_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pmtc_returncode',
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_REQUEST_HASH => self::$request_hash_fields,
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_FIELDS_INCLUDED_IN_RESPONSE_HASH => self::$response_hash_fields,
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_HASH_FIELD => 'pmtc_hash',
+				Sveapafi_Svea_Api_Request_Handler::SETTINGS_RETURN_CODE_FIELD => 'pmtc_returncode',
 			)
 		);
 	}
@@ -389,11 +389,11 @@ class WC_Svea_Refund_Handler
 			. '/dashboard/PaymentEvent.db'
 			. '?pmt_id=' . $this->payment->get_payment_id();
 
-		return __('Creating a refund failed', 'svea-payments')
+		return __('Creating a refund failed', 'svea-payments-finland-for-woocommerce')
 			. '. '
-			. __('Make a refund directly', 'svea-payments')
+			. __('Make a refund directly', 'svea-payments-finland-for-woocommerce')
 			. ' <a href="' . $extranet_payment_url . '" target="_blank">'
-			. __('in Svea Extranet', 'svea-payments')
+			. __('in Svea Extranet', 'svea-payments-finland-for-woocommerce')
 			. '</a>.';
 	}
 
@@ -411,11 +411,11 @@ class WC_Svea_Refund_Handler
 		return implode(
 			'<br />',
 			array(
-				__('Payment is already settled. A payment to Svea is required to finalize refund:', 'svea-payments'),
-				__('Recipient', 'svea-payments') . ': ' . $response['pmtc_pay_with_recipientname'],
-				__('IBAN', 'svea-payments') . ': ' . $response['pmtc_pay_with_iban'],
-				__('Reference', 'svea-payments') . ': ' . $response['pmtc_pay_with_reference'],
-				__('Amount', 'svea-payments') . ': ' . $response['pmtc_pay_with_amount'] . ' €',
+				__('Payment is already settled. A payment to Svea is required to finalize refund:', 'svea-payments-finland-for-woocommerce'),
+				__('Recipient', 'svea-payments-finland-for-woocommerce') . ': ' . $response['pmtc_pay_with_recipientname'],
+				__('IBAN', 'svea-payments-finland-for-woocommerce') . ': ' . $response['pmtc_pay_with_iban'],
+				__('Reference', 'svea-payments-finland-for-woocommerce') . ': ' . $response['pmtc_pay_with_reference'],
+				__('Amount', 'svea-payments-finland-for-woocommerce') . ': ' . $response['pmtc_pay_with_amount'] . ' €',
 			)
 		);
 	}
@@ -430,7 +430,7 @@ class WC_Svea_Refund_Handler
 	private function verify_amount_has_value($amount)
 	{
 		if (!isset($amount)) {
-			throw new WC_Gateway_Maksuturva_Exception(
+			throw new Sveapafi_Gateway_Exception(
 				'Refund amount is not defined.'
 			);
 		}

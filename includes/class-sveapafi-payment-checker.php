@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -29,13 +29,13 @@ if (!defined('ABSPATH')) {
 
 
 /**
- * Class WC_Payment_Checker_Maksuturva.
+ * Class Sveapafi_Payment_Checker.
  *
  * Handles checking the status of payments using the Svea API.
  *
  * @since 2.0.2
  */
-class WC_Payment_Checker_Maksuturva
+class Sveapafi_Payment_Checker
 {
 
 	/**
@@ -57,8 +57,8 @@ class WC_Payment_Checker_Maksuturva
 		global $wpdb;
 
 		// Truncate the table if the current version is below the specified DB version.
-		$version = get_option(WC_Maksuturva::OPTION_DB_VERSION);
-		if (version_compare($version, WC_Maksuturva::DB_VERSION) < 0) {
+		$version = get_option(Sveapafi_Maksuturva::OPTION_DB_VERSION);
+		if (version_compare($version, Sveapafi_Maksuturva::DB_VERSION) < 0) {
 			self::truncate_table();
 		}
 
@@ -90,7 +90,7 @@ class WC_Payment_Checker_Maksuturva
 		$sql = 'TRUNCATE TABLE `' . $tbl . '`;'; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$result = $wpdb->query($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		if ($result === false) {
-			wc_maksuturva_log('Could not truncate status log table ' . $tbl);
+			sveapafi_log('Could not truncate status log table ' . $tbl);
 		}
 	}
 
@@ -99,7 +99,7 @@ class WC_Payment_Checker_Maksuturva
 	 *
 	 * Queries Svea API for payment status and updates order if needed.
 	 *
-	 * @param WC_Payment_Maksuturva $payment the payment.
+	 * @param Sveapafi_Payment $payment the payment.
 	 *
 	 * @since 2.0.2
 	 *
@@ -110,18 +110,18 @@ class WC_Payment_Checker_Maksuturva
 		$response = array();
 		$query_count = 0;
 
-		if (!$payment instanceof WC_Payment_Maksuturva) {
-			wc_maksuturva_log('Not a Svea payment method, skipping status check');
+		if (!$payment instanceof Sveapafi_Payment) {
+			sveapafi_log('Not a Svea payment method, skipping status check');
 			return;
 		}
 
 		try {
-			$gateway = new WC_Gateway_Maksuturva();
+			$gateway = new Sveapafi_Gateway();
 			$order = wc_get_order($payment->get_order_id());
 
 			// don't query status in sandbox mode
 			if ($gateway->is_sandbox()) {
-				wc_maksuturva_log('Payment check is disabled for sandbox mode. Skipping status query for order ' . $payment->get_order_id());
+				sveapafi_log('Payment check is disabled for sandbox mode. Skipping status query for order ' . $payment->get_order_id());
 				return;
 			}
 
@@ -129,7 +129,7 @@ class WC_Payment_Checker_Maksuturva
 			 * check time windows for status query
 			 */
 			if (!($this->is_time_to_check($payment->get_date_added(), $payment->get_date_updated()))) {
-				wc_maksuturva_log('Skipped the status query for the order ' . $payment->get_order_id() . ', because it does not fullfill the check time window rules yet.');
+				sveapafi_log('Skipped the status query for the order ' . $payment->get_order_id() . ', because it does not fullfill the check time window rules yet.');
 				return;
 			}
 
@@ -137,64 +137,64 @@ class WC_Payment_Checker_Maksuturva
 			 * if order is not found anymore, skip payment checks and cancel it it Maksuturva status queue (2.12.2019)
 			 */
 			if ($order == null) {
-				wc_maksuturva_log('Order for id ' . $payment->get_order_id() . ' not found anymore! Cancelling it in the check queue.');
-				WC_Payment_Maksuturva::updateToCancelled($payment->get_order_id());
+				sveapafi_log('Order for id ' . $payment->get_order_id() . ' not found anymore! Cancelling it in the check queue.');
+				Sveapafi_Payment::updateToCancelled($payment->get_order_id());
 			} else {
-				$response = (new WC_Gateway_Implementation_Maksuturva($gateway, $order))->status_query();
+				$response = (new Sveapafi_Gateway_Implementation($gateway, $order))->status_query();
 				$query_count = $this->log($payment, $response);
 
 				switch ($response['pmtq_returncode']) {
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAID_DELIVERY:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_COMPENSATED:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_PAID:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_PAID_DELIVERY:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_COMPENSATED:
 						// The payment confirmation was received - payment accepted
 						$payment->complete();
 						if (!$gateway->is_order_paid($order)) {
 							$order->payment_complete($payment->get_payment_id());
 						}
-						wc_maksuturva_log('Payment for order ' . $payment->get_order_id() . ' is paid.');
+						sveapafi_log('Payment for order ' . $payment->get_order_id() . ' is paid.');
 						break;
 
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED_PARTIAL:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_CANCELLED_PARTIAL_RETURN:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_PAYER_RECLAMATION:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_CANCELLED:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_PAYER_CANCELLED:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_PAYER_CANCELLED_PARTIAL:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_PAYER_CANCELLED_PARTIAL_RETURN:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_PAYER_RECLAMATION:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_CANCELLED:
 						// The payment was canceled in Svea
 						$payment->cancel();
 						$order->cancel_order();
-						wc_maksuturva_log('Payment for order ' . $payment->get_order_id() . ' is cancelled.');
+						sveapafi_log('Payment for order ' . $payment->get_order_id() . ' is cancelled.');
 						break;
 
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_NOT_FOUND:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_NOT_FOUND:
 						$payment->update();
-						wc_maksuturva_log('No paid payment for order ' . $payment->get_order_id() . ' was found.');
+						sveapafi_log('No paid payment for order ' . $payment->get_order_id() . ' was found.');
 						break;
 
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_FAILED:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_FAILED:
 						$payment->update();
-						wc_maksuturva_log('Payment query for order ' . $payment->get_order_id() . ' failed.');
+						sveapafi_log('Payment query for order ' . $payment->get_order_id() . ' failed.');
 						break;
 
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_WAITING:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID:
-					case WC_Gateway_Implementation_Maksuturva::STATUS_QUERY_UNPAID_DELIVERY:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_WAITING:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_UNPAID:
+					case Sveapafi_Gateway_Implementation::STATUS_QUERY_UNPAID_DELIVERY:
 					default:
 						// The payment is still waiting for confirmation, update date_update
 						$payment->update();
-						wc_maksuturva_log('Payment for order ' . $payment->get_order_id() . ' cannot be confirmed yet and is waiting for a payment.');
+						sveapafi_log('Payment for order ' . $payment->get_order_id() . ' cannot be confirmed yet and is waiting for a payment.');
 						break;
 				}
 			}
-		} catch (WC_Gateway_Maksuturva_Exception $e) {
-			wc_maksuturva_log('Status query failed for order ' . $payment->get_order_id() . ' because exception occured: ' . $e->getMessage());
+		} catch (Sveapafi_Gateway_Exception $e) {
+			sveapafi_log('Status query failed for order ' . $payment->get_order_id() . ' because exception occured: ' . $e->getMessage());
 			// update database timestamp and query_count
 			$query_count = $this->log($payment, array('error' => $e->getMessage()));
 		}
 
 		// if query count for the order exeeds safe limit throw an exception
 		if ($query_count > 40) {
-			wc_maksuturva_log(
+			sveapafi_log(
 				'Status query count for order ' . $payment->get_order_id() . ' exceeded the maximum 40 retries. ' .
 				'Cancelled the order!'
 			);
@@ -208,7 +208,7 @@ class WC_Payment_Checker_Maksuturva
 	 *
 	 * Queries Svea API for payment statuses and updates orders if needed.
 	 *
-	 * @param WC_Payment_Maksuturva[] $payments the payments.
+	 * @param Sveapafi_Payment[] $payments the payments.
 	 *
 	 * @since 2.0.2
 	 *
@@ -228,7 +228,7 @@ class WC_Payment_Checker_Maksuturva
 				}
 			}
 		} catch (\Exception $e) {
-			wc_maksuturva_log('Payment check exception: ' . $e->getMessage());
+			sveapafi_log('Payment check exception: ' . $e->getMessage());
 		}
 		return $responses;
 	}
@@ -299,7 +299,7 @@ class WC_Payment_Checker_Maksuturva
 	 *
 	 * Inserts a log entry to the db for the Svea API status query.
 	 *
-	 * @param WC_Payment_Maksuturva $payment  the payment.
+	 * @param Sveapafi_Payment $payment  the payment.
 	 * @param array                 $response the response.
 	 *
 	 * @since 2.0.2

@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,14 +22,14 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
  * Variables defined.
  *
- * @var WC_Gateway_Maksuturva $this                The context where this template is called from.
+ * @var Sveapafi_Gateway $this                The context where this template is called from.
  * @var WC_Order              $order               The order.
  * @var array                 $data                The data to be sent to Svea.
  * @var string                $payment_gateway_url The gateway URL.
@@ -39,11 +39,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <?php
-$msg = __( 'Thank you for your order. You will now be redirected to Svea to complete the payment.', 'svea-payments' );
+$msg = __('Thank you for your order. You will now be redirected to Svea to complete the payment.', 'svea-payments-finland-for-woocommerce');
 wc_enqueue_js(
 	'
 		$.blockUI({
-				message: "' . esc_js( $msg ) . '",
+				message: "' . esc_js($msg) . '",
 				baseZ: 99999,
 				overlayCSS: {
 					background: "#fff",
@@ -66,15 +66,15 @@ wc_enqueue_js(
 );
 ?>
 
-<form action="<?php echo esc_url( $payment_gateway_url ); ?>" method="post" id="maksuturva_payment_form" target="_top">
-	<?php foreach ( $data as $key => $value ) : ?>
-		<input type="hidden" name="<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $value ); ?>"/>
+<form action="<?php echo esc_url($payment_gateway_url); ?>" method="post" id="maksuturva_payment_form" target="_top">
+	<?php foreach ($data as $key => $value): ?>
+		<input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>" />
 	<?php endforeach; ?>
 	<!-- Button Fallback -->
 	<div class="payment_buttons">
-		<a class="button cancel" href="<?php echo esc_url( $order->get_cancel_order_url() ); ?>">
-			<?php echo esc_attr( __( 'Cancel order', 'svea-payments' ) ); ?></a>
+		<a class="button cancel" href="<?php echo esc_url($order->get_cancel_order_url()); ?>">
+			<?php echo esc_attr(__('Cancel order', 'svea-payments-finland-for-woocommerce')); ?></a>
 		<input type="submit" class="button alt" id="submit_maksuturva_payment_form"
-				value="<?php echo esc_attr( __( 'Pay for order', 'svea-payments' ) ); ?>"/>
+			value="<?php echo esc_attr(__('Pay for order', 'svea-payments-finland-for-woocommerce')); ?>" />
 	</div>
 </form>

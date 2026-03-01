@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -28,18 +28,18 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-implementation-maksuturva.php';
-require_once 'class-wc-payment-checker-maksuturva.php';
-require_once 'class-wc-utils-maksuturva.php';
+require_once 'class-sveapafi-gateway-implementation.php';
+require_once 'class-sveapafi-payment-checker.php';
+require_once 'class-sveapafi-utils.php';
 
 /**
- * Class WC_Meta_Box_Maksuturva.
+ * Class Sveapafi_Meta_Box.
  *
  * Adds a meta box to the order page.
  *
  * @since 2.0.0
  */
-class WC_Meta_Box_Maksuturva
+class Sveapafi_Meta_Box
 {
 
 	/**
@@ -52,7 +52,7 @@ class WC_Meta_Box_Maksuturva
 	{
 		try {
 			if (!isset($args['args']['gateway'])) {
-				throw new WC_Gateway_Maksuturva_Exception('No gateway given to meta-box.');
+				throw new Sveapafi_Gateway_Exception('No gateway given to meta-box.');
 			}
 			$gateway = $args['args']['gateway'];
 
@@ -70,7 +70,7 @@ class WC_Meta_Box_Maksuturva
 			$order = wc_get_order($order_id);
 
 			if (!empty($order->get_payment_method())) {
-				$payment = new WC_Payment_Maksuturva($order->get_id());
+				$payment = new Sveapafi_Payment($order->get_id());
 				if (!empty($payment->get_payment_id())) {
 					$gateway->render(
 						'meta-box',
@@ -85,9 +85,9 @@ class WC_Meta_Box_Maksuturva
 			} else {
 
 			}
-		} catch (WC_Gateway_Maksuturva_Exception $e) {
+		} catch (Sveapafi_Gateway_Exception $e) {
 			// If the payment was not found, it probably means that the order was not paid with Svea.
-			wc_maksuturva_log($e->getMessage());
+			sveapafi_log($e->getMessage());
 			return;
 		}
 	}
@@ -97,7 +97,7 @@ class WC_Meta_Box_Maksuturva
 	 *
 	 * Returns the messages for the given payment.
 	 *
-	 * @param WC_Payment_Maksuturva $payment The Svea payment object.
+	 * @param Sveapafi_Payment $payment The Svea payment object.
 	 *
 	 * @since 2.0.0
 	 *
@@ -105,35 +105,35 @@ class WC_Meta_Box_Maksuturva
 	 */
 	private static function get_messages($payment)
 	{
-		if (!$payment instanceof WC_Payment_Maksuturva) {
-			wc_maksuturva_log('Not a Svea payment method, skipping status check');
+		if (!$payment instanceof Sveapafi_Payment) {
+			sveapafi_log('Not a Svea payment method, skipping status check');
 		}
 
 		/**
 		 * query current status from Svea Payments if payment is not yet completed
 		 */
 		if ($payment->is_delayed() || $payment->is_pending()) {
-			wc_maksuturva_log('Manual pending payment check for order ' . $payment->get_order_id());
-			(new WC_Payment_Checker_Maksuturva())->check_payment($payment);
+			sveapafi_log('Manual pending payment check for order ' . $payment->get_order_id());
+			(new Sveapafi_Payment_Checker())->check_payment($payment);
 		}
 
 		switch ($payment->get_status()) {
-			case WC_Payment_Maksuturva::STATUS_COMPLETED:
-				$msg = __('The payment is confirmed by Svea Payments', 'svea-payments');
+			case Sveapafi_Payment::STATUS_COMPLETED:
+				$msg = __('The payment is confirmed by Svea Payments', 'svea-payments-finland-for-woocommerce');
 				break;
 
-			case WC_Payment_Maksuturva::STATUS_CANCELLED:
-				$msg = __('The payment is canceled by Svea Payments', 'svea-payments');
+			case Sveapafi_Payment::STATUS_CANCELLED:
+				$msg = __('The payment is canceled by Svea Payments', 'svea-payments-finland-for-woocommerce');
 				break;
 
-			case WC_Payment_Maksuturva::STATUS_ERROR:
-				$msg = __('The payment could not be confirmed by Svea Payments, please check manually', 'svea-payments');
+			case Sveapafi_Payment::STATUS_ERROR:
+				$msg = __('The payment could not be confirmed by Svea Payments, please check manually', 'svea-payments-finland-for-woocommerce');
 				break;
 
-			case WC_Payment_Maksuturva::STATUS_DELAYED:
-			case WC_Payment_Maksuturva::STATUS_PENDING:
+			case Sveapafi_Payment::STATUS_DELAYED:
+			case Sveapafi_Payment::STATUS_PENDING:
 			default:
-				$msg = __('The payment is still waiting for confirmation by Svea Payments', 'svea-payments');
+				$msg = __('The payment is still waiting for confirmation by Svea Payments', 'svea-payments-finland-for-woocommerce');
 				break;
 		}
 
@@ -145,8 +145,8 @@ class WC_Meta_Box_Maksuturva
 	 *
 	 * Returns the extranet payment url for the given payment.
 	 *
-	 * @param WC_Payment_Maksuturva $payment The Svea payment object.
-	 * @param WC_Gateway_Maksuturva $gateway The gateway object.
+	 * @param Sveapafi_Payment $payment The Svea payment object.
+	 * @param Sveapafi_Gateway $gateway The gateway object.
 	 *
 	 * @return string
 	 */

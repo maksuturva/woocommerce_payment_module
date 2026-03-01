@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,17 +22,18 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Class WC_Gateway_Maksuturva_Exception.
+ * Class Sveapafi_Gateway_Exception.
  *
  * Is thrown when errors in the payment gateway happens.
  *
  * @since 2.0.0
  */
-class WC_Gateway_Maksuturva_Exception extends \Exception {
+class Sveapafi_Gateway_Exception extends \Exception
+{
 
 }

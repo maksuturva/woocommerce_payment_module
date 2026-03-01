@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,20 +22,20 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
  * Variables defined.
  *
- * @var WC_Gateway_Maksuturva $this The context from where this template was called from.
+ * @var Sveapafi_Gateway $this The context from where this template was called from.
  *
  * @since 2.0.0
  */
 ?>
 <div class="inline error">
 	<p>
-		<?php echo esc_attr( __( 'Svea does not support your store currency. Only EUR is supported.', 'svea-payments' ) ); ?>
+		<?php echo esc_attr(__('Svea does not support your store currency. Only EUR is supported.', 'svea-payments-finland-for-woocommerce')); ?>
 	</p>
 </div>

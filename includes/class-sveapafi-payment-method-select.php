@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -26,19 +26,19 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-require_once 'class-wc-gateway-implementation-maksuturva.php';
-require_once 'class-wc-payment-handling-costs.php';
-require_once 'class-wc-svea-api-request-handler.php';
-require_once 'class-wc-utils-maksuturva.php';
+require_once 'class-sveapafi-gateway-implementation.php';
+require_once 'class-sveapafi-payment-handling-costs.php';
+require_once 'class-sveapafi-svea-api-request-handler.php';
+require_once 'class-sveapafi-utils.php';
 
 /**
- * Class WC_Payment_Method_Select.
+ * Class Sveapafi_Payment_Method_Select.
  *
  * Handles functionalities related to the payment method selection.
  *
  * @since 2.1.3
  */
-class WC_Payment_Method_Select
+class Sveapafi_Payment_Method_Select
 {
 
 	/**
@@ -58,7 +58,7 @@ class WC_Payment_Method_Select
 	/**
 	 * Gateway.
 	 *
-	 * @var WC_Gateway_Maksuturva $gateway The gateway.
+	 * @var Sveapafi_Gateway $gateway The gateway.
 	 */
 	private $gateway;
 
@@ -77,13 +77,13 @@ class WC_Payment_Method_Select
 	private static $available_payment_methods;
 
 	/**
-	 * WC_Payment_Method_Select constructor.
+	 * Sveapafi_Payment_Method_Select constructor.
 	 *
-	 * @param WC_Gateway_Maksuturva $gateway The gateway.
+	 * @param Sveapafi_Gateway $gateway The gateway.
 	 *
 	 * @since 2.1.3
 	 */
-	public function __construct(WC_Gateway_Maksuturva $gateway)
+	public function __construct(Sveapafi_Gateway $gateway)
 	{
 		$this->gateway = $gateway;
 		$this->seller_id = $gateway->get_seller_id();
@@ -101,7 +101,7 @@ class WC_Payment_Method_Select
 	public function initialize_payment_method_select($payment_type, $price, $is_outbound_payment_enabled)
 	{
 
-		$payment_handling_costs_handler = new WC_Payment_Handling_Costs($this->gateway);
+		$payment_handling_costs_handler = new Sveapafi_Payment_Handling_Costs($this->gateway);
 		$paymentMethodsFetchedSuccessfully = true;
 
 		$form_params = array(
@@ -197,7 +197,7 @@ class WC_Payment_Method_Select
 	{
 
 		if (!isset($_POST[self::PAYMENT_METHOD_SELECT_ID])) {
-			wc_add_notice(__('Payment method not selected', 'svea-payments'), 'error');
+			wc_add_notice(__('Payment method not selected', 'svea-payments-finland-for-woocommerce'), 'error');
 			return false;
 		}
 
@@ -339,11 +339,11 @@ class WC_Payment_Method_Select
 	 */
 	private function get_eeac_payment_method_logo_url($original_url)
 	{
-		$logo_path = trailingslashit(WC_Maksuturva::get_instance()->get_plugin_dir()) . 'EEAC_logo.png';
+		$logo_path = trailingslashit(Sveapafi_Maksuturva::get_instance()->get_plugin_dir()) . 'EEAC_logo.png';
 		$override_logo = file_exists($logo_path);
 
 		if ($override_logo) {
-			return WC_Maksuturva::get_instance()->get_plugin_url() . 'EEAC_logo.png';
+			return Sveapafi_Maksuturva::get_instance()->get_plugin_url() . 'EEAC_logo.png';
 		} else {
 			return $original_url;
 		}
@@ -367,14 +367,14 @@ class WC_Payment_Method_Select
 		$post_fields = array(
 			'request_locale' => explode('_', get_user_locale())[0],
 			'sellerid' => $this->seller_id,
-			'totalamount' => WC_Utils_Maksuturva::filter_price($price),
+			'totalamount' => Sveapafi_Utils::filter_price($price),
 		);
 
 		$cache_key = sanitize_title('svea-payment-methods-' . implode('-', $post_fields));
 		$result_methods = get_transient($cache_key);
 
 		if (!$result_methods) {
-			$api = new WC_Svea_Api_Request_Handler($this->gateway);
+			$api = new Sveapafi_Svea_Api_Request_Handler($this->gateway);
 
 			$result_methods = $api->get(
 				self::ROUTE_RETRIEVE_AVAILABLE_PAYMENT_METHODS,

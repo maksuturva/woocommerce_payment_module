@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 3/4/2020
  *
@@ -22,45 +22,47 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Class WC_Gateway_Svea_Online_Bank_Payments
+ * Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase
  *
- * Gateway handler for online bank payments
+ * Gateway handler for invoice and hire purchase payments
  *
  * @since 2.1.3
  */
-class WC_Gateway_Svea_Online_Bank_Payments extends WC_Gateway_Maksuturva {
+class Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase extends Sveapafi_Gateway
+{
 
 	/**
-	 * WC_Gateway_Svea_Online_Bank_Payments constructor.
+	 * Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase constructor.
 	 *
 	 * Sets the values for gateway specific parent class properties
 	 *
 	 * @since 2.1.3
 	 */
-	public function __construct() {
-		parent::__construct( self::class );
-		$this->method_title = 'Svea ' . __( 'Online Bank Payments', 'svea-payments' );
+	public function __construct()
+	{
+		parent::__construct(self::class);
+		$this->method_title = 'Svea ' . __('Invoice and Part Payment', 'svea-payments-finland-for-woocommerce');
 
 		/* translators: %s: URL */
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'svea-payments' ), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
-		$custom_title             = $this->get_option( 'payment_group_onlinebank_title' );
-		if ( ! empty( $custom_title ) ) {
-			$this->title = esc_html( $custom_title );
+		$this->method_description = sprintf(__('General Svea settings are managed <a href="%s">here</a>.', 'svea-payments-finland-for-woocommerce'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
+		$custom_title = $this->get_option('payment_group_invoice_title');
+		if (!empty($custom_title)) {
+			$this->title = esc_html($custom_title);
 		} else {
-			$this->title = __( 'Online Bank Payments', 'svea-payments' );
+			$this->title = __('Invoice and Part Payment', 'svea-payments-finland-for-woocommerce');
 		}
-		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 	}
 
 	/**
-	 * Initialize the form fields
+	 * Initialize form fields
 	 */
-	public function init_form_fields() {
+	public function init_form_fields()
+	{
 		$this->form_fields = array();
 	}
 }

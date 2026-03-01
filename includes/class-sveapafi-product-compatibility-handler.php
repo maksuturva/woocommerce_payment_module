@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,19 +22,20 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Class WC_Product_Compatibility_Handler.
+ * Class Sveapafi_Product_Compatibility_Handler.
  *
  * Handles the difference on how to access order properties between
  * WooCommerce with or without HPOS
  *
  * @since 2.0.6
  */
-class WC_Product_Compatibility_Handler {
+class Sveapafi_Product_Compatibility_Handler
+{
 
 	/**
 	 * Product to handle
@@ -44,13 +45,14 @@ class WC_Product_Compatibility_Handler {
 	private $product;
 
 	/**
-	 * WC_Product_Compatibility_Handler constructor.
+	 * Sveapafi_Product_Compatibility_Handler constructor.
 	 *
 	 * @param \WC_Product|\WC_Product_Variable $product Product to handle.
 	 *
 	 * @since 2.0.6
 	 */
-	public function __construct( $product ) {
+	public function __construct($product)
+	{
 		$this->product = $product;
 	}
 
@@ -59,8 +61,9 @@ class WC_Product_Compatibility_Handler {
 	 *
 	 * @return int
 	 */
-	private function get_id() {
-		return $this->product->is_type( 'variation' ) ? $this->product->get_parent_id() : $this->product->get_id();
+	private function get_id()
+	{
+		return $this->product->is_type('variation') ? $this->product->get_parent_id() : $this->product->get_id();
 	}
 
 	/**
@@ -68,7 +71,8 @@ class WC_Product_Compatibility_Handler {
 	 *
 	 * @return string
 	 */
-	public function get_type() {
+	public function get_type()
+	{
 		return $this->product->get_type();
 	}
 
@@ -77,7 +81,8 @@ class WC_Product_Compatibility_Handler {
 	 *
 	 * @return int
 	 */
-	public function get_post() {
-		return get_post( $this->product->get_id() );
+	public function get_post()
+	{
+		return get_post($this->product->get_id());
 	}
 }

@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 3/4/2020
  *
@@ -22,46 +22,49 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Class WC_Gateway_Svea_Credit_Card_And_Mobile
+ * Class Sveapafi_Gateway_Svea_Credit_Card_And_Mobile
  *
  * Gateway handler for credit card and mobile payments
  *
  * @since 2.1.3
  */
-class WC_Gateway_Svea_Credit_Card_And_Mobile extends WC_Gateway_Maksuturva {
+class Sveapafi_Gateway_Svea_Credit_Card_And_Mobile extends Sveapafi_Gateway
+{
 
 	/**
-	 * WC_Gateway_Svea_Credit_Card_And_Mobile constructor.
+	 * Sveapafi_Gateway_Svea_Credit_Card_And_Mobile constructor.
 	 *
 	 * Sets the values for gateway specific parent class properties
 	 *
 	 * @since 2.1.3
 	 */
-	public function __construct() {
-		parent::__construct( self::class );
-		$this->method_title = 'Svea ' . __( 'Credit Card and Mobile', 'svea-payments' );
+	public function __construct()
+	{
+		parent::__construct(self::class);
+		$this->method_title = 'Svea ' . __('Credit Card and Mobile', 'svea-payments-finland-for-woocommerce');
 
 		/* translators: %s: URL */
-		$this->method_description = sprintf( __( 'General Svea settings are managed <a href="%s">here</a>.', 'svea-payments' ), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva' );
+		$this->method_description = sprintf(__('General Svea settings are managed <a href="%s">here</a>.', 'svea-payments-finland-for-woocommerce'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
 
-		$custom_title = $this->get_option( 'payment_group_creditcard_title' );
-		if ( ! empty( $custom_title ) ) {
-			$this->title = esc_html( $custom_title );
+		$custom_title = $this->get_option('payment_group_creditcard_title');
+		if (!empty($custom_title)) {
+			$this->title = esc_html($custom_title);
 		} else {
-			$this->title = __( 'Credit Card and Mobile', 'svea-payments' );
+			$this->title = __('Credit Card and Mobile', 'svea-payments-finland-for-woocommerce');
 		}
-		$this->icon = WC_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
+		$this->icon = Sveapafi_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function init_form_fields() {
+	public function init_form_fields()
+	{
 		$this->form_fields = array();
 	}
 }

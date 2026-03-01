@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,18 +22,19 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Class WC_Utils_Maksuturva.
+ * Class Sveapafi_Utils.
  *
  * Static class for filtering characters and prices.
  *
  * @since 2.0.0
  */
-class WC_Utils_Maksuturva {
+class Sveapafi_Utils
+{
 
 	/**
 	 * Filter a string to only have alphanumeric characters.
@@ -44,8 +45,9 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public static function filter_alphanumeric( $str ) {
-		return preg_replace( '/[^a-zA-Z0-9]+/', '', $str );
+	public static function filter_alphanumeric($str)
+	{
+		return preg_replace('/[^a-zA-Z0-9]+/', '', $str);
 	}
 
 	/**
@@ -57,8 +59,9 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public static function filter_productname( $str ) {
-		return preg_replace( '/[^\p{L}\p{N}\s]/u', '_', $str );
+	public static function filter_productname($str)
+	{
+		return preg_replace('/[^\p{L}\p{N}\s]/u', '_', $str);
 	}
 
 	/**
@@ -72,8 +75,9 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public static function filter_price( $price ) {
-		return str_replace( '.', ',', sprintf( '%.2f', $price ) );
+	public static function filter_price($price)
+	{
+		return str_replace('.', ',', sprintf('%.2f', $price));
 	}
 
 	/**
@@ -83,8 +87,9 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @since 2.1.23
 	 */
-	public static function filter_quantity( $qty ) {
-		return str_replace( '.', ',', $qty );
+	public static function filter_quantity($qty)
+	{
+		return str_replace('.', ',', $qty);
 	}
 
 	/**
@@ -98,9 +103,10 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public static function filter_characters( $str ) {
-		$new_string = str_replace( '"', '', $str );
-		if ( ! is_null( $new_string ) && mb_strlen( $new_string ) > 0 ) {
+	public static function filter_characters($str)
+	{
+		$new_string = str_replace('"', '', $str);
+		if (!is_null($new_string) && mb_strlen($new_string) > 0) {
 			return $new_string;
 		}
 
@@ -119,9 +125,10 @@ class WC_Utils_Maksuturva {
 	 *
 	 * @return string
 	 */
-	public static function filter_description( $description ) {
+	public static function filter_description($description)
+	{
 		/* 2.1.5 item description is not necessary for payment backend, replace with dash if not empty */
-		if ( trim( $description ) != '' ) {
+		if (trim($description) != '') {
 			$description = '-';
 		}
 		return $description;
@@ -131,16 +138,17 @@ class WC_Utils_Maksuturva {
 	/***
 	 * Generate S2S User-Agent
 	 */
-	public static function get_user_agent() {
-		$user_agent = 'Svea Payments for WC/' . WC_Maksuturva::VERSION;
+	public static function get_user_agent()
+	{
+		$user_agent = 'Svea Payments for WC/' . Sveapafi_Maksuturva::VERSION;
 
 		try {
 			$user_agent = mb_convert_encoding(
-				$user_agent . ' (' . php_uname( 's' ) .
-				' ' . php_uname( 'r' ) . ') Woocommerce/' . WC_VERSION . ' PHP/' . phpversion(),
+				$user_agent . ' (' . php_uname('s') .
+				' ' . php_uname('r') . ') Woocommerce/' . WC_VERSION . ' PHP/' . phpversion(),
 				'ASCII'
 			);
-		} catch ( \Exception $e ) {
+		} catch (\Exception $e) {
 			// nop
 		}
 		return $user_agent;

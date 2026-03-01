@@ -6,7 +6,7 @@
  */
 
 /**
- * Svea Payments Gateway Plugin for WooCommerce
+ * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
  * Last update: 30/11/2020
  *
@@ -22,7 +22,7 @@
  * Lesser General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
@@ -39,9 +39,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 <tr valign="top">
 	<th scope="row" class="titledesc">
 		<label for="payment_method_handling_cost_table">
-			<?php echo esc_html( $field['title'] ); ?>
-			<?php if ( isset( $field['description'] ) && isset( $field['desc_tip'] ) && $field['desc_tip'] ) { ?>
-				<span class="woocommerce-help-tip" data-tip="<?php echo esc_html( $field['description'] ); ?>"></span>
+			<?php echo esc_html($field['title']); ?>
+			<?php if (isset($field['description']) && isset($field['desc_tip']) && $field['desc_tip']) { ?>
+				<span class="woocommerce-help-tip" data-tip="<?php echo esc_html($field['description']); ?>"></span>
 			<?php } ?>
 		</label>
 	</th>
@@ -49,42 +49,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<table class="wc_input_table widefat" cellspacing="0">
 			<thead>
 				<tr>
-					<th><?php echo esc_html( $field['code_column_title'] ); ?></th>
-					<th><?php echo esc_html( $field['amount_column_title'] ); ?></th>
+					<th><?php echo esc_html($field['code_column_title']); ?></th>
+					<th><?php echo esc_html($field['amount_column_title']); ?></th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ( $payment_method_handling_costs as $key => $handling_cost ) { ?>
-				<tr>
-					<td>
-						<input type="text" name="payment_method_type[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_html( $handling_cost['payment_method_type'] ); ?>"/>
-					</td>
-					<td>
-						<input type="text" name="handling_cost_amount[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_html( $handling_cost['handling_cost_amount'] ); ?>"/>
-					</td>
-				</tr>
+				<?php foreach ($payment_method_handling_costs as $key => $handling_cost) { ?>
+					<tr>
+						<td>
+							<input type="text" name="payment_method_type[<?php echo esc_attr($key); ?>]"
+								value="<?php echo esc_html($handling_cost['payment_method_type']); ?>" />
+						</td>
+						<td>
+							<input type="text" name="handling_cost_amount[<?php echo esc_attr($key); ?>]"
+								value="<?php echo esc_html($handling_cost['handling_cost_amount']); ?>" />
+						</td>
+					</tr>
 				<?php } ?>
 			</tbody>
 			<tfoot>
 				<tr>
 					<th colspan="7">
 						<a href="#" class="add button">
-							<?php echo esc_html( $field['add_new_button_text'] ); ?>
+							<?php echo esc_html($field['add_new_button_text']); ?>
 						</a>
 						<a href="#" class="remove_rows button">
-							<?php echo esc_html( $field['remove_selected_rows_button_text'] ); ?>
+							<?php echo esc_html($field['remove_selected_rows_button_text']); ?>
 						</a>
 					</th>
 				</tr>
 			</tfoot>
 		</table>
 		<script type="text/javascript">
-			(function() {
+			(function () {
 				var paymentMethodHandlingCostTable = document.querySelector('#payment_method_handling_cost_table');
 				var tableBody = paymentMethodHandlingCostTable.querySelector('tbody');
 				var size = tableBody.querySelectorAll('tr').length;
 
-				paymentMethodHandlingCostTable.addEventListener('click', function(event) {
+				paymentMethodHandlingCostTable.addEventListener('click', function (event) {
 
 					if (!event.target.matches('a.add')) {
 						return;
