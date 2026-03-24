@@ -4,11 +4,18 @@
     console.log('Svea: Checkout fee trigger loaded');
 
     // We need to keep track of the previous method to avoid infinite loops
-    let previousPaymentMethod = select('wc/store/payment').getActivePaymentMethod();
+    let previousPaymentMethod = '';
+    const paymentStore = select('wc/store/payment');
+    if (paymentStore) {
+        previousPaymentMethod = paymentStore.getActivePaymentMethod();
+    }
 
     // Subscribe to changes in the store
     const unsubscribe = subscribe(() => {
-        const currentPaymentMethod = select('wc/store/payment').getActivePaymentMethod();
+        const store = select('wc/store/payment');
+        if (!store) return;
+
+        const currentPaymentMethod = store.getActivePaymentMethod();
 
         // If the payment method has changed
         if (currentPaymentMethod !== previousPaymentMethod && currentPaymentMethod !== '') {
