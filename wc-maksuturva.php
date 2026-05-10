@@ -11,11 +11,13 @@
  * Version:     3.0.0     
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
- * Text Domain: svea-payments
+ * Text Domain: svea-payments-finland-for-woocommerce
  * Domain Path: /languages/
+ * License:     LGPL-2.1-or-later
+ * License URI: https://www.gnu.org/licenses/lgpl-2.1.html
  * Requires at least: 6.0
  * Tested up to: 6.9     
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  * WC requires at least: 8.0
  * WC tested up to: 10.4.3    
  */
@@ -654,9 +656,6 @@ class Sveapafi_Maksuturva
 		$this->load_class('Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase');
 		$methods[] = Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase::class;
 
-		$this->load_class('Sveapafi_Gateway_Svea_Estonia_Payments');
-		$methods[] = Sveapafi_Gateway_Svea_Estonia_Payments::class;
-
 		return $methods;
 	}
 
@@ -671,7 +670,7 @@ class Sveapafi_Maksuturva
 	 */
 	public static function maksuturva_action_links($links)
 	{
-		$url = admin_url('admin.php?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
+		$url = admin_url('admin.php?page=wc-settings&tab=checkout&section=sveapafi_gateway');
 		$action_links = array(
 			'settings' => '<a href="' . esc_attr($url) . '">' . esc_html__('Settings', 'svea-payments-finland-for-woocommerce') . '</a>',
 		);

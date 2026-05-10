@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -241,7 +241,7 @@ class Sveapafi_Payment_Checker
 	 */
 	protected function is_time_to_check($payment_date_added, $payment_date_updated)
 	{
-		$now_time = strtotime(date('Y-m-d H:i:s'));
+		$now_time = strtotime(gmdate('Y-m-d H:i:s'));
 
 		$create_diff = $now_time - strtotime($payment_date_added);
 		/* if there is no 'updated date' set already, then do status query if order is created max 7 days ago */
@@ -345,7 +345,7 @@ class Sveapafi_Payment_Checker
 					'payment_id' => $payment_id,
 					'response' => wp_json_encode($response),
 					'query_count' => $query_count,
-					'date_added' => date('Y-m-d H:i:s'),
+					'date_added' => gmdate('Y-m-d H:i:s'),
 				)
 			); // Db call ok.
 		}

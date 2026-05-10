@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -287,37 +287,11 @@ class Sveapafi_Gateway_Admin_Form_Fields
 				'description' => __('Change the checkout page title for Other payment methods group. If not set, the default localized title is used.', 'svea-payments-finland-for-woocommerce'),
 				'default' => get_option('payment_group_other_title', ''),
 			),
-			'payment_group_estonia_title' => array(
-				'type' => 'textfield',
-				'title' => __('Estonia payment group title', 'svea-payments-finland-for-woocommerce'),
-				'desc_tip' => true,
-				'description' => __('Change the checkout page title for the Estonia payment methods group. If not set, the default localized title is used.', 'svea-payments-finland-for-woocommerce'),
-				'default' => get_option('payment_group_estonia_title', ''),
-			),
 		);
 
 		$widget_settings = $this->get_part_payment_widget_settings();
 
-		$estonia_settings = array(
-			'estonia_settings' => array(
-				'title' => __('Estonia payment method settings', 'svea-payments-finland-for-woocommerce'),
-				'type' => 'title',
-				'id' => 'estonia_settings',
-			),
-			'estonia_special_delivery' => array(
-				'type' => 'checkbox',
-				'title' => __('Estonia Payment Method EEAC / Enable special delivery information support', 'svea-payments-finland-for-woocommerce'),
-				'default' => 'no',
-				'desc_tip' => true,
-				'description' => __('This enables the special functionality for delivery info plugins without checkout addresses.', 'svea-payments-finland-for-woocommerce'),
-				'options' => array(
-					'yes' => '1',
-					'no' => '0',
-				),
-			),
-		);
-
-		return array_merge($payment_settings, $widget_settings, $estonia_settings);
+		return array_merge($payment_settings, $widget_settings);
 	}
 
 

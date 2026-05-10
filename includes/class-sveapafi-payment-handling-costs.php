@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -126,7 +126,6 @@ class Sveapafi_Payment_Handling_Costs
 			Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase::class,
 			Sveapafi_Gateway_Svea_Online_Bank_Payments::class,
 			Sveapafi_Gateway_Svea_Other_Payments::class,
-			Sveapafi_Gateway_Svea_Estonia_Payments::class,
 			Sveapafi_Gateway_Svea_Collated::class,
 			Sveapafi_Gateway::class,
 		);

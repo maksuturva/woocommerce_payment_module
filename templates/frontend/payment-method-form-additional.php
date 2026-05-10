@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -65,7 +65,6 @@ if (!defined('ABSPATH')) {
 	.payment_box.payment_method_WC_Gateway_Svea_Invoice_And_Hire_Purchase fieldset,
 	.payment_box.payment_method_WC_Gateway_Svea_Online_Bank_Payments fieldset,
 	.payment_box.payment_method_WC_Gateway_Svea_Other_Payments fieldset,
-	.payment_box.payment_method_WC_Gateway_Svea_Estonia_Payments fieldset,
 	.payment_box.payment_method_WC_Gateway_Svea_Collated fieldset {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(100px, 30%));

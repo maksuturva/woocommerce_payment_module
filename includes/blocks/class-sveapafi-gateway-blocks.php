@@ -86,7 +86,7 @@ final class Sveapafi_Gateway_Blocks extends AbstractPaymentMethodType
 	{
 		$block_mode_enabled = 'yes' === $this->gateway->get_option('block_mode_enabled', 'yes');
 		if (!$block_mode_enabled) {
-			error_log("Block mode is disabled");
+			// error_log("Block mode is disabled");
 			return false;
 		} else {
 

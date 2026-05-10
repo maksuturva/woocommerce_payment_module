@@ -7,7 +7,7 @@
 
 /**
  * Svea Payments Finland for WooCommerce Plugin
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -121,7 +121,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 			'pmt_orderid' => $order_handler->get_id(),
 			'pmt_reference' => $this->get_internal_payment_id($order),
 			'pmt_sellerid' => $this->seller_id,
-			'pmt_duedate' => date('d.m.Y'),
+			'pmt_duedate' => gmdate('d.m.Y'),
 			'pmt_userlocale' => $this->get_locale(),
 			'pmt_okreturn' => $gateway->get_payment_url($payment_id, 'ok'),
 			'pmt_errorreturn' => $gateway->get_payment_url($payment_id, 'error'),
@@ -150,7 +150,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 			$data['pmt_paymentmethod'] = $selected_payment_method;
 		}
 
-		sveapafi_log('Payment request data: ' . print_r($data, true));
+		// sveapafi_log('Payment request data: ' . print_r($data, true));
 
 		return $data;
 	}
@@ -227,7 +227,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 
 			$price_gross = $order->get_item_subtotal($item, true);
 
-			$payment_row_product['pmt_row_deliverydate'] = date('d.m.Y');
+			$payment_row_product['pmt_row_deliverydate'] = gmdate('d.m.Y');
 			$payment_row_product['pmt_row_price_gross'] = Sveapafi_Utils::filter_price($price_gross);
 			$payment_row_product['pmt_row_vat'] = Sveapafi_Utils::filter_price($this->calc_tax_rate($product));
 			$payment_row_product['pmt_row_discountpercentage'] = '00,00';
@@ -254,7 +254,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 					'pmt_row_name' => $gctext . ' ' . $giftcard->get_name(),
 					'pmt_row_desc' => '-',
 					'pmt_row_quantity' => 1,
-					'pmt_row_deliverydate' => date('d.m.Y'),
+					'pmt_row_deliverydate' => gmdate('d.m.Y'),
 					'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($giftcard->get_amount()),
 					'pmt_row_vat' => '00,00',
 					'pmt_row_discountpercentage' => '00,00',
@@ -276,7 +276,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 							'pmt_row_name' => $gctext . ' ' . $pwcardnumber,
 							'pmt_row_desc' => '-',
 							'pmt_row_quantity' => 1,
-							'pmt_row_deliverydate' => date('d.m.Y'),
+							'pmt_row_deliverydate' => gmdate('d.m.Y'),
 							'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($pwamount),
 							'pmt_row_vat' => '00,00',
 							'pmt_row_discountpercentage' => '00,00',
@@ -330,7 +330,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 				'pmt_row_name' => __('Shipping cost', 'svea-payments-finland-for-woocommerce'),
 				'pmt_row_desc' => Sveapafi_Utils::filter_productname($order->get_shipping_method()),
 				'pmt_row_quantity' => 1,
-				'pmt_row_deliverydate' => date('d.m.Y'),
+				'pmt_row_deliverydate' => gmdate('d.m.Y'),
 				'pmt_row_price_gross' => Sveapafi_Utils::filter_price($this->shipping_cost),
 				'pmt_row_vat' => Sveapafi_Utils::filter_price($shipping_tax),
 				'pmt_row_discountpercentage' => '00,00',
@@ -364,7 +364,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 				'pmt_row_name' => __('Discount', 'svea-payments-finland-for-woocommerce'),
 				'pmt_row_desc' => Sveapafi_Utils::filter_productname($description),
 				'pmt_row_quantity' => 1,
-				'pmt_row_deliverydate' => date('d.m.Y'),
+				'pmt_row_deliverydate' => gmdate('d.m.Y'),
 				'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($amount), // Negative amount.
 				'pmt_row_vat' => '00,00',
 				'pmt_row_discountpercentage' => '00,00',
@@ -399,7 +399,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 			'pmt_row_name' => __('Payment handling fee', 'svea-payments-finland-for-woocommerce'),
 			'pmt_row_desc' => __('Payment handling fee', 'svea-payments-finland-for-woocommerce'),
 			'pmt_row_quantity' => 1,
-			'pmt_row_deliverydate' => date('d.m.Y'),
+			'pmt_row_deliverydate' => gmdate('d.m.Y'),
 			'pmt_row_price_gross' => Sveapafi_Utils::filter_price($payment_method_handling_cost),
 			'pmt_row_vat' => Sveapafi_Utils::filter_price($tax_rate),
 			'pmt_row_discountpercentage' => '00,00',
@@ -448,7 +448,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 				'pmt_row_name' => substr(Sveapafi_Utils::filter_productname($fee['name']), 0, 40),
 				'pmt_row_desc' => substr(Sveapafi_Utils::filter_productname($fee['name']), 0, 1000),
 				'pmt_row_quantity' => 1,
-				'pmt_row_deliverydate' => date('d.m.Y'),
+				'pmt_row_deliverydate' => gmdate('d.m.Y'),
 				'pmt_row_price_gross' => Sveapafi_Utils::filter_price($fee_total),
 				'pmt_row_vat' => Sveapafi_Utils::filter_price($fee_tax),
 				'pmt_row_discountpercentage' => '00,00',

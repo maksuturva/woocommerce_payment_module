@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin 4.x, 5.x
  * Plugin developed for Svea Payments Oy
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -149,6 +149,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
 
 		add_action('woocommerce_api_wc_gateway_maksuturva', array($this, 'check_response'));
+		add_action('woocommerce_api_sveapafi_gateway', array($this, 'check_response'));
 		add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
 
 		add_action('woocommerce_order_status_changed', array($this, 'order_status_changed_event'), 10, 3);
@@ -168,7 +169,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		}
 		if (OrderUtil::custom_orders_table_usage_is_enabled()) {
 			if (
-				'wc-orders' != wc_clean($_GET['page'])
+				empty($_GET['page']) || 'wc-orders' != wc_clean($_GET['page'])
 				// (!('shop_order' === OrderUtil::get_order_type( $order_id )) )
 				|| (!str_contains($gateway_id, 'Maksuturva') && !str_contains($gateway_id, 'Svea'))
 			) {
@@ -697,20 +698,6 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 	}
 
 	/**
-	 * Is Estonia Special Delivery functionality enabled.
-	 *
-	 * Checks if the Estonia delivery functionality is enabled
-	 *
-	 * @since 2.1.5
-	 *
-	 * @return bool
-	 */
-	public function is_estonia_special_delivery()
-	{
-		return ($this->get_option('estonia_special_delivery') === 'yes');
-	}
-
-	/**
 	 * Load order by payment id.
 	 *
 	 * Returns the order found by the given payment id.
@@ -741,47 +728,8 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		$order = wc_get_order($order_id);
 		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 
-		/**
-		 * special functionality for Estonia EEAC payment method, needs to be activated in the admin panel
-		 *
-		 * @since 2.1.5
-		 */
-		if ($this->is_estonia_special_delivery() && $order->get_payment_method() == 'Sveapafi_Gateway_Svea_Estonia_Payments') {
-			if (trim($order->get_shipping_postcode()) == '') {
-				$order->set_shipping_postcode('00000');
-			}
-			if (trim($order->get_shipping_city()) == '') {
-				$order->set_shipping_city('none');
-			}
-
-			if (trim($order->get_billing_first_name()) == '') {
-				$order->set_billing_first_name('none');
-			}
-			if (trim($order->get_billing_last_name()) == '') {
-				$order->set_billing_last_name('none');
-			}
-			if (trim($order->get_billing_address_1()) == '') {
-				$order->set_billing_address_1('none');
-			}
-			if (trim($order->get_billing_postcode()) == '') {
-				$order->set_billing_postcode('00000');
-			}
-			if (trim($order->get_billing_city()) == '') {
-				$order->set_billing_city('none');
-			}
-			if (trim($order->get_billing_country()) == '') {
-				$order->set_billing_country('EE');
-			}
-
-			if (trim($order->get_billing_country()) == '') {
-				$order->set_billing_country('EE');
-			}
-			$order->save();
-		}
 		// Fix: Use standard WooCommerce payment URL
 		$url = $order->get_checkout_payment_url(true);
-
-
 
 		if (!$this->is_outbound_payment_enabled()) {
 			if (isset($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {

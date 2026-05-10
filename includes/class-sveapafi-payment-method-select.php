@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -224,7 +224,6 @@ class Sveapafi_Payment_Method_Select
 			'credit-card-and-mobile' => array(),
 			'invoice-and-hire-purchase' => array(),
 			'online-bank-payments' => array(),
-			'estonia-payments' => array(),
 			'other-payments' => array(),
 			'collated' => array(),
 		);
@@ -252,15 +251,6 @@ class Sveapafi_Payment_Method_Select
 			foreach ($available_payment_methods['paymentmethod'] as $key => $payment_method) {
 				if (in_array(substr($payment_method['code'], 0, 3), array('FI6', 'FI7'))) {
 					$payment_type_payment_methods['invoice-and-hire-purchase'][] = $payment_method;
-					unset($available_payment_methods['paymentmethod'][$key]);
-				}
-			}
-
-			foreach ($available_payment_methods['paymentmethod'] as $payment_method) {
-				if ($payment_method['code'] == 'EEAC') {
-					/* check if plugin has EAAC_logo.png and if exist, use it as payment method logo */
-					$payment_method['imageurl'] = $this->get_eeac_payment_method_logo_url($payment_method['imageurl']);
-					$payment_type_payment_methods['estonia-payments'][] = $payment_method;
 					unset($available_payment_methods['paymentmethod'][$key]);
 				}
 			}
@@ -326,27 +316,6 @@ class Sveapafi_Payment_Method_Select
 		}
 
 		return '';
-	}
-
-	/**
-	 * Allow override payment method logo for Estonia EEAC payment method
-	 *
-	 * install to plugin path as file EEAC_logo.png
-	 *
-	 * @since 2.1.4
-	 *
-	 * @return string
-	 */
-	private function get_eeac_payment_method_logo_url($original_url)
-	{
-		$logo_path = trailingslashit(Sveapafi_Maksuturva::get_instance()->get_plugin_dir()) . 'EEAC_logo.png';
-		$override_logo = file_exists($logo_path);
-
-		if ($override_logo) {
-			return Sveapafi_Maksuturva::get_instance()->get_plugin_url() . 'EEAC_logo.png';
-		} else {
-			return $original_url;
-		}
 	}
 
 	/**

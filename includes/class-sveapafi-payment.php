@@ -8,7 +8,7 @@
 /**
  * Svea Payments Finland for WooCommerce Plugin
  * Plugin developed for Svea Payments Oy
- * Last update: 01/03/2026
+ * Last update: 10/05/2026
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -232,7 +232,7 @@ class Sveapafi_Payment
 				'status' => $data['status'],
 				'data_sent' => wp_json_encode($data['data_sent']),
 				'data_received' => wp_json_encode($data['data_received']),
-				'date_added' => date('Y-m-d H:i:s'),
+				'date_added' => gmdate('Y-m-d H:i:s'),
 				'date_updated' => null,
 			)
 		); // Db call ok.
@@ -638,7 +638,7 @@ class Sveapafi_Payment
 		$data = array(
 			'status' => $this->status,
 			'data_received' => wp_json_encode($this->data_received),
-			'date_updated' => date('Y-m-d H:i:s'),
+			'date_updated' => gmdate('Y-m-d H:i:s'),
 		);
 
 		if (
