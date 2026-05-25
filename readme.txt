@@ -1,5 +1,5 @@
 === Svea Payments Finland for WooCommerce ===
-Contributors: svea_payments
+Contributors: sveamaintainer
 Tags: svea, payment gateway, finland, woocommerce
 Requires at least: 6.0
 Tested up to: 6.9

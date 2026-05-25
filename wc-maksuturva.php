@@ -16,10 +16,11 @@
  * License:     LGPL-2.1-or-later
  * License URI: https://www.gnu.org/licenses/lgpl-2.1.html
  * Requires at least: 6.0
- * Tested up to: 6.9     
- * Last update: 10/05/2026
+ * Requires Plugins: woocommerce
+ * Tested up to: 7.0     
+ * Last update: 25/05/2026
  * WC requires at least: 8.0
- * WC tested up to: 10.4.3    
+ * WC tested up to: 10.7.0   
  */
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;

@@ -1,0 +1,36 @@
+# WordPress Plugin Distribution Ignore File (.distignore)
+# This file defines files and directories that should be excluded from the final built plugin zip.
+
+# Git / Version Control
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Development Tools & Configurations
+.agent/
+.vscode/
+node_modules/
+package.json
+package-lock.json
+webpack.config.js
+phpcs.xml
+update-local.sh
+
+# Composer
+composer.json
+composer.lock
+vendor/
+
+# Source files (Webpack compilation sources)
+src/
+
+# Temporary / Backup / System files
+.DS_Store
+Thumbs.db
+todo.txt
+
+# Documentation & Manuals (Excluded from WordPress.org/production builds)
+docs/Svea_Payment_Gateway_Manual.docx
+docs/svea-payments-finland-for-woocommerce/docs/Svea_Payment_Gateway_Manual.docx
+docs/~$ea_Payment_Gateway_Manual.docx
