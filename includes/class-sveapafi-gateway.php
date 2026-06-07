@@ -271,22 +271,6 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 			$this->render('not-supported-banner', 'admin');
 		}
 
-		?>
-		<style>
-			.woocommerce_page_wc-settings .form-table {
-				border: 1px solid #c3c4c7;
-				padding: 15px;
-				margin-bottom: 20px;
-				background: #fff;
-			}
-
-			.woocommerce_page_wc-settings .form-table th,
-			.woocommerce_page_wc-settings .form-table td {
-				padding-left: 20px;
-			}
-		</style>
-		<?php
-
 		parent::admin_options();
 
 		/***

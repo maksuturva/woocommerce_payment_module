@@ -28,3 +28,16 @@ h3.wc-settings-group-start + table.form-table th {
     padding-left: 40px !important; /* Default is ~20px, so we add 20px */
 }
 
+/* Custom gateway settings styling */
+.woocommerce_page_wc-settings .form-table {
+    border: 1px solid #c3c4c7;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #fff;
+}
+
+.woocommerce_page_wc-settings .form-table th,
+.woocommerce_page_wc-settings .form-table td {
+    padding-left: 20px;
+}
+

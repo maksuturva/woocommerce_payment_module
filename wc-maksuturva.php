@@ -357,7 +357,7 @@ class Sveapafi_Maksuturva
 				'svea-part-payment-calculator-variable-product',
 				plugin_dir_url(__FILE__) . '/../scripts/part-payment-calculator-variable-product.js',
 				array('jquery'),
-				time(),
+				self::VERSION,
 				true
 			);
 		}
@@ -368,7 +368,24 @@ class Sveapafi_Maksuturva
 				'svea-checkout-fee-trigger',
 				plugin_dir_url(__FILE__) . 'assets/js/checkout-fee-trigger.js',
 				array('wc-blocks-checkout', 'wp-data'),
-				time(),
+				self::VERSION,
+				true
+			);
+		}
+
+		// Enqueue frontend styles and scripts on checkout and cart pages
+		if (is_checkout() || is_cart()) {
+			wp_enqueue_style(
+				'svea-payments-frontend-styles',
+				plugin_dir_url(__FILE__) . 'assets/css/frontend-styles.css',
+				array(),
+				self::VERSION
+			);
+			wp_enqueue_script(
+				'svea-payments-frontend-scripts',
+				plugin_dir_url(__FILE__) . 'scripts/frontend-scripts.js',
+				array('jquery'),
+				self::VERSION,
 				true
 			);
 		}
@@ -389,7 +406,15 @@ class Sveapafi_Maksuturva
 			wp_enqueue_style(
 				'svea-gateway-admin-styles',
 				plugin_dir_url(__FILE__) . 'assets/css/admin-styles.css', // Adjust the path to your CSS file
-				array()
+				array(),
+				self::VERSION
+			);
+			wp_enqueue_script(
+				'svea-gateway-admin-scripts',
+				plugin_dir_url(__FILE__) . 'scripts/admin-scripts.js',
+				array(),
+				self::VERSION,
+				true
 			);
 		}
 	}
