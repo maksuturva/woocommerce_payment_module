@@ -309,7 +309,7 @@ class Sveapafi_Payment_Handling_Costs
 		}
 
 		if (isset($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
-			return wc_clean($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]);
+			return wc_clean(wp_unslash($_POST[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]));
 		}
 
 		if (WC()->session->get(Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID)) {

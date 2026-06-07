@@ -188,7 +188,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 	private function get_selected_payment_method()
 	{
 		if (isset($_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]) && !empty($_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID])) {
-			$spm = $_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID];
+			$spm = sanitize_text_field(wp_unslash($_GET[Sveapafi_Payment_Method_Select::PAYMENT_METHOD_SELECT_ID]));
 			if ($spm) {
 				return Sveapafi_Utils::filter_alphanumeric($spm);
 			}

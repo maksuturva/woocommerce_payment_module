@@ -16,6 +16,7 @@
  * License:     LGPL-2.1-or-later
  * License URI: https://www.gnu.org/licenses/lgpl-2.1.html
  * Requires at least: 6.0
+ * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * Tested up to: 7.0     
  * Last update: 25/05/2026
@@ -384,7 +385,7 @@ class Sveapafi_Maksuturva
 		}
 
 		// Check if we are on your specific gateway's settings tab
-		if (isset($_GET['section']) && $_GET['section'] === 'wc_gateway_maksuturva') {
+		if (isset($_GET['section']) && sanitize_text_field(wp_unslash($_GET['section'])) === 'wc_gateway_maksuturva') {
 			wp_enqueue_style(
 				'svea-gateway-admin-styles',
 				plugin_dir_url(__FILE__) . 'assets/css/admin-styles.css', // Adjust the path to your CSS file

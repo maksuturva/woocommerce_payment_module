@@ -6,6 +6,7 @@
 .github/
 .gitignore
 .gitattributes
+.distignore
 
 # Development Tools & Configurations
 .agent/
@@ -34,3 +35,12 @@ todo.txt
 docs/Svea_Payment_Gateway_Manual.docx
 docs/svea-payments-finland-for-woocommerce/docs/Svea_Payment_Gateway_Manual.docx
 docs/~$ea_Payment_Gateway_Manual.docx
+
+# WordPress.org Directory Assets
+assets/icon-128x128.png
+assets/icon-256x256.png
+assets/icon.svg
+
+# Unused / Development Assets
+Empty_logo.png
+
