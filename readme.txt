@@ -51,7 +51,7 @@ The plugin processes WooCommerce orders on the cart and checkout pages, securely
 The plugin integrates with the following external APIs:
 * **Payment API**: Initiates and handles checkout payment transactions.
 * **Payment Status Query API**: Queries the final status of a payment.
-* **Delivery Update API**: Submits shipping and delivery updates to Svea.
+* **Delivery Info API**: Submits shipping and delivery updates to Svea.
 * **Refunds and Cancellation API**: Allows processing refunds and cancellations directly from the WooCommerce admin dashboard.
 * **Part Payment Calculator**: Connects to the Svea API to dynamically calculate and display monthly payment installments for the customer on the product, cart, and checkout pages.
 
@@ -66,9 +66,9 @@ During checkout and order processing, the plugin securely transmits transaction-
 * More comprehensive documentation can be found in the `docs` directory.
 
 **Service Links**:
-* Terms of Service: [Svea Payments Terms of Service](https://www.svea.com/fi/fi/yrityksille/maksupalvelut-verkkokauppaan/sopimusehdot)
-* Privacy Policy: [Svea Payments Privacy Policy](https://www.svea.com/fi/fi/yrityksille/maksupalvelut-verkkokauppaan/tietosuoja)
-* API Service Documentation: [Svea Payments API Documentation](https://sveapayments.fi/api-documentation)
+* Terms of Service: [Svea Payments Terms of Service](https://www.svea.com/globalassets/finland/documents/maksupalvelut/Yleiset_sopimusehdot_kauppias_EN.pdf)
+* Privacy Policy: [Svea Payments Privacy Policy](https://www.svea.com/fi-fi/tietoa-meista/tietosuoja/privacy-policy-svea-payments-consumer)
+* API Service Documentation: [Svea Payments API Documentation](https://sveapayments.atlassian.net/wiki/spaces/DOCS/pages/1657012281/API)
 
 == Installation ==
 
