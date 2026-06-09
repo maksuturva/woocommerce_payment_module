@@ -40,31 +40,32 @@ if (!defined('ABSPATH')) {
 
 <?php
 $msg = __('Thank you for your order. You will now be redirected to Svea to complete the payment.', 'svea-payments-finland-for-woocommerce');
-wc_enqueue_js(
-	'
-		$.blockUI({
-				message: "' . esc_js($msg) . '",
-				baseZ: 99999,
-				overlayCSS: {
-					background: "#fff",
-					opacity: 0.6
-				},
-				css: {
-					padding:        "20px",
-					zindex:         "9999999",
-					textAlign:      "center",
-					color:          "#555",
-					border:         "3px solid #aaa",
-					backgroundColor:"#fff",
-					cursor:         "wait",
-					lineHeight:     "24px",
-				}
-			});
-		jQuery("#maksuturva_payment_form .payment_buttons").hide();
-		jQuery("#maksuturva_payment_form").submit();
-	'
-);
 ?>
+
+<script type="text/javascript">
+	jQuery(function ($) {
+		$.blockUI({
+			message: "<?php echo esc_js($msg); ?>",
+			baseZ: 99999,
+			overlayCSS: {
+				background: "#fff",
+				opacity: 0.6
+			},
+			css: {
+				padding:        "20px",
+				zindex:         "9999999",
+				textAlign:      "center",
+				color:          "#555",
+				border:         "3px solid #aaa",
+				backgroundColor:"#fff",
+				cursor:         "wait",
+				lineHeight:     "24px",
+			}
+		});
+		$("#maksuturva_payment_form .payment_buttons").hide();
+		$("#maksuturva_payment_form").submit();
+	});
+</script>
 
 <form action="<?php echo esc_url($payment_gateway_url); ?>" method="post" id="maksuturva_payment_form" target="_top">
 	<?php foreach ($data as $key => $value): ?>

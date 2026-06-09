@@ -25,6 +25,4 @@
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
-
-<?php
 // Inline script and style blocks enqueued dynamically from assets/css/frontend-styles.css and assets/js/frontend-scripts.js

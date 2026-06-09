@@ -599,26 +599,31 @@ class Sveapafi_Gateway_Admin_Form_Fields
 	 */
 	public function toggle_gateway_admin_settings($is_outbound_payment_enabled)
 	{
-		wc_enqueue_js(
-			'
-			(function() {			
-				jQuery(function($) {
-					toggle_non_outbound_settings(' . ($is_outbound_payment_enabled ? 'true' : 'false') . ');
+		add_action(
+			'admin_footer',
+			function () use ($is_outbound_payment_enabled) {
+				?>
+				<script type="text/javascript">
+					(function() {			
+						jQuery(function($) {
+							toggle_non_outbound_settings(<?php echo $is_outbound_payment_enabled ? 'true' : 'false'; ?>);
 
-					$("body").on("change", "#woocommerce_Sveapafi_Gateway_outbound_payment", function() {
-						toggle_non_outbound_settings(this.checked);
-					});
+							$("body").on("change", "#woocommerce_Sveapafi_Gateway_outbound_payment", function() {
+								toggle_non_outbound_settings(this.checked);
+							});
 
-					function toggle_non_outbound_settings(is_op_enabled)
-					{
-						$("#payment_method_handling_cost_table").closest("tr")
-							.css("display", is_op_enabled ? "none" : "table-row");
-						$("#woocommerce_Sveapafi_Gateway_payment_method_handling_cost_tax_class").closest("tr")
-							.css("display", is_op_enabled ? "none" : "table-row");
-					}
-				});
-			})();
-		'
+							function toggle_non_outbound_settings(is_op_enabled)
+							{
+								$("#payment_method_handling_cost_table").closest("tr")
+									.css("display", is_op_enabled ? "none" : "table-row");
+								$("#woocommerce_Sveapafi_Gateway_payment_method_handling_cost_tax_class").closest("tr")
+									.css("display", is_op_enabled ? "none" : "table-row");
+							}
+						});
+					})();
+				</script>
+				<?php
+			}
 		);
 	}
 }

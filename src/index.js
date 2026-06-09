@@ -3,7 +3,7 @@ import { getSetting } from '@woocommerce/settings';
 import { decodeEntities } from '@wordpress/html-entities';
 import { useState, useEffect } from '@wordpress/element';
 
-const settings = getSetting('paymentMethodData', {}).WC_Gateway_Maksuturva || {};
+const settings = getSetting('paymentMethodData', {}).Sveapafi_Gateway || {};
 
 const defaultLabel = decodeEntities(settings.title) || 'Svea';
 
@@ -157,7 +157,7 @@ const Label = (props) => {
 };
 
 registerPaymentMethod({
-    name: 'WC_Gateway_Maksuturva',
+    name: 'Sveapafi_Gateway',
     label: <Label />,
     content: <Content />,
     edit: <Content />,
