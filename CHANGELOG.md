@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.7.2 - 2026-06-10
+* Support for WooCommerce Extra Shipping Options by Ace plugin
+* Fixed deprecated enqueue script method
+
 ### 2.7.1 - 2026-03-06
 * Added Apple Pay and Google Pay payment methods
 * Fixed missing checkout fee enqueue script

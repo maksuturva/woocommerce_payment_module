@@ -40,8 +40,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <?php
 $msg = __( 'Thank you for your order. You will now be redirected to Svea to complete the payment.', 'wc-maksuturva' );
-wc_enqueue_js(
-	'
+wp_enqueue_script('jquery');
+wp_add_inline_script('jquery', '
+	jQuery(function($) {
 		$.blockUI({
 				message: "' . esc_js( $msg ) . '",
 				baseZ: 99999,
@@ -62,8 +63,8 @@ wc_enqueue_js(
 			});
 		jQuery("#maksuturva_payment_form .payment_buttons").hide();
 		jQuery("#maksuturva_payment_form").submit();
-	'
-);
+	});
+' );
 ?>
 
 <form action="<?php echo esc_url( $payment_gateway_url ); ?>" method="post" id="maksuturva_payment_form" target="_top">

@@ -631,7 +631,8 @@ class WC_Gateway_Admin_Form_Fields
 	 */
 	public function toggle_gateway_admin_settings($is_outbound_payment_enabled)
 	{
-		wc_enqueue_js(
+		wp_enqueue_script( 'jquery' );
+		wp_add_inline_script( 'jquery',
 			'
 			(function() {			
 				jQuery(function($) {

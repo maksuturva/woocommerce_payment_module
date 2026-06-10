@@ -782,6 +782,8 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 		$data                = $gateway->get_field_array();
 		$payment_method      = isset( $data['pmt_paymentmethod'] ) ? $data['pmt_paymentmethod'] : '';
 
+		// wc_maksuturva_log( 'WooCommerce Extra Shipping Options: ' . print_r( $order->get_items('shipping_option'), true ) );
+
 		// Create the payment for Svea.
 		WC_Payment_Maksuturva::create(
 			array(
