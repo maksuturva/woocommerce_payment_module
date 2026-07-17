@@ -6,3 +6,5 @@ docs/~$ea_Payment_Gateway_Manual.docx
 node_modules/
 place-order-debug*
 debug.log
+
+copy_to_docker.sh

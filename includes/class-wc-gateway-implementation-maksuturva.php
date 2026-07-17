@@ -136,7 +136,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_errorreturn' => $gateway->get_payment_url($payment_id, 'error'),
 			'pmt_cancelreturn' => $gateway->get_payment_url($payment_id, 'cancel'),
 			'pmt_delayedpayreturn' => $gateway->get_payment_url($payment_id, 'delay'),
-			'pmt_amount' => WC_Utils_Maksuturva::filter_price($order->get_total() + $this->shipping_option_tax_total - $this->shipping_cost - $this->total_fees - $this->removed_fees),
+			'pmt_amount' => WC_Utils_Maksuturva::filter_price($order->get_total() - $this->shipping_cost - $this->total_fees - $this->removed_fees),
 			'pmt_buyername' => $buyer_data['name'],
 			'pmt_buyeraddress' => $buyer_data['address'],
 			'pmt_buyerpostalcode' => $buyer_data['postal_code'],
