@@ -867,6 +867,11 @@ class WC_Gateway_Maksuturva extends \WC_Payment_Gateway {
 					wc_add_notice( 'Correct the checkout information and try again.' );
 				} else {
 					$this->add_notice( __( 'Error from Svea received.', 'wc-maksuturva' ), 'error' );
+					if ( ! $order->has_status( WC_Payment_Maksuturva::STATUS_FAILED ) ) {
+						$pmt_act      = isset( $params['pmt_act'] ) ? $params['pmt_act'] : '';
+						$error_fields = isset( $params['error_fields'] ) ? $params['error_fields'] : '';
+						wc_maksuturva_log( sprintf( 'Error from Svea received. action=%s error_fields=%s', $pmt_act, $error_fields ) );
+					}
 				}
 
 				$this->order_fail( $order, $payment );

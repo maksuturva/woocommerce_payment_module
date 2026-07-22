@@ -124,6 +124,17 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$payment_id = $this->get_payment_id($order);
 		$order_handler = new WC_Order_Compatibility_Handler($order);
 
+		$pmt_amount = 0;
+		$pmt_sellercosts = 0;
+		foreach ($payment_row_data as $row) {
+			$val = (float) str_replace(',', '.', $row['pmt_row_price_gross']);
+			if ($row['pmt_row_type'] == 1 || $row['pmt_row_type'] == 6) {
+				$pmt_amount += $val;
+			} elseif ($row['pmt_row_type'] == 2 || $row['pmt_row_type'] == 3) {
+				$pmt_sellercosts += $val;
+			}
+		}
+
 		$data = array(
 			'pmt_keygeneration' => $gateway->get_secret_key_version(),
 			'pmt_id' => $payment_id,
@@ -136,7 +147,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_errorreturn' => $gateway->get_payment_url($payment_id, 'error'),
 			'pmt_cancelreturn' => $gateway->get_payment_url($payment_id, 'cancel'),
 			'pmt_delayedpayreturn' => $gateway->get_payment_url($payment_id, 'delay'),
-			'pmt_amount' => WC_Utils_Maksuturva::filter_price($order->get_total() - $this->shipping_cost - $this->total_fees - $this->removed_fees),
+			'pmt_amount' => WC_Utils_Maksuturva::filter_price($pmt_amount),
 			'pmt_buyername' => $buyer_data['name'],
 			'pmt_buyeraddress' => $buyer_data['address'],
 			'pmt_buyerpostalcode' => $buyer_data['postal_code'],
@@ -150,7 +161,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			'pmt_deliverypostalcode' => $delivery_data['postal_code'],
 			'pmt_deliverycity' => $delivery_data['city'],
 			'pmt_deliverycountry' => $delivery_data['country'],
-			'pmt_sellercosts' => WC_Utils_Maksuturva::filter_price($this->shipping_cost + $this->total_fees + $payment_method_handling_cost),
+			'pmt_sellercosts' => WC_Utils_Maksuturva::filter_price($pmt_sellercosts),
 			'pmt_rows' => count($payment_row_data),
 			'pmt_rows_data' => $payment_row_data,
 		);
@@ -159,8 +170,9 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$data['pmt_paymentmethod'] = $selected_payment_method;
 		}
 
-		// wc_maksuturva_log('WooCommerce Extra Shipping Options: ' . print_r($order->get_items('shipping_option'), true));
-		// wc_maksuturva_log('Svea Payment Data in create_payment_data: ' . print_r($data, true));
+		if ('yes' === $this->wc_gateway->get_option('debug_logging_enabled')) {
+			wc_maksuturva_log('Payment request message: ' . print_r($data, true));
+		}
 
 		return $data;
 	}
@@ -236,7 +248,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$sku = $product->get_sku();
 			// Trunctate to 100 characters
 			$payment_row_product['pmt_row_articlenr'] = $sku
-				? mb_substr( $sku, 0, 100 )
+				? mb_substr($sku, 0, 100)
 				: '-';
 
 			$price_gross = $order->get_item_subtotal($item, true);
@@ -254,53 +266,6 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$payment_rows[] = $payment_row_shipping;
 		}
 
-		$payment_row_discount = $this->create_payment_row_discount_data($order);
-		if (is_array($payment_row_discount)) {
-			$payment_rows[] = $payment_row_discount;
-		}
-
-		/* Giftcards support */
-		if (null !== $order->get_items('gift_card')) {
-			$giftcards = $order->get_items('gift_card');
-			foreach ($giftcards as $giftcard) {
-				$gctext = __('Gift Card', 'wc-maksuturva');
-				$payment_rows[] = array(
-					'pmt_row_name' => $gctext . ' ' . $giftcard->get_name(),
-					'pmt_row_desc' => '-',
-					'pmt_row_quantity' => 1,
-					'pmt_row_deliverydate' => date('d.m.Y'),
-					'pmt_row_price_gross' => '-' . WC_Utils_Maksuturva::filter_price($giftcard->get_amount()),
-					'pmt_row_vat' => '00,00',
-					'pmt_row_discountpercentage' => '00,00',
-					'pmt_row_type' => 6,
-				);
-			}
-		}
-
-		/* Support for PW WooCommerce Gift Cards */
-		if (class_exists('WC_Order_Item_PW_Gift_Card') && null !== $order->get_items('pw_gift_card')) {
-			$pw_giftcards = $order->get_items('pw_gift_card');
-			foreach ($pw_giftcards as $gift_card_item) {
-				if ($gift_card_item instanceof WC_Order_Item_PW_Gift_Card) {
-					if (method_exists($gift_card_item, 'get_amount') && method_exists($gift_card_item, 'get_card_number')) {
-						$pwamount = $gift_card_item->get_amount();
-						$pwcardnumber = $gift_card_item->get_card_number();
-						$gctext = __('Gift Card', 'wc-maksuturva');
-						$payment_rows[] = array(
-							'pmt_row_name' => $gctext . ' ' . $pwcardnumber,
-							'pmt_row_desc' => '-',
-							'pmt_row_quantity' => 1,
-							'pmt_row_deliverydate' => date('d.m.Y'),
-							'pmt_row_price_gross' => '-' . WC_Utils_Maksuturva::filter_price($pwamount),
-							'pmt_row_vat' => '00,00',
-							'pmt_row_discountpercentage' => '00,00',
-							'pmt_row_type' => 6,
-						);
-					}
-				}
-			}
-		}
-
 		$payment_row_handling_cost = $this->create_payment_row_handling_cost_data($payment_method_handling_cost);
 		if (is_array($payment_row_handling_cost)) {
 			$payment_rows[] = $payment_row_handling_cost;
@@ -316,7 +281,111 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$payment_rows = array_merge($payment_rows, $payment_row_shipping_options);
 		}
 
+		$payment_row_discount = $this->create_payment_row_discount_data($order);
+		if (is_array($payment_row_discount)) {
+			$payment_rows[] = $payment_row_discount;
+		}
+
+		$current_pmt_amount = 0;
+		foreach ($payment_rows as $row) {
+			if ($row['pmt_row_type'] == 1 || $row['pmt_row_type'] == 6) {
+				$val = (float) str_replace(',', '.', $row['pmt_row_price_gross']);
+				$current_pmt_amount += $val;
+			}
+		}
+
+		/* Giftcards support */
+		if (null !== $order->get_items('gift_card')) {
+			$giftcards = $order->get_items('gift_card');
+			foreach ($giftcards as $giftcard) {
+				$gctext = __('Gift Card', 'wc-maksuturva') . ' ' . $giftcard->get_name();
+				$this->add_gift_card_rows($gctext, $giftcard->get_amount(), $payment_rows, $current_pmt_amount);
+			}
+		}
+
+		/* Support for PW WooCommerce Gift Cards */
+		if (class_exists('WC_Order_Item_PW_Gift_Card') && null !== $order->get_items('pw_gift_card')) {
+			$pw_giftcards = $order->get_items('pw_gift_card');
+			foreach ($pw_giftcards as $gift_card_item) {
+				if ($gift_card_item instanceof WC_Order_Item_PW_Gift_Card) {
+					if (method_exists($gift_card_item, 'get_amount') && method_exists($gift_card_item, 'get_card_number')) {
+						$gctext = __('Gift Card', 'wc-maksuturva') . ' ' . $gift_card_item->get_card_number();
+						$this->add_gift_card_rows($gctext, $gift_card_item->get_amount(), $payment_rows, $current_pmt_amount);
+					}
+				}
+			}
+		}
+
+		/* Support for YITH Gift Cards */
+		if (function_exists('YITH_YWGC') || class_exists('YITH_YWGC')) {
+			$ywgc_applied = $order->get_meta('_ywgc_applied_gift_cards');
+			if (!empty($ywgc_applied) && is_array($ywgc_applied)) {
+				foreach ($ywgc_applied as $code => $yithamount) {
+					if ($yithamount > 0) {
+						$gctext = __('Gift Card', 'wc-maksuturva') . ' ' . $code;
+						$this->add_gift_card_rows($gctext, $yithamount, $payment_rows, $current_pmt_amount);
+					}
+				}
+			} else {
+				foreach ($order->get_coupon_codes() as $code) {
+					$gift = YITH_YWGC()->get_gift_card_by_code($code);
+
+					if (is_object($gift) && $gift->exists()) {
+						$yithamount = 0;
+						foreach ($order->get_items('coupon') as $item) {
+							if (strcasecmp($item->get_code(), $code) === 0) {
+								$yithamount = (float)$item->get_discount() + (float)$item->get_discount_tax();
+								break;
+							}
+						}
+
+						if ($yithamount > 0) {
+							$gctext = __('Gift Card', 'wc-maksuturva') . ' ' . $code;
+							$this->add_gift_card_rows($gctext, $yithamount, $payment_rows, $current_pmt_amount);
+						}
+					}
+				}
+			}
+		}
+
 		return $payment_rows;
+	}
+
+	private function add_gift_card_rows($name, $amount, &$payment_rows, &$current_pmt_amount) {
+		$amount_float = (float) $amount;
+		if ($amount_float <= 0) {
+			return;
+		}
+
+		$items_deduction = min($amount_float, $current_pmt_amount);
+		$shipping_deduction = $amount_float - $items_deduction;
+
+		if ($items_deduction > 0) {
+			$payment_rows[] = array(
+				'pmt_row_name' => substr($name, 0, 40),
+				'pmt_row_desc' => '-',
+				'pmt_row_quantity' => 1,
+				'pmt_row_deliverydate' => date('d.m.Y'),
+				'pmt_row_price_gross' => '-' . WC_Utils_Maksuturva::filter_price($items_deduction),
+				'pmt_row_vat' => '00,00',
+				'pmt_row_discountpercentage' => '00,00',
+				'pmt_row_type' => 6,
+			);
+			$current_pmt_amount -= $items_deduction;
+		}
+
+		if ($shipping_deduction > 0) {
+			$payment_rows[] = array(
+				'pmt_row_name' => substr($name . ' (' . __('Shipping', 'wc-maksuturva') . ')', 0, 40),
+				'pmt_row_desc' => '-',
+				'pmt_row_quantity' => 1,
+				'pmt_row_deliverydate' => date('d.m.Y'),
+				'pmt_row_price_gross' => '-' . WC_Utils_Maksuturva::filter_price($shipping_deduction),
+				'pmt_row_vat' => '00,00',
+				'pmt_row_discountpercentage' => '00,00',
+				'pmt_row_type' => 2,
+			);
+		}
 	}
 
 	/**
@@ -335,14 +404,42 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 		$this->shipping_cost = floatval($order->get_total_shipping()) + floatval($order->get_shipping_tax());
 
 		if ($this->shipping_cost > 0) {
+			$shipping_tax = 0;
+			
 			if (floatval($order->get_total_shipping()) > 0) {
-				$shipping_tax = 100 * (floatval($order->get_shipping_tax()) / floatval($order->get_total_shipping()));
-				/***
-				 * Round shipping tax to nearest 0.5
-				 */
-				$shipping_tax = round($shipping_tax * 2) / 2;
-			} else {
-				$shipping_tax = 0;
+				$shipping_items = $order->get_items('shipping');
+				foreach ($shipping_items as $item) {
+					$taxes = $item->get_taxes();
+					if (!empty($taxes['total'])) {
+						foreach ($taxes['total'] as $tax_rate_id => $tax_amount) {
+							if (class_exists('WC_Tax')) {
+								$tax_rate_percent = \WC_Tax::get_rate_percent($tax_rate_id);
+								if ($tax_rate_percent) {
+									$shipping_tax = (float) str_replace('%', '', $tax_rate_percent);
+									break 2;
+								}
+							}
+						}
+					}
+				}
+
+				if (empty($shipping_tax)) {
+					$shipping_tax = 100 * (floatval($order->get_shipping_tax()) / floatval($order->get_total_shipping()));
+					$shipping_tax = round($shipping_tax * 2) / 2;
+				}
+
+				// Reconstruct true gross shipping from tax to bypass plugin corruptions of net shipping
+				$tax_amount = floatval($order->get_shipping_tax());
+				if ($shipping_tax > 0 && $tax_amount > 0) {
+					$expected_net = $tax_amount / ($shipping_tax / 100);
+					$expected_gross = round($expected_net + $tax_amount, 2);
+					
+					// If the reconstructed gross is larger than what WooCommerce reports,
+					// a plugin reduced the net shipping but left the tax intact. We use the reconstructed gross.
+					if ($expected_gross > $this->shipping_cost + 0.05) {
+						$this->shipping_cost = $expected_gross;
+					}
+				}
 			}
 
 			return array(
