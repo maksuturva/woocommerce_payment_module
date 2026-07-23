@@ -23,6 +23,7 @@ For WooCommerce versions >8.3, see Docs for new feature compatibility.
 * Send delivery info
 * Svea's part payment calculator
 * Delayed capture
+* Support for multiple gift card plugins and extra delivery options. See docs/Svea_Payment_Gateway_Manual.pdf
   
 # Documentation
 
