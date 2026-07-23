@@ -90,7 +90,7 @@ class WC_Gateway_Admin_Form_Fields
 			'outbound_payment' => array(
 				'type' => 'checkbox',
 				'title' => __('Redirect to Svea\'s Payment Method Selection Page', 'wc-maksuturva'),
-				'label' => __('The buyer is redirected to the Svea Payments site where they choose the payment method', 'wc-maksuturva'),
+				'label' => __('The buyer is forwarded to the Svea Payments service to select the payment method.', 'wc-maksuturva'),
 				'default' => 'no',
 				'desc_tip' => true,
 				'description' => __('If enabling this, visitors will see a single Svea Payments-button that redirects them to the SVEA payment gateway', 'wc-maksuturva'),
@@ -164,6 +164,14 @@ class WC_Gateway_Admin_Form_Fields
 				'title' => __('Advanced settings', 'wc-maksuturva'),
 				'type' => 'title',
 				'id' => 'advanced_settings',
+			),
+			'debug_logging_enabled' => array(
+				'title' => __('Enable debug logging', 'wc-maksuturva'),
+				'type' => 'checkbox',
+				'label' => __('Enable debug logging', 'wc-maksuturva'),
+				'default' => 'no',
+				'desc_tip' => true,
+				'description' => __('Enables additional logging for debugging purposes. Do not use in production environment.', 'wc-maksuturva'),
 			),
 			'maksuturva_orderid_prefix' => array(
 				'type' => 'textfield',
