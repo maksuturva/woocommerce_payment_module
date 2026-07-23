@@ -130,9 +130,9 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 			$val = (float) str_replace(',', '.', $row['pmt_row_price_gross']);
 			$qty = isset($row['pmt_row_quantity']) ? (float) str_replace(',', '.', $row['pmt_row_quantity']) : 1.0;
 			
-			if ($row['pmt_row_type'] == 1 || $row['pmt_row_type'] == 6) {
+			if (in_array($row['pmt_row_type'], array(1, 4, 5, 6))) {
 				$pmt_amount += $val * $qty;
-			} elseif ($row['pmt_row_type'] == 2 || $row['pmt_row_type'] == 3) {
+			} elseif (in_array($row['pmt_row_type'], array(2, 3))) {
 				$pmt_sellercosts += $val * $qty;
 			}
 		}
@@ -290,7 +290,7 @@ class WC_Gateway_Implementation_Maksuturva extends WC_Gateway_Abstract_Maksuturv
 
 		$current_pmt_amount = 0;
 		foreach ($payment_rows as $row) {
-			if ($row['pmt_row_type'] == 1 || $row['pmt_row_type'] == 6) {
+			if (in_array($row['pmt_row_type'], array(1, 4, 5, 6))) {
 				$val = (float) str_replace(',', '.', $row['pmt_row_price_gross']);
 				$qty = isset($row['pmt_row_quantity']) ? (float) str_replace(',', '.', $row['pmt_row_quantity']) : 1.0;
 				$current_pmt_amount += $val * $qty;
