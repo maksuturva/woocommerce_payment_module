@@ -250,7 +250,7 @@ class WC_Payment_Method_Select
 			}
 
 			foreach ($available_payment_methods['paymentmethod'] as $key => $payment_method) {
-				if (in_array(substr($payment_method['code'], 0, 3), array('FI6', 'FI7'))) {
+				if (in_array(substr($payment_method['code'], 0, 3), array('FI6', 'FI7')) || in_array(substr($payment_method['code'], 0, 4), array('FIIN', 'FIPP', 'FIBI'))) {
 					$payment_type_payment_methods['invoice-and-hire-purchase'][] = $payment_method;
 					unset($available_payment_methods['paymentmethod'][$key]);
 				}
