@@ -8,7 +8,7 @@ Requires PHP: 7.4
 License: LGPLv2.1
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
-Svea Payments Finland for WooCommerce provides intelligent online payment services for the Finnish market.
+Accept payments easily with Svea. Designed for Finnish merchants, this WooCommerce plugin supports Finnish online banking payments, MobilePay, Apple Pay, Visa, Mastercard, Svea Invoice, Svea Part Payment, and Svea B2B Invoice.  
 
 == Description ==
 
