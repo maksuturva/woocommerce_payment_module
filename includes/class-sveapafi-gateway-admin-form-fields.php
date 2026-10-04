@@ -223,7 +223,7 @@ class Sveapafi_Gateway_Admin_Form_Fields
 				'title' => __('Payment group 2 methods', 'svea-payments-finland-for-woocommerce'),
 				'desc_tip' => true,
 				'description' => __('Collated payment methods, group 2 methods', 'svea-payments-finland-for-woocommerce'),
-				'default' => get_option('collated_group2_methods', 'FI50,FI51,FI52,FI53,FI54,SIIR'),
+				'default' => get_option('collated_group2_methods', 'FI50,FI51,FI52,FI53,FI54,SIIR,APPL,GPAY'),
 			),
 			'collated_group3_title' => array(
 				'type' => 'textfield',

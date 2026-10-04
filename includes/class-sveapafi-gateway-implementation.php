@@ -73,6 +73,15 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 	private $removed_fees = 0.00;
 
 	/**
+	 * Shipping option tax total.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var float $shipping_option_tax_total Total shipping option tax.
+	 */
+	private $shipping_option_tax_total = 0.00;
+
+	/**
 	 * Sveapafi_Gateway_Implementation constructor.
 	 *
 	 * @param Sveapafi_Gateway $gateway The gateway object.
@@ -127,7 +136,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 			'pmt_errorreturn' => $gateway->get_payment_url($payment_id, 'error'),
 			'pmt_cancelreturn' => $gateway->get_payment_url($payment_id, 'cancel'),
 			'pmt_delayedpayreturn' => $gateway->get_payment_url($payment_id, 'delay'),
-			'pmt_amount' => Sveapafi_Utils::filter_price($order->get_total() - $this->shipping_cost - $this->total_fees - $this->removed_fees),
+			'pmt_amount' => Sveapafi_Utils::filter_price($order->get_total() + $this->shipping_option_tax_total - $this->shipping_cost - $this->total_fees - $this->removed_fees),
 			'pmt_buyername' => $buyer_data['name'],
 			'pmt_buyeraddress' => $buyer_data['address'],
 			'pmt_buyerpostalcode' => $buyer_data['postal_code'],
@@ -148,6 +157,16 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 
 		if (isset($selected_payment_method)) {
 			$data['pmt_paymentmethod'] = $selected_payment_method;
+		}
+
+		$buyer_identification_code = apply_filters(
+			'svea_payment_buyer_identification_code',
+			'',
+			$order
+		);
+
+		if (!empty($buyer_identification_code)) {
+			$data['pmt_buyeridentificationcode'] = $buyer_identification_code;
 		}
 
 		// sveapafi_log('Payment request data: ' . print_r($data, true));
@@ -219,9 +238,12 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 
 			$payment_row_product = array();
 
-			$payment_row_product['pmt_row_name'] = Sveapafi_Utils::filter_productname($item['name']);
+			$item_name = is_object($item) && method_exists($item, 'get_name') ? $item->get_name() : (isset($item['name']) ? $item['name'] : '');
+			$item_qty = is_object($item) && method_exists($item, 'get_quantity') ? $item->get_quantity() : (isset($item['qty']) ? $item['qty'] : 1);
+
+			$payment_row_product['pmt_row_name'] = Sveapafi_Utils::filter_productname($item_name);
 			$payment_row_product['pmt_row_desc'] = Sveapafi_Utils::filter_description($description);
-			$payment_row_product['pmt_row_quantity'] = Sveapafi_Utils::filter_quantity($item['qty']);
+			$payment_row_product['pmt_row_quantity'] = Sveapafi_Utils::filter_quantity($item_qty);
 
 			$payment_row_product['pmt_row_articlenr'] = $product->get_sku() ?: '-';
 
@@ -287,6 +309,56 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 			}
 		}
 
+		/* Support for YITH Gift Cards */
+		if (function_exists('YITH_YWGC') || class_exists('YITH_YWGC')) {
+			$ywgc_applied = $order->get_meta('_ywgc_applied_gift_cards');
+			if (!empty($ywgc_applied) && is_array($ywgc_applied)) {
+				foreach ($ywgc_applied as $code => $yithamount) {
+					if ($yithamount > 0) {
+						$gctext = __('Gift Card', 'svea-payments-finland-for-woocommerce') . ' ' . $code;
+						$payment_rows[] = array(
+							'pmt_row_name' => $gctext,
+							'pmt_row_desc' => '-',
+							'pmt_row_quantity' => 1,
+							'pmt_row_deliverydate' => gmdate('d.m.Y'),
+							'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($yithamount),
+							'pmt_row_vat' => '00,00',
+							'pmt_row_discountpercentage' => '00,00',
+							'pmt_row_type' => 6,
+						);
+					}
+				}
+			} else {
+				foreach ($order->get_coupon_codes() as $code) {
+					$gift = YITH_YWGC()->get_gift_card_by_code($code);
+
+					if (is_object($gift) && $gift->exists()) {
+						$yithamount = 0;
+						foreach ($order->get_items('coupon') as $item) {
+							if (strcasecmp($item->get_code(), $code) === 0) {
+								$yithamount = (float)$item->get_discount() + (float)$item->get_discount_tax();
+								break;
+							}
+						}
+
+						if ($yithamount > 0) {
+							$gctext = __('Gift Card', 'svea-payments-finland-for-woocommerce') . ' ' . $code;
+							$payment_rows[] = array(
+								'pmt_row_name' => $gctext,
+								'pmt_row_desc' => '-',
+								'pmt_row_quantity' => 1,
+								'pmt_row_deliverydate' => gmdate('d.m.Y'),
+								'pmt_row_price_gross' => '-' . Sveapafi_Utils::filter_price($yithamount),
+								'pmt_row_vat' => '00,00',
+								'pmt_row_discountpercentage' => '00,00',
+								'pmt_row_type' => 6,
+							);
+						}
+					}
+				}
+			}
+		}
+
 		$payment_row_handling_cost = $this->create_payment_row_handling_cost_data($payment_method_handling_cost);
 		if (is_array($payment_row_handling_cost)) {
 			$payment_rows[] = $payment_row_handling_cost;
@@ -295,6 +367,11 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 		$payment_row_fees = $this->create_payment_row_fee_data($order);
 		if (is_array($payment_row_fees)) {
 			$payment_rows = array_merge($payment_rows, $payment_row_fees);
+		}
+
+		$payment_row_shipping_options = $this->create_payment_row_shipping_option_data($order);
+		if (is_array($payment_row_shipping_options)) {
+			$payment_rows = array_merge($payment_rows, $payment_row_shipping_options);
 		}
 
 		return $payment_rows;
@@ -311,6 +388,54 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 	 *
 	 * @return array|null
 	 */
+
+	/**
+	 * Create extra shipping options data row.
+	 *
+	 * Returns the extra shipping option data for the order.
+	 *
+	 * @param \WC_Order $order The order.
+	 *
+	 * @return array|null
+	 */
+	private function create_payment_row_shipping_option_data(\WC_Order $order)
+	{
+		$shipping_options = $order->get_items('shipping_option');
+		$option_rows = array();
+
+		foreach ($shipping_options as $option) {
+
+			$opt_name = is_object($option) && method_exists($option, 'get_name') ? $option->get_name() : (isset($option['name']) ? $option['name'] : '');
+			$opt_total = is_object($option) && method_exists($option, 'get_total') ? (float) $option->get_total() : (float) (isset($option['total']) ? $option['total'] : 0);
+			$opt_tax = is_object($option) && method_exists($option, 'get_total_tax') ? (float) $option->get_total_tax() : (float) (isset($option['total_tax']) ? $option['total_tax'] : 0);
+
+			$option_total = $opt_total + $opt_tax;
+			$this->shipping_option_tax_total += $opt_tax;
+
+			if ($option_total > 0) {
+				$option_tax = 100 * ($opt_tax / $opt_total);
+				/***
+				 * Round tax to nearest 0.5
+				 */
+				$option_tax = round($option_tax * 2) / 2;
+			} else {
+				$option_tax = 0;
+			}
+
+			$option_rows[] = array(
+				'pmt_row_name' => substr(Sveapafi_Utils::filter_productname($opt_name), 0, 40),
+				'pmt_row_desc' => substr(Sveapafi_Utils::filter_productname($opt_name), 0, 1000),
+				'pmt_row_quantity' => 1,
+				'pmt_row_deliverydate' => gmdate('d.m.Y'),
+				'pmt_row_price_gross' => Sveapafi_Utils::filter_price($option_total),
+				'pmt_row_vat' => Sveapafi_Utils::filter_price($option_tax),
+				'pmt_row_discountpercentage' => '00,00',
+				'pmt_row_type' => 5,
+			);
+		}
+
+		return $option_rows;
+	}
 	private function create_payment_row_shipping_data(\WC_Order $order)
 	{
 		$this->shipping_cost = floatval($order->get_total_shipping()) + floatval($order->get_shipping_tax());
@@ -425,9 +550,13 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 
 		foreach ($fees as $fee) {
 
-			$fee_total = $fee['line_total'] + $fee['line_tax'];
+			$fee_name = is_object($fee) && method_exists($fee, 'get_name') ? $fee->get_name() : (isset($fee['name']) ? $fee['name'] : '');
+			$line_total = is_object($fee) && method_exists($fee, 'get_total') ? (float) $fee->get_total() : (float) (isset($fee['line_total']) ? $fee['line_total'] : 0);
+			$line_tax = is_object($fee) && method_exists($fee, 'get_total_tax') ? (float) $fee->get_total_tax() : (float) (isset($fee['line_tax']) ? $fee['line_tax'] : 0);
 
-			if ($fee['name'] === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
+			$fee_total = $line_total + $line_tax;
+
+			if ($fee_name === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
 				$this->removed_fees += $fee_total;
 				continue;
 			}
@@ -435,7 +564,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 			$this->total_fees += $fee_total;
 
 			if ($fee_total > 0) {
-				$fee_tax = 100 * ($fee['line_tax'] / $fee['line_total']);
+				$fee_tax = 100 * ($line_tax / $line_total);
 				/***
 				 * Round fee tax to nearest 0.5
 				 */
@@ -445,8 +574,8 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 			}
 
 			$fee_rows[] = array(
-				'pmt_row_name' => substr(Sveapafi_Utils::filter_productname($fee['name']), 0, 40),
-				'pmt_row_desc' => substr(Sveapafi_Utils::filter_productname($fee['name']), 0, 1000),
+				'pmt_row_name' => substr(Sveapafi_Utils::filter_productname($fee_name), 0, 40),
+				'pmt_row_desc' => substr(Sveapafi_Utils::filter_productname($fee_name), 0, 1000),
 				'pmt_row_quantity' => 1,
 				'pmt_row_deliverydate' => gmdate('d.m.Y'),
 				'pmt_row_price_gross' => Sveapafi_Utils::filter_price($fee_total),

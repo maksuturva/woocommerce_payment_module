@@ -8,3 +8,6 @@ todo.txt
 .agent
 update-local.sh
 *.zip
+agents.md
+todo.md
+Migrations-tasks.md

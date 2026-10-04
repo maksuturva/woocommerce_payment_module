@@ -2,13 +2,13 @@
 Contributors: sveamaintainer
 Tags: svea, payment gateway, finland, woocommerce
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Stable tag: 3.0.0
 Requires PHP: 7.4
 License: LGPLv2.1
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
-Accept payments easily with Svea. Designed for Finnish merchants, this WooCommerce plugin supports Finnish online banking payments, MobilePay, Apple Pay, Visa, Mastercard, Svea Invoice, Svea Part Payment, and Svea B2B Invoice.  
+Accept Finnish online payments with Svea: bank payments, MobilePay, Apple Pay, cards and Svea invoices for B2B/B2C WooCommerce.
 
 == Description ==
 

@@ -230,8 +230,14 @@ class Sveapafi_Payment_Handling_Costs
 
 		if ($payment_handling_cost_fee === null) {
 			foreach ($order->get_fees() as $fee) {
-				if ($fee['name'] === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
-					$fee['total'] = 0;
+				$fee_name = is_object($fee) && method_exists($fee, 'get_name') ? $fee->get_name() : (isset($fee['name']) ? $fee['name'] : '');
+				if ($fee_name === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
+					if (is_object($fee) && method_exists($fee, 'set_total')) {
+						$fee->set_amount(0);
+						$fee->set_total(0);
+					} else {
+						$fee['total'] = 0;
+					}
 					$order->calculate_totals();
 					return;
 				}
@@ -243,8 +249,14 @@ class Sveapafi_Payment_Handling_Costs
 		$fee_already_exists = false;
 
 		foreach ($order->get_fees() as $fee) {
-			if ($fee['name'] === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
-				$fee['total'] = $payment_handling_cost_fee;
+			$fee_name = is_object($fee) && method_exists($fee, 'get_name') ? $fee->get_name() : (isset($fee['name']) ? $fee['name'] : '');
+			if ($fee_name === __('Payment handling fee', 'svea-payments-finland-for-woocommerce')) {
+				if (is_object($fee) && method_exists($fee, 'set_total')) {
+					$fee->set_amount($payment_handling_cost_fee);
+					$fee->set_total($payment_handling_cost_fee);
+				} else {
+					$fee['total'] = $payment_handling_cost_fee;
+				}
 				$fee_already_exists = true;
 			}
 		}

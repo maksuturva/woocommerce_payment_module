@@ -7,7 +7,7 @@
  * @wordpress-plugin
  * Plugin Name:  Svea Payments Finland for WooCommerce
  * Plugin URI:   https://github.com/maksuturva/woocommerce_payment_module
- * Description: A plugin for Svea Payments, which provides intelligent online payment services consisting of the most comprehensive set of high quality service features in the Finnish market
+ * Description: Accept Finnish online payments with Svea: bank payments, MobilePay, Apple Pay, cards and Svea invoices for B2B/B2C WooCommerce.
  * Version:     3.0.0     
  * Author:      Svea Development Oy
  * Author URI:  http://www.sveapayments.fi
@@ -18,10 +18,10 @@
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
- * Tested up to: 7.0     
+ * Tested up to: 7.1     
  * Last update: 25/05/2026
  * WC requires at least: 8.0
- * WC tested up to: 10.7.0   
+ * WC tested up to: 11.1.2   
  */
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
@@ -31,6 +31,43 @@ use Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema;
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
+
+/**
+ * Prevent activation if the old 2.7.x version is installed.
+ */
+function sveapafi_activation_check() {
+	// Allow developers to bypass the activation block during testing/migration
+	if ( defined( 'SVEA_SKIP_ACTIVATION_BLOCK' ) && SVEA_SKIP_ACTIVATION_BLOCK ) {
+		return;
+	}
+
+	if ( ! function_exists( 'get_plugins' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
+	$installed_plugins = get_plugins();
+	$current_plugin    = plugin_basename( __FILE__ );
+
+	foreach ( $installed_plugins as $plugin_path => $plugin_data ) {
+		if ( $plugin_path === $current_plugin ) {
+			continue;
+		}
+
+		// Identify the old legacy version (2.7.x)
+		if ( ( isset( $plugin_data['TextDomain'] ) && 'wc-maksuturva' === $plugin_data['TextDomain'] ) ||
+		     ( isset( $plugin_data['Name'] ) && 'Svea Payment Gateway' === $plugin_data['Name'] ) ) {
+			
+			wp_die( esc_html__( 'Activation blocked: The legacy \'Svea Payment Gateway\' plugin is still installed. Upgrading from the old 2.7.x installation to 3.0.0 is not supported yet, but will be supported in upcoming versions.', 'svea-payments-finland-for-woocommerce' ) );
+		}
+	}
+
+	// Check for legacy database settings (indicates old version was installed)
+	$legacy_settings = get_option( 'woocommerce_WC_Gateway_Maksuturva_settings' );
+	if ( ! empty( $legacy_settings ) ) {
+		wp_die( esc_html__( 'Activation blocked: Legacy \'Svea Payment Gateway\' database settings found. Upgrading from the old 2.7.x installation to 3.0.0 is not supported yet, but will be supported in upcoming versions.', 'svea-payments-finland-for-woocommerce' ) );
+	}
+}
+register_activation_hook( __FILE__, 'sveapafi_activation_check' );
 
 /**
  * WooCommerce feature compatibility handlers

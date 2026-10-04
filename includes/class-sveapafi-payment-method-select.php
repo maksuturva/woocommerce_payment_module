@@ -242,14 +242,14 @@ class Sveapafi_Payment_Method_Select
 			}
 
 			foreach ($available_payment_methods['paymentmethod'] as $key => $payment_method) {
-				if (in_array(substr($payment_method['code'], 0, 3), array('FI5')) || in_array(substr($payment_method['code'], 0, 4), array('SIIR'))) {
+				if (in_array(substr($payment_method['code'], 0, 3), array('FI5')) || in_array(substr($payment_method['code'], 0, 4), array('SIIR', 'APPL', 'GPAY'))) {
 					$payment_type_payment_methods['credit-card-and-mobile'][] = $payment_method;
 					unset($available_payment_methods['paymentmethod'][$key]);
 				}
 			}
 
 			foreach ($available_payment_methods['paymentmethod'] as $key => $payment_method) {
-				if (in_array(substr($payment_method['code'], 0, 3), array('FI6', 'FI7'))) {
+				if (in_array(substr($payment_method['code'], 0, 3), array('FI6', 'FI7')) || in_array(substr($payment_method['code'], 0, 4), array('FIIN', 'FIPP', 'FIBI'))) {
 					$payment_type_payment_methods['invoice-and-hire-purchase'][] = $payment_method;
 					unset($available_payment_methods['paymentmethod'][$key]);
 				}
@@ -366,6 +366,12 @@ class Sveapafi_Payment_Method_Select
 				$result_methods['paymentmethod'] = array($result_methods['paymentmethod']);
 			}
 		}
+
+		$result_methods = apply_filters(
+			'svea_payment_filter_payment_methods',
+			$result_methods,
+			$price
+		);
 		self::$available_payment_methods = $result_methods;
 		return self::$available_payment_methods;
 	}
