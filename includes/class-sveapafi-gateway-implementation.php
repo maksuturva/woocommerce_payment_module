@@ -29,7 +29,6 @@ if (!defined('ABSPATH')) {
 
 require_once 'class-sveapafi-gateway-abstract.php';
 require_once 'class-sveapafi-gateway-exception.php';
-require_once 'class-sveapafi-order-compatibility-handler.php';
 require_once 'class-sveapafi-payment-method-select.php';
 require_once 'class-sveapafi-payment-validator.php';
 require_once 'class-sveapafi-product-compatibility-handler.php';
@@ -122,12 +121,11 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 		$buyer_data = $this->create_buyer_data($order);
 		$delivery_data = $this->create_delivery_data($order);
 		$payment_id = $this->get_payment_id($order);
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 
 		$data = array(
 			'pmt_keygeneration' => $gateway->get_secret_key_version(),
 			'pmt_id' => $payment_id,
-			'pmt_orderid' => $order_handler->get_id(),
+			'pmt_orderid' => $order->get_id(),
 			'pmt_reference' => $this->get_internal_payment_id($order),
 			'pmt_sellerid' => $this->seller_id,
 			'pmt_duedate' => gmdate('d.m.Y'),
@@ -605,23 +603,22 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 	 */
 	private function create_buyer_data(\WC_Order $order)
 	{
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
-		$email = $order_handler->get_billing_email();
-		if (!empty($order_handler->get_customer_id())) {
-			$user = get_user_by('id', $order_handler->get_customer_id());
+		$email = $order->get_billing_email();
+		if (!empty($order->get_customer_id())) {
+			$user = get_user_by('id', $order->get_customer_id());
 			if ($user && empty($email)) {
 				$email = $user->user_email;
 			}
 		}
 
 		return array(
-			'name' => trim($order_handler->get_billing_first_name() . ' ' . $order_handler->get_billing_last_name()),
-			'address' => trim($order_handler->get_billing_address_1() . ', ' . $order_handler->get_billing_address_2(), ', '),
-			'postal_code' => $order_handler->get_billing_postcode(),
-			'city' => $order_handler->get_billing_city(),
-			'country' => $order_handler->get_billing_country(),
+			'name' => trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name()),
+			'address' => trim($order->get_billing_address_1() . ', ' . $order->get_billing_address_2(), ', '),
+			'postal_code' => $order->get_billing_postcode(),
+			'city' => $order->get_billing_city(),
+			'country' => $order->get_billing_country(),
 			'email' => $email,
-			'phone' => $order_handler->get_billing_phone(),
+			'phone' => $order->get_billing_phone(),
 		);
 	}
 
@@ -638,13 +635,12 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 	 */
 	private function create_delivery_data(\WC_Order $order)
 	{
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		return array(
-			'name' => trim($order_handler->get_shipping_first_name() . ' ' . $order_handler->get_shipping_last_name()),
-			'address' => trim($order_handler->get_shipping_address_1() . ', ' . $order_handler->get_shipping_address_2(), ', '),
-			'postal_code' => $order_handler->get_shipping_postcode(),
-			'city' => $order_handler->get_shipping_city(),
-			'country' => $order_handler->get_shipping_country(),
+			'name' => trim($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name()),
+			'address' => trim($order->get_shipping_address_1() . ', ' . $order->get_shipping_address_2(), ', '),
+			'postal_code' => $order->get_shipping_postcode(),
+			'city' => $order->get_shipping_city(),
+			'country' => $order->get_shipping_country(),
 		);
 	}
 
@@ -709,8 +705,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 	 */
 	private function get_internal_payment_id(\WC_Order $order)
 	{
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
-		return $order_handler->get_id() + 100;
+		return $order->get_id() + 100;
 	}
 
 	/**
@@ -855,8 +850,7 @@ class Sveapafi_Gateway_Implementation extends Sveapafi_Gateway_Abstract
 	private function get_meta_description_wc2($order, $order_item_id)
 	{
 		$description = '';
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
-		$item_meta = new \WC_Order_Item_Meta($order_handler->get_item_meta($order_item_id));
+		$item_meta = new \WC_Order_Item_Meta($order->get_item_meta($order_item_id));
 		$formatted = $item_meta->get_formatted();
 		if ($formatted) {
 			foreach ($formatted as $attr) {

@@ -49,7 +49,7 @@ class Sveapafi_Gateway_Svea_Online_Bank_Payments extends Sveapafi_Gateway
 		$this->method_title = 'Svea ' . __('Online Bank Payments', 'svea-payments-finland-for-woocommerce');
 
 		/* translators: %s: URL */
-		$this->method_description = sprintf(__('General Svea settings are managed <a href="%s">here</a>.', 'svea-payments-finland-for-woocommerce'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
+		$this->method_description = __('This is legacy payment module checkout view when blocks mode is not enabled.', 'svea-payments-finland-for-woocommerce');
 		$custom_title = $this->get_option('payment_group_onlinebank_title');
 		if (!empty($custom_title)) {
 			$this->title = esc_html($custom_title);

@@ -49,7 +49,7 @@ class Sveapafi_Gateway_Svea_Credit_Card_And_Mobile extends Sveapafi_Gateway
 		$this->method_title = 'Svea ' . __('Credit Card and Mobile', 'svea-payments-finland-for-woocommerce');
 
 		/* translators: %s: URL */
-		$this->method_description = sprintf(__('General Svea settings are managed <a href="%s">here</a>.', 'svea-payments-finland-for-woocommerce'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
+		$this->method_description = __('This is legacy payment module checkout view when blocks mode is not enabled.', 'svea-payments-finland-for-woocommerce');
 
 		$custom_title = $this->get_option('payment_group_creditcard_title');
 		if (!empty($custom_title)) {

@@ -31,7 +31,6 @@ if (!defined('ABSPATH')) {
 require_once 'class-sveapafi-gateway-admin-form-fields.php';
 require_once 'class-sveapafi-gateway-implementation.php';
 require_once 'class-sveapafi-meta-box.php';
-require_once 'class-sveapafi-order-compatibility-handler.php';
 require_once 'class-sveapafi-payment.php';
 require_once 'class-sveapafi-payment-method-select.php';
 require_once 'class-sveapafi-payment-validator.php';
@@ -118,15 +117,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		$this->description = $this->get_option('description');
 		$this->enabled = $this->get_option('enabled');
 		$this->method_title = __('Svea', 'svea-payments-finland-for-woocommerce');
-		$this->method_description = sprintf(
-			'%s %s',
-			__('Take payments via Svea.', 'svea-payments-finland-for-woocommerce'),
-			sprintf(
-				'<a href="%s" target="_blank">%s</a>',
-				'https://sveapayments.atlassian.net/wiki/spaces/DOCS/pages/1657014153/TESTING',
-				__('Testing instructions', 'svea-payments-finland-for-woocommerce')
-			)
-		);
+		$this->method_description = __('Take payments via Svea.', 'svea-payments-finland-for-woocommerce');
 
 		$this->outbound_payment = $this->get_option('outbound_payment');
 
@@ -339,6 +330,20 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		if (isset($errors)) {
 			foreach ($errors as $error) {
 				$settings->add_error($error);
+			}
+		}
+
+		// Block mode validation
+		if ($this->id !== Sveapafi_Gateway::class) {
+			$main_settings = get_option('woocommerce_' . Sveapafi_Gateway::class . '_settings');
+			$block_mode_enabled = isset($main_settings['block_mode_enabled']) ? $main_settings['block_mode_enabled'] : 'yes';
+
+			$post_data = $this->get_post_data();
+			$enabled_key = $this->plugin_id . $this->id . '_enabled';
+
+			if ('yes' === $block_mode_enabled && isset($post_data[$enabled_key]) && '1' === $post_data[$enabled_key]) {
+				$_POST[$enabled_key] = '0';
+				$settings->add_error(__('Blocks mode is enabled. Collated or separate payment methods are not needed as the payment module creates the checkout view using blocks mode scripts.', 'svea-payments-finland-for-woocommerce'));
 			}
 		}
 		parent::process_admin_options();
@@ -710,7 +715,6 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 	{
 
 		$order = wc_get_order($order_id);
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 
 		// Fix: Use standard WooCommerce payment URL
 		$url = $order->get_checkout_payment_url(true);
@@ -753,7 +757,6 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		$payment_handling_costs->update_payment_handling_cost_fee($order);
 
 		$gateway = new Sveapafi_Gateway_Implementation($this, $order);
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		$payment_gateway_url = $gateway->get_payment_url();
 		$data = $gateway->get_field_array();
 		$payment_method = isset($data['pmt_paymentmethod']) ? $data['pmt_paymentmethod'] : '';
@@ -761,7 +764,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		// Create the payment for Svea.
 		Sveapafi_Payment::create(
 			array(
-				'order_id' => $order_handler->get_id(),
+				'order_id' => $order->get_id(),
 				'payment_id' => $data['pmt_id'],
 				'payment_method' => $payment_method,
 				'data_sent' => $data,
@@ -811,9 +814,8 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 			return;
 		}
 
-		$order_handler = new Sveapafi_Order_Compatibility_Handler($order);
 		try {
-			$payment = new Sveapafi_Payment($order_handler->get_id());
+			$payment = new Sveapafi_Payment($order->get_id());
 		} catch (Sveapafi_Gateway_Exception $e) {
 			sveapafi_log((string) $e);
 			$this->add_notice(__('Could not process order.', 'svea-payments-finland-for-woocommerce'), 'error');
@@ -853,7 +855,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 				}
 
 				$this->order_fail($order, $payment);
-				// wp_redirect( add_query_arg( 'key', $order_handler->get_order_key(), $this->get_return_url( $order ) ) );
+				// wp_redirect( add_query_arg( 'key', $order->get_order_key(), $this->get_return_url( $order ) ) );
 
 				/**
 				 * Redirect URL for payment error.
@@ -872,13 +874,13 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 			case Sveapafi_Payment::STATUS_DELAYED:
 				$this->order_delay($order, $payment);
 				$this->add_notice(__('Payment delayed by Svea.', 'svea-payments-finland-for-woocommerce'), 'notice');
-				wp_redirect(add_query_arg('key', $order_handler->get_order_key(), $this->get_return_url($order)));
+				wp_redirect(add_query_arg('key', $order->get_order_key(), $this->get_return_url($order)));
 				break;
 
 			case Sveapafi_Payment::STATUS_CANCELLED:
 				$this->order_cancel($order, $payment);
 				$this->add_notice(__('Cancellation from Svea received.', 'svea-payments-finland-for-woocommerce'), 'notice');
-				wp_redirect(add_query_arg('key', $order_handler->get_order_key(), $order->get_cancel_order_url()));
+				wp_redirect(add_query_arg('key', $order->get_order_key(), $order->get_cancel_order_url()));
 				break;
 
 			case Sveapafi_Payment::STATUS_COMPLETED:

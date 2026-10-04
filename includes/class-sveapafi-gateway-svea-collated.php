@@ -50,7 +50,7 @@ class Sveapafi_Gateway_Svea_Collated extends Sveapafi_Gateway
 		$this->method_title = 'Svea ' . __('Collated Payments', 'svea-payments-finland-for-woocommerce');
 
 		/* translators: %s: URL */
-		$this->method_description = sprintf(__('General Svea settings are managed <a href="%s">here</a>.', 'svea-payments-finland-for-woocommerce'), '?page=wc-settings&tab=checkout&section=wc_gateway_maksuturva');
+		$this->method_description = __('This is legacy payment module checkout view when blocks mode is not enabled.', 'svea-payments-finland-for-woocommerce');
 		$this->title = $collated_title;
 		$this->icon = Sveapafi_Maksuturva::get_instance()->get_plugin_url() . 'Svea_logo.png';
 	}

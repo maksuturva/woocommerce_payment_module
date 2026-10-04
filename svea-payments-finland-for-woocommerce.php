@@ -70,6 +70,43 @@ function sveapafi_activation_check() {
 register_activation_hook( __FILE__, 'sveapafi_activation_check' );
 
 /**
+ * Intercept WooCommerce AJAX toggle for Svea sub-gateways.
+ */
+add_action('wp_ajax_woocommerce_toggle_gateway_enabled', 'sveapafi_intercept_ajax_toggle', 1);
+function sveapafi_intercept_ajax_toggle() {
+	if ( ! current_user_can( 'manage_woocommerce' ) || ! check_ajax_referer( 'woocommerce-toggle-payment-gateway-enabled', 'security', false ) ) {
+		return;
+	}
+
+	$gateway_id = isset( $_POST['gateway_id'] ) ? wc_clean( wp_unslash( $_POST['gateway_id'] ) ) : '';
+	
+	// List of our sub-gateways
+	$sub_gateways = array(
+		'Sveapafi_Gateway_Svea_Collated',
+		'Sveapafi_Gateway_Svea_Online_Bank_Payments',
+		'Sveapafi_Gateway_Svea_Credit_Card_And_Mobile',
+		'Sveapafi_Gateway_Svea_Other_Payments',
+		'Sveapafi_Gateway_Svea_Invoice_And_Hire_Purchase'
+	);
+
+	if ( in_array( $gateway_id, $sub_gateways, true ) ) {
+		$main_settings = get_option( 'woocommerce_' . Sveapafi_Gateway::class . '_settings' );
+		$block_mode_enabled = isset( $main_settings['block_mode_enabled'] ) ? $main_settings['block_mode_enabled'] : 'yes';
+
+		if ( 'yes' === $block_mode_enabled ) {
+			// We only block ENABLING it. If they are disabling it, let it pass.
+			$current_settings = get_option( 'woocommerce_' . $gateway_id . '_settings' );
+			$is_enabled = isset( $current_settings['enabled'] ) && 'yes' === $current_settings['enabled'];
+
+			// If it's NOT enabled currently, the toggle action is trying to ENABLE it.
+			if ( ! $is_enabled ) {
+				wp_send_json_error( __( 'Blocks mode is enabled. Collated or separate payment methods are not needed as the payment module creates the checkout view using blocks mode scripts.', 'svea-payments-finland-for-woocommerce' ) );
+			}
+		}
+	}
+}
+
+/**
  * WooCommerce feature compatibility handlers
  *
  * Support for Custom Order Tables aka High-Performance Order Storage
