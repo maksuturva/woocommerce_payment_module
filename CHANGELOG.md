@@ -1,6 +1,7 @@
 ## Changelog
 
 ### 3.0.0 - 2026-10-04
+* Namespaces and class names updated to be compliant with WordPress standards
 * Added support for Wordpress Marketplace
 * Estonia Payment method removed
 * Added Apple Pay and Google Pay payment methods
