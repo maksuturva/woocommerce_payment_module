@@ -5,6 +5,8 @@ Requires at least: 6.0
 Tested up to: 7.1
 Stable tag: 3.0.0
 Requires PHP: 7.4
+WC requires at least: 8.0
+WC tested up to: 11.1.2
 License: LGPLv2.1
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
@@ -29,8 +31,8 @@ For WooCommerce versions >8.3, see Docs for new feature compatibility.
 
 = Documentation =
 
-* Changelog: [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/master/CHANGELOG.md)
-* Installation and administration guide: [docs/Svea_Payment_Gateway_Manual.pdf](https://github.com/maksuturva/woocommerce_payment_module/blob/master/docs/Svea_Payment_Gateway_Manual.pdf)
+* Changelog: [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/marketplace_compatible/CHANGELOG.md)
+* Installation and administration guide: [docs/Svea_Payments_Finland_for_WooCommerce_manual.pdf](https://github.com/maksuturva/woocommerce_payment_module/blob/marketplace_compatible/docs/Svea_Payments_Finland_for_WooCommerce_manual.pdf)
 
 = Filters =
 
@@ -72,12 +74,17 @@ During checkout and order processing, the plugin securely transmits transaction-
 
 == Installation ==
 
-For detailed installation and configuration instructions, please refer to the [Svea Payment Gateway Manual (PDF)](https://github.com/maksuturva/woocommerce_payment_module/blob/master/docs/Svea_Payment_Gateway_Manual.pdf).
+For detailed installation and configuration instructions, please refer to the [Svea Payment Gateway Manual (PDF)](https://github.com/maksuturva/woocommerce_payment_module/blob/marketplace_compatible/docs/Svea_Payments_Finland_for_WooCommerce_manual.pdf).
 
-1. Upload the plugin files to the `/wp-content/plugins/svea-payment-gateway` directory, or install the plugin through the WordPress plugins screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Configure the plugin settings under WooCommerce > Settings > Payments > Svea.
+Note: Ensure you have the WooCommerce plugin installed and activated before installing the payment module.
+
+1. Install the Svea Payments Finland for WooCommerce plugin via the WordPress admin panel (Plugins > Add New) or by uploading the plugin ZIP file.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Navigate to WooCommerce > Settings > Payments in your WordPress dashboard.
+4. Enable the Svea payment methods and click Manage to enter your merchant credentials and configure the gateway settings.
+
+For detailed step-by-step instructions, configuring credentials, and testing procedures, please refer to the full documentation.
 
 == Changelog ==
 
-* See [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/master/CHANGELOG.md) for full history.
+* See [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/marketplace_compatible/CHANGELOG.md) for full history.
