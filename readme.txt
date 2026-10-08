@@ -10,24 +10,46 @@ WC tested up to: 11.1.2
 License: LGPLv2.1
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
-Accept Finnish online payments with Svea: bank payments, MobilePay, Apple Pay, cards and Svea invoices for B2B/B2C WooCommerce.
+Accept online payments with Svea Payments. Offer your B2C and B2B customers a smooth checkout experience with Finnish online banking payments, MobilePay, Apple Pay, card payments, invoices and part payments through a single WooCommerce integration.
 
 == Description ==
 
-This is the official payment module for WooCommerce by Svea Payments.
+Svea Payments Finland for WooCommerce enables Finnish merchants to accept online payments directly in WooCommerce using a single integration. 
 
-There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
+Supported payment methods include:
 
-For WooCommerce versions >8.3, see Docs for new feature compatibility.
+* Finnish online banking payments
+* MobilePay
+* Apple Pay
+* Visa and Mastercard
+* Svea Invoice
+* Svea Part Payment
+* Svea B2B Invoice
+
+Manage all supported payment methods through the Svea Payments platform while providing customers with a seamless checkout experience.
 
 = Features =
 
-* All Finnish payment methods: bank payments, cards, mobile payments, Svea Invoice, Svea Part Payment and Svea B2B Invoice
-* Customizable layout at checkout
-* Refunds
-* Send delivery info
-* Svea's part payment calculator
-* Delayed capture
+* Single integration for multiple payment methods
+* Support for popular Finnish payment methods
+* Configurable checkout experience
+* Part Payment Calculator
+* Merchant Extranet for transaction management
+* Comprehensive reporting
+
+= Getting Started =
+
+1. Sign up for Svea Payments.
+2. Install and activate the plugin.
+3. Enter your Svea Payments credentials.
+4. Select the payment methods you want to offer.
+5. Start accepting payments in your WooCommerce store.
+
+= About Svea Payments =
+
+Svea Payments provides e-commerce payment solutions for Finnish merchants, including online banking payments, card payments, mobile payments, invoices and part payments through a single integration.
+
+For pricing and merchant onboarding, please visit our website [Tilaa maksupalvelupaketti | Verkkokauppa ja myymälä | Svea Bank](https://www.svea.com/fi-fi/yritykset/maksuratkaisut/verkkokauppa-ja-myymala/tilaa-maksupalvelupaketti) or contact our sales team: myynti.payments@svea.fi.
 
 = Documentation =
 
