@@ -374,6 +374,21 @@ class Sveapafi_Payment
 	 *
 	 * @since 2.1.1
 	 */
+	/**
+	 * Returns data_sent.
+	 *
+	 * @return array
+	 */
+	public function get_data_sent()
+	{
+		return $this->data_sent;
+	}
+
+	/**
+	 * Returns date_updated.
+	 *
+	 * @return string
+	 */
 	public function get_date_updated()
 	{
 		return $this->date_updated;

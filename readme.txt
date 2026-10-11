@@ -6,11 +6,11 @@ Tested up to: 7.1
 Stable tag: 3.0.0
 Requires PHP: 7.4
 WC requires at least: 8.0
-WC tested up to: 11.1.2
+WC tested up to: 11.2.1
 License: LGPLv2.1
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
-Accept online payments with Svea Payments. Offer your B2C and B2B customers a smooth checkout experience with Finnish online banking payments, MobilePay, Apple Pay, card payments, invoices and part payments through a single WooCommerce integration.
+Accept online payments with Svea Payments. Offer your B2C and B2B customers a smooth checkout experience.
 
 == Description ==
 

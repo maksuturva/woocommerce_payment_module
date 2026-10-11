@@ -262,14 +262,14 @@ class Sveapafi_Payment_Handling_Costs
 		}
 
 		if (!$fee_already_exists) {
-			$fee = new \stdClass();
-			$fee->name = __('Payment handling fee', 'svea-payments-finland-for-woocommerce');
-			$fee->amount = $payment_handling_cost_fee;
-			$fee->taxable = true;
-			$fee->tax_class = $this->get_payment_method_handling_cost_tax_class();
-			$fee->tax = 0;
-			$fee->tax_data = array();
-			$order->add_fee($fee);
+			$item = new \WC_Order_Item_Fee();
+			$item->set_name(__('Payment handling fee', 'svea-payments-finland-for-woocommerce'));
+			$item->set_amount($payment_handling_cost_fee);
+			$item->set_total($payment_handling_cost_fee);
+			$item->set_tax_status('taxable');
+			$item->set_tax_class($this->get_payment_method_handling_cost_tax_class());
+			$item->set_total_tax(0);
+			$order->add_item($item);
 		}
 
 		$order->calculate_totals();

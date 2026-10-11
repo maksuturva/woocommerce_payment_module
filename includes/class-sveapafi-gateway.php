@@ -117,7 +117,7 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 		$this->description = $this->get_option('description');
 		$this->enabled = $this->get_option('enabled');
 		$this->method_title = __('Svea', 'svea-payments-finland-for-woocommerce');
-		$this->method_description = __('Take payments via Svea.', 'svea-payments-finland-for-woocommerce');
+		$this->method_description = __('Accept online payments with Svea Payments. Offer your B2C and B2B customers a smooth checkout experience.', 'svea-payments-finland-for-woocommerce');
 
 		$this->outbound_payment = $this->get_option('outbound_payment');
 
@@ -928,11 +928,12 @@ class Sveapafi_Gateway extends \WC_Payment_Gateway
 	protected function add_surcharge($payment, $order)
 	{
 		if (!$payment->is_cancelled() && $payment->includes_surcharge()) {
-			$fee = new \stdClass();
-			$fee->name = __('Surcharge from Payment Gateway', 'svea-payments-finland-for-woocommerce');
-			$fee->amount = $payment->get_surcharge();
-			$fee->taxable = false;
-			$order->add_fee($fee);
+			$item = new \WC_Order_Item_Fee();
+			$item->set_name(__('Surcharge from Payment Gateway', 'svea-payments-finland-for-woocommerce'));
+			$item->set_amount($payment->get_surcharge());
+			$item->set_total($payment->get_surcharge());
+			$item->set_tax_status('none');
+			$order->add_item($item);
 			$order->calculate_totals();
 		}
 	}

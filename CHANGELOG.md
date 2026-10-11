@@ -1,6 +1,14 @@
 ## Changelog
 
-### 3.0.0 - 2026-10-04
+### 3.0.0 - 2026-10-11
+* Tested up to WooCommerce 11.2.1
+* Fixed WooCommerce 3.0 deprecation warnings for `WC_Order::add_fee()` by migrating to `WC_Order_Item_Fee`
+* Fixed legacy bug preventing admin scripts from loading (updated section check for `sveapafi_gateway`)
+* Added JavaScript validation to prevent enabling Part Payment Widget on Cart/Checkout pages when Blocks Mode is active (Product page remains allowed)
+* Optimized background status checks to automatically skip and cancel orders marked as 'cancelled' or 'failed' in WooCommerce
+* Renamed scheduled cron event to `sveapafi_check_pending_payments` with automatic cleanup of legacy hooks
+* Added developer documentation for background status query time windows (`docs/Status-Query-Windows.md`)
+* Refined main admin method description to better reflect modern B2B/B2C features
 * Namespaces and class names updated to be compliant with WordPress standards
 * Added support for Wordpress Marketplace
 * Estonia Payment method removed

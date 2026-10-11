@@ -39,5 +39,49 @@
 
 			return false;
 		});
+
+		// Warn if part payment widget is enabled while blocks mode is on
+		var blockModeCheckbox = document.querySelector('[id$="_block_mode_enabled"]');
+		var widgetSelects = [
+			document.querySelector('[id$="_partpayment_widget_cart_location"]'),
+			document.querySelector('[id$="_partpayment_widget_checkout_location"]')
+		];
+
+		if (blockModeCheckbox) {
+			var checkIncompatibility = function(event) {
+				if (blockModeCheckbox.checked) {
+					var isIncompatible = false;
+					widgetSelects.forEach(function(select) {
+						if (select && select.value !== '0' && select.value !== '') {
+							isIncompatible = true;
+							if (event && event.target === select) {
+								select.value = '0'; // Revert the specific select
+							}
+						}
+					});
+
+					if (isIncompatible) {
+						alert('Part payment widget is not supported when using Blocks Mode. Please disable Blocks Mode first, or keep the widget disabled.');
+						if (event && event.target === blockModeCheckbox) {
+							blockModeCheckbox.checked = false; // Revert the checkbox
+						} else {
+							// If they loaded the page with both enabled, or we missed reverting
+							widgetSelects.forEach(function(select) {
+								if (select && select.value !== '0' && select.value !== '') {
+									select.value = '0';
+								}
+							});
+						}
+					}
+				}
+			};
+
+			blockModeCheckbox.addEventListener('change', checkIncompatibility);
+			widgetSelects.forEach(function(select) {
+				if (select) {
+					select.addEventListener('change', checkIncompatibility);
+				}
+			});
+		}
 	});
 })();

@@ -136,11 +136,16 @@ class Sveapafi_Payment_Checker
 			/**
 			 * if order is not found anymore, skip payment checks and cancel it it Maksuturva status queue (2.12.2019)
 			 */
-			if ($order == null) {
-				sveapafi_log('Order for id ' . $payment->get_order_id() . ' not found anymore! Cancelling it in the check queue.');
+			if ($order == null || $order->has_status(array('cancelled', 'failed'))) {
+				sveapafi_log('Order for id ' . $payment->get_order_id() . ' not found or is cancelled. Cancelling it in the check queue.');
 				Sveapafi_Payment::updateToCancelled($payment->get_order_id());
 			} else {
-				$response = (new Sveapafi_Gateway_Implementation($gateway, $order))->status_query();
+				$impl = new Sveapafi_Gateway_Implementation($gateway, $order);
+				$saved_data = (array) $payment->get_data_sent();
+				if (!empty($saved_data)) {
+					$impl->set_payment_data($saved_data);
+				}
+				$response = $impl->status_query();
 				$query_count = $this->log($payment, $response);
 
 				switch ($response['pmtq_returncode']) {
