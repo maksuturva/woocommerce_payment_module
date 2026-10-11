@@ -311,7 +311,7 @@ class Sveapafi_Gateway_Admin_Form_Fields
 			'partpayment_widget_settings' => array(
 				'title' => __('Part Payment Widget Settings', 'svea-payments-finland-for-woocommerce'),
 				'type' => 'title',
-				'description' => __('All settings for the part payment calculator widget are here.', 'svea-payments-finland-for-woocommerce'),
+				'description' => __('All settings for the part payment calculator widget are here and to enable widget, select the predefined location for product page, cart or checkout below.', 'svea-payments-finland-for-woocommerce'),
 				'id' => 'partpayment_widget_settings',
 			),
 			'partpayment_widget_use_test' => array(

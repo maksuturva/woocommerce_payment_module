@@ -21,7 +21,7 @@
  * Tested up to: 7.1     
  * Last update: 25/05/2026
  * WC requires at least: 8.0
- * WC tested up to: 11.1.2   
+ * WC tested up to: 11.2.1   
  */
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
@@ -350,12 +350,16 @@ class Sveapafi_Maksuturva
 			// leaving the old removal, in case they revert
 			remove_filter('get_header', 'wc_clear_cart_after_payment');
 
-			if (!wp_next_scheduled('maksuturva_check_pending_payments')) {
-				sveapafi_log('Adding new payment status event loop.');
-				wp_schedule_event(time(), 'five_minutes', 'maksuturva_check_pending_payments');
+			if (wp_next_scheduled('maksuturva_check_pending_payments')) {
+				wp_clear_scheduled_hook('maksuturva_check_pending_payments');
 			}
 
-			add_action('maksuturva_check_pending_payments', array($this, 'check_pending_payments'));
+			if (!wp_next_scheduled('sveapafi_check_pending_payments')) {
+				sveapafi_log('Adding new payment status event loop.');
+				wp_schedule_event(time(), 'five_minutes', 'sveapafi_check_pending_payments');
+			}
+
+			add_action('sveapafi_check_pending_payments', array($this, 'check_pending_payments'));
 			add_action('woocommerce_cart_calculate_fees', array($this, 'set_handling_cost'));
 
 			// part payment widget hook on single product page
@@ -476,7 +480,7 @@ class Sveapafi_Maksuturva
 		}
 
 		// Check if we are on your specific gateway's settings tab
-		if (isset($_GET['section']) && sanitize_text_field(wp_unslash($_GET['section'])) === 'wc_gateway_maksuturva') {
+		if (isset($_GET['section']) && (sanitize_text_field(wp_unslash($_GET['section'])) === 'wc_gateway_maksuturva' || sanitize_text_field(wp_unslash($_GET['section'])) === 'sveapafi_gateway')) {
 			wp_enqueue_style(
 				'svea-gateway-admin-styles',
 				plugin_dir_url(__FILE__) . 'assets/css/admin-styles.css', // Adjust the path to your CSS file
