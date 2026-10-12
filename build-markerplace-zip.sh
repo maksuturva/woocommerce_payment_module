@@ -59,6 +59,7 @@ rsync -a \
     --exclude-from=".gitignore" \
     --exclude-from=".distignore" \
     --exclude="assets/icon*" \
+    --exclude="assets/screenshot*" \
     --exclude="build-markerplace-zip.sh" \
     --exclude="${TEMP_DIR}" \
     --exclude=".git" \

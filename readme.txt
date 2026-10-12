@@ -107,6 +107,15 @@ Note: Ensure you have the WooCommerce plugin installed and activated before inst
 
 For detailed step-by-step instructions, configuring credentials, and testing procedures, please refer to the full documentation.
 
+== Screenshots ==
+
+1. Checkout page with WooCommerce Blocks mode enabled.
+2. All available payment method options.
+3. Embedded Part Payment Widget support.
+4. Support for cancellations and refunds, including a direct link to the merchant extranet.
+5. Separate payment methods displayed on the checkout page.
+6. Collated payment methods view on the checkout page.
+
 == Changelog ==
 
 * See [CHANGELOG.md](https://github.com/maksuturva/woocommerce_payment_module/blob/marketplace_compatible/CHANGELOG.md) for full history.
